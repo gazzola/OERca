@@ -12,13 +12,8 @@
 $TOOL_NAME="dScribe Home";
 $PAGE_NAME="Home";
 
-include '../include/top_header.php';
-
 ?>
 <link href="../include/ocw_tool.css" rel="stylesheet" type="text/css"/>
-<?php
-include '../include/header.php';
-?>
 	
 		<div>&nbsp;&nbsp;&nbsp; dScribe Home&nbsp;| &nbsp;<a href="profile.php">Course &amp; Instructor Profiles</a>&nbsp; | &nbsp;<a href="copyright.php">Set Default Copyright</a>&nbsp; | &nbsp;<a href="materials.php">Prepare Course Materials</a> &nbsp; | &nbsp;<a href="../preview/course.php">Review &amp; Export</a></div>
 		<br/>
