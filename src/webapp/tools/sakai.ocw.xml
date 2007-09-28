@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+
+<registration>
+
+	<tool
+			id="sakai.ocwtool"
+			title="OCW Tool"
+			description="A tool to link to external applications for Open CourseWare creation">
+
+		<configuration name="height" value="600px" />
+        <category name="course" />
+
+		<keyword name="ocwtool" />
+
+ 		<!-- Allow this to be set -->
+ 		<configuration name="functions.require" />
+
+	</tool>
+
+</registration>
