@@ -12,13 +12,8 @@
 $TOOL_NAME="Instructor";
 $PAGE_NAME="Review and Export";
 
-include '../include/top_header.php';
-
 ?>
 <link href="../include/ocw_tool.css" rel="stylesheet" type="text/css"/>
-<?php
-include '../include/header.php';
-?>
 <div id="topmenu">&nbsp;&nbsp;&nbsp; <a href="../dscribe/index.php">dScribe Home</a>&nbsp;| &nbsp;<a href="../dscribe/profile.php">Course &amp; Instructor Profiles</a>&nbsp; | &nbsp;<a href="../dscribe/copyright.php">Set Default Copyright</a>&nbsp; | &nbsp;<a href="../dscribe/materials.php">Prepare Course Materials</a> &nbsp; | &nbsp;Review for Export</div>
 		<br/>
 
@@ -87,5 +82,3 @@ He is currently the Board Chair for the Sakai project, an open source, online Co
 </div>
 </div>
 </DIV>
-
-<?php  include '../include/footer.php';  ?>

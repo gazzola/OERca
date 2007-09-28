@@ -12,13 +12,8 @@
 $TOOL_NAME="Instructor";
 $PAGE_NAME="Manage DScribes";
 
-include '../include/top_header.php';
-
 ?>
 <link href="../include/ocw_tool.css" rel="stylesheet" type="text/css"/>
-<?php
-include '../include/header.php';
-?>
 <div>&nbsp;&nbsp;&nbsp; <a href="index.php">Instructor Home</a>&nbsp;| &nbsp;Manage dScribes&nbsp; | &nbsp;<a href="materials.php">Select OCW Course Materials</a>&nbsp; | &nbsp;<a href="../preview_inst/course.php">Review for Export </a>| &nbsp; <a href="../dscribe/index.php">dScribe Tools</a></div>
 <br/>
 <div id="tool_content">
@@ -53,5 +48,3 @@ include '../include/header.php';
 <div class="padding50">&nbsp;</div>
 </div>
 </DIV>
-
-<?php  include '../include/footer.php';  ?>

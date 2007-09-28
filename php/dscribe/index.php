@@ -54,4 +54,3 @@ $PAGE_NAME="Home";
 	</div>
 </div><div class="clear">&nbsp;</div>
 <div class="padding50">&nbsp;</div>
-<?php  include '../include/footer.php';  ?>

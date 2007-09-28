@@ -12,13 +12,8 @@
 $TOOL_NAME="Instructor";
 $PAGE_NAME="Review and Export";
 
-include '../include/top_header.php';
-
 ?>
 <link href="../include/ocw_tool.css" rel="stylesheet" type="text/css"/>
-<?php
-include '../include/header.php';
-?>
 
 <div>&nbsp;&nbsp;&nbsp; <a href="../instructor/index.php">Instructor Home</a>&nbsp;| &nbsp;<a href="../instructor/dscribes.php">Manage dScribes</a>&nbsp; | &nbsp;<a href="../instructor/materials.php">Select OCW Course Materials</a>&nbsp; | &nbsp;Review for Export | &nbsp;<a href="../dscribe/index.php">dScribe Tools</a></div>
 <br/>
@@ -75,5 +70,3 @@ include '../include/header.php';
 </table>
 </div></div>
 </DIV>
-
-<?php  include '../include/footer.php';  ?>

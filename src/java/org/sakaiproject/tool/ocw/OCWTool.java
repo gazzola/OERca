@@ -163,11 +163,7 @@ public class OCWTool extends HttpServlet
 
 		salt = readSecretKey(homedir + saltname, "HmacSHA1");
 
-		ourUrl = ServerConfigurationService.getString("sakai.ocwtool.serverUrl");
-		if (ourUrl == null || ourUrl.equals(""))
-		    ourUrl = ServerConfigurationService.getString("serverUrl");
-		if (ourUrl == null || ourUrl.equals(""))
-		    ourUrl = "http://127.0.0.1:8080";
+		ourUrl = getConfigUrl();
 
         illegalParams = new HashSet();
 		illegalParams.add("user");
@@ -184,7 +180,20 @@ public class OCWTool extends HttpServlet
 
 		M_log.info("init()");
 	}
-
+	
+	/**
+	 * return the url from configuration
+	 * @return
+	 */
+	String getConfigUrl()
+	{
+		String url = ServerConfigurationService.getString("sakai.ocwtool.serverUrl");
+		if (url == null || url.equals(""))
+		    url = ServerConfigurationService.getString("serverUrl");
+		if (url == null || url.equals(""))
+		    url = "http://127.0.0.1:8080";
+		return url;
+	}
 	/**
 	 * Shutdown the servlet.
 	 */
@@ -268,6 +277,8 @@ public class OCWTool extends HttpServlet
 	    // else take it from the tool config
 	    if (url == null && config != null)
 		url = config.getProperty("url", null);
+	    if (url == null)
+	    url = getConfigUrl();
 
 	    // now get user's role in site; must be defined
 	    String realmId = null;
@@ -284,6 +295,18 @@ public class OCWTool extends HttpServlet
 	    }
 	    if (realm != null && userid != null)
 		r = realm.getUserRole(userid);
+	    /** use site.upd permission now to differ instructor from dScribes */
+	    if (r.isAllowed(SiteService.SECURE_UPDATE_SITE))
+	    {
+	    	// go to instructor view
+	    	url= url + "instructor/";
+	    }
+	    else
+	    {
+	    	// otherwise go to dScribe view
+	    	url = url + "dscribe/";
+	    }
+	    
 	    if (r != null) {
 		rolename = r.getId();
 	    }

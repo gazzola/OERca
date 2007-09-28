@@ -12,13 +12,8 @@
 $TOOL_NAME="dScribe";
 $PAGE_NAME="Create/Update Profiles";
 
-include '../include/top_header.php';
-
 ?>
 <link href="../include/ocw_tool.css" rel="stylesheet" type="text/css"/>
-<?php
-include '../include/header.php';
-?>
 <div>&nbsp;&nbsp;&nbsp; <a href="index.php">dScribe Home</a>&nbsp;| &nbsp;Course &amp; Instructor Profiles&nbsp; | &nbsp;<a href="copyright.php">Set Default Copyright</a>&nbsp; | &nbsp;<a href="materials.php">Prepare Course Materials</a> &nbsp; | &nbsp;<a href="../preview/course.php">Review for Export</a></div>
 		<br/>
 
@@ -34,5 +29,3 @@ include '../include/header.php';
 <br/><br/><br/>
 </div>
 </DIV>
-
-<?php  include '../include/footer.php';  ?>
