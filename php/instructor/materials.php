@@ -9,6 +9,12 @@
 
 <?php
 
+	require_once("../OCWItemList.php");
+	$itemList = new OCWItemList;
+	$itemList->getAllItems();
+	
+	$toolTitles = $itemList->getSupportedToolTitles();
+
 $TOOL_NAME="Instructor";
 $PAGE_NAME="Manager Course Materials";
 
@@ -35,7 +41,17 @@ $PAGE_NAME="Manager Course Materials";
 		<div class="instructions"><br/>Check the course items below that you want published to OCW. 
 			Then, click on <strong>Add</strong> to update the OCW materials list on the right. <br/><br/></div>
 		<div class="materials_list">
-			<div class="parent"><img src="../include/images/validated.gif" height="15" /> &nbsp;&nbsp;<img src="../include/images/page.png" height="15" /> &nbsp;&nbsp; 	Syllabus</div>
+			<?php 
+				foreach ($toolTitles as $title)
+				{
+					echo "<div class='paren'><img src='../include/images/validated.gif' height='15' /> &nbsp;&nbsp;
+						<img src='../include/images/page.png' height='15' /> &nbsp;&nbsp; $title
+					</div>";
+				}
+				unset($value); // break the reference with the last element
+			?>
+			<?php
+			/*<div class="parent"><img src="../include/images/validated.gif" height="15" /> &nbsp;&nbsp;<img src="../include/images/page.png" height="15" /> &nbsp;&nbsp; 	Syllabus</div>
 			
 		
 		
@@ -67,6 +83,7 @@ $PAGE_NAME="Manager Course Materials";
 			<div class="parent checked">	 
 			<img  src="../include/images/exclaim.gif"> Lecture 1 video<span style="color:red; font-size: .95em;" title="this item has been changed">
 				&nbsp;&nbsp;- item has been modified </span> </div>
+				*/?>
 			
 		</div>
 	</td>
