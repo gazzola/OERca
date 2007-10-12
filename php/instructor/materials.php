@@ -5,8 +5,60 @@
  * To change the template for this generated file go to
  * Window - Preferences - PHPeclipse - PHP - Code Templates
  */
+// start the session
+session_start();
 ?>
 
+<?
+
+ini_set("include_path", "/usr/local/php5/lib/php");
+
+function getproxy($url, $name) {
+    require_once('SOAP/Client.php');
+    $wsdl=new SOAP_WSDL("$url/$name.jws?wsdl", array("timeout" => 20));
+    if (!$wsdl)
+      fatal("This error should not happen. Unable to open connection to $url/$name.jws?wsdl");
+
+    $myProxy=$wsdl->getProxy();
+    if (!$myProxy)
+      fatal("This error should not happen. getProxy returned null.");
+
+    return $myProxy;
+  }
+
+//Get the linktool parameters
+$user = $_SESSION['internaluser'];
+$euid = $_SESSION['user'];
+$site = $_SESSION['site'];
+$server = $_SESSION['serverurl'];
+$sessionid = $_SESSION['session'];
+$placement = $_SESSION['placement'];
+$role = $_SESSION['role'];
+$sign = $_SESSION['sign'];
+$time = $_SESSION['time'];
+
+$url = $server."/sakai-axis/";
+
+$result = "";
+$result1="here";
+
+// Check for required variables
+if ($server != "") {
+
+  // Get the WSDL for verification
+  $itemProxy = getproxy($url, "SiteItem");
+
+  if (PEAR::isError($itemProxy)) {
+	//$result1 = "SOAP Error";
+  } else {
+  	$result1="found";
+  	//$result = $itemProxy->test($sessionid);
+  	// verify the arguments passed to us
+  	$assignmentListXML=$itemProxy->getAssignmentList($sessionid, $site, $user);
+  	
+  }
+}
+?>
 <?php
 
 	require_once("../OCWItemList.php");
@@ -45,8 +97,12 @@ $PAGE_NAME="Manager Course Materials";
 				foreach ($toolTitles as $title)
 				{
 					echo "<div class='paren'><img src='../include/images/validated.gif' height='15' /> &nbsp;&nbsp;
-						<img src='../include/images/page.png' height='15' /> &nbsp;&nbsp; $title
-					</div>";
+						<img src='../include/images/page.png' height='15' /> &nbsp;&nbsp; $title";
+					if ($title == "Assignments")
+					{
+					echo "$assignmentListXML";
+					}
+					echo"</div>";
 				}
 				unset($value); // break the reference with the last element
 			?>

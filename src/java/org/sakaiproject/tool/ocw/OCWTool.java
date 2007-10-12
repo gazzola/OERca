@@ -113,8 +113,8 @@ public class OCWTool extends HttpServlet
 	/** Helper tool for options. */
 	private static final String OPTIONS_HELPER = "sakai.tool_config.helper";
 
-    private static final String privkeyname = "sakai.ocw.privkey";
-    private static final String saltname = "sakai.ocw.salt";
+    private static final String privkeyname = "privkey";
+    private static final String saltname = "salt";
 
     private Set illegalParams;
     private Pattern legalKeys;
@@ -153,7 +153,7 @@ public class OCWTool extends HttpServlet
 		//		System.out.println("canread public " + (new File(homedir + pubkeyname)).canRead());
 		//		System.out.println("canread private " + (new File(homedir + privkeyname)).canRead());
 
-		secretKey = readSecretKey(homedir + privkeyname, "Blowfish");
+		secretKey = readSecretKey(/*homedir +*/ privkeyname, "Blowfish");
 		//		if (secretKey != null)
 		//		    System.out.println("got private key");
 
@@ -161,7 +161,8 @@ public class OCWTool extends HttpServlet
 		    gensalt(homedir);
 		}
 
-		salt = readSecretKey(homedir + saltname, "HmacSHA1");
+		//salt = readSecretKey(homedir + saltname, "Blowfish");
+		salt = readSecretKey(/*homedir + */saltname, "HmacSHA1");
 
 		ourUrl = getConfigUrl();
 
@@ -188,8 +189,16 @@ public class OCWTool extends HttpServlet
 	String getConfigUrl()
 	{
 		String url = ServerConfigurationService.getString("sakai.ocwtool.serverUrl");
-		if (url == null || url.equals(""))
+		/*if (url == null || url.equals(""))
 		    url = ServerConfigurationService.getString("serverUrl");
+		if (url == null || url.equals(""))
+		    url = "http://127.0.0.1:8080";*/
+		return url;
+	}
+	
+	String getServerUrl()
+	{
+		String url = ServerConfigurationService.getString("serverUrl");
 		if (url == null || url.equals(""))
 		    url = "http://127.0.0.1:8080";
 		return url;
@@ -203,7 +212,47 @@ public class OCWTool extends HttpServlet
 
 		super.destroy();
 	}
+	
+	  private static SecretKey readSecretKey(String name, String alg) {
+		    try {
+		      String homedir = ServerConfigurationService.getSakaiHomePath();
+		      System.out.println("homedir=" + homedir);
+		      if (homedir == null)
+		        homedir = "/etc/";
+		      String filename = homedir + "sakai.rutgers.linktool." + name;
+		      System.out.println("readSecretKey filename=" + filename);
+		      FileInputStream file = new FileInputStream(filename);
+		      byte[] bytes = new byte[file.available()];
+		      file.read(bytes);
+		      file.close();
+		      SecretKey privkey = new SecretKeySpec(bytes, alg);
+		      return privkey;
+		    } catch (Exception ignore) {
+		      return null;
+		    }
+		  }
+	  
+	  
+		/**
+		 * Read our secret key from a file. returns the key
+		 * 
+		 * @param filename
+		 *        Contains the key in proper binary format
+		 */
 
+		/*private static SecretKey readSecretKey(String filename, String alg) {
+		    try {
+			FileInputStream file = new FileInputStream(filename);
+			byte[] bytes = new byte[file.available()];
+			file.read(bytes);
+			file.close();
+			SecretKey privkey = new SecretKeySpec(bytes, alg);
+			return privkey;
+		    } catch (Exception ignore) {
+			return null;
+		    }
+		}*/
+	  
 	/**
 	 * Respond to Get requests:
 	 *   display main content by redirecting to it and adding
@@ -222,138 +271,147 @@ public class OCWTool extends HttpServlet
 
 	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException
 	{
+		if (secretKey == null)
+	      secretKey = readSecretKey("privkey", "Blowfish");
+		System.out.println(secretKey.toString());
+	    try {
+	      Cipher dcipher = Cipher.getInstance("Blowfish");
+	      System.out.println("here  1");
+	      dcipher.init(Cipher.ENCRYPT_MODE, secretKey);
+	      System.out.println("here  2");
+	      
+		    // get the Tool
+		    Placement placement = ToolManager.getCurrentPlacement();
+		    Properties config = null;
+		    if (placement != null)
+	   	      config = placement.getConfig();
+		    PrintWriter out = res.getWriter();
+			 res.setContentType("text/html");
+			 
+		    String userid = null;
+		    String euid = null;
+		    String siteid = null;
+		    String sessionid = null;
+		    String url = null;
+		    String command = null;
+		    String signature = null;
+		    String element = null;
+		    String oururl = req.getRequestURI();
+		    String query = req.getQueryString();
+	
+		    // set frame height
+	
+		    StringBuffer bodyonload = new StringBuffer();
+		    if (placement != null)
+	                {
+			    element = Web.escapeJavascript("Main" + placement.getId( ));
+			    bodyonload.append("setFrameHeight('" + element + "');");
+	                }
+	
+		    // prepare the data for the redirect
+	
+		    // we can always get the userid from the session
+		    Session s = SessionManager.getCurrentSession();
+		    if (s != null) {
+			// System.out.println("got session " + s.getId());
+			userid = s.getUserId();
+			euid = s.getUserEid();
+			sessionid = s.getId();
+		    }
+	
+		    if (userid != null && (euid == null || euid.equals("")))
+			euid = userid;
+	
+		    // site is there only for tools, otherwise have to use user's arg
+		    // this is safe because we verify that the user has a role in site
+		    if (placement != null)
+			siteid = placement.getContext();
+		    if (siteid == null)
+			siteid = req.getParameter("site");
+	
+		    // if user has asked for a url, use it
+		    url = req.getParameter("url");
+		    // else take it from the tool config
+		    if (url == null && config != null)
+			url = config.getProperty("url", null);
+		    if (url == null)
+		    url = getConfigUrl();
+	
+		    // now get user's role in site; must be defined
+		    String realmId = null;
+		    AuthzGroup realm = null;
+		    Role r = null;
+		    String rolename = null;
+	
+		    if (siteid != null)
+			realmId = SiteService.siteReference(siteid);
+		    if (realmId != null) {
+			try {
+			    realm = AuthzGroupService.getAuthzGroup(realmId);
+			} catch (Exception e) {}
+		    }
+		    if (realm != null && userid != null)
+			r = realm.getUserRole(userid);
+		    /** use site.upd permission now to differ instructor from dScribes */
+		    if (r.isAllowed(SiteService.SECURE_UPDATE_SITE))
+		    {
+		    	// go to instructor view
+		    	url= url + "instructor/";
+		    }
+		    else
+		    {
+		    	// otherwise go to dScribe view
+		    	url = url + "dscribe/";
+		    }
+		    
+		    if (r != null) {
+			rolename = r.getId();
+		    }
+	
+		    if (sessionid != null)
+			sessionid = encrypt(sessionid);
+	
+		    // generate redirect, as url?user=xxx&site=xxx
+		    
+	
+		    if (url != null && userid != null && siteid != null && rolename != null && sessionid != null) {
+			// command is the thing that will be signed
+		    command = "user=" + URLEncoder.encode(euid) + 
+			    "&internaluser=" + URLEncoder.encode(userid) + 
+			    "&site=" + URLEncoder.encode(siteid) + 
+			    "&role=" + URLEncoder.encode(rolename) +
+			    "&session=" + URLEncoder.encode(sessionid) +
+			    "&serverurl=" + URLEncoder.encode(getServerUrl()) +
+			    "&time=" + System.currentTimeMillis();
+			// pass on any other arguments from the user.
+			// but sanitize them to prevent people from trying to
+			// fake out the parameters we pass, or using odd syntax
+			// whose effect I can't predict
+			Map params = req.getParameterMap();
+			Set entries = params.entrySet();
+			Iterator pIter = entries.iterator();
+			while (pIter.hasNext()) {
+			    Map.Entry entry = (Map.Entry)pIter.next();
+			    String key = "";
+			    String value = "";
+			    try {
+				key = (String)entry.getKey();
+				value = ((String [])entry.getValue())[0];
+			    } catch (Exception ignore) {}
+			    if (!illegalParams.contains(key.toLowerCase()) &&
+				legalKeys.matcher(key).matches())
+				command = command + "&" + key + "=" +
+				new String(dcipher.doFinal(value.getBytes()));
+			}
+	
+			try {
+			    // System.out.println("sign >" + command + "<");
+			    signature = sign(command);
+			    url = url + "?" + command + "&sign=" + signature + "';";
+			    bodyonload.append("window.location = '" + url);
+			} catch (Exception e) {};
+		    }
 
-	    // get the Tool
-	    Placement placement = ToolManager.getCurrentPlacement();
-	    Properties config = null;
-	    if (placement != null)
-   	      config = placement.getConfig();
-	    PrintWriter out = res.getWriter();
-		 res.setContentType("text/html");
-		 
-	    String userid = null;
-	    String euid = null;
-	    String siteid = null;
-	    String sessionid = null;
-	    String url = null;
-	    String command = null;
-	    String signature = null;
-	    String element = null;
-	    String oururl = req.getRequestURI();
-	    String query = req.getQueryString();
-
-	    // set frame height
-
-	    StringBuffer bodyonload = new StringBuffer();
-	    if (placement != null)
-                {
-		    element = Web.escapeJavascript("Main" + placement.getId( ));
-		    bodyonload.append("setFrameHeight('" + element + "');");
-                }
-
-	    // prepare the data for the redirect
-
-	    // we can always get the userid from the session
-	    Session s = SessionManager.getCurrentSession();
-	    if (s != null) {
-		// System.out.println("got session " + s.getId());
-		userid = s.getUserId();
-		euid = s.getUserEid();
-		sessionid = s.getId();
-	    }
-
-	    if (userid != null && (euid == null || euid.equals("")))
-		euid = userid;
-
-	    // site is there only for tools, otherwise have to use user's arg
-	    // this is safe because we verify that the user has a role in site
-	    if (placement != null)
-		siteid = placement.getContext();
-	    if (siteid == null)
-		siteid = req.getParameter("site");
-
-	    // if user has asked for a url, use it
-	    url = req.getParameter("url");
-	    // else take it from the tool config
-	    if (url == null && config != null)
-		url = config.getProperty("url", null);
-	    if (url == null)
-	    url = getConfigUrl();
-
-	    // now get user's role in site; must be defined
-	    String realmId = null;
-	    AuthzGroup realm = null;
-	    Role r = null;
-	    String rolename = null;
-
-	    if (siteid != null)
-		realmId = SiteService.siteReference(siteid);
-	    if (realmId != null) {
-		try {
-		    realm = AuthzGroupService.getAuthzGroup(realmId);
-		} catch (Exception e) {}
-	    }
-	    if (realm != null && userid != null)
-		r = realm.getUserRole(userid);
-	    /** use site.upd permission now to differ instructor from dScribes */
-	    if (r.isAllowed(SiteService.SECURE_UPDATE_SITE))
-	    {
-	    	// go to instructor view
-	    	url= url + "instructor/";
-	    }
-	    else
-	    {
-	    	// otherwise go to dScribe view
-	    	url = url + "dscribe/";
-	    }
-	    
-	    if (r != null) {
-		rolename = r.getId();
-	    }
-
-	    if (sessionid != null)
-		sessionid = encrypt(sessionid);
-
-	    // generate redirect, as url?user=xxx&site=xxx
-
-	    if (url != null && userid != null && siteid != null && rolename != null && sessionid != null) {
-		// command is the thing that will be signed
-		command = "user=" + URLEncoder.encode(euid) + 
-		    "&internaluser=" + URLEncoder.encode(userid) + 
-		    "&site=" + URLEncoder.encode(siteid) + 
-		    "&role=" + URLEncoder.encode(rolename) +
-		    "&session=" + URLEncoder.encode(sessionid) +
-		    "&serverurl=" + URLEncoder.encode(ourUrl) +
-		    "&time=" + System.currentTimeMillis();
-
-		// pass on any other arguments from the user.
-		// but sanitize them to prevent people from trying to
-		// fake out the parameters we pass, or using odd syntax
-		// whose effect I can't predict
-		Map params = req.getParameterMap();
-		Set entries = params.entrySet();
-		Iterator pIter = entries.iterator();
-		while (pIter.hasNext()) {
-		    Map.Entry entry = (Map.Entry)pIter.next();
-		    String key = "";
-		    String value = "";
-		    try {
-			key = (String)entry.getKey();
-			value = ((String [])entry.getValue())[0];
-		    } catch (Exception ignore) {}
-		    if (!illegalParams.contains(key.toLowerCase()) &&
-			legalKeys.matcher(key).matches())
-			command = command + "&" + key + "=" +
-			    URLEncoder.encode(value);
-		}
-
-		try {
-		    // System.out.println("sign >" + command + "<");
-		    signature = sign(command);
-		    url = url + "?" + command + "&sign=" + signature + "';";
-		    bodyonload.append("window.location = '" + url);
-		} catch (Exception e) {};
-	    }
 
 	    // now put out a vestigial web page, whose main functional
 	    // part is actually the <body onload=
@@ -391,9 +449,11 @@ public class OCWTool extends HttpServlet
 	    // default output - show the requested application
 	    out.println(headHtml + headHtml1 + height + "px" + headHtml2 + bodyonload + headHtml3);
 	    out.println(tailHtml);
-
-
-	    //	    res.sendRedirect(res.encodeRedirectURL(config.getProperty("url", "/")));
+	    }
+		catch (Exception e)
+		{
+			System.out.println(e.getMessage());
+		}
 
 	}
 
@@ -750,26 +810,6 @@ public class OCWTool extends HttpServlet
 	    sig.init(salt);
             return byteArray2Hex(sig.doFinal(data.getBytes()));
         }
-
-	/**
-	 * Read our secret key from a file. returns the key
-	 * 
-	 * @param filename
-	 *        Contains the key in proper binary format
-	 */
-
-	private static SecretKey readSecretKey(String filename, String alg) {
-	    try {
-		FileInputStream file = new FileInputStream(filename);
-		byte[] bytes = new byte[file.available()];
-		file.read(bytes);
-		file.close();
-		SecretKey privkey = new SecretKeySpec(bytes, alg);
-		return privkey;
-	    } catch (Exception ignore) {
-		return null;
-	    }
-	}
 
     	private static char[] hexChars = {
 	    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'

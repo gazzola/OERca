@@ -5,14 +5,31 @@
  * To change the template for this generated file go to
  * Window - Preferences - PHPeclipse - PHP - Code Templates
  */
+// this start the session
+session_start();
+
+//Get the linktool parameters and set the session variables
+$user = strip_tags($_GET['internaluser']);
+$_SESSION['internaluser'] = $user;
+$euid = strip_tags($_GET['user']);
+$_SESSION['user'] = $euid;
+$site = strip_tags($_GET['site']);
+$_SESSION['site'] = $site;
+$server = strip_tags($_GET['serverurl']);
+$_SESSION['serverurl'] = $server;
+$sessionid = strip_tags($_GET['session']);
+$_SESSION['session'] = $sessionid;
+$placement = strip_tags($_GET['placement']);
+$_SESSION['placement'] = $placement;
+$role = strip_tags($_GET['role']);
+$_SESSION['role'] = $role;
+$sign = strip_tags($_GET['sign']);
+$_SESSION['sign'] = $sign;
+$time = strip_tags($_GET['time']);
+$_SESSION['time'] = $time;
+
 ?>
 
-<?php
-
-$TOOL_NAME="Instructor";
-$PAGE_NAME="Home";
-
-?>
 <link href="../include/ocw_tool.css" rel="stylesheet" type="text/css"/>
 
 	
