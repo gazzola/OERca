@@ -79,6 +79,7 @@ $PAGE_NAME="Manager Course Materials";
 <div style="text-align:left; margin-bottom:20px;  ">
 
 <br/>
+<form name="chooseMaterialForm" method="post" action="">
 <table border="0" cellpadding="0" cellspacing="0" class="course_materials">
 <tr>
 	<td width="40%" style="font-weight: bold; text-align: center; border:1px solid #ccc;padding: 5px; background: #E5EBFF;">
@@ -97,10 +98,22 @@ $PAGE_NAME="Manager Course Materials";
 				foreach ($toolTitles as $title)
 				{
 					echo "<div class='paren'><img src='../include/images/validated.gif' height='15' /> &nbsp;&nbsp;
-						<img src='../include/images/page.png' height='15' /> &nbsp;&nbsp; $title";
+						<img src='../include/images/page.png' height='15' /> &nbsp;&nbsp; $title<br />";
 					if ($title == "Assignments")
 					{
-					echo "$assignmentListXML";
+						// reading the assignment list xml string
+						$doc = new DOMDocument();
+						$doc->loadXML($assignmentListXML);
+						$assignments = $doc->getElementsByTagName( "Assignment" );
+						foreach($assignments as $assignment)
+						{
+							$assignmentIds = $assignment->getElementsByTagName("AssignmentId");
+							$assignmentId = $assignmentIds->item(0)->nodeValue;
+							//echo "id=$assignmentId    ";
+							$assignmentTitles = $assignment->getElementsByTagName("AssignmentTitle");
+							$assignmentTitle = $assignmentTitles->item(0)->nodeValue;
+							echo "<div> &nbsp;&nbsp; <input type='checkbox' name='chooseItem'>&nbsp;&nbsp; $assignmentTitle <a href='#' title='add only this item'>( Add )</a><br />";
+						}
 					}
 					echo"</div>";
 				}
@@ -145,8 +158,6 @@ $PAGE_NAME="Manager Course Materials";
 	</td>
 		
  <td style="width: 10%; vertical-align:top;">
- <form name="adminform" method="post" action="<?=$_SERVER['PHP_SELF']; ?>" style="margin:0px;">
-
 	
 	<table border="0" style="font-weight: normal">
 		<tr>

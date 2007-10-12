@@ -346,7 +346,7 @@ public class SiteItem {
 				Node assignmentItem = dom.createElement("Assignment");
 				Node assignmentId = dom.createElement("AssignmentId");
 				assignmentId.appendChild( dom.createTextNode(a.getId()) );
-				Node assignmentTitle = dom.createElement("assignmentTitle");
+				Node assignmentTitle = dom.createElement("AssignmentTitle");
 				assignmentTitle.appendChild( dom.createTextNode(a.getTitle()) );
 				
 				assignmentItem.appendChild(assignmentId);
