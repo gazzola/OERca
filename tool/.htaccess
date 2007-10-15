@@ -1,0 +1,5 @@
+<ifmodule mod_rewrite.c>
+RewriteEngine on
+RewriteCond $1 !^(index\.php|images|robots\.txt|assets|public|tmp)
+RewriteRule ^(.*)$ /ocw_tool/index.php/$1 [L]
+</IfModule>
