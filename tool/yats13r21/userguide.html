@@ -1,0 +1,995 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta name="generator" content=
+    "HTML Tidy for Mac OS X (vers 1st December 2004), see www.w3.org" />
+
+    <title>Yet Another Template System User Guide</title>
+    <meta http-equiv="content-type" content=
+    "text/html; charset=utf-8" />
+    <meta name='MSSmartTagsPreventParsing' content='TRUE' />
+    <meta http-equiv='expires' content='-1' />
+    <meta http-equiv='pragma' content='no-cache' />
+    <meta name='robots' content='all' />
+<style type='text/css'>
+/*<![CDATA[*/
+/*
+    Default Body
+------------------------------------------------------ */ 
+body {
+ margin:            40px;
+ padding:           0;
+ font-family:       Verdana, Geneva, Tahoma, Trebuchet MS, Arial, Sans-serif;
+ font-size:         12px;
+ color:             #38394B;
+ background-color:  #fff;
+}
+/*
+    Default Links
+------------------------------------------------------ */ 
+a {
+ text-decoration:   none;
+ color:             #330099;
+ text-decoration:   none;
+ background-color:  transparent;
+}
+  
+a:visited {
+ color:             #330099;
+ text-decoration:   none;
+ background-color:  transparent;
+}
+
+a:hover {
+ color:             #333;
+ text-decoration:   underline;
+ background-color:  transparent;
+}
+
+a.noArticle, a.noArticle:visited
+{
+    text-decoration: none;
+    color: #66a;
+}
+
+a.noArticle:hover
+{
+ color:             #A0A4C1;
+ text-decoration:   underline;
+}
+
+/*
+    Basic stuff
+------------------------------------------------------ */ 
+
+p {
+ background:        transparent;
+ font-family:       Verdana, Geneva, Tahoma, Trebuchet MS, Arial, Sans-serif;
+ font-size:         12px;
+ color:             #38394B;
+ margin:            4px 0 8px 0;
+}
+
+img {
+    border: none;
+}
+
+p,li,dt,dd {
+    margin-left: 0;
+    padding-left: 0;
+    line-height: 1.7em;
+}
+
+p {
+    margin-bottom: 0.8em;
+    margin-top: 0;
+}
+
+ul {
+    padding-left: 24px;
+}
+
+form p {
+    margin: 0;
+}
+
+.underline {
+    border-bottom: 1px dotted #aaa;
+}
+
+.hidden {
+    display: none;
+    visibility: hidden;
+}
+
+hr  { height: 0px; border: dotted 0px; border-top-width: 1px;}
+    
+h2 {
+ background:        #808295;
+ color:             #fff;
+ padding:           7px 6px 7px 6px;
+ margin:            10px 0 0 0;
+ font-family:       Verdana, Geneva, Tahoma, Trebuchet MS, Arial, Sans-serif;
+ border-bottom:     1px solid #fff;
+ white-space:       nowrap;
+ font-size:         12px;
+ letter-spacing:    .1em;
+ font-weight:       bold;
+}
+
+
+.articleHeading
+{
+    color: #808295;
+    font-weight: normal;
+    font-size: 15px;
+    font-family: helvetica, arial, sans-serif;
+    margin: 10px 0 0 0;
+    padding: 7px 0 7px 0;
+    border-bottom: 1px dotted #bba;
+    border-top: 1px solid #000;
+}
+
+h3
+    {
+    font-weight: normal;
+    font-size: 14px;
+    font-family: helvetica, arial, sans-serif;
+    color: #73769D;
+    margin: 20px 0 7px 0;
+    padding: 8px 0 8px 0;
+    border-top: 1px solid #73769D;
+    border-bottom: 1px solid #73769D;
+    }
+
+.lighttext {
+ font-family:       Verdana, Geneva, Tahoma, Trebuchet MS, Arial, Sans-serif;
+ font-size:         10px;
+ color:             #73769D;
+ padding:           4px 0 2px 0;
+ background-color:  transparent;  
+}
+
+/*
+    Special formatting for quotes, code, pre etc..
+------------------------------------------------------ */ 
+
+code {
+  white-space: normal;
+ }
+
+ pre {
+ background:        #EFEFF4;
+ border:            1px solid #B2B3CE;
+ font-family:       Verdana, Geneva, Tahoma, Trebuchet MS, Arial, Sans-serif;
+ font-size:         12px;
+ color:             #38394B;
+ margin:            8px 2px 10px 6px;
+ padding:           10px 10px 10px 6px;
+ white-space:       normal;
+}
+
+.codeblock {
+ background:        #EFEFF4;
+ border-left:       1px solid #B2B3CE;
+ border-top:        1px solid #B2B3CE;
+ border-bottom:     1px solid #B2B3CE;
+ border-right:      1px solid #B2B3CE;
+ font-family:       Verdana, Geneva, Tahoma, Trebuchet MS, Arial, Sans-serif;
+ font-size:         12px;
+ color:             #38394B;
+ margin:            8px 4px 10px 3px;
+ padding:           10px 10px 10px 6px;
+}
+
+blockquote {
+ background:        #EFEFF4;
+ border-left:       4px solid #6363A0;
+ border-top:        1px solid #B2B3CE;
+ border-bottom:     1px solid #B2B3CE;
+ border-right:      1px solid #B2B3CE;
+ font-family:       Verdana, Geneva, Tahoma, Trebuchet MS, Arial, Sans-serif;
+ font-size:         12px;
+ color:             #38394B;
+ margin:            8px 2px 10px 6px;
+ padding:           5px 10px 10px 6px;
+}
+
+
+/*
+    Misc. Formatting Items
+------------------------------------------------------ */ 
+.spacer {
+ margin-bottom:     12px;
+}
+
+.itempad {
+padding: 2px 0 2px 0;
+}
+
+.itempadbig {
+padding: 5px 0 5px 0;
+}
+
+.bottompad {
+padding: 0 0 2px 0;
+}
+
+.marginpad {
+ margin: 12px 0 10px 3px;
+}
+
+.leftpad {
+ margin: 0;
+ padding: 0 0 0 4px;
+}
+
+.default, .defaultBold, .defaultRight, .defaultCenter {
+ background:        transparent;
+ font-family:       Verdana, Geneva, Tahoma, Trebuchet MS, Arial, Sans-serif;
+ font-size:         12px;
+ color:             #38394B;
+}
+
+.defaultBold {
+ font-weight: bold;
+}
+
+.defaultRight {
+ text-align: right;
+}
+
+.defaultCenter {
+text-align: center;
+}
+
+/*
+    Main Content Wrapper
+------------------------------------------------------ */ 
+#content {
+ left:              0px;
+ right:             10px;
+ margin:            10px 20px 0 0;
+ padding:           0;
+}
+* html #content {
+ width:             100%;
+ width:            auto;
+}
+
+#maincontent {
+ left:              0px;
+ right:             10px;
+ margin:            10px 20px 0 20px;
+ padding:           0;
+ width:             940px;
+}
+
+
+
+/*
+
+Our Two Column Approach with a Little Path Down the Center
+A Path!  A Path!!
+------------------------------------------------------ */ 
+
+.left220
+    {
+    width: 220px;
+    float: left;
+    }
+    
+.right720
+    {
+    width: 690px;
+    margin-left: 30px;
+    float: left;
+    }
+    
+.clear { clear: both; padding: 10px;}
+
+
+
+/*]]>*/
+</style>
+</head>
+
+<body>
+    <div id="article">
+        <h3>Yet Another Template System User Guide</h3>
+    </div><!-- Begin Main Content of Page -->
+
+    <div id="content">
+        <p>YATS is a template system designed as a library with
+        helper functions for Code Igniter 1.5 and up. This library
+        was designed after the CI philosophies—it’s lean and
+        straight forward. After installing YATS you’ll see how easy
+        is to create and edit templates for your
+        projects!&nbsp;</p>
+
+        <p>Here’s some features of YATS:<br />
+        - Multiple templates support<br />
+        - Configurable items<br />
+        - Helper functions<br />
+        - Modular structure<br />
+        - Page building with just one line of code<br />
+        - Resources folder outside the MVC structure<br />
+        - Permissive license<br />
+        - Easy to design for and easy for designers</p>
+
+        <p>Links:<br />
+        - <a href=
+        "http://codeigniter.com/forums/viewthread/47456/">Support</a><br />
+
+        - <a href=
+        "http://svn.mariomariani.net/yats/trunk/">Updates</a></p>
+
+        <p><br /></p>
+        <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+        <h3>Installing</h3>
+
+        <p>To get YATS up and running is quite easy, just a few
+        steps, and you’ll be running Code Igniter with a complete
+        template system. See how you should do it.</p>
+
+        <p><b>Drag and Drop</b></p>
+
+        <p>1. Uncompress the downloaded file on your desktop and
+        open the folder<br />
+        2. Copy the folder application to your CI folder (if you’re
+        on a mac you’ll have to copy the files individually)<br />
+        3. Copy the assets folder to your CI folder along with the
+        system folder</p>
+
+        <p><b>Configuring</b></p>
+
+        <p>1. Open the file application/config/autoload.php on your
+        favorite text editor<br />
+        2. Look for $autoload[’libraries’] and set it to
+        array(’layout’);<br />
+        3. Look for $autoload[’helper’] and set it to array(’html’,
+        ‘url’, ‘layout’);<br />
+        4. Save and close it</p>
+
+        <p>Optionally you can edit or even add settings to YATS.
+        For that just open the file application/config/layout.php
+        and make your changes.</p>
+
+        <p><b>Now what?</b></p>
+
+        <p>Just open a browser and hit your CI project, all should
+        be running flawlessly.&nbsp;</p>
+
+        <p><br /></p>
+        <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+        <h3>Using YATS</h3>
+
+        <p>You can pretty much do any crazy graphic design for your
+        page, and YATS will build it together with CI for your
+        users. Yet, before we dig in something needs to be
+        clarified, and here it is: leave the graphic design in the
+        CSS file and all should be okay. In other words, all data
+        you generate in CI is there on all view files. So create
+        the layout of your dreams that YATS will get the job done
+        for you.</p>
+
+        <p><b>Theme Files</b></p>
+
+        <p>Each theme has its own folder inside the assets folder
+        which by default is
+        [your-ci-project-folder]/assets/[theme]. There you’ll see a
+        folder for each type of common file that we use for making
+        web pages. Just drop your theme files inside its folders
+        and you can easily display it on the views.</p>
+
+        <p><b>Assets folder structure</b></p>
+
+        <div class="codeblock">
+            <code><span style="color: #0000BB">assets<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L theme_name<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L
+            css<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L
+            images<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;L
+            script</span></code>
+        </div>
+
+        <p><b>View Files</b></p>
+
+        <p>Each theme has its own folder inside the
+        application/views folder, and its files are divided in two
+        groups, commons and everything else. In the commons folder
+        you’ll place files shared by the theme, such as header.php,
+        footer.php, and your custom layout elements files as
+        well.</p>
+
+        <p>The other groups of files are the views you create for
+        your controllers. In order to keep things organized you
+        should create a folder for each controller and there a view
+        file for each action this controller does. For example we
+        have a controller called welcome, then we create a folder
+        after it, and inside that folder we create a view file to
+        display the data which the controller generates, in this
+        case home.php.</p>
+
+        <p><b>View folder structure</b></p>
+
+        <div class="codeblock">
+            <code><span style="color: #0000BB">views<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;L theme_name<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;</span><span style=
+            "color: #007700">|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <span style="color: #0000BB">L common<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;</span><span style=
+            "color: #007700">|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <span style="color: #0000BB">L
+            footer</span><span style="color: #007700">.</span><span style="color: #0000BB">
+            php<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;</span><span style=
+            "color: #007700">|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <span style="color: #0000BB">L
+            header</span><span style="color: #007700">.</span><span style="color: #0000BB">
+            php&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+
+            &nbsp;&nbsp;&nbsp;&nbsp;</span><span style=
+            "color: #007700">|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <span style="color: #0000BB">L hello</span><span style=
+            "color: #007700">.</span><span style=
+            "color: #0000BB">php&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+
+            &nbsp;&nbsp;&nbsp;&nbsp;</span><span style=
+            "color: #007700">|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <span style="color: #0000BB">L content<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;</span><span style=
+            "color: #007700">|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <span style="color: #0000BB">L module_name<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;</span><span style=
+            "color: #007700">|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <span style="color: #0000BB">L main</span><span style=
+            "color: #007700">.</span><span style=
+            "color: #0000BB">php<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;</span><span style=
+            "color: #007700">|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <span style="color: #0000BB">L form</span><span style=
+            "color: #007700">.</span><span style=
+            "color: #0000BB">php<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;</span><span style=
+            "color: #007700">|<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;</span><span style=
+            "color: #0000BB">L loader</span><span style=
+            "color: #007700">.</span><span style=
+            "color: #0000BB">php</span></code>
+        </div>
+
+        <p>As you can see here the view files are modular. So
+        you’ll never get lost while developing a project that needs
+        a great deal of custom views.</p>
+
+        <p><br /></p>
+        <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+        <h3>Building Layout Elements</h3>
+
+        <p>Inside the layout_model.php we will code all common
+        layout elements. For example, if a project has a menu we
+        create a function inside this class, and when the page is
+        built YATS automatically will call this function and
+        display the menu. Following you can see a template for
+        these functions.</p>
+
+        <div class="codeblock">
+            <code><span style="color: #007700">function</span>
+            <span style="color: #0000BB">whatever</span>
+            <span style=
+            "color: #007700">()<br /></span><span style="color: #0000BB">
+            {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;$retval[</span><span style=
+            "color: #DD0000">'whatever'</span><span style=
+            "color: #0000BB">]</span> <span style=
+            "color: #007700">=</span> <span style=
+            "color: #DD0000">"Hello world!"</span><span style=
+            "color: #007700">;<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;return</span> <span style=
+            "color: #0000BB">$this</span><span style=
+            "color: #007700">-&gt;</span><span style=
+            "color: #0000BB">layout</span><span style=
+            "color: #007700">-&gt;</span><span style=
+            "color: #0000BB">load</span><span style=
+            "color: #007700">-&gt;</span><span style=
+            "color: #0000BB">view</span><span style=
+            "color: #007700">(</span><span style=
+            "color: #0000BB">$this</span><span style=
+            "color: #007700">-&gt;</span><span style=
+            "color: #0000BB">theme</span> <span style=
+            "color: #007700">.</span> <span style=
+            "color: #DD0000">"whatever"</span><span style=
+            "color: #007700">,</span> <span style=
+            "color: #0000BB">$retval</span><span style=
+            "color: #007700">,</span> <span style=
+            "color: #0000BB">true</span><span style=
+            "color: #007700">);<br /></span><span style=
+            "color: #0000BB">}</span></code>
+        </div>
+
+        <p>On the first line inside the function the $retval
+        variable is where you’ll put the common data that is going
+        to be sent to the function’s view. On the second line we
+        return the data completely formatted to the YATS library.
+        See that after $this-&gt;theme we have ‘whatever’ between
+        double quotes, that’s the view file for this function.</p>
+
+        <p>Once you’ve coded the function, open the file
+        config/layout.php and look for this array
+        $config[’layout_elements’], and add it there. The
+        function’s name as a key and its parameters as value, if
+        you have more than one parameter set an array for them.
+        This way YATS will automatically generate and make that
+        element available to all CI’s view system.</p>
+
+        <p><br /></p>
+        <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+        <h3>Building The Whole Thing</h3>
+
+        <p>Here we can see how simple is to send a page to the user
+        from any given controller. We have just two functions
+        <b>buildPage</b>, which you can call to build and send a
+        page to the user, and for dumping a view to a variable use
+        <b>dumpPage</b>. Both functions work with a syntax that is
+        very similar to the one used by CI views. Read more about
+        this on following topic, More library tricks.</p>
+
+        <p>Now to go for the kill we simply code something like
+        this:<br /></p>
+
+        <div class="codeblock">
+            <code><span style=
+            "color: #0000BB">$this</span><span style=
+            "color: #007700">-&gt;</span><span style=
+            "color: #0000BB">layout</span><span style=
+            "color: #007700">-&gt;</span><span style=
+            "color: #0000BB">buildPage</span><span style=
+            "color: #007700">(</span><span style=
+            "color: #DD0000">'welcome/home'</span> <span style=
+            "color: #007700">,</span><span style=
+            "color: #0000BB">$data</span><span style=
+            "color: #007700">);</span></code>
+        </div>
+
+        <p><br /></p>
+        <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+        <p><b>More library tricks</b></p>
+
+        <p>YATS library does other things besides building pages
+        for you. It can change configuration items on the fly such
+        as themes and layout elements parameters. Following you can
+        see these functions along with its details.</p><br />
+
+        <p><b>buildPage()</b></p>
+
+        <p>This is the one responsible for all page building as you
+        could see in the previous example. The first parameter is
+        mandatory; here put the view path you want to display. The
+        second is optional; it's an array holding the contents of
+        the page. The third is also optional; it's the place for
+        you to set the name of an alternative loader.</p>
+
+        <p>Prototype:<br /></p>
+
+        <div class="codeblock">
+            <code><span style="color: #0000BB">$this</span>
+            <span style="color: #007700">-&gt;</span><span style=
+            "color: #0000BB">layout</span><span style=
+            "color: #007700">-&gt;</span><span style=
+            "color: #0000BB">buildPage</span><span style=
+            "color: #007700">(</span><span style=
+            "color: #DD0000">'view-path'</span><span style=
+            "color: #007700">,</span> <span style=
+            "color: #0000BB">$data-array</span><span style=
+            "color: #007700">,</span> <span style=
+            "color: #DD0000">'alternative-loader'</span><span style=
+			"color: #007700">);</span></code>
+        </div>
+
+		<br />
+        <p><b>dumpPage()</b></p>
+
+        <p>It works very much like builPage(), but its behavior is
+        slightly different. Instead of displaying a page this will
+        dump it in a variable for you. The only difference is the
+        last parameter, it's a boolean value set FALSE by default
+        that determines whether or not the entire page should be
+        dumped.</p>
+
+        <p>Prototype:<br /></p>
+
+        <div class="codeblock">
+            <code><span style="color: #0000BB">$this</span>
+            <span style="color: #007700">-&gt;</span><span style=
+            "color: #0000BB">layout</span><span style=
+            "color: #007700">-&gt;</span><span style=
+            "color: #0000BB">dumpPage</span><span style=
+            "color: #007700">(</span><span style=
+            "color: #DD0000">'view_path'</span><span style=
+            "color: #007700">,</span> <span style=
+            "color: #0000BB">$data_array</span><span style=
+            "color: #007700">,</span> <span style=
+            "color: #DD0000">'page-dump-type'</span><span style=
+            "color: #007700">);</span></code>
+        </div>
+
+		<br />
+        <p><b>resetTheme()</b></p>
+
+        <p>There are times when a theme must be switched on the fly, and for that
+		you should use this function. It has just one parameter, a valid theme
+		name.</p>
+
+        <p>Prototype:<br /></p>
+
+        <div class="codeblock">
+            <code><span style="color: #0000BB">$this</span>
+            <span style="color: #007700">-&gt;</span><span style=
+            "color: #0000BB">layout</span><span style=
+            "color: #007700">-&gt;</span><span style=
+            "color: #0000BB">resetTheme</span><span style=
+            "color: #007700">(</span><span style=
+            "color: #DD0000">'theme-name'</span><span style=
+            "color: #007700">);</span></code>
+        </div>
+
+		<br />
+        <p><b>resetView()</b></p>
+
+        <p>Switching views folders is what this function does. As is with 
+		resetTheme(), you have to provide a valid view folder name.</p>
+
+        <p>Prototype:<br /></p>
+
+        <div class="codeblock">
+            <code><span style="color: #0000BB">$this</span>
+            <span style="color: #007700">-&gt;</span><span style=
+            "color: #0000BB">layout</span><span style=
+            "color: #007700">-&gt;</span><span style=
+            "color: #0000BB">resetView</span><span style=
+            "color: #007700">(</span><span style=
+            "color: #DD0000">'view-folder-name'</span><span style=
+            "color: #007700">);</span></code>
+        </div>
+		
+		<br />
+        <p><b>resetElement()</b></p>
+
+        <p>This resets an item from the layout_elements configuration array.
+		It has two parameters, the first is the function name you want to change, 
+		and the other is for its new parameters. Also you can reset multiple elements 
+		simultaneously by passing an array having keys as function names and values
+		as new parameters.</p>
+
+        <p>Prototype:<br /></p>
+
+        <div class="codeblock">
+            <code><span style="color: #0000BB">$this</span>
+            <span style="color: #007700">-&gt;</span><span style=
+            "color: #0000BB">layout</span><span style=
+            "color: #007700">-&gt;</span><span style=
+            "color: #0000BB">resetElement</span><span style=
+            "color: #007700">(</span><span style=
+            "color: #DD0000">'function-name'</span><span style=
+            "color: #007700">,</span> <span style=
+            "color: #DD0000">'new-parameters'</span><span style=
+            "color: #007700">);</span></code>
+        </div>
+		
+		
+        <p><br /></p>
+        <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+        <h3>Need a Helper?</h3>
+
+        <p>YATS has a built in helper, which well helps you :-).
+        It’s a set of functions to make things easier while writing
+        views. Using this help is entirely up to you since all that
+        these functions do is write code for you, code which is
+        there in form of theme properties or layout variables.
+        However, some functions may give you advantages such as the
+        possibility of running custom filtering routines before
+        displaying data. Following you can see these functions
+        along with its details.</p><br />
+
+        <p><b>display()</b></p>
+
+        <p>Tests and outputs a template variable to display it on a
+        view. The first parameter is a string with the template
+        variable or data to display. The second is an array with
+        the filtering routine calls. Once called it will display the
+        data if the optional filtering ran successfully or it will
+        simply echo null.</p>
+
+        <p>Prototype:<br /></p>
+
+        <div class="codeblock">
+            <code><span style=
+            "color: #0000BB">display</span><span style=
+            "color: #007700">(</span><span style=
+            "color: #DD0000">"template-variable"</span><span style=
+            "color: #007700">, array(</span><span style=
+            "color: #DD0000">"library"</span> <span style=
+            "color: #007700">=&gt;</span> <span style=
+            "color: #DD0000">"function"</span><span style=
+            "color: #007700">));</span></code>
+        </div>
+
+        <p>The filtering is more like a shortcut. For example, we
+        need to display a hello user message, however we wouldn’t
+        need to show it for google’s spider. So following we see an
+        example code where we call the is_browser the CI’s agent
+        library.</p>
+
+        <p>Also you could use this function to test whether or not
+        a user is logged therefore leaving for the helper to decide
+        if the content is to be shown.</p>
+
+        <p>Example:<br /></p>
+
+        <div class="codeblock">
+            <code><span style=
+            "color: #0000BB">display</span><span style=
+            "color: #007700">(</span><span style=
+            "color: #DD0000">"hello_user"</span><span style=
+            "color: #007700">, array(</span><span style=
+            "color: #DD0000">"agent"</span> <span style=
+            "color: #007700">=&gt;</span> <span style=
+            "color: #DD0000">"is_browser"</span><span style=
+            "color: #007700">));</span></code>
+        </div><br />
+
+        <p><b>dump()</b></p>
+
+        <p>This function works exactly like display(). However,
+        instead of echoing the data it will just return it.<br />
+        Prototype:<br /></p>
+
+        <div class="codeblock">
+            <code><span style=
+            "color: #0000BB">dump</span><span style=
+            "color: #007700">(</span><span style=
+            "color: #DD0000">"template-variable"</span><span style=
+            "color: #007700">, array(</span><span style=
+            "color: #DD0000">"library"</span> <span style=
+            "color: #007700">=&gt;</span> <span style=
+            "color: #DD0000">"function"</span><span style=
+            "color: #007700">));</span></code>
+        </div><br />
+
+        <p><b>property()</b></p>
+
+        <p>Outputs a template property, which are those config
+        variables, started by ‘app_’ (See more about these variables
+        on the following topic called Creating Application
+        Properties).</p>
+
+        <p>Prototype:<br /></p>
+
+        <div class="codeblock">
+            <code><span style=
+            "color: #0000BB">property</span><span style=
+            "color: #007700">(</span><span style=
+            "color: #DD0000">"template-property"</span><span style=
+            "color: #007700">);</span></code>
+        </div><br />
+
+        <p><b>style()</b></p>
+
+        <p>It outputs a css link tag with the specified file. The
+        first parameter is the filename inside the template’s css
+        folder. The second is an array with additional attributes,
+        having the key as the attribute name and the value as
+        value.</p>
+
+        <p>Prototype:<br /></p>
+
+        <div class="codeblock">
+            <code><span style=
+            "color: #0000BB">style</span><span style=
+            "color: #007700">(</span><span style=
+            "color: #DD0000">"archive.css"</span><span style=
+            "color: #007700">,</span> <span style=
+            "color: #0000BB">additional</span><span style=
+            "color: #007700">-</span><span style=
+            "color: #0000BB">attributes</span><span style=
+            "color: #007700">);</span></code>
+        </div>
+
+        <p>Example:<br /></p>
+
+        <div class="codeblock">
+            <code><span style=
+            "color: #0000BB">style</span><span style=
+            "color: #007700">(</span><span style=
+            "color: #DD0000">"main.css"</span><span style=
+            "color: #007700">, array(</span><span style=
+            "color: #DD0000">'media'</span><span style=
+            "color: #007700">=&gt;</span><span style=
+            "color: #DD0000">'screen'</span><span style=
+            "color: #007700">,</span> <span style=
+            "color: #DD0000">'charset'</span><span style=
+            "color: #007700">=&gt;</span><span style=
+            "color: #DD0000">'utf-8'</span><span style=
+            "color: #007700">));</span></code>
+        </div><br />
+
+        <p><b>script()</b></p>
+
+        <p>It outputs a script tag to include javascript files. The
+        only parameter is the filename inside the template’s script
+        folder.</p>
+
+        <p>Prototype:<br /></p>
+
+        <div class="codeblock">
+            <code><span style=
+            "color: #0000BB">script</span><span style=
+            "color: #007700">(</span><span style=
+            "color: #DD0000">"archive.js"</span><span style=
+            "color: #007700">);</span></code>
+        </div>
+
+        <p>Example:<br /></p>
+
+        <div class="codeblock">
+            <code><span style=
+            "color: #0000BB">style</span><span style=
+            "color: #007700">(</span><span style=
+            "color: #DD0000">"init.js"</span><span style=
+            "color: #007700">);</span></code>
+        </div><br />
+
+        <p><b>image()</b></p>
+
+        <p>It outputs an &lt;img&gt; tag. The first parameter is the
+        image’s filename. The second is a ‘alt’ description. The
+        third is an array with additional attributes, having the
+        key as the attribute name and the value as value.</p>
+
+        <p>Prototype:<br /></p>
+
+        <div class="codeblock">
+            <code><span style=
+            "color: #0000BB">image</span><span style=
+            "color: #007700">(</span><span style=
+            "color: #DD0000">"image.yyz"</span><span style=
+            "color: #007700">,</span> <span style=
+            "color: #0000BB">alt</span><span style=
+            "color: #007700">-</span><span style=
+            "color: #0000BB">attribute</span><span style=
+            "color: #007700">,</span> <span style=
+            "color: #0000BB">additional</span><span style=
+            "color: #007700">-</span><span style=
+            "color: #0000BB">attributes</span><span style=
+            "color: #007700">);</span></code>
+        </div>
+
+        <p>Example:<br /></p>
+
+        <div class="codeblock">
+            <code><span style=
+            "color: #0000BB">image</span><span style=
+            "color: #007700">(</span><span style=
+            "color: #DD0000">"movingpictures.jpg"</span>
+            <span style="color: #007700">,</span> <span style=
+            "color: #DD0000">"Moving Pictures"</span><span style=
+            "color: #007700">, array(</span><span style=
+            "color: #DD0000">'style'</span><span style=
+            "color: #007700">=&gt;</span><span style=
+            "color: #DD0000">'border:0;float:right;margin:10px;'</span>
+            <span style="color: #007700">));</span></code>
+        </div><br />
+
+        <p><b>favicon()</b></p>
+
+        <p>It outputs a favicon tag having just one parameter, the
+        icon file name. This file must be inside the images
+        folder.</p>
+
+        <p>Prototype:<br /></p>
+
+        <div class="codeblock">
+            <code><span style=
+            "color: #0000BB">favicon</span><span style=
+            "color: #007700">(</span><span style=
+            "color: #DD0000">"icon.ico"</span><span style=
+            "color: #007700">);</span></code>
+        </div>
+
+        <p>Example:<br /></p>
+
+        <div class="codeblock">
+            <code><span style=
+            "color: #0000BB">favicon</span><span style=
+            "color: #007700">(</span><span style=
+            "color: #DD0000">"logo.ico"</span><span style=
+            "color: #007700">);</span></code>
+        </div>
+
+        <p><br /></p>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+        <h3>Configuring YATS</h3>
+
+        <p>Customizing YATS is quite easy. We have three groups of
+        settings having the prefixes: ‘layout_’, ‘views_’, and ‘assets_’. 
+		Following you'll see descriptions for all these settings.
+ 		Also there is another group initiated by ‘app_’; you can read more about 
+ 		this on Creating Application Properties. </p>
+		
+		<br />
+        <p><b>Library Settings</b></p>
+
+        <p>
+	 	views_folder: path to the default theme view files<br />
+		views_commons: path to common elements folder inside view/theme<br />
+		views_content: path to content elements folder inside view/theme<br />
+		assets_folder: path to the assets folder<br />
+		assets_design: path to the default theme assets<br />
+		assets_shared: path to a shared assets folder<br />
+		assets_styles: path to css folder inside assets<br />
+		assets_images: path to images folder inside assets<br />
+		assets_script: path to javascript folder inside assets<br />
+		layout_model:  common elements model name
+		layout_elements: references all functions in this model so the library 
+		can automatically call each one of them.<br />
+		</p>
+
+		<br />
+        <p><b>Layout Elements</b></p>
+
+        <p>References all the functions in this model so the
+        Library can automatically call each one of them. Don’t
+        forget to write them on the layout_model.php or whatever is
+        your custom name for it.</p>
+
+        <p>Prototype:<br /></p>
+
+        <div class="codeblock">
+            <code><span style=
+            "color: #007700">array(</span><span style=
+            "color: #DD0000">"function"</span> <span style=
+            "color: #007700">=&gt;</span> <span style=
+            "color: #DD0000">"parameter"</span><span style=
+            "color: #007700">, ...);</span></code>
+        </div>
+
+        <p>Where function is the function name and parameter is a
+        single value or an array of them to send to that function
+        as we’d usually do with a hard coded call.</p>
+
+        <br />
+		<p><b>Creating Application Properties</b></p>
+
+        <p>In this section of the config/layout.php file you can
+        come up with any setting you find necessary for your
+        project. From a site title to anything you need. Just
+        remember that in order to work all properties must have the
+        ‘app_’ prefix.</p>
+
+        <p><br /></p>
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+        <h3>Final Message</h3>
+
+        <p>Happy coding!&nbsp; :-)</p>
+    </div>
+
+    <p><br />
+    <br />
+    Copyright (c) 2006-2007, mariomariani.net all rights reserved.<br />
+    YATS is under the <a href="http://svn.mariomariani.net/yats/trunk/license.txt">BSD license</a></p>
+</body>
+</html>

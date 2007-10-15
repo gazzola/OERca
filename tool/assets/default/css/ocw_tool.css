@@ -1,0 +1,275 @@
+h1 {
+    font-weight:lighter;
+    font-family:georgia, times new roman, times, georgia, palatino, serif;
+    margin-top:0.6em;
+    color:#000;
+	color: #003399;
+    font-size:2em;
+}
+
+h3 {
+  background-color: transparent;
+ color: #333;
+ font-size: 14px;
+ font-weight: bold;
+ margin: 22px 0 12px 0;
+ padding: 0 0 0 0;
+}
+
+a {
+ color: #003399;
+ background-color: transparent;
+ text-decoration: none;
+ font-weight: normal;
+}
+
+a:visited {
+ color: #003399;
+ background-color: transparent;
+ text-decoration: none;
+}
+
+a:hover {
+ color: #000;
+ text-decoration: none;
+ background-color: transparent;
+}
+
+fieldset {
+	border: 1px solid #ccc;
+	background-color: #efe;
+}
+
+legend {
+	padding: 5px;
+	font-weight: bold;
+	color: #000;
+}
+
+img {border: 0;}
+
+code, pre {
+ font-family: Courier,monospace;
+ font-size: 12px;
+ background-color: #f9f9f9;
+ border: 1px solid #D0D0D0;
+ color: #002166;
+ display: block;
+ margin: 14px 0 14px 0;
+ padding: 12px 10px 12px 10px;
+}
+
+#header h1 {display: inline;}
+#header .loggedin {
+	float: right;
+	background-image:url(../../admin/images/login_toggle.jpg);
+	background-repeat:no-repeat;
+	height: 44px;
+	width: 250px;
+	margin-top: -46px;
+	padding: 10px 0  5px 0px;
+	color: #FFFFFF;
+	font-size:10px;
+	text-align: center;
+}
+#header div.loggedin a { color: #CCFF00; text-decoration: none; }
+#header div.loggedin a:hover{ text-decoration: underline; }
+
+#content h1 {
+border-bottom: 1px solid #999;
+font-weight: normal;
+font-size: 22px;
+margin: 10px 0 15px 0;
+}
+
+#content h2 {
+ background-color: transparent;
+ border-bottom: 1px solid #D0D0D0;
+ color: #444;
+ font-size: 16px;
+ font-weight: bold;
+ margin: 24px 0 2px 0;
+ padding: 5px 0 6px 0;
+}
+
+#content h3 {
+ background-color: transparent;
+ color: #333;
+ font-size: 14px;
+ font-weight: bold;
+ margin: 22px 0 12px 0;
+ padding: 0 0 0 0;
+}
+
+#content h4 {
+ background-color: transparent;
+ color: #444;
+ font-size: 14px;
+ font-weight: bold;
+ margin: 22px 0 0 0;
+ padding: 0 0 0 0;
+}
+
+
+#navlist { margin-top: -10px; padding: 0 0 0 6px; }
+ul#navlist {
+	margin: 0;
+	padding-bottom: 32px;
+	list-style-type: none;
+	border-bottom: 1px solid #999;
+}
+ul#navlist li {
+	float: left;
+	height: 25px;
+	color: #000;
+	background-color: #eee;
+	margin: 6px 2px 0px 2px;
+	border: 1px solid #999;
+	border-bottom: none;
+}
+ul#navlist li#active { border-bottom: 2px solid #fff; }
+ul#navlist li#active a { background-color: #fff; color: #990033; }
+#navlist a {
+	float: left;
+	display: block;
+	color: #000;
+	text-decoration: none;
+	padding: 4px;
+}
+#navlist a:hover { background: #fff; }
+
+#flashMessage {
+	width:100%;
+	color:#FF0000;
+	border-bottom: 1px solid #FF0000;
+	border-top: 1px solid #FF0000;
+	font-size: 16px;
+	margin: 8px 0px;
+	font-weight: bold;
+	padding: 10px;
+}
+
+#boxes { padding-top: 10px; }
+
+.box {
+	padding-top: 10px;
+	color: #929292;
+}
+.box img {
+	padding: 5px;
+	border: 0;
+	width: 40px;
+	float: left;
+}
+.error {
+	color: #f00000;
+}
+.invalidInput{
+	border: 0px solid #f00;
+	padding: 1px;
+	color: red;
+	font-size: 12px;
+}
+.validInput{ border: 0px solid #fff; padding: 1px; color: #efe}
+
+/* FAL stuff */
+.clear {clear:both;}
+
+.login {
+	color: #666;
+	font-size:11px;
+	padding: 5px;
+}
+
+.login a:link, .login a:visited {
+	text-decoration: none;
+	font-weight: bold;
+	color: #666;
+}
+
+.login a:hover {
+	text-decoration:none;
+	color: #FF0000;
+}
+
+.important {
+	background-color: #FBE6F2;
+	border: 1px solid #D893A1;
+	color: #333;
+	margin: 10px 0 5px 0;
+	padding: 10px;
+	font-weight: bold;
+	width: 400px;
+}
+.important p {margin: 6px 0 8px 0; padding: 0;}
+
+.error {
+	font-weight: bold;
+	color:#FF3300;
+	padding-left: 18px;
+	background: url(../../shared/images/error.png) no-repeat left top;
+}
+
+/* :KLUDGE: Explicitly set the width for IE6- */
+* html .error {width: 10em;}
+
+label {float: left; width: 100px;}
+
+#register {margin: 0;}
+
+#register label, #changePassword label  {width: 150px;}
+
+#register .error span{
+margin-left: 150px;
+padding-left: 150px;}
+
+.note {display: block;
+margin-left: 100px;}
+
+#register.note  {display: block;
+margin-left: 150px;}
+
+.button {
+text-align:center;
+font-weight:bold;
+cursor: pointer;}
+
+.button a {text-align: center;
+text-decoration: none;
+background: url(../images/fade-butt.png);
+border: 3px double #999;
+border-left-color: #ccc;
+border-top-color: #ccc;
+color: #333;
+padding: 0.25em;}
+
+.button a:active {
+	background: #f4f4f4;
+	border: 3px double #ccc;
+	border-left-color: #999;
+	border-top-color: #999;
+}
+
+/** dscribe materials page */
+.no_ip, .options {
+	color: #999;
+	font-size:.95em;
+}
+.options {
+	white-space:nowrap;
+}
+
+.panel {
+  position:absolute;
+  width:500px;
+  margin-left: 2px;
+  z-index:101;
+  border-top:2px solid #ddd;
+  border-left:2px solid #ddd;
+  border-right:2px solid #ddd;
+  border-bottom:2px solid #ddd;
+  background:url(/ocw_tool/assets/default/images/edpanel.gif) #f5f5f5;
+  padding: 10px;
+}   
+.panel div { padding:8px }
+.panel div a { float:right; }
