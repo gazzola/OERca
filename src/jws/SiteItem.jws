@@ -33,6 +33,12 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import org.sakaiproject.content.cover.ContentHostingService;
+import org.sakaiproject.content.api.ContentEntity;
+import org.sakaiproject.content.api.ContentResource;
+import org.sakaiproject.content.api.ContentCollection;
+import org.sakaiproject.entity.api.ResourceProperties;
+
 import org.sakaiproject.assignment.cover.AssignmentService;
 import org.sakaiproject.assignment.api.Assignment;
 
@@ -60,6 +66,7 @@ import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.site.cover.SiteService;
 
 import org.sakaiproject.authz.cover.SecurityService;
+import org.sakaiproject.authz.api.SecurityAdvisor;
 
 import org.sakaiproject.component.cover.ServerConfigurationService;
 
@@ -240,6 +247,13 @@ public class SiteItem {
     if (s == null)
     	return null;
     else
+    	try
+    	{
+    	establishSession(sessionid);
+    	}
+    	catch (AxisFault e)
+    	{
+    	}
     	return s;
     }
 
@@ -316,7 +330,6 @@ public class SiteItem {
         return b;
     }
     
-    
     public String getAssignmentList(String sessionid, String siteId, String userId)
     {
     	Iterator aIterator = null;
@@ -358,6 +371,75 @@ public class SiteItem {
 		else
 		{
 			return null;
+		}
+    	
+    }
+    
+    public String getResourceList(String sessionid, String siteId)
+    {
+    	List eList = null;
+    	String baseCollectionId = ContentHostingService.getSiteCollection(siteId);
+    	try
+    	{
+    		Session s = touchsession(sessionid);
+    		if (s != null)
+    		{
+    			eList = ContentHostingService.getAllEntities(baseCollectionId);
+    		}
+    	}
+    	catch (Exception e)
+    	{
+    	}
+    	
+    	if (eList != null)
+		{
+
+	    	Document dom = Xml.createDocument();
+			Node list = dom.createElement("ResourceEntities");
+			dom.appendChild(list);
+			
+			Iterator eIterator = eList.iterator();
+			while (eIterator.hasNext())
+			{
+				ContentEntity next = (ContentEntity) eIterator.next();
+				String nextId = next.getId();
+				if (!nextId.equals(baseCollectionId))
+				{
+					Node eItem = dom.createElement("ResourceEntity");
+					// item id
+					Node eId = dom.createElement("EntityId");
+					eId.appendChild( dom.createTextNode(nextId) );
+					// item title
+					Node eTitle = dom.createElement("EntityTitle");
+					ResourceProperties properties = next.getProperties();
+					String title = properties.getProperty(properties.getNamePropDisplayName());
+					eTitle.appendChild(dom.createTextNode(title));
+					// item depth
+					Node eDepth = dom.createElement("EntityDepth");
+					eDepth.appendChild( dom.createTextNode(String.valueOf(ContentHostingService.getDepth(next.getId(), baseCollectionId))));
+				
+					Node isCollection = dom.createElement("EntityIsCollection");
+					if (next instanceof ContentCollection)
+					{ 
+						isCollection.appendChild(dom.createTextNode(Boolean.TRUE.toString()));
+					}
+					else if (next instanceof ContentResource)
+					{
+						isCollection.appendChild(dom.createTextNode(Boolean.FALSE.toString()));
+					}
+					
+					eItem.appendChild(eId);
+					eItem.appendChild(eTitle);
+					eItem.appendChild(isCollection);
+					eItem.appendChild(eDepth);
+					list.appendChild(eItem);
+				}
+			}
+			return Xml.writeDocumentToString(dom);
+		}
+		else
+		{
+			return "empty";
 		}
     	
     }

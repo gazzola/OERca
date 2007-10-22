@@ -22,7 +22,7 @@ class OCWItemList
 	
 	public function getSupportedToolTitles()
 	{
-		$toolTitles = array(0=>"Assignments", 1=>"Schedule", 2=>"Syllabus");
+		$toolTitles = array(0=>"Assignments", 1=>"Resources", 2=>"Schedule", 3=>"Syllabus");
 		return $toolTitles;
 	}
 }	

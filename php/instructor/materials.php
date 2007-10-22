@@ -49,13 +49,11 @@ if ($server != "") {
   $itemProxy = getproxy($url, "SiteItem");
 
   if (PEAR::isError($itemProxy)) {
-	//$result1 = "SOAP Error";
+	$result1 = "SOAP Error";
   } else {
-  	$result1="found";
-  	//$result = $itemProxy->test($sessionid);
   	// verify the arguments passed to us
   	$assignmentListXML=$itemProxy->getAssignmentList($sessionid, $site, $user);
-  	
+  	$resourcesListXML=$itemProxy->getResourceList($sessionid, $site);
   }
 }
 ?>
@@ -95,6 +93,7 @@ $PAGE_NAME="Manager Course Materials";
 			Then, click on <strong>Add</strong> to update the OCW materials list on the right. <br/><br/></div>
 		<div class="materials_list">
 			<?php 
+				//echo "$result1";
 				foreach ($toolTitles as $title)
 				{
 					echo "<div class='paren'><img src='../include/images/validated.gif' height='15' /> &nbsp;&nbsp;
@@ -113,6 +112,36 @@ $PAGE_NAME="Manager Course Materials";
 							$assignmentTitles = $assignment->getElementsByTagName("AssignmentTitle");
 							$assignmentTitle = $assignmentTitles->item(0)->nodeValue;
 							echo "<div> &nbsp;&nbsp; <input type='checkbox' name='chooseItem'>&nbsp;&nbsp; $assignmentTitle <a href='#' title='add only this item'>( Add )</a><br />";
+						}
+					}
+					else if ($title == "Resources")
+					{
+						// reading the assignment list xml string
+						//echo "$resourcesListXML";
+						$doc = new DOMDocument();
+						// get the resource list
+						$doc->loadXML($resourcesListXML);
+						$entities = $doc->getElementsByTagName( "ResourceEntity" );
+						foreach($entities as $entity)
+						{
+							$entityIds = $entity->getElementsByTagName("EntityId");
+							$entityId = $entityIds->item(0)->nodeValue;
+							$entityTitles = $entity->getElementsByTagName("EntityTitle");
+							$entityTitle = $entityTitles->item(0)->nodeValue;
+							$entityDepths = $entity->getElementsByTagName("EntityDepth");
+							$entityDepth = $entityDepths->item(0)->nodeValue;
+							$entityIsCollections = $entity->getElementsByTagName("EntityIsCollection");
+							$entityIsCollection = $entityIsCollections->item(0)->nodeValue;
+							$unit ="em";
+							$width = "$entityDepth$unit";
+							if ($entityIsCollection != 'true')
+							{
+								echo "<div style='text-indent:$width'><input type='checkbox' name='chooseItem'>$entityTitle <a href='#' title='add only this item'>( Add )</a>";
+							}
+							else
+							{
+								echo "<div style='text-indent:$width'>$entityTitle";
+							}
 						}
 					}
 					echo"</div>";
