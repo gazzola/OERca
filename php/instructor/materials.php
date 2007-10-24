@@ -7,24 +7,6 @@
  */
 // start the session
 session_start();
-?>
-
-<?
-
-ini_set("include_path", "/usr/local/php5/lib/php");
-
-function getproxy($url, $name) {
-    require_once('SOAP/Client.php');
-    $wsdl=new SOAP_WSDL("$url/$name.jws?wsdl", array("timeout" => 20));
-    if (!$wsdl)
-      fatal("This error should not happen. Unable to open connection to $url/$name.jws?wsdl");
-
-    $myProxy=$wsdl->getProxy();
-    if (!$myProxy)
-      fatal("This error should not happen. getProxy returned null.");
-
-    return $myProxy;
-  }
 
 //Get the linktool parameters
 $user = $_SESSION['internaluser'];
@@ -39,23 +21,10 @@ $time = $_SESSION['time'];
 
 $url = $server."/sakai-axis/";
 
-$result = "";
-$result1="here";
+$client = new SoapClient($url."SiteItem.jws?wsdl");
+$assignmentListXML=$client->getAssignmentList($sessionid, $site, $user);
+$resourcesListXML=$client->getResourceList($sessionid, $site); 	
 
-// Check for required variables
-if ($server != "") {
-
-  // Get the WSDL for verification
-  $itemProxy = getproxy($url, "SiteItem");
-
-  if (PEAR::isError($itemProxy)) {
-	$result1 = "SOAP Error";
-  } else {
-  	// verify the arguments passed to us
-  	$assignmentListXML=$itemProxy->getAssignmentList($sessionid, $site, $user);
-  	$resourcesListXML=$itemProxy->getResourceList($sessionid, $site);
-  }
-}
 ?>
 <?php
 
