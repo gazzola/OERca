@@ -25,7 +25,7 @@
  | It will be displayed in some headers and in the subject of the emails
  |
  */
- $config['FAL_website_name']    = "http://{$_SERVER['HTTP_HOST']}/ocw_tool";
+ $config['FAL_website_name']    = "http://{$_SERVER['HTTP_HOST']}/tool";
  
  /*
  |--------------------------------------------------------------------------

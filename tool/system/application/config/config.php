@@ -11,7 +11,7 @@
 |	http://www.your-site.com/
 |
 */
-$config['base_url']	= "http://{$_SERVER['HTTP_HOST']}/ocw_tool";
+$config['base_url']	= "http://{$_SERVER['HTTP_HOST']}/tool";
 
 /*
 |--------------------------------------------------------------------------
