@@ -212,9 +212,9 @@
  | Whether to use CAPTCHA (security code) functionality for those processes
  |------------------------------------------------------------------------------
  */
- $config['FAL_use_captcha_login'] = TRUE;
- $config['FAL_use_captcha_register'] = TRUE;
- $config['FAL_use_captcha_forgot_password'] = TRUE;
+ $config['FAL_use_captcha_login'] = FALSE;
+ $config['FAL_use_captcha_register'] = FALSE;
+ $config['FAL_use_captcha_forgot_password'] = FALSE;
  
  /*
  |------------------------------------------------------------------------------
