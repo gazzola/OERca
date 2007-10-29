@@ -12,7 +12,10 @@
 
 <div id="tool_content">
 
+<!--
 	<a href="<?=site_url()."dscribe/materials/$cid"?>">&laquo; return</a>
+-->
+	<a href="javascript:history.go(-1)">&laquo; return</a>
 	<h2>
 		<a href="<?=site_url()."dscribe/materials/$cid/view/".$material['id']?>">
 			<?= $this->ocw_utils->icon($material['mimetype'])?>&nbsp;&nbsp;<?= $material['name']?>
@@ -79,7 +82,10 @@
 				</tr>
 				</table>
 				<br/><br/>
+				<!--
 				<a href="<?=site_url()."dscribe/materials/$cid/".$material['id']?>">&laquo; return</a>
+				-->
+				<a href="javascript:history.go(-1)">&laquo; return</a>
 			</td>
 		
 

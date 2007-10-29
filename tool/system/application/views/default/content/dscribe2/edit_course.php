@@ -20,8 +20,10 @@
 <div id="tool_content">
 
 <?php $this->load->view(property('app_views_path').'/dscribe2/_edit_course_details.php', $data); ?> 
+<!--
 &nbsp;&nbsp;|&nbsp;&nbsp;
 <?php $this->load->view(property('app_views_path').'/dscribe2/_add_course_materials.php', $data); ?> 
+-->
 
 <br/><br/>
 

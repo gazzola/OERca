@@ -124,11 +124,11 @@
 		<tr>
 			<th><strong>Name</strong></th>
 			<th><strong>Location</strong></th>
-			<th><strong>Type</strong></th>
 			<th><strong>Sub Type</strong></th>
+			<th><strong>Action</strong></th>
 			<th><strong>Comments</strong></th>
 			<th><strong>Cleared</strong></th>
-			<th><strong>&nbsp;</strong></th>
+			<th><strong>Edit</strong></th>
 		</tr>
 		</thead>
 
@@ -141,8 +141,8 @@
 		<tr>
 			<td><?= $ipobject['name']?></td>
 			<td><small><?= $ipobject['location']?></small></td>
-			<td><small><?= ($ipobject['ipobject_type_id']==0) ? 'unknown': $ip_types[$ipobject['ipobject_type_id']]?></small></td>
 			<td><small><?= $ipobject['subtype']?></small></td>
+			<td><small><?= ($ipobject['action_type']=='') ? 'not set': $action_types[$ipobject['action_type']]?></small></td>
 
 			<td>
 				 <small> 

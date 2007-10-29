@@ -41,7 +41,7 @@
 		<th class="sortable">Class</th>
 		<th class="sortable">Sequence</th>
 		<th class="sortable">Director</th>
-		<th>&nbsp;&nbsp;</th>
+		<th>Edit&nbsp;</th>
 	</tr>
 	</thead>
 	<tbody>
@@ -49,7 +49,7 @@
 	<tr>
 		<td><?=$course['number'].' '.$course['title']?></td>
 		<td><?=mdate('%d %M, %Y',mysql_to_unix($course['start_date']))?></td>
-		<td><?=mdate('%d %M,%Y',mysql_to_unix($course['end_date']))?></td>
+		<td><?=mdate('%d %M, %Y',mysql_to_unix($course['end_date']))?></td>
 		<td width="40px"><?=ucfirst($course['class'])?></td>
 		<td>
 			<?=($course['sequence_id']==0) ? '--':$this->course->sequence_name($course['sequence_id'])?>
