@@ -1,12 +1,14 @@
 <?php 
 	$this->load->view(property('app_views_path').'/dscribe/dscribe_header.php', $data); 
-	//$this->ocw_utils->dump($data);
 	$copyholder = ($material['author']=='') ? $course['director'] : $material['author'];
 	$action_types = array('remove'=>'remove','replace'=>'replace','commission'=>'commission','permission'=>'permission');
 	$filetypes[0] = '--- Select Filetype ---';
 	$action_types[0] = '--- Select IP action ---';
 	$ip_uses[0] = '--- Select IP Use ---';
 	$ip_types[0] = '--- Select IP Type ---';
+
+	$autoname = ($ipobjects==null) ? '1': (count($ipobjects) + 1);
+	$autoname = "c$cid.m{$material['id']}.o".$autoname; 
 ?>
 <input type="hidden" id="cid" name="cid" value="<?=$cid?>" />
 <input type="hidden" id="mid" name="mid" value="<?=$material['id']?>" />
@@ -56,43 +58,40 @@
 		<!-- add ipobject panel -->
 		<div id="addpanel" class="panel" style="display:none;">
 		 <div>
-    		<h2>Add New IP Object</h2><br/>
+    		<h2>Add New Object of Interest</h2><br/>
    			<div id="addpanel_error" 
 				style="color:red; display: none; width: 90%; border: 1px solid #ccc; background-color: #eee; margin-bottom: 10px;"></div>
 
         		<table>
          		<tr>
-            		<th align="right">Name</th>
-            		<td><input type="text" name="name" id="name" size="30"/></td>
-         		</tr>
-         		<tr>
             		<th align="right">Location</th>
             		<td><input type="text" name="location" id="location" size="30"/></td>
          		</tr>
          		<tr>
-            		<th align="right">Type</th>
-            		<td><?php echo form_dropdown('ipobject_type_id', $ip_types, 0,'id="ipobject_type_id"'); ?></td>
-         		</tr>
-         		<tr>
-            		<th align="right">SubType</th>
-            		<td><input type="text" name="subtype" id="subtype" size="30"/></td>
+            		<th align="right">Name</th>
+            		<td><input type="text" name="name" id="name" size="30" value="<?=$autoname?>" disabled="disabled"/></td>
          		</tr>
          		<tr>
             		<th align="right">File type</th>
             		<td><?php echo form_dropdown('filetype_id', $filetypes, 0,'id="filetype_id"'); ?></td>
          		</tr>
          		<tr>
-            		<th align="right">Instructor Use</th>
-            		<td><?php echo form_dropdown('instructor_use_id', $ip_uses, 0,'id="instructor_use_id"'); ?></td>
-         		</tr>
-         		<tr>
-            		<th align="right">Student Use</th>
-            		<td><?php echo form_dropdown('student_use_id', $ip_uses, 0,'id="student_use_id"'); ?></td>
-         		</tr>
-         		<tr>
-            		<th align="right">Copyright Holder</th>
+            		<th align="right">Copyright Info</th>
             		<td><input type="text" name="copyright_holder" id="copyright_holder" size="40px" /></td>
          		</tr> 
+         		<tr>
+            		<th align="right">Comments</th>
+					<td><textarea name="comments" id="comments" cols="40" rows="4"></textarea></td>
+         		</tr> 
+				<tr>
+					<td colspan="2" align="left">
+						<span style="display:block" id="showme">&nbsp;<a href="javascript:void(0);" onclick="Effect.Appear('moreforadd'); $('showme').hide(); Effect.Appear('hideme')">more &raquo;</a></span>
+						<span style="display:none" id="hideme">&nbsp;<a href="javascript:void(0);" onclick="$('moreforadd').hide(); $('hideme').hide(); Effect.Appear('showme');">close &raquo;</a></span>
+					</td>
+				</tr>
+				</table>
+
+				<table id="moreforadd" style="display: none; width: 100%">
          		<tr>
             		<th align="right">Full Citation</th>
             		<td><textarea name="citation" id="citation" cols="40" rows="4"></textarea></td>
@@ -106,9 +105,21 @@
             		<td><?php echo form_dropdown('action_type', $action_types, 0,'id="action_type"'); ?></td>
          		</tr> 
          		<tr>
-            		<th align="right">Comments</th>
-					<td><textarea name="comments" id="comments" cols="40" rows="4"></textarea></td>
-         		</tr> 
+            		<th align="right">IP Type</th>
+            		<td><?php echo form_dropdown('ipobject_type_id', $ip_types, 0,'id="ipobject_type_id"'); ?></td>
+         		</tr>
+         		<tr>
+            		<th align="right">SubType</th>
+            		<td><input type="text" name="subtype" id="subtype" size="30"/></td>
+         		</tr>
+         		<tr>
+            		<th align="right">Instructor Use</th>
+            		<td><?php echo form_dropdown('instructor_use_id', $ip_uses, 0,'id="instructor_use_id"'); ?></td>
+         		</tr>
+         		<tr>
+            		<th align="right">Student Use</th>
+            		<td><?php echo form_dropdown('student_use_id', $ip_uses, 0,'id="student_use_id"'); ?></td>
+         		</tr>
         		</table>
     			<input type="button" value="Save" id="do_add_ip" />
     			<input type="button" value="Cancel" class="do_hide_addpanel" />
