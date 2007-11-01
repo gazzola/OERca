@@ -1,3 +1,11 @@
+<?php
+	$curriculum['new'] = 'Add new curriculum:';
+	$curriculum['none'] = 'None';
+	$curriculum[0] = '--- Select Curriculum ---';
+	$sequences['new'] = 'Add new sequence:';
+	$sequences['none'] = 'None';
+	$sequences[0] = '--- Select Sequence ---';
+?>
 <div id="addpanel" class="panel" style="display:none;">
 <div>
 	<h2>Add Course Material:</h2><br/>

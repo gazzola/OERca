@@ -66,13 +66,13 @@ class Dscribe2 extends Controller {
 
 		} elseif ($task == 'update') {
 			if ($_POST['field']=='new_curriculum_id') {
-				$d = array('title'=>$_POST['new_curriculum_id'],'description'=>'');
+				$d = array('title'=>$_POST['val'],'description'=>'');
 				$curr_id = $this->course->new_curriculum($d);
 				$_POST['field'] = 'curriculum_id';
 				$_POST['val'] = $curr_id;
 			}
 			if ($_POST['field']=='new_sequence_id') {
-				$d = array('name'=>$_POST['new_sequence_id']);
+				$d = array('name'=>$_POST['val']);
 				$seq_id = $this->course->new_sequence($d);
 				$_POST['field'] = 'sequence_id';
 				$_POST['val'] = $seq_id;
@@ -84,13 +84,9 @@ class Dscribe2 extends Controller {
 
 		} elseif ($task =='edit') {
 			$this->data['cid'] = $cid;
-			$this->data['tags'] = $this->tag->tags(); 
 			$this->data['course'] = $this->course->details($cid);
-			$this->data['filetypes'] = $this->file_type->filetypes(); 
 			$this->data['sequences'] = $this->course->sequences();
 			$this->data['curriculum'] = $this->course->curriculums();
-			$this->data['materials'] = $this->material->materials($cid,'',false,true); 
-			$this->data['categories'] = $this->material->categories(); 
 			$this->data['title'] = 'dScribe2 &raquo; Manage Courses &raquo; Edit'; 
        		$this->layout->buildPage('dscribe2/edit_course', $this->data);
 

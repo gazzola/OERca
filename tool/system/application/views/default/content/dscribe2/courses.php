@@ -41,6 +41,7 @@
 		<th class="sortable">Class</th>
 		<th class="sortable">Sequence</th>
 		<th class="sortable">Director</th>
+		<th>Materials&nbsp;</th>
 		<th>Edit&nbsp;</th>
 	</tr>
 	</thead>
@@ -54,7 +55,11 @@
 		<td>
 			<?=($course['sequence_id']==0) ? '--':$this->course->sequence_name($course['sequence_id'])?>
 		</td>
+
 		<td><?=ucfirst($course['director'])?></td>
+
+		<td><a href="<?php echo site_url()."dscribe/materials/".$course['id']?>">view</a></td>
+
 		<td width="90px">
 			<?=anchor(site_url('dscribe2/courses/edit/'.$course['id']), 
 					  '<img src="'.property('app_img').'/pencil.png" title="Edit course" />',	

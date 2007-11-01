@@ -16,11 +16,7 @@
 	<a href="<?=site_url()."dscribe/materials/$cid"?>">&laquo; return</a>
 -->
 	<a href="javascript:history.go(-1)">&laquo; return</a>
-	<h2>
-		<a href="<?=site_url()."dscribe/materials/$cid/view/".$material['id']?>">
-			<?= $this->ocw_utils->icon($material['mimetype'])?>&nbsp;&nbsp;<?= $material['name']?>
-		</a>
-   	</h2>
+	<h2><?= $this->ocw_utils->icon($material['mimetype'])?>&nbsp;&nbsp;<?= $material['name']?></h2>
 
 	<br/><br/>
 

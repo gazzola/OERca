@@ -9,15 +9,14 @@
 
 
 <?php foreach($materials as $category => $cmaterial) { ?> 
-<table class="rowstyle-alt no-arrow" width="780px">
+<table class="sortable-onload-1 rowstyle-alt no-arrow" width="780px">
 	<caption><?=$category?></caption>
 	<thead>
 	<tr>
 		<th><strong>Name</strong></th>
 		<th><strong>Tag</strong></th>
 		<th><strong>Comments</strong></th>
-		<th><strong>IP Status</strong></th>
-		<th>&nbsp;</th>
+		<th class="sortable"><strong>IP Status</strong></th>
 	</tr>
 	</thead>
 
@@ -25,10 +24,8 @@
 <?php foreach($cmaterial as $material) { ?>
 	<tr>
 		<td>
-			<a href="<?=site_url()."dscribe/materials/$cid/view/".$material['id']?>"><?= $this->ocw_utils->icon($material['mimetype'])?>
-			&nbsp;&nbsp;<?= $material['name']?></a>&nbsp;&nbsp;
+			<a href="<?=site_url()."dscribe/materials/$cid/edit_material/".$material['id']?>"><?= $this->ocw_utils->icon($material['mimetype'])?>&nbsp;&nbsp;<?= $material['name']?></a>&nbsp;&nbsp;
 		</td>
-
 
 		<?php if ($material['mimetype'] == 'folder') { ?>
 		<td colspan="6">&nbsp;&nbsp;</td>
@@ -61,10 +58,7 @@
 				<img src="<?=property('app_img')?>/required.gif" title="not ready" />
 			<?php } ?>
 			&nbsp;&nbsp;<a href="<?php echo site_url()."dscribe/materials/$cid/view_ip/".$material['id']?>">modify</a>
-		</td>
-
-		<td class="options">
-			<a href="<?php echo site_url()."dscribe/materials/$cid/edit_material/".$material['id']?>">Edit &raquo;</a> 
+		<?php echo ($material['embedded_ip']==0) ? '(no IPO)' : "&nbsp;({$material['statcount']})"; ?>
 		</td>
 
 		<?php } ?>

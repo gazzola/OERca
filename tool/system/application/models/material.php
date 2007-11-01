@@ -150,7 +150,9 @@ class Material extends Model
 							$this->find_children($id, $materials,$done);
 
 					//indicate if material has been fully cleared
-                    $cm['validated'] = $this->is_cleared($id, $cm['embedded_ip']); 
+                    $status = $this->is_cleared($id, $cm['embedded_ip']); 
+                    $cm['validated'] = ($status['notdone'] > 0) ? 0 : 1;  
+                    $cm['statcount'] = $status['done'] .'/'.($status['done']+$status['notdone']);  
 
                     if (sizeof($children) > 0) {
                         $cm['show'] = ($this->child_not_in_ocw($children))?1:0;
@@ -179,7 +181,9 @@ class Material extends Model
                         array_push($done, $cid);
 						
 						$tmp[$order] = $ccm;
-                        $tmp[$order]['validated'] = $this->is_cleared($cid, $ccm['embedded_ip']); 
+                    	$status = $this->is_cleared($cid, $ccm['embedded_ip']); 
+                    	$tmp[$order]['validated'] = ($status['notdone'] > 0) ? 0 : 1;  
+                    	$tmp[$order]['statcount'] = $status['done'] .'/'.($status['done']+$status['notdone']);  
 
                         // find more children if necessary
                         list($children, $done) = 
@@ -199,12 +203,20 @@ class Material extends Model
 	// check to see if material is free of ip voilations
 	private function is_cleared($mid, $has_ip)
 	{
-		if ($has_ip==0) return 1;
-		$where = array('material_id'=>$mid, 'done'=>'0');
-		$this->db->select('COUNT(*) AS not_done')->from('ipobjects')->where($where);
+		$status = array('done'=>0,'notdone'=>0);
+
+		if ($has_ip==0) return $status;
+
+		$where = array('material_id'=>$mid);
+		$this->db->select('done')->from('ipobjects')->where($where);
 		$q = $this->db->get();
-		$r = $q->row_array();
-		return ($r['not_done'] > 0) ? 0 : 1;	
+
+		foreach($q->result_array() as $row) { 
+			if ($row['done']=='1') { $status['done']++; }
+			else { $status['notdone']++; }
+		}
+
+		return $status; 
 	}
 
     // check to see if there is a child object that is not in ocw

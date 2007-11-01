@@ -36,8 +36,9 @@ var Rules = {
             		Effect.Appear('editpanel_error');
             		Effect.Fade('editpanel_error',{duration:15.0});
 				} else {
-            		new Effect.Fade('editpanel_error');
-            		$('editpanel').hide();
+                     $('editpanel_error').innerHTML = '<small style="color:black">Saved</small>';
+            		Effect.Appear('editpanel_error');
+            		new Effect.Fade('editpanel_error',{duration:6.0});
 				}
 			}
 		}
@@ -48,38 +49,51 @@ var Rules = {
 			var val = this.value;
 			var url = $F('server')+'dscribe2/courses/update/'+course_id+'/';
 
-            	var check = this.check(field, val);
-				if (field=='curriculum_id' && val=='none') { val = 0; }
-				if (field=='curriculum_id' && val=='new') { field='new_curriculum_id'; val = $('new_curriculum_id'); }
-				if (field=='sequence_id' && val=='none') { val = 0; }
-				if (field=='sequence_id' && val=='new') { field='new_sequence_id'; val = $('new_sequence_id'); }
-
-            	if (check != 'success') {
-                	$('editpanel_error').innerHTML = '<small>'+check+'</small>';
-            		Effect.Appear('editpanel_error');
-            		Effect.Fade('editpanel_error',{duration:10.0});
+			if (field=='curriculum_id' || field=='sequence_id') { 
+				var id = this.id;
+				var ninput = 'new_'+this.id;
+				var c = $F(id);
+				if (c == 'new') {
+            		new Effect.Appear(ninput);
 				} else {
-					var postbody = 'field='+field+'&val='+val; 
-					new Ajax.Updater('feedback', url,
-                		{method:'post', postBody:postbody,
-            	 		onLoading:function(request) { },
-			 	 		onComplete:function(request){
-                  			response = $('feedback').innerHTML;
-                  			if (response != 'success') {
+					$(ninput).hide();
+				}
+			}
+
+            var check = this.check(field, val);
+			if (field=='curriculum_id' && val=='none') { val = 0; }
+			if (field=='curriculum_id' && val=='new') { field='new_curriculum_id'; val = $F('new_curriculum_id'); }
+			if (field=='sequence_id' && val=='none') { val = 0; }
+			if (field=='sequence_id' && val=='new') { field='new_sequence_id'; val = $F('new_sequence_id'); }
+
+            if (check != 'success') {
+               	$('editpanel_error').innerHTML = '<small>'+check+'</small>';
+            	Effect.Appear('editpanel_error');
+            	Effect.Fade('editpanel_error',{duration:10.0});
+			} else {
+				var postbody = 'field='+field+'&val='+val; 
+				new Ajax.Updater('feedback', url,
+               		{method:'post', postBody:postbody,
+             		onLoading:function(request) { },
+			 		onComplete:function(request){
+               			response = $('feedback').innerHTML;
+               			if (response != 'success') {
                         		$('editpanel_error').innerHTML = '<small>'+response+'</small>';
             					Effect.Appear('editpanel_error');
             					Effect.Fade('editpanel_error',{duration:15.0});
-                  			}
-            			} });
-				}
+               			}
+            		} });
+			}
 		}
         element.check = function(field, val) {
             if (field=='director' && val=='') {
                 return('Please enter the name of the sequence director or instructor of the course'); }
 			if (field=='curriculum_id' && val=='0') { return('Please specify a curriculum'); }
 			if (field=='sequence_id' && val=='0') { return('Please specify a sequence'); }
-			if (field=='curriculum_id' && val=='new' && $('new_curriculum_id')=='') { return('Please enter the name of the curriculum'); }
-			if (field=='sequence_id' && val=='new' && $('new_sequence_id')=='') { return('Please enter the name of the sequence'); }
+			if (field=='curriculum_id' && val=='new' && $F('new_curriculum_id')=='') { return('Please enter the name of the curriculum'); }
+			if (field=='sequence_id' && val=='new' && $F('new_sequence_id')=='') { return('Please enter the name of the sequence'); }
+			if (field=='new_curriculum_id' && val=='') { return('Please enter the name of the curriculum'); }
+			if (field=='new_sequence_id' && val=='') { return('Please enter the name of the sequence'); }
             if (field=='title' && val=='') { return('Please enter the course title'); }
             if (field=='start_date') {
 				if (val=='') { return('Please enter the course start date'); }

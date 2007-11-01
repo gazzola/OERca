@@ -29,9 +29,31 @@ class Auth extends Controller
     function Auth()
     {
         parent::Controller();
-        
+
+		$this->load->model('ocw_user');
+		$this->CI = $this->freakauth_light;
+
+		if ($_SERVER['QUERY_STRING'] <> '') { // coming from Sakai??
+			// get user role, user name and site id
+			$role = ($_REQUEST['role']=='maintain') ? 'instructor' : $_REQUEST['role'];
+			$user = $_REQUEST['user'];
+			$site = $_REQUEST['site'];
+			$session = $_REQUEST['session'];
+			$internaluser = $_REQUEST['internaluser'];
+
+			if (($userdata=$this->ocw_user->get_user($user)) !== false) {
+				 $userdata['sessionid'] = $session;
+				 $userdata['internaluser'] = $internaluser;
+				 $userdata['site'] = $site;
+    			$this->CI->_set_logindata($userdata);
+				redirect('home','location');
+			} else {
+				//$this->ocw_utils->dump($_SERVER);
+				exit;        
+			}
+		}
+
         $this->load->library('FAL_front', 'fal_front');
-        
         $this->_container = 'auth/login/content';
     }
 	

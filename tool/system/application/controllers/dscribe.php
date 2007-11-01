@@ -184,6 +184,7 @@ class Dscribe extends Controller {
 		} else {
 			$this->data['tags'] = $this->tag->tags(); 
 			$this->data['materials'] = $this->material->materials($cid,'',true,true); 
+			//$this->ocw_utils->dump($this->data['materials']); exit;
 			$this->data['title'] = $this->lang->line('ocw_ds_pagetitle_material'); 
        		$this->layout->buildPage('dscribe/manage_materials', $this->data);
 		}

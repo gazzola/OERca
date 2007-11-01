@@ -2,8 +2,7 @@
 <tr>
 	<td>
 		<?php echo nbs($depth*2); ?>
-		<a href="<?php echo site_url()."dscribe/materials/$cid/view/".$child['id']?>"><?php echo $this->ocw_utils->icon($child['mimetype'])?>
-		&nbsp;&nbsp;<?php echo $child['name']?></a>&nbsp;&nbsp;
+		<a href="<?php echo site_url()."dscribe/materials/$cid/edit_material/".$child['id']?>"><?php echo $this->ocw_utils->icon($child['mimetype'])?>&nbsp;&nbsp;<?php echo $child['name']?></a>&nbsp;&nbsp;
 	</td>
 
 	<?php if ($child['mimetype'] == 'folder') { ?>
@@ -36,10 +35,7 @@
 			<img src="<?php echo property('app_img')?>/required.gif" title="not ready" />
 		<?php } ?>
 		&nbsp;&nbsp;<a href="<?php echo site_url()."dscribe/materials/$cid/view_ip/".$child['id']?>">modify</a>
-	</td>
-
-	<td class="options">
-		<a href="<?php echo site_url()."dscribe/materials/$cid/edit_material/".$child['id']?>">Edit &raquo;</a> 
+		<?php echo ($child['embedded_ip']==0) ? '(no IPO)' : "&nbsp;({$child['statcount']})"; ?>
 	</td>
 	<?php } ?>
 </tr>

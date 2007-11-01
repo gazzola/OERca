@@ -19,7 +19,7 @@
 	<br/>
 
 	<h2>
-		<a href="<?=site_url()."dscrbe/materials/$cid/view/".$material['id']?>">
+		<a href="<?=site_url()."dscribe/materials/$cid/edit_material/".$material['id']?>">
 			<?= $this->ocw_utils->icon($material['mimetype'])?>&nbsp;&nbsp;<?= $material['name']?>
 		</a>
    	</h2>

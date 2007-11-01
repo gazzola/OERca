@@ -17,7 +17,7 @@
 -->
 	<a href="javascript:history.go(-1)">&laquo; return</a>
 	<h2>
-		<a href="<?=site_url()."dscribe/materials/$cid/view/".$material['id']?>">
+		<a href="<?=site_url()."dscribe/materials/$cid/edit_material/".$material['id']?>">
 			<?= $this->ocw_utils->icon($material['mimetype'])?>&nbsp;&nbsp;<?= $material['name']?>
 		</a>
 		&raquo; <span id="ip_name"><?= $ipobject['name'] ?></span>

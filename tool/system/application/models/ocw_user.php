@@ -60,6 +60,20 @@ class OCW_user extends Model
 	}
 
 	/**
+     * Get user info based on username 
+     *
+     * @access  public
+     * @param   string	username 
+     * @return  string | boolean
+     */
+	public function get_user($uname)
+	{
+		$where = array('user_name'=>$uname);
+		$query = $this->db->getwhere('fa_user', $where); 
+		return ($query->num_rows() > 0) ? $query->row_array() : false;
+	}
+
+	/**
      * Check to see if a user already exists 
      *
      * @access  public
