@@ -49,6 +49,11 @@
       <version>1.0.4</version>
       <scope>provided</scope>
     </dependency>
+   	<dependency>
+      <groupId>org.sakaiproject</groupId>
+      <artifactId>sakai-component</artifactId>
+      <version>${sakai.version}</version>
+    </dependency>
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-component-api</artifactId>
@@ -72,6 +77,11 @@
       <artifactId>sakai-util</artifactId>
       <version>${sakai.version}</version>
 <!--properties:  war.bundle: true -->
+    </dependency>
+    <dependency>
+      <groupId>org.sakaiproject</groupId>
+      <artifactId>sakai-coursemanagement-api</artifactId>
+      <version>${sakai.version}</version>
     </dependency>
   </dependencies>
   <build>

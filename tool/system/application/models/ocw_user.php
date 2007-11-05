@@ -27,7 +27,7 @@ class OCW_user extends Model
 		$courses = array();
 
 		$this->db->select('ocwdemo_courses.*, ocwdemo_acl.role');
-		$this->db->from('acl')->where("user_id=$uid");
+		$this->db->from('acl')->where("user_id='$uid'");
 		$this->db->join('courses','acl.course_id=courses.id');
 		$this->db->orderby('start_date DESC');
 
@@ -83,6 +83,21 @@ class OCW_user extends Model
 	public function exists($email)
 	{
 		$where = array('email'=>$email);
+		$query = $this->db->getwhere('fa_user', $where); 
+		return ($query->num_rows() > 0) ? $query->row_array() : false;
+		
+	}
+	
+	/**
+     * Check to see if a user already exists by uniqname
+     *
+     * @access  public
+     * @param   string user_name 
+     * @return  string | boolean
+     */
+	public function existsByUserName($user_name)
+	{
+		$where = array('user_name'=>$user_name);
 		$query = $this->db->getwhere('fa_user', $where); 
 		return ($query->num_rows() > 0) ? $query->row_array() : false;
 		

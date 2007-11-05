@@ -94,6 +94,22 @@ class Course extends Model
 
 		return $course_id;	
 	}
+	
+		
+	/**
+     * Check to see if a course already exists by course number
+     *
+     * @access  public
+     * @param   string courseNumber
+     * @return  string | boolean
+     */
+	public function existsByNumber($courseNumber)
+	{
+		$where = array('number'=>$courseNumber);
+		$query = $this->db->getwhere('courses', $where); 
+		return ($query->num_rows() > 0) ? $query->row_array() : false;
+		
+	}
 
 	/**
      * Get course

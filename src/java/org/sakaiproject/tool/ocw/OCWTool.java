@@ -62,6 +62,7 @@ import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.tool.api.Placement;
 import org.sakaiproject.util.Web;
+import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.component.cover.ServerConfigurationService;
 
 import org.sakaiproject.site.cover.SiteService;
@@ -78,6 +79,14 @@ import org.sakaiproject.authz.cover.SecurityService;
 
 import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.exception.PermissionException;
+
+import org.sakaiproject.user.api.User;
+import org.sakaiproject.user.cover.UserDirectoryService;
+
+import org.sakaiproject.component.cover.ComponentManager;
+
+import org.sakaiproject.coursemanagement.api.AcademicSession;
+import org.sakaiproject.coursemanagement.api.CourseManagementService;
 
 /**
  * <p>
@@ -119,6 +128,9 @@ public class OCWTool extends HttpServlet
     private Set illegalParams;
     private Pattern legalKeys;
 
+	private org.sakaiproject.coursemanagement.api.CourseManagementService cms = (org.sakaiproject.coursemanagement.api.CourseManagementService) ComponentManager
+	.get(org.sakaiproject.coursemanagement.api.CourseManagementService.class);
+	
 	/**
 	 * Access the Servlet's information display.
 	 * 
@@ -273,12 +285,9 @@ public class OCWTool extends HttpServlet
 	{
 		if (secretKey == null)
 	      secretKey = readSecretKey("privkey", "Blowfish");
-		System.out.println(secretKey.toString());
 	    try {
 	      Cipher dcipher = Cipher.getInstance("Blowfish");
-	      System.out.println("here  1");
 	      dcipher.init(Cipher.ENCRYPT_MODE, secretKey);
-	      System.out.println("here  2");
 	      
 		    // get the Tool
 		    Placement placement = ToolManager.getCurrentPlacement();
@@ -290,6 +299,8 @@ public class OCWTool extends HttpServlet
 			 
 		    String userid = null;
 		    String euid = null;
+		    String userName = null;
+		    String userEmail = null;
 		    String siteid = null;
 		    String sessionid = null;
 		    String url = null;
@@ -298,6 +309,12 @@ public class OCWTool extends HttpServlet
 		    String element = null;
 		    String oururl = req.getRequestURI();
 		    String query = req.getQueryString();
+		    String courseTitle = null;
+			String courseDescription = null;
+			String courseNumber = null;
+			String courseStartDate = null;
+			String courseEndDate = null;
+			String courseDirector = "";
 	
 		    // set frame height
 	
@@ -313,8 +330,19 @@ public class OCWTool extends HttpServlet
 		    // we can always get the userid from the session
 		    Session s = SessionManager.getCurrentSession();
 		    if (s != null) {
-			// System.out.println("got session " + s.getId());
 			userid = s.getUserId();
+			
+			try
+			{
+				User u = UserDirectoryService.getUser(userid);
+				userName = u.getDisplayName();
+				userEmail = u.getEmail();
+			}
+			catch (Exception ee)
+			{
+				
+			}
+			
 			euid = s.getUserEid();
 			sessionid = s.getId();
 		    }
@@ -344,7 +372,29 @@ public class OCWTool extends HttpServlet
 		    String rolename = null;
 	
 		    if (siteid != null)
-			realmId = SiteService.siteReference(siteid);
+		    {
+		    	realmId = SiteService.siteReference(siteid);
+		    	// get site
+		    	try {
+				    Site site = SiteService.getSite(siteid);
+				    courseTitle = site.getTitle();
+				    courseDescription = site.getDescription();
+					if(site.getType().equals("course"))
+					{
+						String termString = site.getProperties().getProperty("term");
+						System.out.println("term=" + termString);
+						AcademicSession as = cms.getAcademicSession(termString);
+						if (as != null)
+						{
+							courseStartDate= as.getStartDate().toString();
+							courseEndDate=as.getEndDate().toString();
+							System.out.println("term=" + as + courseStartDate + courseEndDate);
+						}
+					}
+		    	} catch (Exception e) {}
+		    	{
+			    }
+		    }
 		    if (realmId != null) {
 			try {
 			    realm = AuthzGroupService.getAuthzGroup(realmId);
@@ -357,6 +407,17 @@ public class OCWTool extends HttpServlet
 		    {
 		    	// go to instructor view
 		    	url= url + "instructor/";
+		    	Set instructorSet = realm.getUsersHasRole(realm.getMaintainRole());
+		    	for (Iterator k = instructorSet.iterator(); k.hasNext();)
+		    	{
+		    		String instructorId = (String) k.next();
+		    		User kUser = UserDirectoryService.getUser(instructorId);
+		    		if (kUser != null)
+		    		{
+		    			courseDirector = courseDirector.concat(kUser.getDisplayName()).concat(",");
+		    		}
+		    	}
+		    	courseDirector = courseDirector.endsWith(",")?courseDirector.substring(0, courseDirector.length()-1):courseDirector;
 		    }
 		    else
 		    {
@@ -370,6 +431,7 @@ public class OCWTool extends HttpServlet
 	
 		    if (sessionid != null)
 			sessionid = encrypt(sessionid);
+		    
 	
 		    // generate redirect, as url?user=xxx&site=xxx
 		    
@@ -378,11 +440,19 @@ public class OCWTool extends HttpServlet
 			// command is the thing that will be signed
 		    command = "user=" + URLEncoder.encode(euid) + 
 			    "&internaluser=" + URLEncoder.encode(userid) + 
+			    "&username=" + URLEncoder.encode(userName) +
+			    "&useremail=" +URLEncoder.encode(userEmail) +
 			    "&site=" + URLEncoder.encode(siteid) + 
 			    "&role=" + URLEncoder.encode(rolename) +
 			    "&session=" + URLEncoder.encode(sessionid) +
 			    "&serverurl=" + URLEncoder.encode(getServerUrl()) +
-			    "&time=" + System.currentTimeMillis();
+			    "&time=" + System.currentTimeMillis() + 
+			    "&courseTitle=" + courseTitle +
+			    "&courseDescription=" + courseDescription + 
+				"&courseNumber=" + siteid + 
+				"&courseStartDate=" + courseStartDate +
+				"&courseEndDate=" + courseEndDate +
+				"&courseDirector=" + courseDirector;
 			// pass on any other arguments from the user.
 			// but sanitize them to prevent people from trying to
 			// fake out the parameters we pass, or using odd syntax

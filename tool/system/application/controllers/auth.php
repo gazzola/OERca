@@ -29,27 +29,77 @@ class Auth extends Controller
     function Auth()
     {
         parent::Controller();
-
+        
 		$this->load->model('ocw_user');
+		$this->load->model('course');
 		$this->CI = $this->freakauth_light;
-
 		if ($_SERVER['QUERY_STRING'] <> '') { // coming from Sakai??
 			// get user role, user name and site id
-			$role = ($_REQUEST['role']=='maintain') ? 'instructor' : $_REQUEST['role'];
-			$user = $_REQUEST['user'];
+			$role = ($_REQUEST['role']=='maintain') ? 'instructor' : ($_REQUEST['role']=='access' ? 'dscribe1':$_REQUEST['role']);
+			$userId = $_REQUEST['user'];
+			$username = $_REQUEST['username'];
+			$useremail = $_REQUEST['useremail'];
 			$site = $_REQUEST['site'];
 			$session = $_REQUEST['session'];
 			$internaluser = $_REQUEST['internaluser'];
-
-			if (($userdata=$this->ocw_user->get_user($user)) !== false) {
+			$courseTitle = $_REQUEST['courseTitle'];
+			$courseDescription = $_REQUEST['courseDescription'];
+			$courseNumber = $_REQUEST['courseNumber'];
+			$courseStartDate = $_REQUEST['courseStartDate'];
+			$courseEndDate = $_REQUEST['courseEndDate'];
+			$courseDirector = $_REQUEST['courseDirector'];
+			
+			if (($userdata=$this->ocw_user->get_user($userId)) == false) {
+				$this->ocw_user->add_user($username, $userId, $useremail);
+			}
+			if (($userdata=$this->ocw_user->get_user($userId)) !== false) {
 				 $userdata['sessionid'] = $session;
 				 $userdata['internaluser'] = $internaluser;
 				 $userdata['site'] = $site;
-    			$this->CI->_set_logindata($userdata);
+				 
+				$this->CI->_set_logindata($userdata);
+				
+				if (($userCourses=$this->ocw_user->get_courses($userId)) == null)
+				{
+					
+					print "try to add course";
+					// if there is no course, add the current one as the first course
+					$courseDetails['newc'] = $courseTitle;
+					$courseDetails['curriculum'] = 'new';
+					$courseDetails['description'] = $courseDescription;
+					$courseDetails['sequence']='new';
+					$courseDetails['news'] = 'new';
+					$courseDetails['cnumber']=$courseNumber;
+					$courseDetails['ctitle'] = $courseTitle;
+					$courseDetails['sdate'] = $courseStartDate;
+					$courseDetails['edate'] = $courseEndDate;
+					$courseDetails['class'] = $courseTitle;
+					$courseDetails['director'] = $courseDirector;
+					$courseDetails['collabs']='';
+					$courseDetails['dscribe']=0;
+
+					// add course
+					$this->course->new_course($courseDetails);
+					print "course added";
+					// add user role for the course
+					if(($u = $this->ocw_user->existsByUserName($userId)) !== false)
+					{
+						print "find user";
+						if (($c = $this->course->existsByNumber($courseNumber)) !== false)
+						{
+							print "find course";
+							print '<pre>'; print_r($c); print '</pre>';
+							print '<pre>'; print_r($u); print '</pre>';
+							$this->course->add_user($u['id'], $c['id'], $role);		
+						}
+					}
+				}
+				
 				redirect('home','location');
-			} else {
-				//$this->ocw_utils->dump($_SERVER);
-				exit;        
+			}
+			else
+			{
+				exit;
 			}
 		}
 
