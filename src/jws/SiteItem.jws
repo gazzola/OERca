@@ -111,6 +111,12 @@ public class SiteItem {
 	SessionManager.setCurrentSession(s);
 	return s;
     }
+    
+    public String echo(String data) throws AxisFault {
+    	System.out.println("inside echo data=" + data);
+    	return data;
+    }
+    
 
     public String testsign(String data) throws AxisFault {
 //	Session s = establishSession(sessionid);

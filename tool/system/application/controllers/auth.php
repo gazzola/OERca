@@ -40,7 +40,8 @@ class Auth extends Controller
 			$username = $_REQUEST['username'];
 			$useremail = $_REQUEST['useremail'];
 			$site = $_REQUEST['site'];
-			$session = $_REQUEST['session'];
+			$serverurl = $_REQUEST['serverurl'];
+			$sakaisession = $_REQUEST['session'];
 			$internaluser = $_REQUEST['internaluser'];
 			$courseTitle = $_REQUEST['courseTitle'];
 			$courseDescription = $_REQUEST['courseDescription'];
@@ -49,11 +50,32 @@ class Auth extends Controller
 			$courseEndDate = $_REQUEST['courseEndDate'];
 			$courseDirector = $_REQUEST['courseDirector'];
 			
+			// construct new data to store in session
+			$newsessiondata = array (
+					'role' => $role,
+					'userId' => $userId,
+					'username' => $username,
+					'useremail' => $useremail,
+					'site' => $site,
+					'serverurl' => $serverurl,
+					'sakaisession' => $sakaisession,
+					'internaluser' => $internaluser,
+					'courseTitle' => $courseTitle,
+					'courseDescription' => $courseDescription,
+					'courseNumber' => $courseNumber,
+					'courseStartDate' => $courseStartDate,
+					'courseEndDate' => $courseEndDate,
+					'courseDirector' => $courseDirector
+			);
+			$this->db_session->set_userdata($newsessiondata);
+			
+			
+			
 			if (($userdata=$this->ocw_user->get_user($userId)) == false) {
 				$this->ocw_user->add_user($username, $userId, $useremail);
 			}
 			if (($userdata=$this->ocw_user->get_user($userId)) !== false) {
-				 $userdata['sessionid'] = $session;
+				 $userdata['sessionid'] = $sakaisession;
 				 $userdata['internaluser'] = $internaluser;
 				 $userdata['site'] = $site;
 				 
