@@ -59,7 +59,7 @@ class Auth extends Controller
 				 
 				$this->CI->_set_logindata($userdata);
 				
-				if (($userCourses=$this->ocw_user->get_courses($userId)) == null)
+				if (($userCourses=$this->ocw_user->get_courses($userdata['id'])) == null)
 				{
 					
 					print "try to add course";
@@ -80,16 +80,11 @@ class Auth extends Controller
 
 					// add course
 					$this->course->new_course($courseDetails);
-					print "course added";
 					// add user role for the course
 					if(($u = $this->ocw_user->existsByUserName($userId)) !== false)
 					{
-						print "find user";
 						if (($c = $this->course->existsByNumber($courseNumber)) !== false)
 						{
-							print "find course";
-							print '<pre>'; print_r($c); print '</pre>';
-							print '<pre>'; print_r($u); print '</pre>';
 							$this->course->add_user($u['id'], $c['id'], $role);		
 						}
 					}
