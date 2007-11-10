@@ -9,25 +9,18 @@ $itemList = new OCWItemList;
 
 //Get the linktool parameters
 $user = $this->db_session->userdata('internaluser');
-print $user;
 $euid = $this->db_session->userdata('user');
 $site = $this->db_session->userdata('site');
 $server = $this->db_session->userdata('serverurl');
-$sessionid = $this->db_session->userdata('session');
+$sessionid = $this->db_session->userdata('sakaisession');
 $placement = $this->db_session->userdata('placement');
 $role = $this->db_session->userdata('role');
 $sign = $this->db_session->userdata('sign');
 $time = $this->db_session->userdata('time');
-print $server;
 $url = $server."/sakai-axis/";
-print $url;
-
 
 $client = new SoapClient($url."SiteItem.jws?wsdl");
-print '<pre>'; print_r($client); print '</pre>';
-print $client->echo('to be echoed');
 $assignmentListXML=$client->getAssignmentList($sessionid, $site, $user);
-print $assignmentListXML;
 $resourcesListXML=$client->getResourceList($sessionid, $site); 	
 	
 $toolTitles = $itemList->getSupportedToolTitles();
@@ -36,11 +29,9 @@ $TOOL_NAME="Instructor";
 $PAGE_NAME="Manager Course Materials";
 
 ?>
-<link href="../include/ocw_tool.css" rel="stylesheet" type="text/css"/>
-<div>&nbsp;&nbsp;&nbsp; <a href="index.php">Instructor Home</a>&nbsp;| &nbsp;<a href="dscribes.php">Manage dScribes</a>&nbsp; | &nbsp;Select OCW Course Materials &nbsp; | &nbsp;<a href="../preview_inst/course.php">Review for Export</a> | &nbsp; <a href="../dscribe/index.php">dScribe Tools</a></div>
-<br/>
-
-<div id="tool_content">
+<style type='text/css'>
+<?php $this->file(BASEPATH.'application/views/ocw_tool.css'); ?>
+</style>
 <div style="text-align:left; margin-bottom:20px;  ">
 
 <br/>
@@ -192,7 +183,4 @@ $PAGE_NAME="Manager Course Materials";
 	</td></tr>
  
 </table>
-</div></div>
-</div>
-
 </div>

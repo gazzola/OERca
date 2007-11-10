@@ -114,7 +114,7 @@ public class SiteItem {
     
     public String echo(String data) throws AxisFault {
     	System.out.println("inside echo data=" + data);
-    	return data;
+    	return "dddd + " + data;
     }
     
 
