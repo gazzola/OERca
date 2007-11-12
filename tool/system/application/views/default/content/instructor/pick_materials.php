@@ -26,7 +26,6 @@ $toolTitles = $itemList->getSupportedToolTitles();
 
 $TOOL_NAME="Instructor";
 $PAGE_NAME="Manager Course Materials";
-
 ?>
 <form name="chooseMaterialForm" method="post" action="">
 <table border="0" cellpadding="0" cellspacing="0" class="course_materials">
@@ -105,37 +104,31 @@ $PAGE_NAME="Manager Course Materials";
 	</td>
 		
  <td style="width: 10%; vertical-align:top;">
-	
 	<br/><br/><br/><br/><br/>&nbsp;&nbsp;&nbsp;
 	<input class="blue_submit" id="submitbutton" type="submit" name="login" value="Add >>>" tabindex="3" /></td>
-
 </td>
+
+
 
 <td width=40% style="vertical-align:top; font-weight: normal; text-align: left; border:1px solid #ccc; ">
  <div class="materials_list">
  <p class="instructions"><br/>To remove materials from this OCW materials list  - click on the <strong>remove</strong> link for that item.<br/><br/></p>
-	
-<div class="parent">&nbsp; <img src="<?= property('app_img').'/page.png'?>" height=15  /> &nbsp;&nbsp;Syllabus <a href="#" title="remove this item">( remove )</a>
-</div>
 
-<div class="parent">&nbsp; <img src="<?= property('app_img').'/folder.gif'?>" height=15  /> &nbsp;&nbsp;Lectures <a href="#" title="remove this item and all child items">( remove )</a>
-
-<div class="child">
-	<div><img src="<?= property('app_img').'/blank.gif'?>" height="15" /><img src="<?= property('app_img').'/ppt.jpg'?>" height="15" /> &nbsp;&nbsp; SI514 L1 W2007.ppt <a href="#" title="remove only this item">( remove )</a></div>
-	<div><img src="<?= property('app_img').'/blank.gif'?>" height="15" /><img src="<?= property('app_img').'/ppt.jpg'?>" height="15" /> &nbsp;&nbsp; SI514 L2 W2007.ppt <a href="#" title="remove only this item">( remove )</a></div>
-	<div><img src="<?= property('app_img').'/blank.gif'?>" height="15" /><img src="<?= property('app_img').'/ppt.gif'?>" height="15" /> &nbsp;&nbsp; SI514 L3 W2007.ppt <a href="#" title="remove only this item">( remove )</a></div>
-	<div><img src="<?= property('app_img').'/blank.gif'?>" height="15" /><img src="<?= property('app_img').'/ppt.jpg'?>" height="15" /> &nbsp;&nbsp; SI514 L4 W2007.ppt <a href="#" title="remove only this item">( remove )</a></div>
-	<div><img src="<?= property('app_img').'/blank.gif'?>" height="15" /><img src="<?= property('app_img').'/ppt.jpg'?>" height="15" /> &nbsp;&nbsp; SI514 L5 W2007.ppt <a href="#" title="remove only this item">( remove )</a></div>
-
-<div class="parent">
-	<div><img src="<?= property('app_img').'/blank.gif'?>" height="15" />&nbsp;&nbsp;&nbsp;&nbsp;Assignments
- <a href="#" title="remove only this item">( remove )</a></div>
-
-	
-<div class="parent">	 
-	<img src="<?= property('app_img').'/exclaim.gif'?>"> Lecture 1 video <span style="color:red; font-size: .95em;" title=" item has been changed">&nbsp;&nbsp;- item has been modified</span> </div>
-	</div>
-	</td></tr>
- 
+<?php if ($categories == null) { ?>
+	<p class="error"><?=getUserProperty('name')?>, we did not find any categories for you to process yet.</p> 
+	<?php } else { 
+	 foreach($categories as $category) { ?>
+		<div class="parent">&nbsp; <img src="<?= property('app_img').'/page.png'?>"  height=15 /> <?=$category?><a href="#" title="remove this item">( remove )</a>&nbsp;&nbsp;
+			<?php $categoryMaterials = $categoriesMaterials[$category];
+			if ($categoryMaterials == null) { ?>
+			<p class="error"><?=getUserProperty('name')?>, we did not find any materials for this category.</p> 
+			<?php } else { ?>
+				<div class="child"> 
+	 			<?php foreach($caetoryMaterials as $categoryMaterial) { ?>
+	 				<div><img src="<?= property('app_img').'/blank.gif'?>" height="15" /><img src="<?= property('app_img').'/ppt.jpg'?>" height="15" /> &nbsp;&nbsp; <?=$categoryMaterial[name]?> <a href="#" title="remove only this item">( remove )</a></div>
+				</div>
+	 		<?php }} ?>	
+	 	</div>
+<?php }} ?>	
 </table>
 </form>

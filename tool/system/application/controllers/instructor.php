@@ -21,6 +21,7 @@ class Instructor extends Controller {
 
 		$this->load->model('ocw_user');
 		$this->load->model('course');
+		$this->load->model('material');
 	
 		$this->uid = getUserProperty('id');	
 		$this->data = array();
@@ -109,6 +110,15 @@ class Instructor extends Controller {
 	{
 		$this->_isInstructor($cid); 
 		$this->data['title'] = $this->lang->line('ocw_ins_pagetitle_material');
+		$categories = $this->material->categories();
+		$categoriesMaterials = array();
+		foreach ($categories as $category)
+		{
+			$materialList = $this->material->categoryMaterials($cid, '', $in_ocw=false, $as_listing=false, $category);
+			$categoriesMaterials[$category] = $materialList;
+		}
+		$this->data['categories'] = $categories;
+		$this->data['categoriesMaterials'] = $categoriesMaterials;
        	$this->layout->buildPage('instructor/pick_materials', $this->data);
 	}
 

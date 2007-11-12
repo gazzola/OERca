@@ -36,6 +36,45 @@ class Material extends Model
 				    ON ocwdemo_filetypes.id = ocwdemo_materials.filetype_id
 				 WHERE ocwdemo_materials.course_id = $cid $where
 				 ORDER BY ocwdemo_materials.order";
+		
+		$q = $this->db->query($sql);
+
+		if ($q->num_rows() > 0) {
+			foreach($q->result_array() as $row) { 
+					$row['comments'] = $this->comments($row['id'],'user_id,comments,modified_on');
+					if ($in_ocw) {
+						if ($row['in_ocw']) { $materials[]= $row; }
+					} else {
+						$materials[]= $row; 
+					}
+			}
+		}
+		return (sizeof($materials)) ? (($as_listing) ? $this->as_listing($materials):$materials) : null; 
+	}
+	
+/**
+     * Get materials for a given course in a given category
+     *
+     * @access  public
+     * @param   int	cid course id		
+     * @param   int mid material id	
+     * @param   boolean	in_ocw if true only get materials in ocw 
+     * @param   boolean	as_listing 
+     * @param 	int category category
+     * @return  array
+     */
+	public function categoryMaterials($cid, $mid, $in_ocw=false, $as_listing=false, $category)
+	{
+		$materials = array();
+		$where = ($mid=='') ? '' : "AND ocwdemo_materials.id='$mid'";
+		$where = ($category=='') ? $where : $where."AND ocwdemo_materials.category='$category'";
+
+		$sql = "SELECT ocwdemo_materials.*, ocwdemo_filetypes.mimetype 
+				  FROM ocwdemo_materials
+				  LEFT JOIN ocwdemo_filetypes 
+				    ON ocwdemo_filetypes.id = ocwdemo_materials.filetype_id
+				 WHERE ocwdemo_materials.course_id = '$cid' $where
+				 ORDER BY ocwdemo_materials.order";
 		$q = $this->db->query($sql);
 
 		if ($q->num_rows() > 0) {
