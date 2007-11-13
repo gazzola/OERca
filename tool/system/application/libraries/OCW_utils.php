@@ -165,5 +165,17 @@ class OCW_utils {
 		   : '<img src="'.$img.$file.'" width="'.$width.'" height="'.
 			  $height.'" />';
 	}
+	
+	/**
+	 * Escape url 
+	 *
+	 * @access	public
+	 * @param	string	the url to be escaped
+	 * @return	string
+	 */
+	function escapeUrl($url)
+	{
+	    return rawurlencode($url);
+	}
 }
 ?>

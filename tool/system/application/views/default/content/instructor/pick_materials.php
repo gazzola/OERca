@@ -63,8 +63,13 @@ $PAGE_NAME="Manager Course Materials";
 							$assignmentId = $assignmentIds->item(0)->nodeValue;
 							$assignmentTitles = $assignment->getElementsByTagName("AssignmentTitle");
 							$assignmentTitle = $assignmentTitles->item(0)->nodeValue;
-							echo "<div> &nbsp;&nbsp; <input type='checkbox' name='chooseItem'>&nbsp;&nbsp; $assignmentTitle <a href='#' title='add only this item'>( Add )</a><br />";
-						}
+						?>
+							<div> &nbsp;&nbsp; 
+							<input type='checkbox' name='chooseItem'>&nbsp;&nbsp; <?=$assignmentTitle?>
+							<?=anchor(site_url('instructor/add_material/'.$cid.'/'.$this->ocw_utils->escapeUrl($assignmentId)),
+					  			'<img src="'.property('app_img').'/add.png" title="Add only this item" />',
+					 	 		array("title"=>"Add only this item"))?>&nbsp;&nbsp;
+						<?php }
 					}
 					else if ($title == "Resources")
 					{
@@ -88,8 +93,13 @@ $PAGE_NAME="Manager Course Materials";
 							$width = "$entityDepth$unit";
 							if ($entityIsCollection != 'true')
 							{
-								echo "<div style='text-indent:$width'><input type='checkbox' name='chooseItem'>$entityTitle <a href='#' title='add only this item'>( Add )</a>";
-							}
+							echo $this->ocw_utils->escapeUrl($entityId);
+							?>
+							<div style='text-indent:$width'><input type='checkbox' name='chooseItem'><?=$entityTitle?> 
+							<?=anchor(site_url('instructor/add_material/'.$cid.'/'.$this->ocw_utils->escapeUrl($entityId)),
+					  			'<img src="'.property('app_img').'/add.png" title="Add only this item" />',
+					 	 		array("title"=>"Add only this item"))?>&nbsp;&nbsp;
+							<?php }
 							else
 							{
 								echo "<div style='text-indent:$width'>$entityTitle";
@@ -115,14 +125,18 @@ $PAGE_NAME="Manager Course Materials";
  <p class="instructions"><br/>To remove materials from this OCW materials list  - click on the <strong>remove</strong> link for that item.<br/><br/></p>
 
 <?php if ($categories == null) { ?>
-	<p class="error"><?=getUserProperty('name')?>, we did not find any categories for you to process yet.</p> 
+	<p class="error">There is no category for you to process yet.</p> 
 	<?php } else { 
 	 foreach($categories as $category) { ?>
 		<div class="parent">&nbsp; <img src="<?= property('app_img').'/page.png'?>"  height=15 /> <?=$category?><a href="#" title="remove this item">( remove )</a>&nbsp;&nbsp;
 			<?php $categoryMaterials = $categoriesMaterials[$category];
-			if ($categoryMaterials == null) { ?>
-			<p class="error"><?=getUserProperty('name')?>, we did not find any materials for this category.</p> 
-			<?php } else { ?>
+			if ($categoryMaterials == null) { 
+			// this is no material inside
+			?>
+			<p class="error">There is no material for this category.</p> 
+			<?php } else { 
+				// there is material inside
+			?>
 				<div class="child"> 
 	 			<?php foreach($caetoryMaterials as $categoryMaterial) { ?>
 	 				<div><img src="<?= property('app_img').'/blank.gif'?>" height="15" /><img src="<?= property('app_img').'/ppt.jpg'?>" height="15" /> &nbsp;&nbsp; <?=$categoryMaterial[name]?> <a href="#" title="remove only this item">( remove )</a></div>

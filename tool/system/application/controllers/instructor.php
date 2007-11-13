@@ -98,6 +98,24 @@ class Instructor extends Controller {
        	$this->layout->buildPage('instructor/manage_dscribes', $this->data);
 	}
 
+	public function add_material($cid, $materialId) 
+	{
+		//$this->material->add_material();
+		//$this->_isInstructor($cid); 
+		$this->data['title'] = $this->lang->line('ocw_ins_pagetitle_material');
+		$categories = $this->material->categories();
+		$categoriesMaterials = array();
+		foreach ($categories as $category)
+		{
+			$materialList = $this->material->categoryMaterials($cid, '', $in_ocw=false, $as_listing=false, $category);
+			$categoriesMaterials[$category] = $materialList;
+		}
+		$this->data['categories'] = $categories;
+		$this->data['categoriesMaterials'] = $categoriesMaterials;
+		$this->data['cid']=$cid;
+       	$this->layout->buildPage('instructor/pick_materials', $this->data);
+	}
+	
 	/**
      * Display pick materials page 
      *
@@ -119,6 +137,7 @@ class Instructor extends Controller {
 		}
 		$this->data['categories'] = $categories;
 		$this->data['categoriesMaterials'] = $categoriesMaterials;
+		$this->data['cid']=$cid;
        	$this->layout->buildPage('instructor/pick_materials', $this->data);
 	}
 
