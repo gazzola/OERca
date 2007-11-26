@@ -55,11 +55,11 @@ echo form_open('instructor/materials_option', '', $hidden);
 				foreach ($toolTitles as $title)
 				{
 					echo "<div class='paren'>";
-					$imageUrl=property('app_img').'/validated.gif';
-					echo "<img src=\"".$imageUrl."\""."  height='15' />"."&nbsp;&nbsp;";
+					//$imageUrl=property('app_img').'/validated.gif';
+					//echo "<img src=\"".$imageUrl."\""."  height='15' />"."&nbsp;&nbsp;";
 					$imageUrl=property('app_img').'/page.png';
 					echo "<img src=\"".$imageUrl."\""."  height='15' />"."&nbsp;&nbsp;";
-					echo $title."<br />";
+					echo $title."<br /></div>";
 					if ($title == "Assignments")
 					{
 						// reading the assignment list xml string
@@ -72,13 +72,16 @@ echo form_open('instructor/materials_option', '', $hidden);
 							$assignmentId = $assignmentIds->item(0)->nodeValue;
 							$assignmentTitles = $assignment->getElementsByTagName("AssignmentTitle");
 							$assignmentTitle = $assignmentTitles->item(0)->nodeValue;
+							echo "<div style='text-indent:1em'>";
 						?>
 							<div> &nbsp;&nbsp; 
 							<input type='checkbox' name='chooseItem'>&nbsp;&nbsp; <?=$assignmentTitle?>
 							<?=anchor(site_url('instructor/add_material/'.$cid.$this->ocw_utils->escapeUrl($assignmentId)),
 					  			'<img src="'.property('app_img').'/add.png" title="Add only this item" />',
 					 	 		array("title"=>"Add only this item"))?>&nbsp;&nbsp;
-						<?php }
+						<?php
+							 echo "</div>";
+						}
 					}
 					else if ($title == "Resources")
 					{
@@ -99,12 +102,12 @@ echo form_open('instructor/materials_option', '', $hidden);
 							$entityIsCollections = $entity->getElementsByTagName("EntityIsCollection");
 							$entityIsCollection = $entityIsCollections->item(0)->nodeValue;
 							$unit ="em";
+							$entityDepth = $entityDepth;
 							$width = "$entityDepth$unit";
 							if ($entityIsCollection != 'true')
 							{
-							echo $this->ocw_utils->escapeUrl($entityId);
+							echo "<div style='text-indent:".$width."'>";
 							?>
-							<div style='text-indent:$width'>
 							<?php echo form_checkbox('chooseItem[]', $entityId, FALSE); 
 								echo $entityTitle;
 							?>
@@ -116,9 +119,10 @@ echo form_open('instructor/materials_option', '', $hidden);
 							{
 								echo "<div style='text-indent:$width'>$entityTitle";
 							}
+							
+							echo "</div>";
 						}
 					}
-					echo"</div>";
 				}
 				unset($value); // break the reference with the last element
 			?>

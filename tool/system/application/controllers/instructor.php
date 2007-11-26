@@ -137,7 +137,6 @@ class Instructor extends Controller {
 				echo  ($i+1) . '- ' . $entityIds[$i] . '<br>';
 		    }
 			echo "<br><br>";
-		
 		}
 	}
 	
