@@ -2,6 +2,13 @@
 <?php $this->load->view(property('app_views_path').'/OCWItem.php', $data); ?>
 <?php $this->load->view(property('app_views_path').'/OCWItemList.php', $data); ?>
 <div id="tool_content">
+<script type="text/javascript">
+function setTask(taskValue)
+{
+	document.getElementById('task').value=taskValue;
+}
+		
+</script>
 <?php
 $this->CI = $this->freakauth_light;
 $itemList = new OCWItemList;
@@ -26,8 +33,10 @@ $toolTitles = $itemList->getSupportedToolTitles();
 
 $TOOL_NAME="Instructor";
 $PAGE_NAME="Manager Course Materials";
+
+$hidden = array('task' => 'add');
+echo form_open('instructor/materials_option', '', $hidden);
 ?>
-<form name="chooseMaterialForm" method="post" action="">
 <table border="0" cellpadding="0" cellspacing="0" class="course_materials">
 <tr>
 	<td width="40%" style="font-weight: bold; text-align: center; border:1px solid #ccc;padding: 5px; background: #E5EBFF;">
@@ -66,7 +75,7 @@ $PAGE_NAME="Manager Course Materials";
 						?>
 							<div> &nbsp;&nbsp; 
 							<input type='checkbox' name='chooseItem'>&nbsp;&nbsp; <?=$assignmentTitle?>
-							<?=anchor(site_url('instructor/add_material/'.$cid.'/'.$this->ocw_utils->escapeUrl($assignmentId)),
+							<?=anchor(site_url('instructor/add_material/'.$cid.$this->ocw_utils->escapeUrl($assignmentId)),
 					  			'<img src="'.property('app_img').'/add.png" title="Add only this item" />',
 					 	 		array("title"=>"Add only this item"))?>&nbsp;&nbsp;
 						<?php }
@@ -95,7 +104,10 @@ $PAGE_NAME="Manager Course Materials";
 							{
 							echo $this->ocw_utils->escapeUrl($entityId);
 							?>
-							<div style='text-indent:$width'><input type='checkbox' name='chooseItem'><?=$entityTitle?> 
+							<div style='text-indent:$width'>
+							<?php echo form_checkbox('chooseItem[]', $entityId, FALSE); 
+								echo $entityTitle;
+							?>
 							<?=anchor(site_url('instructor/add_material/'.$cid.'/'.$this->ocw_utils->escapeUrl($entityId)),
 					  			'<img src="'.property('app_img').'/add.png" title="Add only this item" />',
 					 	 		array("title"=>"Add only this item"))?>&nbsp;&nbsp;
@@ -115,7 +127,10 @@ $PAGE_NAME="Manager Course Materials";
 		
  <td style="width: 10%; vertical-align:top;">
 	<br/><br/><br/><br/><br/>&nbsp;&nbsp;&nbsp;
-	<input class="blue_submit" id="submitbutton" type="submit" name="login" value="Add >>>" tabindex="3" /></td>
+	<?php
+		$js = 'onClick="setTask(\'add\')"';
+		echo form_submit('addbutton', 'Add >>', $js);
+	?>
 </td>
 
 

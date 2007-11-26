@@ -117,6 +117,31 @@ class Instructor extends Controller {
 	}
 	
 	/**
+     * store the picked materials
+     *
+     * @access  public	
+     * @param   string	task		
+     * @return  void
+     */
+	public function materials_option($task='') 
+	{
+		$task = $_POST['task'];
+		if ($task == 'add')
+		{
+			
+			$entityIds = $_POST['chooseItem'];
+		   	$how_many = count($entityIds);
+			echo 'entities chosen: '.$how_many.'<br><br>';
+			for ($i=0; $i<$how_many; $i++) 
+			{
+				echo  ($i+1) . '- ' . $entityIds[$i] . '<br>';
+		    }
+			echo "<br><br>";
+		
+		}
+	}
+	
+	/**
      * Display pick materials page 
      *
      * @access  public
