@@ -21,21 +21,7 @@ class Material extends Model
 	 */
 	public function add_material ($details)
 	{
-		/*$sql = "insert into ocwdemo_materials (course_id, category, name, content, author, collaborators, tag_id, filetype_id, in_ocw, embedded_ip, nodetype, parent, order, modified, created_on modified_on) " 
-				." values($details['cid'], $category, $name, $content, $author, $collaborators, $tag_id, $filetype_id, $in_ocw, $embedded_ip, $nodetype, $parent, $order, $modified, $created_on, $modified_on)"; 
-
-		// add course	
-		$data = array('number'=>$details['cnumber'],
-					  'title'=>$details['ctitle'], 'start_date'=>$details['sdate'],
-					  'end_date'=>$details['edate'], 'curriculum_id'=>$curr_id, 
-					  'sequence_id'=>$seq_id, 
-					  'class'=>$details['class'], 'director'=>$details['director'],
-					  'collaborators'=>$details['collabs']);
-		$this->db->insert('courses', $data);
-		$material_id = $this->db->insert_id();
-		
-		return $course_id;*/
-		echo $details;
+		$this->db->insert('ocwdemo_materials',$details);
 	}
 
 	/**

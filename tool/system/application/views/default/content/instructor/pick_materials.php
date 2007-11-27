@@ -34,7 +34,18 @@ $toolTitles = $itemList->getSupportedToolTitles();
 $TOOL_NAME="Instructor";
 $PAGE_NAME="Manager Course Materials";
 
-$hidden = array('task' => 'add');
+$hidden = array('task' => 'add',
+				'cid' => $cid,
+				'user' => $user,
+				'euid' =>$euid,
+				'site' => $site,
+				'server' => $server,
+				'sessionid' => $sessionid,
+				'placement' => $placement,
+				'role' => $role,
+				'sign' => $sign,
+				'time' => $time,
+				'url' => $url);
 echo form_open('instructor/materials_option', '', $hidden);
 ?>
 <table border="0" cellpadding="0" cellspacing="0" class="course_materials">

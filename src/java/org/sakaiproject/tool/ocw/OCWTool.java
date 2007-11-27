@@ -329,6 +329,7 @@ public class OCWTool extends HttpServlet
 	
 		    // we can always get the userid from the session
 		    Session s = SessionManager.getCurrentSession();
+		    System.out.println("session id=" + s.getId());
 		    if (s != null) {
 			userid = s.getUserId();
 			

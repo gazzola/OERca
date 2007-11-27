@@ -128,13 +128,51 @@ class Instructor extends Controller {
 		$task = $_POST['task'];
 		if ($task == 'add')
 		{
-			
 			$entityIds = $_POST['chooseItem'];
 		   	$how_many = count($entityIds);
 			echo 'entities chosen: '.$how_many.'<br><br>';
+			$cid = $_POST['cid'];
+			$user= $_POST['user'];
+			$euid = $_POST['euid'];
+			$site = $_POST['site'];
+			$server = $_POST['server'];
+			$sessionid = $_POST['sessionid'];
+			$placement = $_POST['placement'];
+			$role = $_POST['role'];
+			$sign = $_POST['sign'];
+			$time = $_POST['time'];
+			$url = $_POST['url'];
+			echo $url;
+			$client = new SoapClient($url."ContentHosting.jws?wsdl");
 			for ($i=0; $i<$how_many; $i++) 
 			{
-				echo  ($i+1) . '- ' . $entityIds[$i] . '<br>';
+				$entityId = $entityIds[$i];
+				echo $sessionid.' <br/>'.$entityId.'<br/>';
+				print '<pre>'; print_r($client); print '</pre>';
+				
+				
+				
+				$resource=$client->getResources($sessionid, $entityId);
+				echo 'another';
+				$details = array(
+								'cid' => $cid,
+								'category' => "Resources",
+								'name' => $resource.getTitle(),
+								'content' => '',
+								'author' => $resource.getResourceProperties().getProperty("CHEF:creator"),
+								'tag_id' => '',	// empty tag for now
+								'filetype_id' => $resource.getContentType(),
+								'in_ocw' => 1,
+								'embedded_ip' => '',
+								'nodetpe' => 'child',
+								'order' =>'',
+								'modified' => '',
+								'created_on' => '',
+								'modified_on' => ''
+							);
+				echo 'another1';
+				print '<pre>'; print_r($details); print '</pre>';
+				$this->material->add_materials($details);
 		    }
 			echo "<br><br>";
 		}
