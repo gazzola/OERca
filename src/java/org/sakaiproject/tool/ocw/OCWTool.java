@@ -383,13 +383,11 @@ public class OCWTool extends HttpServlet
 					if(site.getType().equals("course"))
 					{
 						String termString = site.getProperties().getProperty("term");
-						System.out.println("term=" + termString);
 						AcademicSession as = cms.getAcademicSession(termString);
 						if (as != null)
 						{
 							courseStartDate= as.getStartDate().toString();
 							courseEndDate=as.getEndDate().toString();
-							System.out.println("term=" + as + courseStartDate + courseEndDate);
 						}
 					}
 		    	} catch (Exception e) {}

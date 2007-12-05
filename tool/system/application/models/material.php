@@ -21,6 +21,8 @@ class Material extends Model
 	 */
 	public function add_material ($details)
 	{
+		
+		echo "add materials";
 		$this->db->insert('ocwdemo_materials',$details);
 	}
 

@@ -263,6 +263,20 @@ public class SiteItem {
     	return s;
     }
 
+    public String touchsessionid(String esession) {
+System.out.println("in touch session id");
+    	Session s =  touchsession(esession);
+    	if ( s == null)
+    	{
+    		return null;
+    	}
+    	else
+    	{
+System.out.println("id=" + s.getId());
+    		return s.getId();
+    	}
+    }
+    
     private static String decrypt (String enc) {
 	if (privateKey == null)
 	   privateKey = readSecretKey("privkey", "Blowfish");
@@ -449,6 +463,123 @@ public class SiteItem {
 		}
     	
     }
+    
+    /**
+	 *	Get information for a resource
+	 *	This is returned as an XML string in a resource element that has an id, name,and type child elements.
+	 *	Three cases are supported at this time:
+	 *	<ul>
+	 *	<li>Virtual root id:  returns hard coded information.</li>
+	 *	<li>Collection id:  returns the collection information.</li>
+	 *	<li>Resource id:  returns the resource information.</li>
+	 *	</ul>
+	 *
+	 *	@param a valid session id.
+	 *	@param id of the virtual root, a collection, or a resource.
+	 *	@return an empty string if no resources in this collection or an XML list of resource ids, names, and types.
+	 *
+	 *	@author Mark Norton
+	 */
+	public String getInfo (String sessionid, String id) throws AxisFault {
+System.out.println(" in getInfo " + sessionid + " " + id);
+		Session session = establishSession(sessionid);
+		String ret = "";
+		Document dom = Xml.createDocument();
+		
+		try {
+			ContentResource res = ContentHostingService.getResource (id);
+			Node item = getResourceBlock (res, dom);
+			dom.appendChild(item);
+		}
+		catch (Exception ex2) {
+			return ex2.getClass().getName() + " : " + ex2.getMessage();
+		}
+		
+		ret = Xml.writeDocumentToString(dom);
+System.out.println("return=" + ret);
+		return ret;
+	}
+	
+	/*
+	 *  Given a content entity, returns the following information as an XML node:
+	 *  <ul>
+	 *  <li>id - resource identifier</li>
+	 *  <li>name - display name</li>
+	 *  <li>type - resource type</li>
+	 *
+	 *  @author Mark Norton
+	 */
+	private Node getResourceBlock (ContentEntity entity, Document dom) {
+		String id = null;	//  The resource or collection id.
+		String name = null;	//  The display name.
+		String type = null;	//  The resource type.
+		String url = null;	//  The URL.
+		String creator = null; // the creator
+		String createdOn = null; // the creation date
+		String modifiedOn = null; // the modified date
+
+		// Get the content entity id.
+		id = entity.getId();
+
+		// Get the display name.
+		ResourceProperties props = entity.getProperties();
+		name = props.getProperty(ResourceProperties.PROP_DISPLAY_NAME);
+		creator = props.getProperty(ResourceProperties.PROP_CREATOR);
+		type = props.getProperty(ResourceProperties.PROP_CONTENT_TYPE);
+		try
+		{
+			createdOn = Long.toString(props.getTimeProperty(ResourceProperties.PROP_CREATION_DATE).getTime());
+			modifiedOn = Long.toString(props.getTimeProperty(ResourceProperties.PROP_MODIFIED_DATE).getTime());
+		}
+		catch (Exception ignore)
+		{
+			// ignore the time property exception
+		}
+	
+		// Get the URL for the ContentEntity.
+		url = entity.getUrl();
+		
+		//  Create the resource element.
+		Node item = dom.createElement("resource");
+
+		//  Create and append the id child element.
+		Node resId = dom.createElement("id");
+		resId.appendChild (dom.createTextNode(id));
+		item.appendChild(resId);
+
+		//  Create and append the name child element.
+		Node resName = dom.createElement("name");
+		resName.appendChild( dom.createTextNode(name) );
+		item.appendChild(resName);
+
+		//  Create and append the type child element.
+		Node resType = dom.createElement("type");
+		resType.appendChild(dom.createTextNode(type));
+		item.appendChild(resType);
+		
+		//  Create and append the creator child element.
+		Node resCreator = dom.createElement("creator");
+		resCreator.appendChild(dom.createTextNode(creator));
+		item.appendChild(resCreator);
+		
+		if (createdOn != null)
+		{
+			//  Create and append the created on child element.
+			Node resCreatedOn = dom.createElement("createdOn");
+			resCreatedOn.appendChild(dom.createTextNode(createdOn));
+			item.appendChild(resCreatedOn);
+		}
+
+		if (modifiedOn != null)
+		{
+			//  Create and append the modified on child element.
+			Node resModifiedOn = dom.createElement("modifiedOn");
+			resModifiedOn.appendChild(dom.createTextNode(modifiedOn));
+			item.appendChild(resModifiedOn);
+		}
+
+		return item;
+	}
 
 }
 

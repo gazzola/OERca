@@ -41,5 +41,33 @@ class File_type extends Model
 
 		return (sizeof($filetypes) > 0) ? $filetypes : null;
 	}
+	
+	/**
+     * Get filetype id
+     *
+     * @access  public
+     * @return  array
+     */
+	public function getFileTypeId($fileType)
+	{
+		
+		$fileTypeId = 1;
+		$this->db->select('id');
+		$this->db->from('filetypes');
+		$this->db->where('mimetype',$fileType);
+
+		$q = $this->db->get();
+
+		if ($q->num_rows() > 0) {
+			if ($q->num_rows() > 0) {
+				foreach($q->result_array() as $row) 
+				{ 
+					$fileTypeId = $row['id'];
+				}
+			}
+		} 
+
+		return $fileTypeId;
+	}
 }
 ?>

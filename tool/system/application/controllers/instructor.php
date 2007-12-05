@@ -22,6 +22,7 @@ class Instructor extends Controller {
 		$this->load->model('ocw_user');
 		$this->load->model('course');
 		$this->load->model('material');
+		$this->load->model('file_type');
 	
 		$this->uid = getUserProperty('id');	
 		$this->data = array();
@@ -142,37 +143,63 @@ class Instructor extends Controller {
 			$sign = $_POST['sign'];
 			$time = $_POST['time'];
 			$url = $_POST['url'];
-			echo $url;
-			$client = new SoapClient($url."ContentHosting.jws?wsdl");
+			echo $url.'<br/>';
+			// first decode the session id
+			$client = new SoapClient($url."SiteItem.jws?wsdl");
+			//print '<pre>'; print_r($client); print '</pre>';
+			$decodedSessionId = $client->touchsessionid($sessionid);
+			
 			for ($i=0; $i<$how_many; $i++) 
 			{
+				
+				
 				$entityId = $entityIds[$i];
-				echo $sessionid.' <br/>'.$entityId.'<br/>';
-				print '<pre>'; print_r($client); print '</pre>';
-				
-				
-				
-				$resource=$client->getResources($sessionid, $entityId);
-				echo 'another';
-				$details = array(
-								'cid' => $cid,
-								'category' => "Resources",
-								'name' => $resource.getTitle(),
-								'content' => '',
-								'author' => $resource.getResourceProperties().getProperty("CHEF:creator"),
-								'tag_id' => '',	// empty tag for now
-								'filetype_id' => $resource.getContentType(),
-								'in_ocw' => 1,
-								'embedded_ip' => '',
-								'nodetpe' => 'child',
-								'order' =>'',
-								'modified' => '',
-								'created_on' => '',
-								'modified_on' => ''
-							);
-				echo 'another1';
-				print '<pre>'; print_r($details); print '</pre>';
-				$this->material->add_materials($details);
+				$entityInfoXML = $client->getInfo($decodedSessionId, $entityId);
+				echo $entityInfoXML;
+				$doc = new DOMDocument();
+				$doc->loadXML($entityInfoXML);
+				$entities = $doc->getElementsByTagName("resource");
+				foreach($entities as $entity)
+				{
+					echo "here1";
+					$entityIds = $entity->getElementsByTagName("id");
+					echo "here1_1";
+					$entityId = $entityIds->item(0)->nodeValue;
+					echo "here2";
+					$entityNames = $entity->getElementsByTagName("name");
+					$entityName = $entityNames->item(0)->nodeValue;
+					$entityTypes = $entity->getElementsByTagName("type");
+					$entityType = $entityTypes->item(0)->nodeValue;
+					$entityCreators = $entity->getElementsByTagName("creator");
+					$entityCreator = $entityCreators->item(0)->nodeValue;
+					$entityCreatedOns = $entity->getElementsByTagName("createdOn");
+					$entityCreatedOn = $entityCreatedOns->item(0)->nodeValue;
+					$entityModifiedOns = $entity->getElementsByTagName("modifiedOn");
+					$entityModifiedOn = $entityModifiedOns->item(0)->nodeValue;
+					
+					$entityTypeId = $this->file_type->getFileTypeId($entityType);
+					
+					echo '<br/> type id='.$entityTypeId;
+					
+					$details = array(
+									'cid' => $entityId,
+									'category' => "Resources",
+									'name' => $entityName,
+									'content' => '',
+									'author' => $entityCreator,
+									'tag_id' => '',	// empty tag for now
+									'filetype_id' => $entityTypeId,
+									'in_ocw' => 1,
+									'embedded_ip' => '',
+									'nodetpe' => 'child',
+									'order' =>'',
+									'modified' => '',
+									'created_on' => date('Y-m-d h:i:s', $entityCreatedOn),
+									'modified_on' => date('Y-m-d h:i:s', $entityModifiedOn)
+								);
+					print '<pre>'; print_r($details); print '</pre>';
+					$this->material->add_material($details);
+				}
 		    }
 			echo "<br><br>";
 		}
