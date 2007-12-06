@@ -481,7 +481,6 @@ System.out.println("id=" + s.getId());
 	 *	@author Mark Norton
 	 */
 	public String getInfo (String sessionid, String id) throws AxisFault {
-System.out.println(" in getInfo " + sessionid + " " + id);
 		Session session = establishSession(sessionid);
 		String ret = "";
 		Document dom = Xml.createDocument();
@@ -496,7 +495,6 @@ System.out.println(" in getInfo " + sessionid + " " + id);
 		}
 		
 		ret = Xml.writeDocumentToString(dom);
-System.out.println("return=" + ret);
 		return ret;
 	}
 	

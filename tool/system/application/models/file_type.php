@@ -58,12 +58,11 @@ class File_type extends Model
 
 		$q = $this->db->get();
 
-		if ($q->num_rows() > 0) {
-			if ($q->num_rows() > 0) {
-				foreach($q->result_array() as $row) 
-				{ 
-					$fileTypeId = $row['id'];
-				}
+		if ($q->num_rows() > 0) 
+		{
+			foreach($q->result_array() as $row) 
+			{ 
+				$fileTypeId = $row['id'];
 			}
 		} 
 

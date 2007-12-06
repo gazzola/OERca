@@ -168,8 +168,8 @@ echo form_open('instructor/materials_option', '', $hidden);
 				// there is material inside
 			?>
 				<div class="child"> 
-	 			<?php foreach($caetoryMaterials as $categoryMaterial) { ?>
-	 				<div><img src="<?= property('app_img').'/blank.gif'?>" height="15" /><img src="<?= property('app_img').'/ppt.jpg'?>" height="15" /> &nbsp;&nbsp; <?=$categoryMaterial[name]?> <a href="#" title="remove only this item">( remove )</a></div>
+	 			<?php foreach($categoryMaterials as $categoryMaterial) { ?>
+	 				<div><img src="<?= property('app_img').'/blank.gif'?>" height="15" /><img src="<?= property('app_img').'/ppt.jpg'?>" height="15" /> &nbsp;&nbsp; <?=$categoryMaterial['name']?> <a href="#" title="remove only this item">( remove )</a></div>
 				</div>
 	 		<?php }} ?>	
 	 	</div>

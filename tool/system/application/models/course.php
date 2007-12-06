@@ -110,6 +110,30 @@ class Course extends Model
 		return ($query->num_rows() > 0) ? $query->row_array() : false;
 		
 	}
+	
+			
+	/**
+     * Check to see course id by course number
+     *
+     * @access  public
+     * @param   string courseNumber
+     * @return  course id
+     */
+	public function getCourseIdByNumber($courseNumber)
+	{
+		$courseId='';
+		$this->db->select('id')->from('courses')->where('number',$courseNumber);
+		$q = $this->db->get();
+		if ($q->num_rows() > 0) 
+		{
+			foreach($q->result_array() as $row) 
+			{ 
+				$courseId = $row['id'];
+			}
+		} 
+		return $courseId; 
+		
+	}
 
 	/**
      * Get course

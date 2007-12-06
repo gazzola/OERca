@@ -23,7 +23,7 @@ class Material extends Model
 	{
 		
 		echo "add materials";
-		$this->db->insert('ocwdemo_materials',$details);
+		$this->db->insert('materials',$details);
 	}
 
 	/**
@@ -46,7 +46,7 @@ class Material extends Model
 				  LEFT JOIN ocwdemo_filetypes 
 				    ON ocwdemo_filetypes.id = ocwdemo_materials.filetype_id
 				 WHERE ocwdemo_materials.course_id = $cid $where
-				 ORDER BY ocwdemo_materials.order";
+				 ORDER BY ocwdemo_materials.material_order";
 		
 		$q = $this->db->query($sql);
 
@@ -85,7 +85,7 @@ class Material extends Model
 				  LEFT JOIN ocwdemo_filetypes 
 				    ON ocwdemo_filetypes.id = ocwdemo_materials.filetype_id
 				 WHERE ocwdemo_materials.course_id = '$cid' $where
-				 ORDER BY ocwdemo_materials.order";
+				 ORDER BY ocwdemo_materials.material_order";
 		$q = $this->db->query($sql);
 
 		if ($q->num_rows() > 0) {

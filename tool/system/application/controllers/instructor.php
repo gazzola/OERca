@@ -133,6 +133,7 @@ class Instructor extends Controller {
 		   	$how_many = count($entityIds);
 			echo 'entities chosen: '.$how_many.'<br><br>';
 			$cid = $_POST['cid'];
+			echo 'cid='.$cid;
 			$user= $_POST['user'];
 			$euid = $_POST['euid'];
 			$site = $_POST['site'];
@@ -182,8 +183,8 @@ class Instructor extends Controller {
 					echo '<br/> type id='.$entityTypeId;
 					
 					$details = array(
-									'cid' => $entityId,
-									'category' => "Resources",
+									'course_id' => $cid,
+									'category' => "Resource Items",
 									'name' => $entityName,
 									'content' => '',
 									'author' => $entityCreator,
@@ -191,8 +192,9 @@ class Instructor extends Controller {
 									'filetype_id' => $entityTypeId,
 									'in_ocw' => 1,
 									'embedded_ip' => '',
-									'nodetpe' => 'child',
-									'order' =>'',
+									'nodetype' => 'child',
+									'parent' => '',
+									'material_order' =>'',
 									'modified' => '',
 									'created_on' => date('Y-m-d h:i:s', $entityCreatedOn),
 									'modified_on' => date('Y-m-d h:i:s', $entityModifiedOn)
