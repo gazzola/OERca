@@ -209,7 +209,7 @@ class Material extends Model
                         $cm['childitems'] = $children;
                     }
                 }
-                $course_materials[$category][$cm['order']] = $cm;
+                $course_materials[$category][$cm['material_order']] = $cm;
         }
 
         ksort($course_materials);
@@ -223,7 +223,7 @@ class Material extends Model
 
         foreach ($materials as $ccm) {
                 $cid = $ccm['id'];
-                $order = $ccm['order'];
+                $order = $ccm['material_order'];
                 $parent = $ccm['parent'];
 
                 if (!in_array($cid, $done) && $parent!=0) {
