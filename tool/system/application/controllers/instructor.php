@@ -131,9 +131,7 @@ class Instructor extends Controller {
 		{
 			$entityIds = $_POST['chooseItem'];
 		   	$how_many = count($entityIds);
-			echo 'entities chosen: '.$how_many.'<br><br>';
 			$cid = $_POST['cid'];
-			echo 'cid='.$cid;
 			$user= $_POST['user'];
 			$euid = $_POST['euid'];
 			$site = $_POST['site'];
@@ -144,10 +142,8 @@ class Instructor extends Controller {
 			$sign = $_POST['sign'];
 			$time = $_POST['time'];
 			$url = $_POST['url'];
-			echo $url.'<br/>';
 			// first decode the session id
 			$client = new SoapClient($url."SiteItem.jws?wsdl");
-			//print '<pre>'; print_r($client); print '</pre>';
 			$decodedSessionId = $client->touchsessionid($sessionid);
 			
 			for ($i=0; $i<$how_many; $i++) 
@@ -155,18 +151,14 @@ class Instructor extends Controller {
 				
 				
 				$entityId = $entityIds[$i];
-				$entityInfoXML = $client->getInfo($decodedSessionId, $entityId);
-				echo $entityInfoXML;
+				$entityInfoXML = $client->getResourceInfo($decodedSessionId, $entityId);
 				$doc = new DOMDocument();
 				$doc->loadXML($entityInfoXML);
 				$entities = $doc->getElementsByTagName("resource");
 				foreach($entities as $entity)
 				{
-					echo "here1";
 					$entityIds = $entity->getElementsByTagName("id");
-					echo "here1_1";
 					$entityId = $entityIds->item(0)->nodeValue;
-					echo "here2";
 					$entityNames = $entity->getElementsByTagName("name");
 					$entityName = $entityNames->item(0)->nodeValue;
 					$entityTypes = $entity->getElementsByTagName("type");
@@ -179,8 +171,6 @@ class Instructor extends Controller {
 					$entityModifiedOn = $entityModifiedOns->item(0)->nodeValue;
 					
 					$entityTypeId = $this->file_type->getFileTypeId($entityType);
-					
-					echo '<br/> type id='.$entityTypeId;
 					
 					$details = array(
 									'course_id' => $cid,
@@ -199,11 +189,24 @@ class Instructor extends Controller {
 									'created_on' => date('Y-m-d h:i:s', $entityCreatedOn),
 									'modified_on' => date('Y-m-d h:i:s', $entityModifiedOn)
 								);
-					print '<pre>'; print_r($details); print '</pre>';
 					$this->material->add_material($details);
 				}
 		    }
-			echo "<br><br>";
+		    
+			//need to separate out as another function
+			$this->_isInstructor($cid); 
+			$this->data['title'] = $this->lang->line('ocw_ins_pagetitle_material');
+			$categories = $this->material->categories();
+			$categoriesMaterials = array();
+			foreach ($categories as $category)
+			{
+				$materialList = $this->material->categoryMaterials($cid, '', $in_ocw=false, $as_listing=false, $category);
+				$categoriesMaterials[$category] = $materialList;
+			}
+			$this->data['categories'] = $categories;
+			$this->data['categoriesMaterials'] = $categoriesMaterials;
+			$this->data['cid']=$cid;
+	       	$this->layout->buildPage('instructor/pick_materials', $this->data);
 		}
 	}
 	

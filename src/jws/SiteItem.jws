@@ -480,7 +480,7 @@ System.out.println("id=" + s.getId());
 	 *
 	 *	@author Mark Norton
 	 */
-	public String getInfo (String sessionid, String id) throws AxisFault {
+	public String getResourceInfo (String sessionid, String id) throws AxisFault {
 		Session session = establishSession(sessionid);
 		String ret = "";
 		Document dom = Xml.createDocument();
@@ -523,6 +523,21 @@ System.out.println("id=" + s.getId());
 		ResourceProperties props = entity.getProperties();
 		name = props.getProperty(ResourceProperties.PROP_DISPLAY_NAME);
 		creator = props.getProperty(ResourceProperties.PROP_CREATOR);
+		// get the creator displayname
+		try
+		{
+			User u = UserDirectoryService.getUser(creator);
+			if (u != null)
+			{
+				creator=u.getDisplayName();
+			}
+		}
+		catch (Exception e)
+		{
+			// cannot find use
+		}
+		
+		
 		type = props.getProperty(ResourceProperties.PROP_CONTENT_TYPE);
 		try
 		{
