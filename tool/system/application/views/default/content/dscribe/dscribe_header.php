@@ -7,6 +7,13 @@
 			<li<?= (preg_match('|^dscribe/copyright|', $ci_uri) > 0)? $att: ''?>><?=anchor("/dscribe/copyright/$cid",$this->lang->line('ocw_ds_menu_copyright'))?></li>
 			<li<?= (preg_match('|^dscribe/tags|', $ci_uri) > 0)? $att: ''?>><?=anchor("/dscribe/tags/$cid",$this->lang->line('ocw_ds_menu_tags'))?></li>
 			<li<?= (preg_match('|^dscribe/review|', $ci_uri) > 0)? $att: ''?>><?=anchor("/dscribe/review/$cid",$this->lang->line('ocw_ds_menu_review'))?></li>
+			<?php
+				if ($isInstructor)
+				{?>
+					<li<?= (preg_match('|^instructor/index|', $ci_uri) > 0)? $att: ''?>><?=anchor("/instructor/home/$cid",$this->lang->line('ocw_ins_menu_home'))?></li>
+				<?php 
+				}	
+				?>
 		</ul>
 	</div>
 <br/>

@@ -19,9 +19,9 @@
 		<th class="sortable"><strong>IP Status</strong></th>
 	</tr>
 	</thead>
-
 	<tbody>
-<?php foreach($cmaterial as $material) { ?>
+<?php 
+foreach($cmaterial as $material) { ?>
 	<tr>
 		<td>
 			<a href="<?=site_url()."dscribe/materials/$cid/edit_material/".$material['id']?>"><?= $this->ocw_utils->icon($material['mimetype'])?>&nbsp;&nbsp;<?= $material['name']?></a>&nbsp;&nbsp;

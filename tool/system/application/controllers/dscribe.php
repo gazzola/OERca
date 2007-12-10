@@ -285,6 +285,11 @@ class Dscribe extends Controller {
 			$this->coursedetails = $this->course->details($cid);
 			$this->data['course'] = $this->coursedetails;
 			$this->data['cname'] = $this->coursedetails['number'].' '.$this->coursedetails['title'];
+			
+			if ($this->ocw_user->has_role($this->uid, $cid, 'instructor'))
+			{
+				$this->data['isInstructor']=true;
+			}
 			return true;
 
 		} else {
