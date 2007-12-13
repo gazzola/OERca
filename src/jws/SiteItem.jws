@@ -73,6 +73,7 @@ import org.sakaiproject.component.cover.ServerConfigurationService;
 import java.util.Properties;
 import java.util.Calendar;
 import org.apache.axis.AxisFault;
+import org.apache.axis.encoding.Base64;
 
 import org.sakaiproject.util.Xml;
 
@@ -496,6 +497,41 @@ System.out.println("id=" + s.getId());
 		
 		ret = Xml.writeDocumentToString(dom);
 		return ret;
+	}
+	
+	/**
+	 *	Get the data associated with a resource id.  This is actually an alternative way to get a resource, since
+	 *	most browsers will download a file by clicking on a link.  URLs are given by getResources() and getItem()
+	 *	using the binary parameter.  It is provided for appications other than browsers that may wish to access
+	 *	content hosted by a Sakai instance.
+	 *
+	 *	An Axis fault is thrown if the id is a collection or some other exception is thrown from the Content
+	 *	Hosting Service.
+	 *
+	 *	@param sessionid a valid sessionid
+	 *	@param collectionId of the collection it is to be added to
+	 *
+	 *	@return Binary data encoded as Base64.
+	 *
+	 *	@author Mark Norton
+	 */
+	public String getContentData(String sessionid, String resourceId) throws AxisFault {
+		String encodedData = null;
+	
+		try {
+			//establish the session
+			Session s = establishSession(sessionid);
+			
+			ContentResource res = ContentHostingService.getResource (resourceId);
+			
+			byte[] data = res.getContent();
+			encodedData = Base64.encode (data);
+		}
+	
+		catch (Exception e) {
+			throw new AxisFault (e.getMessage());
+		}
+		return encodedData;
 	}
 	
 	/*

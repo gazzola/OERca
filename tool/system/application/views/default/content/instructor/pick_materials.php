@@ -119,7 +119,8 @@ echo form_open('instructor/materials_option', '', $hidden);
 							{
 							echo "<div style='text-indent:".$width."'>";
 							?>
-							<?php echo form_checkbox('chooseItem[]', $entityId, FALSE); 
+							<?php 
+								echo form_checkbox('chooseItem[]', $entityId, FALSE); 
 								echo $entityTitle;
 							?>
 							<?=anchor(site_url('instructor/add_material/'.$cid.'/'.$this->ocw_utils->escapeUrl($entityId)),

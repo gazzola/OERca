@@ -21,8 +21,42 @@ class Material extends Model
 	 */
 	public function add_material ($details)
 	{
-		$this->db->insert('materials',$details);
+		$query=$this->db->insert('materials',$details);
+		$this->db->select('id');
+		$where = "course_id='".$details['course_id']."' AND name='".$details['name']."' AND in_ocw='1'";
+		$this->db->from('materials')->where($where);
+		$q = $this->db->get();
+	 	$rv = null;
+		if ($q->num_rows() > 0)
+		{
+			foreach($q->result_array() as $row) { 
+				$rv = $row['id'];
+			}
+		}
+		return $rv;
 	}
+	
+	/**
+	 * Find where the material is marked for ocw already
+	 */
+	 public function findOCWMaterial($cid, $name)
+	 {
+	 	$this->db->select('id');
+		$where = "course_id='".$details['course_id']."' AND name='".$details['name']."' AND in_ocw='1'";
+		$this->db->from('materials')->where($where);
+		$q = $this->db->get();
+	 	$rv = null;
+		if ($q->num_rows() > 0)
+		{
+			foreach($q->result_array() as $row) { 
+				
+			print '<pre>'; print_r($row); print '</pre>';
+					$rv = $row['id'];
+			}
+		}
+		return $rv;
+	 }
+	 
 
 	/**
      * Get materials for a given course 

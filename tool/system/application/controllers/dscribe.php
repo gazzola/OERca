@@ -290,6 +290,10 @@ class Dscribe extends Controller {
 			{
 				$this->data['isInstructor']=true;
 			}
+			else
+			{
+				$this->data['isInstructor']=false;
+			}
 			return true;
 
 		} else {

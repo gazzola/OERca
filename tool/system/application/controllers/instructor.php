@@ -26,6 +26,8 @@ class Instructor extends Controller {
 	
 		$this->uid = getUserProperty('id');	
 		$this->data = array();
+		
+		$this->load->helper('file');
 	}
 
 	public function index($cid)
@@ -189,7 +191,19 @@ class Instructor extends Controller {
 									'created_on' => date('Y-m-d h:i:s', $entityCreatedOn),
 									'modified_on' => date('Y-m-d h:i:s', $entityModifiedOn)
 								);
-					$this->material->add_material($details);
+					$addMaterialId=$this->material->add_material($details);
+					echo "addmaterialid=".$addMaterialId;
+					$filePath="./ocwfile/".$addMaterialId.$entityName;
+					$entityData = $client->getContentData($decodedSessionId, $entityId);
+					echo 'data=' + $entityData;
+					if ( ! write_file($filePath, $entityData))
+					{
+					     echo 'Unable to write the file';
+					}
+					else
+					{
+					     echo 'File written!';
+					}
 				}
 		    }
 		    
