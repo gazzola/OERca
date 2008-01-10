@@ -11,7 +11,7 @@
 |	http://www.your-site.com/
 |
 */
-$config['base_url']	= "http://{$_SERVER['HTTP_HOST']}/ocw_tool";
+$config['base_url']	= "http://{$_SERVER['HTTP_HOST']}/tool";
 
 /*
 |--------------------------------------------------------------------------
@@ -54,7 +54,7 @@ $config['uri_protocol']	= "AUTO";
 | http://www.codeigniter.com/user_guide/general/urls.html
 */
 
-$config['url_suffix'] = "";
+$config['url_suffix'] = ".html";
 
 /*
 |--------------------------------------------------------------------------
@@ -148,7 +148,7 @@ $config['permitted_uri_chars'] = 'a-z 0-9~%.:_-';
 | use segment based URLs.
 |
 */
-$config['enable_query_strings'] = TRUE;
+$config['enable_query_strings'] = FALSE;
 $config['controller_trigger'] = 'c';
 $config['function_trigger'] = 'm';
 
@@ -216,7 +216,7 @@ $config['cache_path'] = '';
 | enabled you MUST set an encryption key.  See the user guide for info.
 |
 */
-$config['encryption_key'] = "";
+$config['encryption_key'] = "ocwdemo";
 
 /*
 |--------------------------------------------------------------------------
@@ -229,13 +229,23 @@ $config['encryption_key'] = "";
 |  by default sessions last 7200 seconds (two hours).  Set to zero for no expiration.
 |
 */
-$config['sess_cookie_name']		= 'ci_session';
-$config['sess_expiration']		= 7200;
-$config['sess_encrypt_cookie']	= FALSE;
-$config['sess_use_database']	= FALSE;
-$config['sess_table_name']		= 'ci_sessions';
-$config['sess_match_ip']		= FALSE;
-$config['sess_match_useragent']	= TRUE;
+// you are free to change this string, but if you do so after someone got a
+// cookie, FAL won't be able to find it
+$config['sess_cookie_name']     = 'FreakAuth';
+
+$config['sess_expiration']      = 7200;
+
+// true is better for security reasons
+$config['sess_encrypt_cookie']  = TRUE;
+
+// DB_session (that FAL uses) needs to use the database
+$config['sess_use_database']    = TRUE;
+
+$config['sess_table_name']      = 'ci_sessions';
+
+// those settings will improve security but are sometimes too restrictive
+$config['sess_match_ip']        = FALSE;
+$config['sess_match_useragent'] = FALSE;
 
 /*
 |--------------------------------------------------------------------------
@@ -305,7 +315,7 @@ $config['time_reference'] = 'local';
 | in your view files.  Options are TRUE or FALSE (boolean)
 |
 */
-$config['rewrite_short_tags'] = FALSE;
+$config['rewrite_short_tags'] = TRUE;
 
 
 ?>

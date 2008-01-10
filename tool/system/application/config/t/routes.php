@@ -35,12 +35,15 @@
 |
 | This route lets you set a "secret" word that will trigger the
 | scaffolding feature for added security. Note: Scaffolding must be
-| enabled in the controller in which you intend to use it.   The reserved 
-| routes must come before any wildcard or regular expression routes.
+| enabled in the controller in which you intend to use it.
 |
 */
 
 $route['default_controller'] = "home";
-$route['scaffolding_trigger'] = "";
+$route['scaffolding_trigger'] = "ocwscaff";
+
+$route['admin'] = "admin/adminhome";
+$route['admin/users/:num'] = "admin/users";
+$route['admin/admins/:num'] = "admin/admins";
 
 ?>

@@ -33,7 +33,7 @@
 
 	<br/><br/>
 	
-	Does this material contain embedded ip objects? 
+	Does this material contain embedded objects of interest? 
 	<?php if ($material['embedded_ip']==1) { ?>
    		<input type="radio" name="embedded_ip" id="emip_yes" class="update_material" value="1" checked="checked" />&nbsp;Yes
    		<input type="radio" name="embedded_ip" id="emip_no" class="update_material" value="0" />&nbsp;No
@@ -45,10 +45,10 @@
 	<br/><br/>
 
 	<fieldset id="fs_emip" <?php if (!$material['embedded_ip']) { echo 'style="display:none"';}?>>
-		<legend>IP Objects</legend>
+		<legend>Objects of Interest</legend>
 		<small>
 			<a href="javascript:void(0);" class="do_show_addpanel">
-				<img src="<?= property('app_img').'/add.png'?>" valign="bottom"/>&nbsp; Add IP Object
+				<img src="<?= property('app_img').'/add.png'?>" valign="bottom"/>&nbsp; Add Object of Interest
 			</a>
 		</small>
 
@@ -69,7 +69,7 @@
          		</tr>
          		<tr>
             		<th align="right">Name</th>
-            		<td><input type="text" name="name" id="name" size="30" value="<?=$autoname?>" disabled="disabled"/></td>
+            		<td><input type="text" name="name" id="name" size="30" value="<?=$autoname?>" /></td>
          		</tr>
          		<tr>
             		<th align="right">File type</th>

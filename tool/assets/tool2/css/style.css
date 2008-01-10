@@ -1,0 +1,218 @@
+h1 {
+	margin: 0;
+	padding: 0 0 2px 0;
+	font-size: 20px;
+	font-weight: bold;
+	color: #333;
+	}	
+
+h2, h3 {
+	margin: 0;
+	padding: 0 0 5px 0;
+	font-size: 12px;
+	font-weight: bold;
+	color: #000;	
+	}
+	
+h2 {
+	font-size: 14px;
+	color: #555;
+	font-weight: bold;	
+	}
+	
+a {
+	color: #e60;
+	text-decoration: none;
+	cursor: pointer;
+	}
+
+a:hover {
+	text-decoration: none;
+	}
+	
+p {
+	line-height: 140%;
+	margin: 0;
+	padding: 0 0 10px 0;
+	}
+	
+ul {
+	margin-top: 0;
+	padding-top: 0;
+	}
+	
+pre, code {
+	margin: 0;
+	padding: 0;
+	}
+
+pre {
+	background: #fbfbfb;
+	width: 350px;
+	overflow: auto;
+	padding: 5px 0 10px 0;
+	margin: 0 0 20px 0;
+	}
+
+/* List Elements */
+
+li {
+	padding: 0 0 3px 0;
+	}
+
+
+/* Form Elements */
+form {
+	margin: 0 0 0 0;
+	padding: 5px 0 0 0;
+	}
+
+/* custom */
+#header {
+	border-bottom: 1px solid #688;
+	margin-bottom: 20px;
+}
+#footer {
+	border-top: 1px solid #688;
+	margin-top: 20px;
+}
+#imagebar {
+	background: #f8f8f8;
+    height: 500px;
+    overflow: hidden;
+}
+
+#mainPage h3 {
+	display: block;
+	font-size: 12px;
+	padding: 6px 0 6px 0;
+	margin: 0 0 8px 0;
+	border-bottom: 1px solid #bbb;
+}	
+
+#mainPage h3.collapsable {
+	cursor: pointer;
+	position: relative;
+}	
+
+
+h3.collapsable span
+{
+	position: absolute;
+	top: 5px;
+	right: 0px;
+	font-size: 0.8em;
+	font-weight: bold;
+}
+
+div.collapse { 
+	width: 250px;  
+	margin: 5px 0;  
+	color: #949494;
+}	
+
+div.collapse-container
+{
+	width: 220px;
+	height: 400px;
+	/*border: 1px solid red;*/
+	background-color: transparent;
+}
+	
+#mainPage textarea, #mainPage input {
+	color: #555;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;		
+}
+	
+#mainPage .input {
+	background: #fbfbfb;
+	width: 200px;
+	padding: 1px 0 1px 3px;
+	border: 1px solid #ccc;	
+	}
+
+#mainPage textarea {
+	background: #fbfbfb;
+	width: 225px;
+	height: 100px;
+	padding: 1px 0 1px 3px;
+	border: 1px solid #ccc;	
+	}		
+
+#mainPage .formLabel {
+	float: left;	
+	text-align: left;
+	clear: both;
+	width: 100px;
+	margin: 0 0 0px 0;	
+}
+	
+#mainPage .formField {
+	float: left;
+	clear:both;
+	text-align: left;
+	margin: 0 10px 8px 0;
+	width: 230px;
+}
+
+#area {
+	background: #f8f8f8;
+	height: 300px;
+	width: 20px;
+	margin-top: 0;
+}
+ 
+#knob {
+	height: 20px;
+	width: 20px;
+	background: #000;
+}
+
+#co_bar {
+	position: absolute;
+	border: 1px solid red;
+	width: 600px;
+	height: 495px;
+	margin-top: 95px;
+	margin-left: 342px;
+	z-index: 100;
+}	
+
+.ajax-done { display: none; }
+.add-overflow { overflow: auto; }
+
+#saved.ajax-loading {
+	padding: 20px 0;
+	background: url(../images/ajax_load.gif) no-repeat center;
+}
+
+
+.tool-tip {
+			color: #fff;
+			width: 139px;
+			z-index: 13000;
+}		 
+.tool-title {
+			font-weight: bold;
+			font-size: 11px;
+			margin: 0;
+			color: #9FD4FF;
+			padding: 8px 8px 4px;
+			background: url(../images/bubble.png) top left;
+}
+		 
+.tool-text {
+			font-size: 11px;
+			padding: 4px 8px 8px;
+			background: url(../images/bubble.png) bottom right;
+}
+.tool-text A {
+		color:#069;
+}
+.tool-loading {
+			background: url(../images/ajax_load.gif) center center no-repeat;
+			width: 30px;
+			height: 30px;
+			margin: 0 auto;
+}
