@@ -157,10 +157,13 @@ class Instructor extends Controller {
 				$doc = new DOMDocument();
 				$doc->loadXML($entityInfoXML);
 				$entities = $doc->getElementsByTagName("resource");
+				print '<pre>'; print_r($entityInfoXML); print '</pre>';
 				foreach($entities as $entity)
 				{
 					$entityIds = $entity->getElementsByTagName("id");
 					$entityId = $entityIds->item(0)->nodeValue;
+					$entityRelativeIds = $entity->getElementsByTagName("relativeId");
+					$entityRelativeId = $entityRelativeIds->item(0)->nodeValue;
 					$entityNames = $entity->getElementsByTagName("name");
 					$entityName = $entityNames->item(0)->nodeValue;
 					$entityTypes = $entity->getElementsByTagName("type");
@@ -192,10 +195,41 @@ class Instructor extends Controller {
 									'modified_on' => date('Y-m-d h:i:s', $entityModifiedOn)
 								);
 					$addMaterialId=$this->material->add_material($details);
-					echo "addmaterialid=".$addMaterialId;
-					$filePath="./ocwfile/".$addMaterialId.$entityName;
-					$entityData = $client->getContentData($decodedSessionId, $entityId);
-					echo 'data=' + $entityData;
+					
+					if (!class_exists('webdavclient')) {
+ 						require(getcwd().'/system/application/controllers/WebDAVClient.php');
+					} 
+					$davclient = new webdavclient();
+					$davclient->set_server('localhost');
+					$davclient->set_port(8080);
+					$davclient->set_username('admin');
+					$davclient->set_password('admin');
+					$davclient->set_path('/dav/393d2cfb-c6d0-4e24-a943-a3d666979efb');
+					
+					// use HTTP/1.1
+					$davclient->set_protocol(1);
+					// enable debugging
+					$davclient->set_debug(true);
+					
+					
+					if (!$davclient->open()) {
+					  print 'Error: could not open WebDAV connection';
+					  exit;
+					}
+					
+					// check if server supports webdav rfc 2518
+					if (!$davclient->check_webdav()) {
+					  print 'Error: server does not support webdav or user/password may be wrong';
+					  exit;
+					}
+					else
+					{
+					}
+					
+					$contents = $davclient->ls('/dav/393d2cfb-c6d0-4e24-a943-a3d666979efb');
+					
+					$filePath=getcwd().'/ocwfile/'.$entityName;
+					$davclient->get('/dav/393d2cfb-c6d0-4e24-a943-a3d666979efb/'.$entityRelativeId, &$entityData);
 					if ( ! write_file($filePath, $entityData))
 					{
 					     echo 'Unable to write the file';
@@ -223,6 +257,7 @@ class Instructor extends Controller {
 	       	$this->layout->buildPage('instructor/pick_materials', $this->data);
 		}
 	}
+	
 	
 	/**
      * Display pick materials page 

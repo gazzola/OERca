@@ -82,6 +82,7 @@ function read_file($file)
  */	
 function write_file($path, $data, $mode = 'wb')
 {
+	echo "in write_file path=".$path." mode=".$mode;
 	if ( ! $fp = @fopen($path, $mode))
 	{
 		return FALSE;

@@ -50,7 +50,7 @@ $autoload['libraries'] = array('database', 'layout', 'Freakauth_light','OCW_util
 |	$autoload['helper'] = array('url', 'file');
 */
 
-$autoload['helper'] = array('url', 'form', 'date', 'array', 'freakauth_light', 'html','layout');
+$autoload['helper'] = array('url', 'form', 'date', 'array', 'freakauth_light', 'html','layout' );
 
 
 /*
