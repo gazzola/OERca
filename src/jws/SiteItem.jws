@@ -596,6 +596,11 @@ System.out.println("id=" + s.getId());
 		resId.appendChild (dom.createTextNode(id));
 		item.appendChild(resId);
 
+		Node resRelativeId = dom.createElement("relativeId");
+		String relativeId = id.substring(id.lastIndexOf("/")+1, id.length());
+		resRelativeId.appendChild (dom.createTextNode(relativeId));
+		item.appendChild(resRelativeId);
+
 		//  Create and append the name child element.
 		Node resName = dom.createElement("name");
 		resName.appendChild( dom.createTextNode(name) );
