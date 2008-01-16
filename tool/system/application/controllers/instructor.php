@@ -146,6 +146,8 @@ class Instructor extends Controller {
 			$url = $_POST['url'];
 			// first decode the session id
 			$client = new SoapClient($url."SiteItem.jws?wsdl");
+			$session = $client->touchsession($sessionid);
+			print_r($session);
 			$decodedSessionId = $client->touchsessionid($sessionid);
 			
 			for ($i=0; $i<$how_many; $i++) 
@@ -157,7 +159,6 @@ class Instructor extends Controller {
 				$doc = new DOMDocument();
 				$doc->loadXML($entityInfoXML);
 				$entities = $doc->getElementsByTagName("resource");
-				print '<pre>'; print_r($entityInfoXML); print '</pre>';
 				foreach($entities as $entity)
 				{
 					$entityIds = $entity->getElementsByTagName("id");
@@ -166,6 +167,8 @@ class Instructor extends Controller {
 					$entityRelativeId = $entityRelativeIds->item(0)->nodeValue;
 					$entityNames = $entity->getElementsByTagName("name");
 					$entityName = $entityNames->item(0)->nodeValue;
+					$entityUrls = $entity->getElementsByTagName("url");
+					$entityUrl = $entityUrls->item(0)->nodeValue;
 					$entityTypes = $entity->getElementsByTagName("type");
 					$entityType = $entityTypes->item(0)->nodeValue;
 					$entityCreators = $entity->getElementsByTagName("creator");
@@ -176,6 +179,21 @@ class Instructor extends Controller {
 					$entityModifiedOn = $entityModifiedOns->item(0)->nodeValue;
 					
 					$entityTypeId = $this->file_type->getFileTypeId($entityType);
+					
+					$ch = curl_init();
+					$filePath=getcwd().'/ocwfile/'.$entityName;
+					$fp = fopen($filePath, "w");
+					curl_setopt($ch, CURLOPT_URL, $entityUrl);
+					//curl_setopt($ch, CURLOPT_URL, "http://localhost:8080/portal/site/!admin");
+					curl_setopt ($ch, CURLOPT_COOKIE, 'JSESSIONID'.'='.$decodedSessionId.".zqians-computer.local; Path=/"); 
+					curl_setopt($ch, CURLOPT_HEADER, true);
+					curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+					curl_setopt($ch, CURLOPT_FILE, $fp);
+					curl_setopt($ch, CURLOPT_HEADER, 0);
+					
+					curl_exec($ch);
+					curl_close($ch);
+					fclose($fp);
 					
 					$details = array(
 									'course_id' => $cid,
@@ -195,49 +213,6 @@ class Instructor extends Controller {
 									'modified_on' => date('Y-m-d h:i:s', $entityModifiedOn)
 								);
 					$addMaterialId=$this->material->add_material($details);
-					
-					if (!class_exists('webdavclient')) {
- 						require(getcwd().'/system/application/controllers/WebDAVClient.php');
-					} 
-					$davclient = new webdavclient();
-					$davclient->set_server('localhost');
-					$davclient->set_port(8080);
-					$davclient->set_username('admin');
-					$davclient->set_password('admin');
-					$davclient->set_path('/dav/393d2cfb-c6d0-4e24-a943-a3d666979efb');
-					
-					// use HTTP/1.1
-					$davclient->set_protocol(1);
-					// enable debugging
-					$davclient->set_debug(true);
-					
-					
-					if (!$davclient->open()) {
-					  print 'Error: could not open WebDAV connection';
-					  exit;
-					}
-					
-					// check if server supports webdav rfc 2518
-					if (!$davclient->check_webdav()) {
-					  print 'Error: server does not support webdav or user/password may be wrong';
-					  exit;
-					}
-					else
-					{
-					}
-					
-					$contents = $davclient->ls('/dav/393d2cfb-c6d0-4e24-a943-a3d666979efb');
-					
-					$filePath=getcwd().'/ocwfile/'.$entityName;
-					$davclient->get('/dav/393d2cfb-c6d0-4e24-a943-a3d666979efb/'.$entityRelativeId, &$entityData);
-					if ( ! write_file($filePath, $entityData))
-					{
-					     echo 'Unable to write the file';
-					}
-					else
-					{
-					     echo 'File written!';
-					}
 				}
 		    }
 		    

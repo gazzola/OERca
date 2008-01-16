@@ -25,7 +25,7 @@ $sign = $this->db_session->userdata('sign');
 $time = $this->db_session->userdata('time');
 $url = $server."/sakai-axis/";
 
-$client = new SoapClient($url."SiteItem.jws?currentuser&sign=dcf291e9fa64349deded79a667b61a3e3a1e55e5&wsdl");
+$client = new SoapClient($url."SiteItem.jws?wsdl");
 $assignmentListXML=$client->getAssignmentList($sessionid, $site, $user);
 $resourcesListXML=$client->getResourceList($sessionid, $site); 	
 	
