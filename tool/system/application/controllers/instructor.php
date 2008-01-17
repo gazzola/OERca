@@ -180,12 +180,12 @@ class Instructor extends Controller {
 					
 					$entityTypeId = $this->file_type->getFileTypeId($entityType);
 					
+					// use curl to get the resource conent and write to local drive
 					$ch = curl_init();
 					$filePath=getcwd().'/ocwfile/'.$entityName;
 					$fp = fopen($filePath, "w");
 					curl_setopt($ch, CURLOPT_URL, $entityUrl);
-					//curl_setopt($ch, CURLOPT_URL, "http://localhost:8080/portal/site/!admin");
-					curl_setopt ($ch, CURLOPT_COOKIE, 'JSESSIONID'.'='.$decodedSessionId.".zqians-computer.local; Path=/"); 
+					curl_setopt ($ch, CURLOPT_COOKIE, $_SERVER["HTTP_COOKIE"]."; Path=/"); 
 					curl_setopt($ch, CURLOPT_HEADER, true);
 					curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
 					curl_setopt($ch, CURLOPT_FILE, $fp);
