@@ -71,14 +71,14 @@ class Material extends Model
 	public function materials($cid, $mid, $in_ocw=false, $as_listing=false)
 	{
 		$materials = array();
-		$where = ($mid=='') ? '' : "AND ocwdemo_materials.id='$mid'";
+		$where = ($mid=='') ? '' : "AND ocw_materials.id='$mid'";
 
-		$sql = "SELECT ocwdemo_materials.*, ocwdemo_filetypes.mimetype 
-				  FROM ocwdemo_materials
-				  LEFT JOIN ocwdemo_filetypes 
-				    ON ocwdemo_filetypes.id = ocwdemo_materials.filetype_id
-				 WHERE ocwdemo_materials.course_id = $cid $where
-				 ORDER BY ocwdemo_materials.material_order";
+		$sql = "SELECT ocw_materials.*, ocw_filetypes.mimetype 
+				  FROM ocw_materials
+				  LEFT JOIN ocw_filetypes 
+				    ON ocw_filetypes.id = ocw_materials.filetype_id
+				 WHERE ocw_materials.course_id = $cid $where
+				 ORDER BY ocw_materials.material_order";
 		$q = $this->db->query($sql);
 
 		if ($q->num_rows() > 0) {
@@ -108,15 +108,15 @@ class Material extends Model
 	public function categoryMaterials($cid, $mid, $in_ocw=false, $as_listing=false, $category)
 	{
 		$materials = array();
-		$where = ($mid=='') ? '' : "AND ocwdemo_materials.id='$mid'";
-		$where = ($category=='') ? $where : $where."AND ocwdemo_materials.category='$category'";
+		$where = ($mid=='') ? '' : "AND ocw_materials.id='$mid'";
+		$where = ($category=='') ? $where : $where."AND ocw_materials.category='$category'";
 
-		$sql = "SELECT ocwdemo_materials.*, ocwdemo_filetypes.mimetype 
-				  FROM ocwdemo_materials
-				  LEFT JOIN ocwdemo_filetypes 
-				    ON ocwdemo_filetypes.id = ocwdemo_materials.filetype_id
-				 WHERE ocwdemo_materials.course_id = '$cid' $where
-				 ORDER BY ocwdemo_materials.material_order";
+		$sql = "SELECT ocw_materials.*, ocw_filetypes.mimetype 
+				  FROM ocw_materials
+				  LEFT JOIN ocw_filetypes 
+				    ON ocw_filetypes.id = ocw_materials.filetype_id
+				 WHERE ocw_materials.course_id = '$cid' $where
+				 ORDER BY ocw_materials.material_order";
 		$q = $this->db->query($sql);
 
 		if ($q->num_rows() > 0) {

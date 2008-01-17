@@ -26,7 +26,7 @@ class OCW_user extends Model
 	{
 		$courses = array();
 
-		$this->db->select('ocwdemo_courses.*, ocwdemo_acl.role');
+		$this->db->select('ocw_courses.*, ocw_acl.role');
 		$this->db->from('acl')->where("user_id='$uid'");
 		$this->db->join('courses','acl.course_id=courses.id');
 		$this->db->orderby('start_date DESC');
@@ -55,7 +55,7 @@ class OCW_user extends Model
 					  'user_name'=>$uname,
 					  'email'=>$email,
 	        		  'password'=> $this->freakauth_light->_encode($email));
-		$this->db->insert('fa_user',$data);
+		$this->db->insert('users',$data);
 		return $this->exists($email);
 	}
 
@@ -69,7 +69,7 @@ class OCW_user extends Model
 	public function get_user($uname)
 	{
 		$where = array('user_name'=>$uname);
-		$query = $this->db->getwhere('fa_user', $where); 
+		$query = $this->db->getwhere('users', $where); 
 		return ($query->num_rows() > 0) ? $query->row_array() : false;
 	}
 
@@ -83,7 +83,7 @@ class OCW_user extends Model
 	public function exists($email)
 	{
 		$where = array('email'=>$email);
-		$query = $this->db->getwhere('fa_user', $where); 
+		$query = $this->db->getwhere('users', $where); 
 		return ($query->num_rows() > 0) ? $query->row_array() : false;
 		
 	}
@@ -98,7 +98,7 @@ class OCW_user extends Model
 	public function existsByUserName($user_name)
 	{
 		$where = array('user_name'=>$user_name);
-		$query = $this->db->getwhere('fa_user', $where); 
+		$query = $this->db->getwhere('users', $where); 
 		return ($query->num_rows() > 0) ? $query->row_array() : false;
 		
 	}
@@ -113,7 +113,7 @@ class OCW_user extends Model
 	public function username($uid)
 	{
 		$where = array('id'=>$uid);
-		$this->db->select('user_name')->from('fa_user')->where($where); 
+		$this->db->select('user_name')->from('users')->where($where); 
 		$query = $this->db->get();
 		$u = $query->row_array();
 		return ($query->num_rows() > 0) ? $u['user_name'] : false;
