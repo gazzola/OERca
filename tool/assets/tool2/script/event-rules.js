@@ -1,0 +1,259 @@
+// Event rules for OCW Tool 
+var Rules = {
+	'.confirm' : function(element) {
+		element.onclick = function() {
+			var con = confirm('Are you sure?');
+			return con;
+		}
+	},
+
+	// utilized on the dscribe manage materials page for updating tags
+	'.update_tag' : function(element) {
+		element.onchange = function () {
+			var response;
+			var course_id = $('cid').getValue();
+			var tag_id = this.value;
+			var material_id = (this.name).replace(/selectname_/g,'');
+			var url = $('server').value+'materials/update/'+course_id+'/'+
+					  material_id+'/tag_id/'+tag_id;	
+
+			var spinner = $('mat_activity').removeClass('ajax-done');
+			new Ajax(url,
+            	{
+				 method: 'get',
+				 update: $('feedback'),
+			 	 onComplete:function(request){
+                  	response = $('feedback').innerHTML;
+                  	if (response != 'success') { alert(response); }
+				   	spinner.addClass('ajax-done');
+            	} }).request();
+		}
+	},
+
+	// update ip object info on manage ip holder page 
+	'.update_material' : function(element) {
+		element.onchange = function () {
+			var response;
+			var course_id = $('cid').getValue();
+			var material_id = 0;
+			if ((this.id).indexOf('inocw_') > -1) {	
+				material_id = (this.id).replace(/inocw_\w+_/g,'');
+			} else {
+				material_id = $('mid').getValue(); 
+			}
+			var field = ''; 
+			if ((this.name).indexOf('in_ocw_') > -1) {	
+				field = (this.name).replace(/_\d+/g,'');
+			} else {
+				field = this.name; 
+			}
+			var value = this.value; 
+
+			if (field=='author' && value=='') {
+				value = $('defcopy').getValue();	
+				this.value = value;
+			} 
+
+			var spinner = $('mat_activity').removeClass('ajax-done');
+
+			var check = this.check(field, value);
+
+			if (check=='success') {
+				var url = $('server').value+'materials/update/'+course_id+'/'+
+						   material_id+'/'+field+'/'+escape(value);	
+
+				new Ajax(url,
+            		{ method: 'get',
+					  update: $('feedback'),
+			 	 	  onComplete:function(request){
+                  		response = $('feedback').innerHTML;
+                  		if (response != 'success') { alert(response); }
+						else {
+				    		spinner.addClass('ajax-done');
+						}
+            		} }).request();
+			} else {
+				alert(check);
+			}
+		}
+        element.check = function(field, val) {
+            if (field=='name' && val=='') {
+                return('Please enter a descriptive name for the material'); }
+
+            if (field=='author' && val=='') {
+                return('Please specify an author'); }
+            
+			if (field=='category' && val=='') {
+                return('Please specify a category name'); }
+
+            return 'success';
+        }
+	},
+
+	// manage comments 
+	'.do_add_material_comment': function(element) {
+		element.onclick = function() {
+			var course_id = $('cid').value;
+			var material_id = $('mid').value; 
+            var url = $('server').value+'materials/add_comment/'+course_id+'/'+material_id;
+
+			var comments = escape($('comments').value);
+	
+			if (comments == '') {
+                alert('Please enter a comment');
+			} else {
+                var fb = $('feedback');
+                var response;
+				url += '/'+comments;
+
+                new Ajax(url,
+                    {
+					 method: 'get', 
+					 update: fb,
+                     onComplete:function() {
+                        response = fb.innerHTML;
+                        if (response=='success') {
+                            url = $('server').value+'materials/edit/'+course_id+'/'+material_id;
+                            window.location.replace(url);
+                        } else {
+                            alert(response);
+                        }
+                }}).request();
+			}
+		}
+	},
+
+	'.do_add_object_comment': function(element) {
+		element.onclick = function(e) {
+		    new Event(e).stop();
+
+			var object_id = $('oid').value; 
+            var url = $('server').value+'materials/add_object_comment/'+object_id;
+
+			var comments = $('comments').value;
+			var get_comments = escape($('comments').value);
+				
+			if (comments == '') {
+                alert('Please enter a comment');
+			} else {
+                var fb = $('feedback');
+                var response;
+				var once = true;
+				url += '/'+get_comments; 
+
+                new Ajax(url,
+                    {
+					 method: 'get', 
+					 update: fb,
+                     onComplete:function() {
+                        response = fb.innerHTML;
+						if (once) {						
+								var disp = $('addpanel').style.display;
+								$('addpanel').style.display = (disp=='none') ? 'block' : 'none';
+                       	 	if (response=='success') {
+								var msg = "<small>by&nbsp;"+$('user').value+"&nbsp;today</small>";
+								var line = '<hr style="border: 1px solid #336699"/>';
+								var new_line = new Element('p').setHTML(line);
+								var new_time = new Element('p').setHTML(msg);
+								var new_cm = new Element('p').setHTML(comments);
+								new_line.injectTop( $('objectcomments') );
+								new_time.injectTop( $('objectcomments') );
+								new_cm.injectTop( $('objectcomments') );
+								$('comments').value = '';
+                        	} else {
+                            	alert(response);
+                       	 	}
+							once = false;
+					  }
+                }}).request();
+			}
+		}
+	},
+
+	'.do_object_update' : function(element) {
+		element.onchange = function () {
+			var response;
+			var course_id = $('cid').value;
+			var material_id = $('mid').value; 
+			var object_id = $('oid').value;
+			var field = this.name; 
+			var url = $('server').value+'materials/update_object/'+course_id+'/'+material_id;
+			var val = this.value;
+			if (field=='done') { if (this.checked) { val = 1; } else {val=0; }	}
+			url += '/'+object_id+'/'+field+'/'+escape(val);
+
+            var fb = $('feedback');
+			var log = $('saved').empty().addClass('ajax-loading');
+
+            new Ajax(url, { method: 'get', 
+							update: fb,
+			}).request();
+		}
+	},
+
+	'.do_askform_yesno' : function(element) {
+		element.onclick = function() {
+			var id = this.id;
+			id = id.replace(/own_/g,'');
+			if ($('other_'+id) && this.value == 'no') {
+				$('other_'+id).style.display = 'block';	
+			} 
+			if ($('other_'+id) && this.value == 'yes') {
+				$('other_'+id).style.display = 'block';	
+			}
+		}
+	},
+
+	'.do_askform_submit' : function(element) {
+		element.onclick = function() {
+			var course_id = $('cid').value;
+			var material_id = $('mid').value; 
+		
+			var yesno = $$('.do_askform_yesno');
+			var num = (yesno.length / 2);	
+			var count = 0;
+			var list = '';
+
+			yesno.each( function(radio, i) {
+				if (radio.checked) count++;
+		    });
+
+			if (count != num) {
+				alert('Please confirm whether or not you own the media object for all the listed ones below:');	
+				return false;
+			} else {
+				alert('Saving... Thanks for you help!');
+			}
+		}
+	},
+
+/**
+	// hide and show add panel
+	'.do_show_editpanel' : function (element) {
+        element.onclick = function() {
+            new Effect.Appear('editpanel');
+        }
+    },
+
+    '.do_hide_editpanel' : function (element) {
+        element.onclick = function() {
+            new Effect.Fade('editpanel_error');
+            $('editpanel').hide();
+        }
+    },
+
+	// hide and show add panel
+**/
+	'.do_show_hide_panel' : function (element) {
+        element.onclick = function() {
+			var disp = $('addpanel').style.display;
+			$('addpanel').style.display = (disp=='none') ? 'block' : 'none';
+        }
+    }
+}
+
+// Remove/Comment this if you do not wish to reapply Rules automatically
+// on Ajax request.
+//Ajax.Responders.register({
+// onComplete: function() { EventSelectors.assign(Rules);}
+//});

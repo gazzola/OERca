@@ -40,6 +40,31 @@ class OCW_user extends Model
 		return (sizeof($courses) > 0) ? $courses : null;
 	}
 
+   /**
+     * Get dscribes for a course 
+     *
+     * @access  public
+     * @param   int course id
+     * @return  array
+     */
+    public function dscribes($cid)
+    {
+		$dscibes = array();
+
+		$this->db->select('ocw_users.*');
+		$this->db->from('acl')->where("course_id='$cid'");
+		$this->db->join('users','acl.user_id=users.id');
+
+		$q = $this->db->get();
+
+		if ($q->num_rows() > 0) {
+			foreach($q->result_array() as $row) { $dscribes[] = $row; } 
+		}
+
+		return (sizeof($dscribes) > 0) ? $dscribes : null;
+    }
+
+
 	/**
      * Add a new user 
      *

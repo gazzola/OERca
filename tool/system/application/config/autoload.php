@@ -37,7 +37,6 @@
 |
 |	$autoload['libraries'] = array('database', 'session', 'xmlrpc');
 */
-
 $autoload['libraries'] = array('database', 'layout', 'Freakauth_light','OCW_utils', 'Db_session');
 
 
