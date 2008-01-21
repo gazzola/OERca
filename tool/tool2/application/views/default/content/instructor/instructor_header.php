@@ -1,0 +1,15 @@
+<h1>Course: <?=$cname?></h1><br/>
+
+<div class="column span-24 first last">
+
+<?php $ci_uri = trim($this->uri->uri_string(), '/'); $att = ' id="active"';?>
+    <div id="navlist">
+		<ul id="navlist">
+			<li<?= (preg_match('|^instructor/home|', $ci_uri) > 0)? $att: ''?>><?=anchor("/instructor/home/$cid",$this->lang->line('ocw_ins_menu_home'))?></li>
+			<li<?= (preg_match('|^instructor/manage_materials|', $ci_uri) > 0)? $att: ''?>><?=anchor("/instructor/manage_materials/$cid",$this->lang->line('ocw_ins_menu_managematerials'))?></li>
+			<li<?= (preg_match('|^instructor/review|', $ci_uri) > 0)? $att: ''?>><?=anchor("/instructor/review/$cid",$this->lang->line('ocw_ins_menu_review'))?></li>
+			<li<?= (preg_match('|^instructor/materials|', $ci_uri) > 0)? $att: ''?>><?=anchor("/instructor/materials/$cid",$this->lang->line('ocw_ins_menu_materials'))?></li>
+			<li<?= (preg_match('|^instructor/dscribes|', $ci_uri) > 0)? $att: ''?>><?=anchor("/instructor/dscribes/$cid",$this->lang->line('ocw_ins_menu_manage'))?></li>
+		</ul>
+	</div>
+<br/>
