@@ -43,4 +43,7 @@
 $route['default_controller'] = "home";
 $route['scaffolding_trigger'] = "ocwpass";
 
+$route['admin'] = "admin/adminhome";
+$route['admin/users/:num'] = "admin/users";
+$route['admin/admins/:num'] = "admin/admins";
 ?>

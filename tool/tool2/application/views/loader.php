@@ -11,8 +11,13 @@
  * @license		http://svn.mariomariani.net/yats/trunk/license.txt
  */
 
-$this->load->view($data['settings']['views'] . $data['settings']['commons'] . "header", $data);
-$this->load->view($data['settings']['views'] . $data['settings']['content'] . "$view",  $data);
-$this->load->view($data['settings']['views'] . $data['settings']['commons'] . "footer", $data);
-
+if ($data['incl_header_footer']) {
+	$this->load->view($data['settings']['views'] . $data['settings']['commons'] . "header", $data);
+	$this->load->view($data['settings']['views'] . $data['settings']['content'] . "$view",  $data);
+	$this->load->view($data['settings']['views'] . $data['settings']['commons'] . "footer", $data);
+} else {
+	$this->load->view($data['settings']['views'] . $data['settings']['commons'] . "noheader", $data);
+	$this->load->view($data['settings']['views'] . $data['settings']['content'] . "$view",  $data);
+	$this->load->view($data['settings']['views'] . $data['settings']['commons'] . "nofooter", $data);
+}
 ?>

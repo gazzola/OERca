@@ -17,17 +17,29 @@ class Home extends Controller {
 	
 	public function index()
 	{
-		$data = array('title'=>'Home');
-		redirect('courses','location');
-       	$this->layout->buildPage('home', $data);
+		$this->freakauth_light->check();
+
+        $this->load->model('ocw_user');
+
+        if (getUserProperty('role') == 'dscribe2') {
+            redirect('dscribe2/home/', 'location');
+
+        } else {
+            $courses = $this->ocw_user->get_courses(getUserProperty('id'));
+            $data = array('title'=>'Home','courses'=>$courses,'sysrole'=>getUserProperty('role'),
+						  'breadcrumb'=>$this->breadcrumb());
+            $this->layout->buildPage('home', $data);
+        }
 	}
 
 	public function breadcrumb($section='default')
 	{
 		$breadcrumb = array();
 
+		$breadcrumb[] = array('url'=>site_url(), 'name'=>'Home');
+
 		if ($section == 'default') {
-			$breadcrumb[] = array('url'=>site_url(), 'name'=>'Home');
+			$breadcrumb[] = array('url'=>'', 'name'=>'Manage Courses');
 		}
 		return $breadcrumb;
 	}

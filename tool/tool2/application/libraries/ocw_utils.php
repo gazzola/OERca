@@ -274,6 +274,18 @@ class OCW_utils {
 	   return ($thumb_found) ? $aurl : '<small>no context view found</small>';
 
 	}
+
+    /**
+     * Escape url 
+     *
+     * @access  public
+     * @param   string  the url to be escaped
+     * @return  string
+     */
+    function escapeUrl($url)
+    {
+        return rawurlencode($url);
+    }
 }
 
 

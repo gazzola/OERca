@@ -42,7 +42,7 @@ class Layout
 	 * @param	string	loader file
 	 * @return	void
 	 */	   
-	function buildPage($view, $data = null, $loader = 'loader')
+	function buildPage($view, $data = null, $incl_header = true, $loader = 'loader')
 	{
 		$data['settings'] = $this->settings;
 		
@@ -50,7 +50,8 @@ class Layout
 		{
 			$data[$key] = $this->layout->layoutmodel->$key($item);
 		}
-		
+	
+		$data['incl_header_footer'] = ($incl_header) ? true : false;	
 		$this->layout->load->view($loader, array('view'=>$view, 'data'=>$data));
 	}
 

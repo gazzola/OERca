@@ -99,7 +99,7 @@ Thanks for your cooperation!
 		</td>
 		<td>
 			<p>
-			<b>Do you own this media?</b><br/>
+			<b>Did you create and hold the copyright to this?</b><br/>
 			<input type="radio" name="ask[<?=$obj['id']?>][own]" id="own_<?=$obj['id']?>" value="yes" class="do_askform_yesno"/>&nbsp; Yes&nbsp;
 			<input type="radio" name="ask[<?=$obj['id']?>][own]" id="own_<?=$obj['id']?>" value="no" class="do_askform_yesno" />&nbsp; No
 			</p>

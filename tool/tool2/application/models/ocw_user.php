@@ -15,30 +15,60 @@ class OCW_user extends Model
 		parent::Model();
 	}
 
-	/**
+    /**
      * Get a user's courses 
      *
      * @access  public
      * @param   int user id
      * @return  array
      */
-	public function get_courses($uid)
-	{
-		$courses = array();
+    public function get_courses($uid)
+    {
+        $courses = array();
+		$sql = "SELECT ocw_courses. *, ocw_curriculums.name AS cname, ocw_schools.name AS sname
+				  FROM ocw_courses, ocw_curriculums, ocw_schools, ocw_acl
+				 WHERE ocw_curriculums.id = ocw_courses.curriculum_id
+				   AND ocw_schools.id = ocw_curriculums.school_id
+				   AND ocw_acl.course_id = ocw_courses.id
+				   AND ocw_acl.user_id = '$uid'
+				 ORDER BY start_date DESC";
+		$q = $this->db->query($sql);
 
-		$this->db->select('ocw_courses.*, ocw_acl.role');
-		$this->db->from('acl')->where("user_id='$uid'");
-		$this->db->join('courses','acl.course_id=courses.id');
-		$this->db->orderby('start_date DESC');
+        if ($q->num_rows() > 0) {
+            foreach($q->result_array() as $row) { 
+					$courses[$row['sname']][$row['cname']][] = $row; 
+			}
+        }
 
-		$q = $this->db->get();
+        return (sizeof($courses) > 0) ? $courses : null;
+    }
 
-		if ($q->num_rows() > 0) {
-			foreach($q->result_array() as $row) { $courses[] = $row; } 
-		}
 
-		return (sizeof($courses) > 0) ? $courses : null;
-	}
+	/**
+     * Get dscribes for a course 
+     *
+     * @access  public
+     * @param   int course id
+     * @return  array
+     */
+    public function dscribes($cid)
+    {
+        $dscribes = array();
+
+        $this->db->select('ocw_users.*');
+        $this->db->from('acl')->where("course_id='$cid' AND ocw_acl.role = 'dscribe1'");
+        $this->db->join('users','acl.user_id=users.id');
+
+        $q = $this->db->get();
+
+        if ($q->num_rows() > 0) {
+            foreach($q->result_array() as $row) { $dscribes[] = $row; }
+        }
+
+        return (sizeof($dscribes) > 0) ? $dscribes : null;
+    }
+
+
 
 	/**
      * Add a new user 
@@ -100,7 +130,6 @@ class OCW_user extends Model
 		$where = array('user_name'=>$user_name);
 		$query = $this->db->getwhere('users', $where); 
 		return ($query->num_rows() > 0) ? $query->row_array() : false;
-		
 	}
 
 	/**

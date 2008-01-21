@@ -15,6 +15,49 @@ class Material extends Model
 		parent::Model();
 	}
 
+   
+   /**
+    * add material based on information given
+    * 
+    */
+   public function add_material ($details)
+   {
+       $query=$this->db->insert('materials',$details);
+       $this->db->select('id');
+       $where = "course_id='".$details['course_id']."' AND name='".$details['name']."' AND in_ocw='1'";
+       $this->db->from('materials')->where($where);
+       $q = $this->db->get();
+       $rv = null;
+       if ($q->num_rows() > 0)
+       {
+           foreach($q->result_array() as $row) { 
+               $rv = $row['id'];
+           }
+       }
+       return $rv;
+   }
+   
+   /**
+    * Find where the material is marked for ocw already
+    */
+    public function findOCWMaterial($cid, $name)
+    {
+       $this->db->select('id');
+       $where = "course_id='".$details['course_id']."' AND name='".$details['name']."' AND in_ocw='1'";
+       $this->db->from('materials')->where($where);
+       $q = $this->db->get();
+       $rv = null;
+       if ($q->num_rows() > 0)
+       {
+           foreach($q->result_array() as $row) { 
+           //print '<pre>'; print_r($row); print '</pre>';
+                   $rv = $row['id'];
+           }
+       }
+       return $rv;
+    }
+    
+
 	/**
      * Get materials for a given course 
      *
@@ -50,6 +93,44 @@ class Material extends Model
 		}
 		return (sizeof($materials)) ? (($as_listing) ? $this->as_listing($materials):$materials) : null; 
 	}
+
+	/**
+     * Get materials for a given course in a given category
+     *
+     * @access  public
+     * @param   int cid course id       
+     * @param   int mid material id 
+     * @param   boolean in_ocw if true only get materials in ocw 
+     * @param   boolean as_listing 
+     * @param   int category category
+     * @return  array
+     */
+    public function categoryMaterials($cid, $mid, $in_ocw=false, $as_listing=false, $category)
+    {
+        $materials = array();
+        $where = ($mid=='') ? '' : "AND ocw_materials.id='$mid'";
+        $where = ($category=='') ? $where : $where."AND ocw_materials.category='$category'";
+
+        $sql = "SELECT ocw_materials.*, ocw_mimetypes.mimetype 
+                  FROM ocw_materials
+                  LEFT JOIN ocw_mimetypes 
+                    ON ocw_mimetypes.id = ocw_materials.mimetype_id
+                 WHERE ocw_materials.course_id = '$cid' $where
+                 ORDER BY ocw_materials.order";
+        $q = $this->db->query($sql);
+
+        if ($q->num_rows() > 0) {
+            foreach($q->result_array() as $row) {
+                    $row['comments'] = $this->comments($row['id'],'user_id,comments,modified_on');
+                    if ($in_ocw) {
+                        if ($row['in_ocw']) { $materials[]= $row; }
+                    } else {
+                        $materials[]= $row;
+                    }
+            }
+        }
+        return (sizeof($materials)) ? (($as_listing) ? $this->as_listing($materials):$materials) : null;
+    }
 
 	/**
      * Get comments  for a material 

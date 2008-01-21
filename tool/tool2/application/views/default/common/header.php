@@ -15,11 +15,17 @@
 
 	   echo script('mootools.js'); 
    	   echo script('tablesort.js');
+
        echo script('event-selectors.js');
        echo script('event-rules.js');
+
 	   echo script('ocwui.js');
        echo script('ocw_tool.js');
 	   echo script('multiupload.js'); 
+	   echo script('iframeadjust.js'); 
+
+	   echo script('flash.js'); 
+
 	?>
 </head>
 
@@ -28,7 +34,8 @@
 <div id="mainPage" class="container">
 
 <div id="header" class="column span-24 first last">
-	<h1>OCW Work Tool</h1>
+	<div class="column span-15 first">
+	<a href="<?php echo base_url()?>"><h1>OCW Work Tool</h1></a>
 	<?php if (isset($breadcrumb)) { ?>
 	<p>
 		<?php for($i=0; $i < count($breadcrumb); $i++) { 
@@ -40,6 +47,29 @@
 		?>
 	</p>
 	<?php } ?>
+	</div>
+
+	<div class="column span-9 last" style="text-align: right; padding-top: 15px;">
+	<?php if (isValidUser()) { ?>
+         <?php echo  'Welcome&nbsp;&nbsp;<b>'.getUserProperty('user_name').' ('.getUserProperty('role').')</b> | '.
+					anchor(site_url('auth/changepassword'), 'Change Password').' | '.
+                     ((isAdmin())    ?
+         anchor($this->config->item('FAL_admin_uri'), 'Admin Panel').' | ' : '').
+         anchor($this->config->item('FAL_logout_uri'), 'Logout'); ?>
+     <?php } ?>
+	</div>
 </div>
 <!-- end header -->
 
+<?php 
+  $flash=$this->db_session->flashdata('flashMessage');
+  if (isset($flash) AND $flash!='') { 
+?>
+
+<!--STAR FLASH MESSAGE-->
+<div id="statusmsg" class="column span-24 first last">
+      <div id="flashMessage" style="display:none;"><?=$flash?></div>
+      <br/>
+</div>
+<!--END FLASH-->
+<?php } ?>

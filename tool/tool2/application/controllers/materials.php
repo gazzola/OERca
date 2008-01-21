@@ -31,7 +31,7 @@ class Materials extends Controller {
 						  'cid'=>$cid,
 					  	  'tags'=>$tags
 					 	);
-       		$this->layout->buildPage('materials/index', $data);
+       		$this->layout->buildPage('materials/index', $data, false);
 	}
 
 	public function update($cid,$mid,$field,$val)

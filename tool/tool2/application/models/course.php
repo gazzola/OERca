@@ -32,10 +32,9 @@ class Course extends Model
 	}
 
     /**
-     * Get a user's courses 
+     * Get all courses 
      *
      * @access  public
-     * @param   int user id
      * @return  array
      */
     public function get_courses()
@@ -82,6 +81,23 @@ class Course extends Model
 	public function update_course($cid, $data)
 	{
 		$this->db->update('courses',$data,"id=$cid");
+	}
+
+	/**
+     * check to see if a user has access to a course
+     *
+     * @access  public
+     * @param   int	uid user id		
+     * @param   int	cid course id		
+     * @return  boolean 
+     */
+	public function has_access($uid, $cid)
+	{
+		$where = array('user_id'=>$uid, 'course_id'=>$cid);
+		$this->db->select('*')->from('acl')->where($where);
+		$q = $this->db->get();
+		$course = $q->row_array();
+		return ($q->num_rows() > 0) ? $course : null;
 	}
 }
 ?>

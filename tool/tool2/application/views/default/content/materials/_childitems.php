@@ -8,27 +8,9 @@
 	<?php if ($child['mimetype'] == 'folder') { ?>
 	<td colspan="4">&nbsp;&nbsp;</td>
 	<?php } else { ?>
-	<td>
-		<?= $child['author'] ?>
-		<!--
-		<?php echo form_dropdown('selectname_'.$child['id'], $tags,
-						 $child['tag_id'],'class="update_tag" id="selectname_'.$child['id'].'"'); ?>
-		-->
-	</td>
 
 	<td>
-				 <small> 
-					<?php
-						if ($child['comments'] != null) { 
-							echo $this->ocw_user->username($child['comments'][0]['user_id']).' - '.
-								 character_limiter($child['comments'][0]['comments'].'&nbsp;',30);
-							echo '<a href="'.site_url()."materials/edit/$cid/".$child['id'].'">more &raquo;</a>'; 
-						} else {
-							echo 'No comments..&nbsp;&nbsp;';
-							echo '<a href="'.site_url()."materials/edit/$cid/".$child['id'].'">add &raquo;</a>'; 
-						}
-					?>
-				</small>
+		<?= $child['author'] ?>
 	</td>
 
 	<td class="options">
@@ -39,11 +21,6 @@
 		<?php } ?>
 		<?php echo ($child['embedded_co']==0) ? '(no CO)' : "&nbsp;({$child['statcount']})"; ?>
 	</td>
-	<!--
-		<td>
-			<a href="<?php echo site_url()."materials/edit/$cid/".$child['id']?>">modify</a>
-		</td>
-	-->
 		<td>
 			<b>
 			 <?php 

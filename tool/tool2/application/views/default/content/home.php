@@ -3,10 +3,11 @@
 <div class="column span-24 first last">
 <?php if ($courses == null) { ?>
 
-<p class="error">We did not find any courses for you to process yet.</p>
+<p class="error">We did not find any courses for you.</p>
 
 <?php 
 	} else { 
+
 		foreach($courses as $school => $curriculum) {
 ?>
 
@@ -19,7 +20,7 @@
         <th class="sortable-sortEnglishLonghandDateFormat">End Date</th>
         <th class="sortable">Curriculum</th>
         <th class="sortable">Director</th>
-        <th>&nbsp;&nbsp;</th>
+		<?php if ($sysrole <> 'user') { ?><th>&nbsp;&nbsp;</th><?php } ?>
     </tr>
     </thead>
     <tbody>
@@ -32,10 +33,12 @@
         <td><?=mdate('%d %M, %Y',mysql_to_unix($c['end_date']))?></td>
         <td width="40px"><?=ucfirst($c['cname'])?></td>
         <td><?=ucfirst($c['director'])?></td>
+		<?php if ($sysrole <> 'user') { ?>
 		<td width="90px"> 
-			<?=anchor(site_url('materials/home/'.$c['id']),
-                      'Course materials', array('title'=>'Edit course materials'))?> 
+			<?=anchor(site_url(strtolower($sysrole).'/home/'.$c['id']),
+                      'Edit', array('title'=>'Edit course materials'))?> 
 		</td>
+		<?php } ?>
 	</tr>	
 	<?php }} ?>
 	</tbody>

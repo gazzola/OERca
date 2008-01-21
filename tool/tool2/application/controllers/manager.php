@@ -18,6 +18,9 @@ class Manager extends Controller {
        function Manager()
        {
             parent::Controller();
+
+        	$this->freakauth_light->check('admin');
+
             if(!$this->uri->segment(3) == '')
             {
             $this->load->scaffolding($this->uri->segment(3));

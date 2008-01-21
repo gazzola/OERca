@@ -38,7 +38,7 @@
 |	$autoload['libraries'] = array('database', 'session', 'xmlrpc');
 */
 
-$autoload['libraries'] = array('database', 'ocw_utils','layout','upload');
+$autoload['libraries'] = array('database', 'ocw_utils','layout','upload', 'Freakauth_light', 'Db_session');
 
 
 /*
@@ -50,7 +50,7 @@ $autoload['libraries'] = array('database', 'ocw_utils','layout','upload');
 |	$autoload['helper'] = array('url', 'file');
 */
 
-$autoload['helper'] = array('url','date','html','layout','form','array','text');
+$autoload['helper'] = array('url','date','html','layout','form','array','text','freakauth_light');
 
 
 /*
@@ -78,7 +78,7 @@ $autoload['plugin'] = array();
 |
 */
 
-$autoload['config'] = array();
+$autoload['config'] = array('freakauth_light');
 
 
 /*
@@ -94,7 +94,7 @@ $autoload['config'] = array();
 |
 */
 
-$autoload['language'] = array();
+$autoload['language'] = array('ocw');
 
 /*
 | -------------------------------------------------------------------

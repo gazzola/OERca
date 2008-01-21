@@ -2,9 +2,6 @@
 
 <input type="hidden" id="cid" name="cid" value="<?=$cid?>" />
 
-<h1>Materials</h1><br/>
-
-<div class="column span-24 first last">
 <?php if ($materials == null) { ?>
 
 <p class="error">No materials found for this course</p>
@@ -19,12 +16,8 @@
 	<tr>
 		<th class="sortable"><strong>Name</strong></th>
 		<th class="sortable"><strong>Author</strong></th>
-		<th><strong>Comments</strong></th>
 		<th class="sortable"><strong>CO Status</strong></th>
 		<th class="sortable"><strong>Ask Items?</strong></th>
-		<!--
-		<th><strong>Edit</strong></th>
-		-->
 	</tr>
 	</thead>
 
@@ -35,7 +28,6 @@
 ?>
 	<tr>
 		<td>
-			<!--<a href="<?php echo site_url()."materials/edit/$cid/".$material['id']?>"> <?= $this->ocw_utils->icon($material['mimetype'])?>&nbsp;&nbsp;<?= $material['name']?>&nbsp;&nbsp;</a>-->
 			<a href="<?php echo site_url()."materials/edit/$cid/".$material['id']?>"><?= $material['name']?>&nbsp;&nbsp;</a>
 		</td>
 
@@ -45,25 +37,6 @@
 
 		<td>
 			<?= $material['author'] ?>
-		<!--
-			<?php echo form_dropdown('selectname_'.$material['id'], $tags,
-						 $material['tag_id'],'class="update_tag" id="selectname_'.$material['id'].'"'); ?>
-		-->
-		</td>
-
-		<td>
-				 <small> 
-					<?php
-						if ($material['comments'] != null) { 
-							echo $this->ocw_user->username($material['comments'][0]['user_id']).' - '.
-								 character_limiter($material['comments'][0]['comments'].'&nbsp;',30);
-							echo '<a href="'.site_url()."materials/edit/$cid/".$material['id'].'">more &raquo;</a>'; 
-						} else {
-							echo 'No comments..&nbsp;&nbsp;';
-							echo '<a href="'.site_url()."materials/edit/$cid/".$material['id'].'">add &raquo;</a>'; 
-						}
-					?>
-				</small>
 		</td>
 
 		<td class="options">
@@ -74,11 +47,6 @@
 			<?php } ?>
 		<?php echo ($material['embedded_co']==0) ? '(no CO)' : "&nbsp;({$material['statcount']})"; ?>
 		</td>
-		<!--
-		<td>
-			<a href="<?php echo site_url()."materials/edit/$cid/".$material['id']?>">modify</a>
-		</td>
-		-->
 		<td>
 			<b>
 			 <?php 
@@ -98,5 +66,3 @@
 	</tbody>
 </table>
 <?php }}  ?>
-
-</div>
