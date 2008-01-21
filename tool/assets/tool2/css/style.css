@@ -216,3 +216,55 @@ div.collapse-container
 			height: 30px;
 			margin: 0 auto;
 }
+
+
+
+#navlist { padding: 0 0 0 6px; }
+ul#navlist {
+    margin: 0;
+    padding-bottom: 32px;
+    list-style-type: none;
+    border-bottom: 1px solid #999;
+}
+ul#navlist li {
+    float: left;
+    height: 22px;
+    color: #000;
+    background-color: #eee;
+    margin: 6px 2px 0px 2px;
+    border: 1px solid #999;
+    border-bottom: none;
+}
+ul#navlist li#active { border-bottom: 2px solid #fff; height: 21px;}
+ul#navlist li#active a { background-color: #fff; color: #990033; }
+#navlist a { 
+    float: left; 
+    display: block;
+    color: #000;
+    text-decoration: none;
+    padding: 4px;
+}
+#navlist a:hover { background: #fff; }
+
+#boxes { padding-top: 10px; }
+.box {
+	background: #fff;
+    padding-top: 10px;
+    color: #929292;
+}
+.box img {
+    border: 0;
+    width: 40px;
+    float: left;
+}
+
+#flashMessage {
+    width:100%;
+    color:#FF0000; 
+    border-bottom: 1px dashed #FF0000;
+    border-top: 1px dashed #FF0000;
+    font-size: 16px;
+    margin: 8px 0px;
+    font-weight: bold;
+    padding: 10px;
+}
