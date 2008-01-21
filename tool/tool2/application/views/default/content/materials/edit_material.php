@@ -1,3 +1,5 @@
+<?php $this->load->view(property('app_views_path').'/materials/materials_header.php', $data); ?>
+
 <?php	
   $tags[0] = '-- select --';
   $comments = $material['comments'];
@@ -264,9 +266,6 @@
 </div>
 
 <div class="column span-15 last">
-	<div class="column span-15 first last">
-        <h1>Content Objects&nbsp;</h1>
-	</div>
 	<?php if ($numobjects > 0) { ?>
 	<iframe src="<?=site_url("materials/content_objects/$cid/{$material['id']}")?>" width="650px" height="600px"></iframe>
 	<?php } else { ?>
@@ -275,3 +274,5 @@
 	</div>
 	<?php } ?>
 </div>
+
+<?php $this->load->view(property('app_views_path').'/materials/materials_footer.php', $data); ?>

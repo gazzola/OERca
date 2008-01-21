@@ -1,3 +1,5 @@
+<?php $this->load->view(property('app_views_path').'/materials/materials_header.php', $data); ?>
+
 <?php $tags[0] = '-- select --'; ?>
 
 <input type="hidden" id="cid" name="cid" value="<?=$cid?>" />
@@ -28,7 +30,7 @@
 ?>
 	<tr>
 		<td>
-			<a href="<?php echo site_url()."materials/edit/$cid/".$material['id']?>"><?= $material['name']?>&nbsp;&nbsp;</a>
+			<a href="<?php echo site_url()."materials/edit/$cid/".$material['id'].'/'.$caller?>"><?= $material['name']?>&nbsp;&nbsp;</a>
 		</td>
 
 		<?php if ($material['mimetype'] == 'folder') { ?>
@@ -66,3 +68,4 @@
 	</tbody>
 </table>
 <?php }}  ?>
+<?php $this->load->view(property('app_views_path').'/materials/materials_footer.php', $data); ?>

@@ -67,7 +67,8 @@ $config['app_js']  = site_url().$config['assets_folder'].'/'.$config['assets_des
 $config['app_img']  = site_url().$config['assets_folder'].'/'.$config['assets_design'].'/'.$config['assets_images'];
 $config['app_shared_img']  = site_url().$config['assets_folder'].'/'.$config['assets_shared'].'/'.$config['assets_images'];
 $config['app_fonts']  = $_SERVER['DOCUMENT_ROOT'].'/tool/'.$config['assets_folder'].'/'.$config['assets_design'].'/fonts/';
-$config['app_uploads_url']  = site_url().'uploads/';
-$config['app_uploads_path']  = $_SERVER['DOCUMENT_ROOT'].'/tool/uploads/';
+#$config['app_uploads_url']  = site_url().'uploads/';
+$config['app_uploads_url']  = 'http://localhost/tool2/uploads/';
+$config['app_uploads_path']  = $_SERVER['DOCUMENT_ROOT'].'/tool2/uploads/';
 $config['app_site_url']  = site_url();
 ?>

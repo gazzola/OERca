@@ -2,7 +2,7 @@
 <tr>
 	<td>
 		<?php echo nbs($depth*2); ?>
-			<a href="<?php echo site_url()."materials/edit/$cid/".$child['id']?>"><?= $child['name']?>&nbsp;&nbsp;</a>
+			<a href="<?php echo site_url()."materials/edit/$cid/".$child['id'].'/'.$caller?>"><?= $child['name']?>&nbsp;&nbsp;</a>
 	</td>
 
 	<?php if ($child['mimetype'] == 'folder') { ?>

@@ -55,7 +55,7 @@ $lang['ocw_ds_pagetitle_editip'] = $lang['ocw_instructor'].' &raquo; Edit IP Obj
 $lang['ocw_ds_pagetitle_editmat'] = $lang['ocw_instructor'].' &raquo; Edit Material';
 
 # menubar text
-$lang['ocw_ds_menu_home']	= 'dScribe Home';
+$lang['ocw_ds_menu_home']	= 'Home';
 $lang['ocw_ds_menu_materials']	= 'Prep Course Materials';
 $lang['ocw_ds_menu_profiles']	= 'Set Profiles';
 $lang['ocw_ds_menu_copyright']	= 'Set Copyright';
