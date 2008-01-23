@@ -105,20 +105,29 @@ class Materials extends Controller {
 		return $breadcrumb;
 	}
 
-	public function viewform($form, $cid, $mid='')
+	public function viewform($form, $cid, $mid='', $view='in_progress')
 	{
 		if ($form == 'ask') {
 			$objects =  $this->coobject->coobjects($mid,'','Ask');
 			$material =  $this->material->materials($cid,$mid,true);
+			$num_inprogress = $num_done = 0;
+	
+			foreach($objects as $obj) {
+				if ($obj['ask_status'] == 'done') { $num_done++; }
+				else { $num_inprogress++; }
+			}
+
 			$data['numobjects'] = count($objects);
+			$data['num_done'] = $num_done; 
+			$data['num_inprogress'] = $num_inprogress; 
 			$data['course'] =  $this->course->get_course($cid); 
 			$data['list'] = $this->ocw_utils->create_co_list($cid,$mid,$objects);
 			$data['cid'] = $cid; 
 			$data['mid'] = $mid; 
-			$data['title'] = 'Verify Media in Material'; 
+			$data['title'] = 'Manage Content Objects'; 
 			$data['objects'] = $objects; 
 			$data['material'] = $material[0]; 
-			//$data['breadcrumb']=$this->breadcrumb($cid,$material[0],'askform');
+			$data['view'] = $view; 
     		$this->layout->buildPage('materials/askform', $data);
 		}
 	}
@@ -145,7 +154,7 @@ class Materials extends Controller {
 						$this->coobject->add_comment($oid, 2, 
 													array('comments'=>$cm));
 					}
-					$data1['ask'] = 'no';
+					//$data1['ask'] = 'no';
 					$data1['significance'] = $d['significance'];
 					$this->coobject->update($oid, $data1);
 					$data1 = array();
@@ -177,10 +186,14 @@ class Materials extends Controller {
 
 	public function update_object($cid, $mid, $oid, $field, $val='') 
  	{
-		if ($field=='rep') {
+		if ($field=='rep' or $field=='irep') {
 			$this->coobject->update_rep_image($cid, $mid, $oid, $_FILES);
 			$name = "c$cid.m$mid.o$oid";
-			redirect("materials/object_info/$cid/$mid/$name", 'location');
+			if ($field == 'rep') {
+				redirect("materials/object_info/$cid/$mid/$name", 'location');
+			} elseif($field=='irep') {
+				redirect("materials/viewform/ask/$cid/$mid/", 'location');
+			}
 			exit;
 		} else {
 			if ($field=='action_type') {

@@ -255,22 +255,25 @@ class OCW_utils {
 				: '<img id="'.$name.'" class="carousel-image" '.$title.' src="'.$imgUrl.'" '.$size.'/>';
 	}
 
-	function create_slide($cid,$mid,$loc,$text='view context')
+	function create_slide($cid,$mid,$loc,$text='view context',$useimage=false)
 	{
 	   $p_imgurl = property('app_uploads_url')."c$cid/m$mid/c$cid.m$mid.slide_$loc.png";
 	   $p_imgpath = property('app_uploads_path')."c$cid/m$mid/c$cid.m$mid.slide_$loc.png";
 	   $j_imgurl = property('app_uploads_url')."c$cid/m$mid/c$cid.m$mid.slide_$loc.jpg";
 	   $j_imgpath = property('app_uploads_path')."c$cid/m$mid/c$cid.m$mid.slide_$loc.jpg";
 	   $imgurl = '';
-
+	
 	   if (is_readable($p_imgpath) || is_readable($j_imgpath)) {
 			$thumb_found = true;	
 			$imgurl = (is_readable($p_imgpath)) ? $p_imgurl : $j_imgurl;
 	   } else {
 			$thumb_found = false;	
 	   }
-	   
-	   $aurl = '<a href="'.$imgurl.'" class="smoothbox" title="" rel="gallery-slide">'.$text.'</a>';
+
+	   $img = '<small style="clear:both">'.$text.'</small><br>'.'<img src="'.$imgurl.'" width="150" height="150" />';
+	   $aurl = ($useimage) 
+			?'<a href="'.$imgurl.'" class="smoothbox" title="" rel="gallery-slide">'.$img.'</a>'
+			:'<a href="'.$imgurl.'" class="smoothbox" title="" rel="gallery-slide">'.$text.'</a>';
 	   return ($thumb_found) ? $aurl : '<small>no context view found</small>';
 
 	}

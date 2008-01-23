@@ -22,7 +22,6 @@
 	   echo script('ocwui.js');
        echo script('ocw_tool.js');
 	   echo script('multiupload.js'); 
-	   echo script('iframeadjust.js'); 
 
 	   echo script('flash.js'); 
 
