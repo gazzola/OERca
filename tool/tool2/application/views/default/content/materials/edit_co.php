@@ -23,8 +23,6 @@ echo script('multiupload.js');
 						'Retain'=>'Retain',
 					    'Remove'=>'Remove');
 
-$sigs = array('high'=>'Very important', 'normal'=>'Important', 'low'=>'Not important'); 
-
   $types = '<select id="subtype_id" name="subtype_id" class="do_object_update">';
   foreach($subtypes as $type => $subtype) {
 		$types .= '<optgroup label="'.$type.'">';
@@ -50,11 +48,6 @@ $sigs = array('high'=>'Very important', 'normal'=>'Important', 'low'=>'Not impor
 <div class="column span-2 first colborder">
 	<div class="formLabel">Name:</div>
 	<h2 style="color:black"><?=$obj['name']?></h2>
-
-	<br/>
-
-	<div class="formLabel">Significance:</div>
-	<h2 style="color:black"><?=ucfirst($obj['significance'])?></h2>
 
 	<br/>
 

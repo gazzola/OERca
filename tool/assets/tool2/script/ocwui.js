@@ -1,15 +1,15 @@
 function update_prev_next() {
 	if (knobpos == 0) {
-			$('up-arrow').src = '/tool2/assets/default/images/up-disabled.gif';
-			$('down-arrow').src = '/tool2/assets/default/images/down-enabled.gif';
+			$('up-arrow').src = '/tool/assets/tool2/images/up-disabled.gif';
+			$('down-arrow').src = '/tool/assets/tool2/images/down-enabled.gif';
 	}
 	if (knobpos == numsteps) {
-			$('up-arrow').src = '/tool2/assets/default/images/up-enabled.gif';
-			$('down-arrow').src = '/tool2/assets/default/images/down-disabled.gif';
+			$('up-arrow').src = '/tool/assets/tool2/images/up-enabled.gif';
+			$('down-arrow').src = '/tool/assets/tool2/images/down-disabled.gif';
 	}
 	if (knobpos < numsteps && knobpos > 0) {
-			$('up-arrow').src = '/tool2/assets/default/images/up-enabled.gif';
-			$('down-arrow').src = '/tool2/assets/default/images/down-enabled.gif';
+			$('up-arrow').src = '/tool/assets/tool2/images/up-enabled.gif';
+			$('down-arrow').src = '/tool/assets/tool2/images/down-enabled.gif';
 	}
 }
 
