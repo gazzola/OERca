@@ -22,16 +22,16 @@ foreach($prov_objects as  $obj) {
 	<!-- copyright questions -->
 	<p>
 		<b class="ine_tip" title="<?=$ttip?>">What does the content object show[<a>?</a>]</b><br/>
-       	<textarea name="description" id="desc_<?=$obj['id']?>" rows="10" cols="50" 
+       	<textarea name="description_<?=$obj['id']?>" id="desc_<?=$obj['id']?>" rows="10" cols="50" 
 				  class="do_ask_object_update"><?=$obj['description']?></textarea>
 	</p>
 
 	<p>
 		<b>Did you create and hold the copyright to this object?</b><br/>
-		<input type="radio" name="instructor_owns" id="own_<?=$obj['id']?>" 
+		<input type="radio" name="instructor_owns_<?=$obj['id']?>" id="own_<?=$obj['id']?>" 
 			   value="yes" class="do_askform_yesno do_ask_object_update" 
 				<?=($obj['instructor_owns']=='yes')  ? 'checked="checked"' : ''?>/>&nbsp; Yes&nbsp;
-		<input type="radio" name="instructor_owns" id="own_<?=$obj['id']?>" 
+		<input type="radio" name="instructor_owns_<?=$obj['id']?>" id="own_<?=$obj['id']?>" 
 			   value="no" class="do_askform_yesno do_ask_object_update" 
 				<?=($obj['instructor_owns']=='no')  ? 'checked="checked"' : ''?>/>&nbsp; No&nbsp;
 	</p>
@@ -41,10 +41,10 @@ foreach($prov_objects as  $obj) {
 	<div id="other_<?=$obj['id']?>" style="display: <?= ($obj['instructor_owns']=='no') ? 'block':'none'?>"> 
 	<p>
 		<b>Do you know who holds the copyright to this object?</b><br/>
-		<input type="radio" name="who_owns" id="who_owns_<?=$obj['id']?>" 
+		<input type="radio" name="who_owns_<?=$obj['id']?>" id="who_owns_<?=$obj['id']?>" 
 			   value="yes" class="do_askform_whoyesno" 
 				<?=($obj['other_copyholder'] <> '')  ? 'checked="checked"' : ''?>/>&nbsp; Yes&nbsp;
-		<input type="radio" name="who_owns" id="who_owns_<?=$obj['id']?>" 
+		<input type="radio" name="who_owns_<?=$obj['id']?>" id="who_owns_<?=$obj['id']?>" 
 			   value="no" class="do_ask_object_update do_askform_whoyesno" 
 				<?=($obj['other_copyholder']=='')  ? 'checked="checked"' : ''?>/>&nbsp; No&nbsp;
 	</p>
@@ -52,16 +52,16 @@ foreach($prov_objects as  $obj) {
 	<div id="who_yes_other_<?=$obj['id']?>" 
 		style="display: <?= ($obj['other_copyholder']=='') ? 'none':'block'?>"> 
 		<b>Name of the copyright holder:</b><br/>
-		<input type="text" name="other_copyholder" id="cpholder_<?=$obj['id']?>" 
+		<input type="text" name="other_copyholder_<?=$obj['id']?>" id="cpholder_<?=$obj['id']?>" 
 			   value="<?=$obj['other_copyholder']?>"size="30" class="do_ask_object_update"/>
 	</div>
 
 	<div id="who_no_other_<?=$obj['id']?>" style="display: <?= ($obj['other_copyholder']=='') ? 'block':'none'?>"> 
 		<b>Will a substitute object work or is this representation of this information unique?</b><br/>
-		<input type="radio" name="unique" id="unq_<?=$obj['id']?>" 
+		<input type="radio" name="unique_<?=$obj['id']?>" id="unq_<?=$obj['id']?>" 
 			   value="yes" class=" do_ask_object_update" 
 				<?=($obj['unique']=='yes')  ? 'checked="checked"' : ''?>/>&nbsp; Yes, it's unique&nbsp;
-		<input type="radio" name="unique" id="unq_<?=$obj['id']?>" 
+		<input type="radio" name="unique_<?=$obj['id']?>" id="unq_<?=$obj['id']?>" 
 			   value="no" class="do_ask_object_update" 
 				<?=($obj['unique']=='no')  ? 'checked="checked"' : ''?>/>&nbsp; No, it's not unique&nbsp;
 	</div>

@@ -105,61 +105,43 @@ class Materials extends Controller {
 		return $breadcrumb;
 	}
 
-	public function viewform($form, $cid, $mid='', $view='in_progress')
+	public function viewform($form, $cid, $mid='', $view='provenance')
 	{
 		if ($form == 'ask') {
-			$objects =  $this->coobject->coobjects($mid,'','Ask');
+			$prov_objects =  $this->coobject->coobjects($mid,'','Ask'); // objects with provenace questions
+			$repl_objects =  $this->coobject->replacements($mid,'','','Ask'); // objects with replacement questions
 			$material =  $this->material->materials($cid,$mid,true);
-			$num_inprogress = $num_done = 0;
-	
-			foreach($objects as $obj) {
-				if ($obj['ask_status'] == 'done') { $num_done++; }
-				else { $num_inprogress++; }
+			$num_obj = $num_repl = $num_prov = $num_done = 0;
+
+			if ($prov_objects != null) {	
+				foreach($prov_objects as $obj) {
+					if ($obj['ask_status'] == 'done') { $num_done++; }
+					if ($obj['ask_status'] <> 'done') { $num_prov++; }
+					$num_obj++;
+				}
+			}
+			if ($repl_objects != null) {	
+				foreach($repl_objects as $obj) {
+					if ($obj['ask_status'] == 'done') { $num_done++; }
+					if ($obj['ask_status'] <> 'done') { $num_repl++; }
+					$num_obj++;
+				}
 			}
 
-			$data['numobjects'] = count($objects);
 			$data['num_done'] = $num_done; 
-			$data['num_inprogress'] = $num_inprogress; 
+			$data['num_prov'] = $num_prov; 
+			$data['num_repl'] = $num_repl; 
+			$data['numobjects'] = $num_obj;
+			$data['prov_objects'] = $prov_objects; 
+			$data['repl_objects'] = $repl_objects; 
+			$data['material'] = $material[0]; 
 			$data['course'] =  $this->course->get_course($cid); 
-			$data['list'] = $this->ocw_utils->create_co_list($cid,$mid,$objects);
+			$data['list'] = $this->ocw_utils->create_co_list($cid,$mid,$prov_objects);
 			$data['cid'] = $cid; 
 			$data['mid'] = $mid; 
-			$data['title'] = 'Manage Content Objects'; 
-			$data['objects'] = $objects; 
-			$data['material'] = $material[0]; 
 			$data['view'] = $view; 
+			$data['title'] = 'Manage Content Objects'; 
     		$this->layout->buildPage('materials/askform', $data);
-		}
-	}
-
-	public function processform($form, $cid, $mid)
-	{
-		if ($form == 'ask') {
-			$data1 = array();
-			foreach ($_POST['ask'] as $oid => $d) {
-					if ($d['own']=='yes') { 
-						$cm = 'Instructor says: I own this media';
-					    $lgcm = 'Instructor has claimed ownership of CO'. 
-								' - setting CO to cleared';
-						$data1['done'] = '1'; 
-						$this->coobject->add_log($oid, 2, array('log'=>$lgcm));
-						$this->coobject->add_comment($oid, 2, 
-													array('comments'=>$cm));
-					} else {
-					    $cm = 'Instructor says: I do not own this media'; 
-						$this->coobject->add_comment($oid, 2, array('comments'=>$cm));
-					}	
-					if ($d['comments'] <> '') {
-						$cm = 'Instructor says: '.$d['comments'];
-						$this->coobject->add_comment($oid, 2, 
-													array('comments'=>$cm));
-					}
-					//$data1['ask'] = 'no';
-					$data1['significance'] = $d['significance'];
-					$this->coobject->update($oid, $data1);
-					$data1 = array();
-			}
-			redirect("materials/viewform/ask/$cid/$mid/", 'location');
 		}
 	}
 
@@ -195,6 +177,7 @@ class Materials extends Controller {
 				redirect("materials/viewform/ask/$cid/$mid/", 'location');
 			}
 			exit;
+
 		} else {
 			if ($field=='action_type') {
 				$lgcm = 'Changed action type to '.$val;
@@ -210,6 +193,14 @@ class Materials extends Controller {
        exit;
 	}
 
+	public function update_replacement($cid, $mid, $oid, $field, $val='') 
+ 	{
+	   $data = array($field=>$val);
+	  $this->coobject->update_replacement($oid, $data);
+       $this->ocw_utils->send_response('success');
+       exit;
+	}
+
 	public function add_object_comment($oid,$comments)
 	{
 	   $data['comments'] = $comments;
@@ -218,14 +209,27 @@ class Materials extends Controller {
        exit;
 	}
 
+	public function add_object_question($oid,$question)
+	{
+	   $data['question'] = $comments;
+	   $this->coobject->add_question($oid, 2, $data);
+       $this->ocw_utils->send_response('success');
+       exit;
+	}
+
+	public function update_object_question($oid,$qid,$answer,$type='original')
+	{
+	   $data['answer'] = $answer;
+	   $this->coobject->update_question($oid, $qid, $data,$type);
+       $this->ocw_utils->send_response('success');
+	}
+
 	public function object_info($cid,$mid,$oname)
 	{
 		$subtypes =  $this->coobject->object_subtypes();
 		$obj = $this->coobject->coobjects($mid,$oname);
 
 		//$this->ocw_utils->dump($obj); exit;
-
-
 		$data = array(
 					  'obj'=>$obj[0],
 					  'cid'=>$cid,

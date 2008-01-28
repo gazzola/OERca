@@ -123,6 +123,8 @@ var Rules = {
 		}
 	},
 
+
+	// object functions
 	'.do_add_object_comment': function(element) {
 		element.onclick = function(e) {
 		    new Event(e).stop();
@@ -183,67 +185,182 @@ var Rules = {
 			url += '/'+object_id+'/'+field+'/'+escape(val);
 
             var fb = $('feedback');
-			var log = $('saved').empty().addClass('ajax-loading');
 
-            new Ajax(url, { method: 'get', 
-							update: fb,
+            new Ajax(url, { method: 'get', update: fb, }).request();
+		}
+	},
+
+	'.do_ask_object_update' : function(element) {
+		element.onchange = function () {
+			var response;
+			var course_id = $('cid').value;
+			var material_id = $('mid').value; 
+			var object_id = this.id..replace(/\w+_/g,'');
+			var field = this.name.replace(/_\d+$/g,'');
+			var val = this.value;
+
+			if (field == 'who_owns') {
+				object_id = this.id;
+				object_id = object_id.replace(/\w+_\w+_/g,'');
+				field = 'other_copyholder';
+			    val = '';
+			}
+
+			var url = $('server').value+'materials/update_object/'+course_id+'/'+material_id;
+			url += '/'+object_id+'/'+field+'/'+escape(val);
+            var fb = $('feedback');
+            new Ajax(url, { method: 'get', update: fb, }).request();
+		}
+	},
+
+	'.do_object_status_update' : function(element) {
+		element.onclick = function () {
+			var val = (this.value).toLowerCase();
+			val = (val == 'save for later') ? 'in progress' : val;
+			var course_id = $('cid').value;
+			var material_id = $('mid').value; 
+			var view = $('view').value; 
+			var object_id = this.name.replace(/status_/g,'');
+			var url = $('server').value+'materials/update_object/'+course_id+'/'+
+					  material_id+'/'+object_id+'/ask_status/'+escape(val);
+            var fb = $('feedback');
+			var response;
+            new Ajax(url, { method: 'get',
+							update: fb, 
+                     		onComplete:function() {
+                        		response = fb.innerHTML;
+                        		if (response=='success') {
+                            		url = $('server').value+'materials/viewform/ask/'+
+										course_id+'/'+material_id+'/'+view;
+                            		window.location.replace(url);
+                        		} else {
+                            		alert(response);
+                        		}
+							}
 			}).request();
+		}
+	},
+
+	'.do_object_question_update' : function(element) {
+		element.onchange = function () {
+			var val = this.value;
+			var course_id = $('cid').value;
+			var material_id = $('mid').value; 
+			var object_id = this.name.replace(/q_/g,'');
+			var question_id = object_id;
+			object_id = object_id.replace(/_\d+$/g,'');
+			question_id = question_id.replace(/^\d+_/g,'');
+			var url = $('server').value+'materials/update_object_question/'+
+					  object_id+'/'+question_id+'/'+escape(val);
+            var fb = $('feedback');
+            new Ajax(url, {	method: 'get', update: fb}).request();
 		}
 	},
 
 	'.do_askform_yesno' : function(element) {
 		element.onclick = function() {
 			var id = this.id;
-			id = id.replace(/own_/g,'');
+			id = id.replace(/\w+_/g,'');
 			if ($('other_'+id) && this.value == 'no') {
 				$('other_'+id).style.display = 'block';	
 			} 
 			if ($('other_'+id) && this.value == 'yes') {
-				$('other_'+id).style.display = 'block';	
+				$('other_'+id).style.display = 'none';	
 			}
 		}
 	},
 
-	'.do_askform_submit' : function(element) {
+	'.do_askform_whoyesno' : function(element) {
 		element.onclick = function() {
+			var id = this.id;
+			id = id.replace(/\w+_\w+_/g,'');
+			if (this.value == 'yes') {
+				if ($('who_yes_other_'+id)) {
+					$('who_yes_other_'+id).style.display = 'block';	
+				} 
+			   if ($('who_no_other_'+id)) { $('who_no_other_'+id).style.display = 'none';	}
+			} else {
+				if ($('who_no_other_'+id)) {
+					$('who_no_other_'+id).style.display = 'block';	
+				} 
+			   if ($('who_yes_other_'+id)) { $('who_yes_other_'+id).style.display = 'none';	}
+			}
+		}
+	},
+
+	// replacement form
+	'.do_replacement_update' : function(element) {
+		element.onchange = function () {
+			var response;
 			var course_id = $('cid').value;
 			var material_id = $('mid').value; 
-		
-			var yesno = $$('.do_askform_yesno');
-			var num = (yesno.length / 2);	
-			var count = 0;
-			var list = '';
-
-			yesno.each( function(radio, i) {
-				if (radio.checked) count++;
-		    });
-
-			if (count != num) {
-				alert('Please confirm whether or not you own the media object for all the listed ones below:');	
-				return false;
-			} else {
-				alert('Saving... Thanks for you help!');
+			var object_id; 
+			var field = this.name; 
+			var val = this.value;
+			if (field=='rep_ok') { 
+				object_id = this.id;
+				object_id = object_id.replace(/repok_/g,'');
+				field = 'suitable';
 			}
+			if (field == 'notsuitable') {
+				object_id = this.id;
+				object_id = object_id.replace(/c_/g,'');
+				field = 'unsuitable_reason';
+			}
+			var url = $('server').value+'materials/update_replacement/'+course_id+'/'+material_id;
+			url += '/'+object_id+'/'+field+'/'+escape(val);
+
+            var fb = $('feedback');
+
+            new Ajax(url, { method: 'get', update: fb, }).request();
 		}
 	},
 
-/**
-	// hide and show add panel
-	'.do_show_editpanel' : function (element) {
-        element.onclick = function() {
-            new Effect.Appear('editpanel');
-        }
-    },
+	'.do_replacement_question_update' : function(element) {
+		element.onchange = function () {
+			var val = this.value;
+			var course_id = $('cid').value;
+			var material_id = $('mid').value; 
+			var object_id = this.name.replace(/q_/g,'');
+			var question_id = object_id;
+			object_id = object_id.replace(/_\d+$/g,'');
+			question_id = question_id.replace(/^\d+_/g,'');
+			var url = $('server').value+'materials/update_object_question/'+
+					  object_id+'/'+question_id+'/'+escape(val)+'/replacement';
+            var fb = $('feedback');
+            new Ajax(url, {	method: 'get', update: fb}).request();
+		}
+	},
 
-    '.do_hide_editpanel' : function (element) {
-        element.onclick = function() {
-            new Effect.Fade('editpanel_error');
-            $('editpanel').hide();
-        }
-    },
+	'.do_replacement_status_update' : function(element) {
+		element.onclick = function () {
+			var val = (this.value).toLowerCase();
+			val = (val == 'save for later') ? 'in progress' : val;
+			var course_id = $('cid').value;
+			var material_id = $('mid').value; 
+			var view = $('view').value; 
+			var object_id = this.name.replace(/status_/g,'');
+			var url = $('server').value+'materials/update_replacement/'+course_id+'/'+
+					  material_id+'/'+object_id+'/ask_status/'+escape(val);
+            var fb = $('feedback');
+			var response;
+            new Ajax(url, { method: 'get',
+							update: fb, 
+                     		onComplete:function() {
+                        		response = fb.innerHTML;
+                        		if (response=='success') {
+                            		url = $('server').value+'materials/viewform/ask/'+
+										course_id+'/'+material_id+'/'+view;
+                            		window.location.replace(url);
+                        		} else {
+                            		alert(response);
+                        		}
+							}
+			}).request();
+		}
+	},
 
 	// hide and show add panel
-**/
 	'.do_show_hide_panel' : function (element) {
         element.onclick = function() {
 			var disp = $('addpanel').style.display;

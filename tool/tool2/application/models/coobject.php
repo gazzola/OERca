@@ -27,6 +27,7 @@ class Coobject extends Model
 	{
 		$objects = array();
 		$where = array('material_id' => $mid);
+
 		$action_type = ($action_type == 'Any') ? '' : $action_type;
 		if ($action_type <> '') { 
 			switch ($action_type) {
@@ -47,11 +48,13 @@ class Coobject extends Model
 				if ($oname <> '') {
 					if ($oname == $row['name']) {
 						$row['comments'] = $this->comments($row['id'],'user_id,comments,modified_on');
+						$row['questions'] = $this->questions($row['id'],'id,user_id,question,answer,modified_on');
 						$row['log'] = $this->logs($row['id'],'user_id,log,modified_on');
 						array_push($objects, $row);
 					}
 				} else {
 					$row['comments'] = $this->comments($row['id'],'user_id,comments,modified_on');
+					$row['questions'] = $this->questions($row['id'],'id,user_id,question,answer,modified_on');
 					$row['log'] = $this->logs($row['id'],'user_id,log,modified_on');
 					array_push($objects, $row);
 				}
@@ -61,7 +64,49 @@ class Coobject extends Model
 		return (sizeof($objects) > 0) ? $objects : null;
 	}
 
-	
+
+	/**
+     * Get objects replacements for a given material 
+     *
+     * @access  public
+     * @param   int	material id		
+     * @param   int	object id		
+     * @param   int	replacement id 
+     * @param   string	action type 
+     * @param   string	details 
+     * @return  array
+     */
+	public function replacements($mid,$oid='', $rid='', $action_type='', $details='*')
+	{
+		$objects = array();
+		$where = array('material_id' => $mid);
+		if ($oid <> '') { $where['object_id'] = $oid; }
+		if ($rid <> '') { $where['id'] = $rid; }
+
+		$action_type = ($action_type == 'Any') ? '' : $action_type;
+		if ($action_type <> '') { 
+			switch ($action_type) {
+				case 'Ask': $idx = 'ask'; $ans = 'yes'; break;
+				default: $idx = 'action_type'; $ans = $action_type;
+			}
+			$where[$idx] = $ans; 
+		}
+		$this->db->select($details)->from('object_replacements')->where($where);
+		$q = $this->db->get();
+
+		if ($q->num_rows() > 0) {
+			foreach($q->result_array() as $row) {
+				$row['comments'] = $this->comments($row['id'],'user_id,comments,modified_on','replacement');
+				$row['questions'] = $this->questions($row['id'],'id,user_id,question,answer,modified_on','replacement');
+				$row['log'] = $this->logs($row['id'],'user_id,log,modified_on','replacement');
+				array_push($objects, $row);
+			}
+		} 
+
+		return (sizeof($objects) > 0) ? $objects : null;
+	}
+
+
 	public function num_objects($mid)
 	{
 		$this->db->select("COUNT(*) AS c")->from('objects');
@@ -98,12 +143,14 @@ class Coobject extends Model
      * @access  public
      * @param   int	oid ip object id		
      * @param   string details fields to return	
+     * @param   string type either original object or replacement 
      * @return  array
      */
-	public function comments($oid, $details='*')
+	public function comments($oid, $details='*', $type='original')
 	{
 		$comments = array();
-		$this->db->select($details)->from('object_comments')->where('object_id',$oid)->orderby('modified_on DESC');
+		$table = ($type == 'original') ? 'object_comments' : 'object_replacement_comments';
+		$this->db->select($details)->from($table)->where('object_id',$oid)->orderby('modified_on DESC');
 		$q = $this->db->get();
 
 		if ($q->num_rows() > 0) {
@@ -116,17 +163,44 @@ class Coobject extends Model
 	}
 
 	/**
+     * Get questions  for an ip objects 
+     *
+     * @access  public
+     * @param   int	oid ip object id		
+     * @param   string details fields to return	
+     * @param   string type either original object or replacement 
+     * @return  array
+     */
+	public function questions($oid, $details='*', $type='original')
+	{
+		$questions = array();
+		$table = ($type == 'original') ? 'object_questions' : 'object_replacement_questions';
+		$this->db->select($details)->from($table)->where('object_id',$oid)->orderby('modified_on DESC');
+		$q = $this->db->get();
+
+		if ($q->num_rows() > 0) {
+			foreach($q->result_array() as $row) {
+				array_push($questions, $row);
+			}
+		} 
+
+		return (sizeof($questions) > 0) ? $questions : null;
+	}
+
+	/**
      * Get log  for an ip objects 
      *
      * @access  public
      * @param   int	oid ip object id		
      * @param   string details fields to return	
+     * @param   string type either original object or replacement 
      * @return  array
      */
-	public function logs($oid, $details='*')
+	public function logs($oid, $details='*', $type='original')
 	{
 		$log = array();
-		$this->db->select($details)->from('object_log')->where('object_id',$oid)->orderby('modified_on DESC');
+		$table = ($type == 'original') ? 'object_log' : 'object_replacement_log';
+		$this->db->select($details)->from($table)->where('object_id',$oid)->orderby('modified_on DESC');
 		$q = $this->db->get();
 
 		if ($q->num_rows() > 0) {
@@ -145,16 +219,55 @@ class Coobject extends Model
      * @param   int object id
      * @param   int user id
      * @param   array data 
+     * @param   string type either original object or replacement 
      * @return  void
      */
-	public function add_comment($oid, $uid, $data)
+	public function add_comment($oid, $uid, $data, $type='original')
 	{
 		$data['object_id'] = $oid;
 		$data['user_id'] = $uid;
 		$data['created_on'] = date('Y-m-d h:i:s');
 		$data['modified_on'] = date('Y-m-d h:i:s');
-		$this->db->insert('object_comments',$data);
+		$table = ($type == 'original') ? 'object_comments' : 'object_replacement_comments';
+		$this->db->insert($table,$data);
 	}
+
+	/**
+     * Add a question 
+     *
+     * @access  public
+     * @param   int object id
+     * @param   int user id
+     * @param   array data 
+     * @param   string type either original object or replacement 
+     * @return  void
+     */
+	public function add_question($oid, $uid, $data, $type='original')
+	{
+		$data['object_id'] = $oid;
+		$data['user_id'] = $uid;
+		$data['created_on'] = date('Y-m-d h:i:s');
+		$data['modified_on'] = date('Y-m-d h:i:s');
+		$table = ($type == 'original') ? 'object_questions' : 'object_replacement_questions';
+		$this->db->insert($table,$data);
+	}
+
+	/**
+     * update a question 
+     *
+     * @access  public
+     * @param   int object id
+     * @param   int user id
+     * @param   array data 
+     * @param   string type either original object or replacement 
+     * @return  void
+     */
+	public function update_question($oid, $qid, $data, $type='original')
+	{
+	  $table = ($type == 'original') ? 'object_questions' : 'object_replacement_questions';
+	  $this->db->update($table,$data,"id=$qid AND object_id=$oid");
+	}
+
 
 	/**
      * Add an object log
@@ -163,15 +276,17 @@ class Coobject extends Model
      * @param   int object id
      * @param   int user id
      * @param   array data 
+     * @param   string type either original object or replacement 
      * @return  void
      */
-	public function add_log($oid, $uid, $data)
+	public function add_log($oid, $uid, $data, $type='original')
 	{
 		$data['object_id'] = $oid;
 		$data['user_id'] = $uid;
 		$data['created_on'] = date('Y-m-d h:i:s');
 		$data['modified_on'] = date('Y-m-d h:i:s');
-		$this->db->insert('object_log',$data);
+		$table = ($type == 'original') ? 'object_log' : 'object_replacement_log';
+		$this->db->insert($table,$data);
 	}
 
 
@@ -242,9 +357,8 @@ class Coobject extends Model
 		if (!is_dir($path)) { mkdir($path); }
 		return $path;
 	}
-
 	/**
-     * Update ip objects for a given material 
+     * Update objects for a given material 
      *
      * @access  public
      * @param   int	oid object ip id		
@@ -255,6 +369,20 @@ class Coobject extends Model
 	{
 		$this->db->update('objects',$data,"id=$oid");
 	}
+
+	/**
+     * Update replacement objects for a given material 
+     *
+     * @access  public
+     * @param   int	oid object ip id		
+     * @param   array	data
+     * @return  void
+     */
+	public function update_replacement($oid, $data)
+	{
+		$this->db->update('object_replacements',$data,"id=$oid");
+	}
+
 
 	/**
      * Update object replacement image
@@ -304,6 +432,20 @@ class Coobject extends Model
 		$data = array('id'=>$ipid);
 		$this->db->delete('objects',$data);
 	}
+
+	/**
+     * Remove an ip object replacement
+     *
+     * @access  public
+     * @param   int ip object id
+     * @return  void
+     */
+	public function remove_replacement($ipid)
+	{
+		$data = array('id'=>$ipid);
+		$this->db->delete('object_replacements',$data);
+	}
+
 
 	/**
      * Get Object types 
