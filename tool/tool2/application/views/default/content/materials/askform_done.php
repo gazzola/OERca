@@ -5,16 +5,13 @@ if ($prov_objects != null) {
 	if ($obj['ask_status'] == 'done') {
 ?>
 <tr>
-<td valign="top"><?=$count?></td>
+<td style="vertical-align:top"><?=$count?></td>
 
-<td valign="top">
-	<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['name'],$obj['location'],false,false);?><br/>
-	<p><b>Recommended action: </b> <?= $obj['action_type']?></p>
-	<p><b>Location:</b> Page <?=$obj['location']?></p>
-	<p><?=$this->ocw_utils->create_slide($cid,$mid,$obj['location'],'View slide for more context',false);?></p>
+<td style="vertical-align:top">
+	<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['name'],$obj['location'],false,true);?><br/>
 </td>
 
-<td valign="top">
+<td style="vertical-align: top">
 	<p><h3>Actions Taken:</h3>                
 	<?php 
 		if ($obj['instructor_owns']=='yes') { 
@@ -67,13 +64,13 @@ if ($repl_objects != null) {
 ?>
 
 <tr>
-<td valign="top"><?=$count?></td>
+<td style="vertical-align:top"><?=$count?></td>
 
-<td valign="top">
-	<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['name'],$obj['location'],false,false);?><br/>
+<td style="vertical-align:top">
+	<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['name'],$obj['location'],false,true);?><br/>
 </td>
 
-<td valign="top">
+<td style="vertical-align:top">
 	<p><h3>Replaced With:</h3>                
 		<?=$this->ocw_utils->create_corep_img($cid,$mid,$obj['name'],$obj['location'],false);?>
     </p>

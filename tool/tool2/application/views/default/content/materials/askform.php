@@ -10,7 +10,6 @@ $sigs = array('high'=>'Very important', 'normal'=>'Important', 'low'=>'Not impor
 $num_avail = array('provenance'=>$num_prov, 'replacement'=>$num_repl, 'done'=>$num_done);
 ?>
 <style>
-.carousel-image { float: left; padding-right: 10px; padding-bottom: 10px;}
 p.txt{
 	margin: 0;
 	padding: 5px;
@@ -57,7 +56,7 @@ Thanks for your cooperation!
 <input type="hidden" id="mid" name="mid" value="<?=$mid?>" />
 <input type="hidden" id="view" name="view" value="<?=$view?>" />
 
-<h2>Content Objects (<?=$numobjects?> items)</h2>
+<h2>Content Objects in need of faculty input (<?=$numobjects?> items)</h2>
 
 <?php 
 
@@ -81,8 +80,8 @@ if ($num_avail[$view] == 0) {
 	<?php } elseif ($view == 'replacement') { ?>
        	<th>&nbsp;</th>
 		<th>Questions</th>
-        <th>Original Object</th>
         <th>Replacement Object</th>
+        <th>Original Object</th>
 	<?php } else { ?>
         <th>&nbsp;</th>
 		<th>Questions</th>

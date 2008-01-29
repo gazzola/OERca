@@ -31,12 +31,8 @@ var InPlaceEditor = new Class({
 				save.innerHTML = 'save';
 				
 				save.addEvent('click', function() {
-					var course_id = $('cid').value;
-					var material_id = $('mid').value; 
-					var url = $('server').value+'materials/update_object/'+
-							  course_id+'/'+material_id;
 					var val = textarea.value;
-					url += iurl+escape(val);
+					var url = $('server').value+iurl+escape(val);
 
             		var fb = $('feedback');
             		new Ajax(url, { method: 'get', update: fb, }).request();

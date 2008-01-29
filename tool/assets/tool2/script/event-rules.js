@@ -195,7 +195,7 @@ var Rules = {
 			var response;
 			var course_id = $('cid').value;
 			var material_id = $('mid').value; 
-			var object_id = this.id..replace(/\w+_/g,'');
+			var object_id = this.id.replace(/\w+_/g,'');
 			var field = this.name.replace(/_\d+$/g,'');
 			var val = this.value;
 
@@ -217,6 +217,7 @@ var Rules = {
 		element.onclick = function () {
 			var val = (this.value).toLowerCase();
 			val = (val == 'save for later') ? 'in progress' : val;
+			val = (val == 'send to dscribe') ? 'done' : val;
 			var course_id = $('cid').value;
 			var material_id = $('mid').value; 
 			var view = $('view').value; 
@@ -266,6 +267,24 @@ var Rules = {
 			} 
 			if ($('other_'+id) && this.value == 'yes') {
 				$('other_'+id).style.display = 'none';	
+			}
+		}
+	},
+
+	'.do_askform_suityesno' : function(element) {
+		element.onclick = function() {
+			var id = this.id;
+			id = id.replace(/\w+_/g,'');
+			if (this.value == 'yes') {
+				if ($('suit_yes_other_'+id)) {
+					$('suit_yes_other_'+id).style.display = 'block';	
+				} 
+			   if ($('suit_no_other_'+id)) { $('suit_no_other_'+id).style.display = 'none';}
+			} else {
+				if ($('suit_no_other_'+id)) {
+					$('suit_no_other_'+id).style.display = 'block';	
+				} 
+			   if ($('suit_yes_other_'+id)) { $('suit_yes_other_'+id).style.display = 'none';	}
 			}
 		}
 	},
@@ -336,6 +355,7 @@ var Rules = {
 		element.onclick = function () {
 			var val = (this.value).toLowerCase();
 			val = (val == 'save for later') ? 'in progress' : val;
+			val = (val == 'send to dscribe') ? 'done' : val;
 			var course_id = $('cid').value;
 			var material_id = $('mid').value; 
 			var view = $('view').value; 

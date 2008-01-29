@@ -1,7 +1,6 @@
 <?php 
 $count = 1;
 $inplaceeditors = array();
-$uploaders = array();
 $sliders = array();
 $ttip = "We're asking you to do two things here:<br/><br/>1) Tell us a little about what".
 		" this content object shows in relation to the lesson.<br/><br/>".
@@ -14,9 +13,9 @@ foreach($prov_objects as  $obj) {
   if ($obj['ask_status'] <> 'done') {
 ?>
 <tr>
-<td valign="top"><?=$count?></td>
+<td valign="top" style="vertical-align:top;"><?=$count?></td>
 
-<td width="318">
+<td valign="top" style="vertical-align:top;">
 
 <div id="new-col1-<?=$obj['id']?>" style="display: <?=($obj['ask_status']=='in progress') ? 'none':'block'?>;">
 	<!-- copyright questions -->
@@ -59,7 +58,7 @@ foreach($prov_objects as  $obj) {
 	<div id="who_no_other_<?=$obj['id']?>" style="display: <?= ($obj['other_copyholder']=='') ? 'block':'none'?>"> 
 		<b>Will a substitute object work or is this representation of this information unique?</b><br/>
 		<input type="radio" name="unique_<?=$obj['id']?>" id="unq_<?=$obj['id']?>" 
-			   value="yes" class=" do_ask_object_update" 
+			   value="yes" class="do_ask_object_update" 
 				<?=($obj['unique']=='yes')  ? 'checked="checked"' : ''?>/>&nbsp; Yes, it's unique&nbsp;
 		<input type="radio" name="unique_<?=$obj['id']?>" id="unq_<?=$obj['id']?>" 
 			   value="no" class="do_ask_object_update" 
@@ -89,43 +88,17 @@ foreach($prov_objects as  $obj) {
 <?php }} ?>
 	</p>
 
-	<!-- save options  -->	
-	<p><br/>
- 		<input type="submit" name="status_<?=$obj['id']?>" value="Save for later" id="close_<?=$obj['id']?>"
-			   class="do_object_status_update"/>
-		&nbsp;&nbsp;
- 		<input type="submit" name="status_<?=$obj['id']?>" value="Done" class="do_object_status_update"/>
-	</p>
-</div>
-
-<div id="inprogress-col1-<?=$obj['id']?>" style="display: <?=($obj['ask_status']=='in progress') ? 'block':'none'?>;">
-<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['name'],$obj['location'],false,true);?><br/>
-<p><b>Recommended action: </b> <?= $obj['action_type']?></p>
-<p><b>Location:</b> Page <?=$obj['location']?></p>
-</div>
-
-</td>
-
-<td valign="top">
-
-<div id="new-col2-<?=$obj['id']?>" style="display: <?=($obj['ask_status']=='in progress') ? 'none':'block'?>;">
-	<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['name'],$obj['location'],false,false);?><br/>
-	<p><b>Recommended action: </b> <?= $obj['action_type']?></p>
-	<p><b>Location:</b> Page <?=$obj['location']?></p>
-	<p><?=$this->ocw_utils->create_slide($cid,$mid,$obj['location'],'View slide for more context',false);?></p>
-
 	<!-- citation -->
+	<br/><br/>
 	<p style="clear:both"><h3>Citation: <small>(click below to edit)</small></h3> 
 		<div id="holder_citation_<?=$obj['id']?>">
-			<span id="txt_citation_<?=$obj['id']?>" class="ine_tip" title="Click to edit text">
-				<?php echo ($obj['citation']<>'') ? $obj['citation']:' No citation'?>
-			</span>
+			<span id="txt_citation_<?=$obj['id']?>" class="ine_tip" title="Click to edit text"><?php echo ($obj['citation']<>'') ? $obj['citation']:'No citation'?></span>
 		</div>
 <?php 
 	$n = count($inplaceeditors) + 1; 
 	$ine_id = 'txt_citation_'.$obj['id'];
 	$ine_holder = 'holder_citation_'.$obj['id'];
-    $ine_url = "/{$obj['id']}/citation/";
+    $ine_url = "materials/update_object/$cid/$mid/{$obj['id']}/citation/";
 	$inplaceeditors[]="var editor$n = new InPlaceEditor('$ine_id','$ine_holder',".
 					  "'$ine_url','No citation'); ".
 					  "editor$n.hover('$ine_id','$ine_holder','#ffffcc','#fff');";
@@ -133,43 +106,53 @@ foreach($prov_objects as  $obj) {
 	</p>
 
 	<!-- tags -->
+	<br/><br/>
 	<p style="clear:both"><h3>Tags: <small>(click below to edit)</small></h3> 
 		<div id="holder_tags_<?=$obj['id']?>">
-			<span id="txt_tags_<?=$obj['id']?>" class="ine_tip" title="Click to edit text">
-				<?php echo ($obj['tags']<>'') ? $obj['tags']:' No tags'?>
-			</span>
+			<span id="txt_tags_<?=$obj['id']?>" class="ine_tip" title="Click to edit text"><?php echo ($obj['tags']<>'') ? $obj['tags']:'No tags'?></span>
 		</div>
 <?php 
 	$n = count($inplaceeditors) + 1; 
 	$ine_id = 'txt_tags_'.$obj['id'];
 	$ine_holder = 'holder_tags_'.$obj['id'];
-    $ine_url = "/{$obj['id']}/tags/";
+    $ine_url = "materials/update_object/$cid/$mid/{$obj['id']}/tags/";
 	$inplaceeditors[]="var editor$n = new InPlaceEditor('$ine_id','$ine_holder',".
 					  "'$ine_url','No tags'); ".
 					  "editor$n.hover('$ine_id','$ine_holder','#ffffcc','#fff');";
 ?>
 	</p>
 
-	<!-- Comments -->
-	<p><h3>Comments:</h3></b></p>
-<?php 
-	 $comments = $obj['comments'];
-	 if ($comments == null) { ?>
-        <p id="nocomments">No comments posted</p>
-<?php } else { foreach($comments as $comment) { ?>
-        <p><?=$comment['comments']?></p>
-        <p>
-           <small>by&nbsp;<?=$this->ocw_user->username($comment['user_id'])?>&nbsp;
-           <?=strtolower($this->ocw_utils->time_diff_in_words($comment['modified_on']))?>
-            </small>
-        </p>
-       <p><hr style="border: 1px solid #eee"/></p>
-<?php }  } ?>
+	<!-- save options  -->	
+	<br/><br/>
+	<p>
+ 		<input type="submit" name="status_<?=$obj['id']?>" value="Save for later" id="close_<?=$obj['id']?>"
+			   class="do_object_status_update"/>
+		&nbsp;&nbsp;
+ 		<input type="submit" name="status_<?=$obj['id']?>" value="Send to dScribe" class="do_object_status_update"/>
+	</p>
 </div>
 
-<div id="inprogress-col2-<?=$obj['id']?>" style="display: <?=($obj['ask_status']=='in progress') ? 'block':'none'?>;">
-<br/><b>Saved for further editing later</b><br/><br/>
+<div id="inprogress-col1-<?=$obj['id']?>" style="display: <?=($obj['ask_status']=='in progress') ? 'block':'none'?>;">
+<b>Saved for further editing later</b><br/><br/>
 <input type="button" value="Continue editing" id="open_<?=$obj['id']?>"/>
+</div>
+
+</td>
+
+
+
+<td style="vertical-align:top">
+
+<div id="new-col2-<?=$obj['id']?>" style="display: <?=($obj['ask_status']=='in progress') ? 'none':'block'?>;">
+	<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['name'],$obj['location'],false,false);?>
+<br/> <br/>
+	<p><?=$this->ocw_utils->create_slide($cid,$mid,$obj['location'],'View slide for more context',false);?></p>
+</div>
+
+
+<div id="inprogress-col2-<?=$obj['id']?>" style="display: <?=($obj['ask_status']=='in progress') ? 'block':'none'?>;">
+
+<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['name'],$obj['location'],false,true);?><br/>
 </div>
 </td>
 </tr>	
@@ -201,7 +184,6 @@ foreach($prov_objects as  $obj) {
 <script type="text/javascript">
 window.addEvent('domready', function() {
     <?php foreach($inplaceeditors as $editor) { echo $editor."\n"; } ?>
-    <?php foreach($uploaders as $upl) { echo $upl."\n"; } ?>
     <?php foreach($sliders as $slider) { echo $slider."\n"; } ?>
     var myTips = new MooTips($$('.ine_tip'), { maxTitleChars: 50 });
 });
