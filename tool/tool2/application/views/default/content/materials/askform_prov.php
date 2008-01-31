@@ -39,7 +39,6 @@ foreach($prov_objects as  $obj) {
 	</p>
 
 
-<?php if ($obj['action_type']=='Commission') { ?>
 	<div id="other_<?=$obj['id']?>" style="display: <?= ($obj['instructor_owns']=='no') ? 'block':'none'?>"> 
 	<p>
 		<b>Do you know who holds the copyright to this object?</b><br/>
@@ -62,13 +61,12 @@ foreach($prov_objects as  $obj) {
 		<b>Will a substitute object work or is this representation of this information unique?</b><br/>
 		<input type="radio" name="unique_<?=$obj['id']?>" id="unq_<?=$obj['id']?>" 
 			   value="yes" class="do_ask_object_update" 
-				<?=($obj['unique']=='yes')  ? 'checked="checked"' : ''?>/>&nbsp; Yes, it's unique&nbsp;
+				<?=($obj['unique']=='yes')  ? 'checked="checked"' : ''?>/>&nbsp; Yes, a substitute will work&nbsp;
 		<input type="radio" name="unique_<?=$obj['id']?>" id="unq_<?=$obj['id']?>" 
 			   value="no" class="do_ask_object_update" 
-				<?=($obj['unique']=='no')  ? 'checked="checked"' : ''?>/>&nbsp; No, it's not unique&nbsp;
+				<?=($obj['unique']=='no')  ? 'checked="checked"' : ''?>/>&nbsp; No, a substitute will not work; it's unique&nbsp;
 	</div>
 	</div>
-<?php } ?>
 
 	<!-- dScribe questions -->
 	<br/><br/>

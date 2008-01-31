@@ -24,7 +24,6 @@
 	   echo script('multiupload.js'); 
 
 	   echo script('flash.js'); 
-
 	?>
 </head>
 

@@ -122,8 +122,8 @@ foreach($repl_objects as  $obj) {
 <!-- Original -->
 <td style="vertical-align:top">
 <div id="new-col2-<?=$obj['id']?>" style="display: <?=($obj['ask_status']=='in progress') ? 'none':'block'?>;">
-	<h3><?=$this->ocw_utils->create_slide($cid,$mid,$obj['location'],'View slide for more context',false);?></h3>
-	<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['name'],$obj['location'],false,false);?>
+	<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['name'],$obj['location'],false,false);?><br/>
+	<?=$this->ocw_utils->create_slide($cid,$mid,$obj['location'],'View slide for more context',false);?>
 </div>
 <div id="inprogress-col2-<?=$obj['id']?>" style="display: <?=($obj['ask_status']=='in progress') ? 'block':'none'?>;">
 
