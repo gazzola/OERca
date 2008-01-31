@@ -47,7 +47,7 @@ foreach($prov_objects as  $obj) {
 				<?=($obj['other_copyholder'] <> '')  ? 'checked="checked"' : ''?>/>&nbsp; Yes&nbsp;
 		<input type="radio" name="who_owns_<?=$obj['id']?>" id="who_owns_<?=$obj['id']?>" 
 			   value="no" class="do_ask_object_update do_askform_whoyesno" 
-				<?=($obj['other_copyholder']=='')  ? 'checked="checked"' : ''?>/>&nbsp; No&nbsp;
+				<?=($obj['other_copyholder']=='' and $obj['unique'] <> 'pending')  ? 'checked="checked"' : ''?>/>&nbsp; No&nbsp;
 	</p>
 
 	<div id="who_yes_other_<?=$obj['id']?>" 
