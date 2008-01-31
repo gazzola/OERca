@@ -168,6 +168,10 @@ class Materials extends Controller {
 
 	public function update_object($cid, $mid, $oid, $field, $val='') 
  	{
+	   /** HACK: dreamhost messing around and converting spaces to
+           underscores - remove when hosted on Bezak **/
+	   $val = ($val=='in_progress') ? 'in progress' : $val;
+
 		if ($field=='rep' or $field=='irep') {
 			$this->coobject->update_rep_image($cid, $mid, $oid, $_FILES);
 			$name = "c$cid.m$mid.o$oid";
@@ -195,6 +199,9 @@ class Materials extends Controller {
 
 	public function update_replacement($cid, $mid, $oid, $field, $val='') 
  	{
+	   /** HACK: dreamhost messing around and converting spaces to
+           underscores - remove when hosted on Bezak **/
+	   $val = ($val=='in_progress') ? 'in progress' : $val;
 	   $data = array($field=>$val);
 	  $this->coobject->update_replacement($oid, $data);
        $this->ocw_utils->send_response('success');

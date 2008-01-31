@@ -39,7 +39,8 @@ textarea{
 
 <div class="column span-24 first last" style="background-color:#eee;padding:5px;margin-bottom:20px;">
 <p>
-The following page lists some of the media used in one of your courses.  We are asking about it because we cannot determine its provenance or need your approval for a replacement we intend to use. Please go through the list and for each content object indicate whether or not you created and hold the copyright to the media or, in the 'Replacement' tab, indicate whether you approve or not of the found replacement. 
+The following page lists some of the media used in one of your courses. We are asking about specific objects within this course because we cannot determine their provenance or need your approval for a replacement we intend to use. Please go through the list and for each content object indicate whether or not you created and hold the copyright to the media or, in the 'Replacement' tab, indicate whether or not you approve of the proposed replacement.
+</p>
 <br/><br/>
 Thanks for your cooperation!
 </p>

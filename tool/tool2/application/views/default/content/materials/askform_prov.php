@@ -6,6 +6,8 @@ $ttip = "We're asking you to do two things here:<br/><br/>1) Tell us a little ab
 		" this content object shows in relation to the lesson.<br/><br/>".
 		"2) What are the most distinctive components of this content object?";
 
+$ttip2 = "If you created this object, you most likely hold its copyright. However, sometimes faculty transfer copyrights to their work when they publish that work in books or articles.";
+
 foreach($prov_objects as  $obj) {
 
   $questions = $obj['questions'];
@@ -26,7 +28,8 @@ foreach($prov_objects as  $obj) {
 	</p>
 
 	<p>
-		<b>Did you create and hold the copyright to this object?</b><br/>
+		<b>Do you hold the copyright to this object?</b>
+		<img src="<?=property('app_img')?>/info.gif" style="float:left; display:inline; margin:-15px 210px" class="ine_tip" title="<?=$ttip2?>" /><br/>
 		<input type="radio" name="instructor_owns_<?=$obj['id']?>" id="own_<?=$obj['id']?>" 
 			   value="yes" class="do_askform_yesno do_ask_object_update" 
 				<?=($obj['instructor_owns']=='yes')  ? 'checked="checked"' : ''?>/>&nbsp; Yes&nbsp;
