@@ -24,7 +24,7 @@
 | NO TRAILING SLASH!
 |
 */
-	$system_folder = "tool2";
+	$system_folder = "system";
 
 /*
 |---------------------------------------------------------------
