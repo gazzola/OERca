@@ -84,24 +84,17 @@ class Auth extends Controller
 				 
 				$this->CI->_set_logindata($userdata);
 				
-				if (($userCourses=$this->ocw_user->get_courses($userdata['id'])) == null)
+				if ($this->course->get_course_by_title($courseTitle) == null)
 				{
-					
-					print "try to add course";
 					// if there is no course, add the current one as the first course
-					$courseDetails['newc'] = $courseTitle;
-					$courseDetails['curriculum'] = 'new';
-					$courseDetails['description'] = $courseDescription;
-					$courseDetails['sequence']='new';
-					$courseDetails['news'] = 'new';
-					$courseDetails['cnumber']=$courseNumber;
-					$courseDetails['ctitle'] = $courseTitle;
-					$courseDetails['sdate'] = $courseStartDate;
-					$courseDetails['edate'] = $courseEndDate;
-					$courseDetails['class'] = $courseTitle;
+					// if there is no course, add the current one as the first course
+					$courseDetails['number']=$courseNumber;
+					$courseDetails['title'] = $courseTitle;
+					$courseDetails['start_date'] = $courseStartDate;
+					$courseDetails['end_date'] = $courseEndDate;
+					$courseDetails['curriculum_id'] = '1';
 					$courseDetails['director'] = $courseDirector;
-					$courseDetails['collabs']='';
-					$courseDetails['dscribe']=0;
+					$courseDetails['collaborators']='';
 
 					// add course
 					$this->course->new_course($courseDetails);

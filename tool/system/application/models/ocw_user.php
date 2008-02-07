@@ -129,6 +129,7 @@ class OCW_user extends Model
 	{
 		$where = array('user_name'=>$user_name);
 		$query = $this->db->getwhere('users', $where); 
+		print '<pre>'; print_r($query); print '</pre>';
 		return ($query->num_rows() > 0) ? $query->row_array() : false;
 	}
 

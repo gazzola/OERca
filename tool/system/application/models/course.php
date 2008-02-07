@@ -14,6 +14,18 @@ class Course extends Model
 	{
 		parent::Model();
 	}
+	/**
+     * add course 
+	 *
+	 * @access  public
+	 * @return  array
+	 */
+    public function new_course($details)
+    {
+		$this->db->insert('courses', $details);
+	}
+
+	
 
 	/**
      * Get course
@@ -26,6 +38,21 @@ class Course extends Model
 	public function get_course($cid, $details='*')
 	{
 		$this->db->select($details)->from('courses')->where('id',$cid);
+		$q = $this->db->get();
+		$course = $q->row_array();
+		return ($q->num_rows() > 0) ? $course : null;
+	}
+	
+	/**
+     * Get course by title
+     *
+     * @access  public
+     * @param   string title
+     * @return  string
+     */
+	public function get_course_by_title($title, $details='*')
+	{
+		$this->db->select($details)->from('courses')->where('title',$title);
 		$q = $this->db->get();
 		$course = $q->row_array();
 		return ($q->num_rows() > 0) ? $course : null;
