@@ -81,6 +81,9 @@ class Dscribe1 extends Controller {
 	{
 		$this->_isValidUser($cid); 
 		$this->data['title'] = $this->lang->line('ocw_ds_pagetitle_profiles'); 
+		$courseDetails = $this->course->get_course($cid);
+		$this->data['courseTitle'] = $courseDetails['title'];
+		$this->data['courseId'] = $courseDetails['number'];
        	$this->layout->buildPage('dscribe1/set_profiles', $this->data);
 	}
 
@@ -128,6 +131,22 @@ class Dscribe1 extends Controller {
 		$this->_isValidUser($cid); 
 		$this->data['title'] = $this->lang->line('ocw_ds_pagetitle_review'); 
        	$this->layout->buildPage('dscribe1/review_course', $this->data);
+	}
+	
+	
+	/**
+     * Display the export page
+     *
+     * @access  public
+     * @param   int	course id		
+     * @param   string	task		
+     * @return  void
+     */
+	public function export($cid, $task='') 
+	{
+		$this->_isValidUser($cid); 
+		$this->data['title'] = $this->lang->line('ocw_ds_pagetitle_export'); 
+       	$this->layout->buildPage('dscribe1/export', $this->data);
 	}
 
 	/**

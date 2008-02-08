@@ -11,7 +11,7 @@ echo form_open('dscribe1/setprofile', '', '');
  <tr>
 	<td style="font-weight: bold; text-align: left; border:1px solid #ccc;padding: 5px;  ">
 		<h4>Title (required) </h4>
-       <?php echo form_input('title', ''); ?>
+       <?php echo form_input('title', $courseTitle); ?>
 	</td>
  </tr>
  <tr>
@@ -23,7 +23,7 @@ echo form_open('dscribe1/setprofile', '', '');
   <tr>
 	<td style="font-weight: bold; text-align: left; border:1px solid #ccc;padding: 5px;  ">
 		<h4>Course Id </h4>Enter the Course ID. The course ID, if exists, will be displayed with the course's title on the course home page, as well as on the course listing page.<br />
-        <?php echo form_input('id', ''); ?>
+        <?php echo form_input('id', $courseId); ?>
 	</td>
  </tr>
   <tr>

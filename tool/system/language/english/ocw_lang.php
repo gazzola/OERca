@@ -50,6 +50,7 @@ $lang['ocw_ds_pagetitle_profile'] = $lang['ocw_dscribe'].' &raquo; Course & Inst
 $lang['ocw_ds_pagetitle_copy'] = $lang['ocw_dscribe'].' &raquo; Set Default Copyright';
 $lang['ocw_ds_pagetitle_tag'] = $lang['ocw_dscribe'].' &raquo; Edit Tags';
 $lang['ocw_ds_pagetitle_review'] = $lang['ocw_dscribe'].' &raquo; Review';
+$lang['ocw_ds_pagetitle_export'] = $lang['ocw_dscribe'].' &raquo; Export';
 $lang['ocw_ds_pagetitle_viewip'] = $lang['ocw_instructor'].' &raquo; Manage IP Objects';
 $lang['ocw_ds_pagetitle_editip'] = $lang['ocw_instructor'].' &raquo; Edit IP Object';
 $lang['ocw_ds_pagetitle_editmat'] = $lang['ocw_instructor'].' &raquo; Edit Material';
@@ -61,6 +62,8 @@ $lang['ocw_ds_menu_profiles']	= 'Set Profiles';
 $lang['ocw_ds_menu_copyright']	= 'Set Copyright';
 $lang['ocw_ds_menu_tags']	= 'Edit Tags';
 $lang['ocw_ds_menu_review']	= 'Review for Export';
+$lang['ocw_ds_menu_export']	= 'Export';
+
 
 # dscribe>error
 $lang['ocw_ds_error_notaccess'] = 'Cannot access dScribe dashbard. {NAME} is not an instructor or dScribe for this course.';
@@ -75,3 +78,6 @@ $lang['ocw_ds_home_reviewtext']	= 'Review materials preapred for OCW';
 # dscribe>copy
 $lang['ocw_ds_copy_header']	= 'Set default copyright holder';
 $lang['ocw_ds_copy_introtext']	= 'Materials included in OCW are licensed as follows: attribution, non-commercial and share alike. Find out more about this license <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/">here.</a>';
+
+# describe>export
+$lang['ocw_ds_export_instruction'] = 'If you are satisfied with your choices and category selections, please click on the "Export" button down below to get a IMS-CP zip file. You can then upload the file in eduCommons and create a OCW site.';
