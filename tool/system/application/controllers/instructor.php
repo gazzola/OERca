@@ -22,6 +22,7 @@ class Instructor extends Controller {
 		$this->load->model('ocw_user');
 		$this->load->model('course');
 		$this->load->model('material');
+		$this->load->model('mimetype');
 	
 		$this->uid = getUserProperty('id');	
 		$this->data = array();
@@ -211,11 +212,12 @@ class Instructor extends Controller {
 					$entityModifiedOns = $entity->getElementsByTagName("modifiedOn");
 					$entityModifiedOn = $entityModifiedOns->item(0)->nodeValue;
 					
-					$entityTypeId = $this->file_type->getFileTypeId($entityType);
+					$entityTypeId = $this->mimetype->getMimetypeId($entityType);
 					
 					// use curl to get the resource conent and write to local drive
 					$ch = curl_init();
 					$filePath=getcwd().'/ocwfile/'.$entityName;
+					echo $filePath;
 					$fp = fopen($filePath, "w");
 					curl_setopt($ch, CURLOPT_URL, $entityUrl);
 					curl_setopt ($ch, CURLOPT_COOKIE, $_SERVER["HTTP_COOKIE"]."; Path=/"); 
@@ -230,17 +232,18 @@ class Instructor extends Controller {
 					
 					$details = array(
 									'course_id' => $cid,
-									'category' => "Resources",// the category name for resources
+									'category' => "Resource Items",// the category name for resources
 									'name' => $entityName,
-									'content' => '',
+									'ctools_url' => $entityUrl,
 									'author' => $entityCreator,
+									'collaborators' => '',
 									'tag_id' => '',	// empty tag for now
-									'filetype_id' => $entityTypeId,
+									'mimetype_id' => $entityTypeId,
 									'in_ocw' => 1,
-									'embedded_ip' => '',
+									'embedded_co' => '',
 									'nodetype' => 'child',
 									'parent' => '',
-									'material_order' =>'',
+									//'order' =>'',
 									'modified' => '',
 									'created_on' => date('Y-m-d h:i:s', $entityCreatedOn),
 									'modified_on' => date('Y-m-d h:i:s', $entityModifiedOn)

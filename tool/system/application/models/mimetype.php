@@ -41,5 +41,29 @@ class Mimetype extends Model
 
 		return (sizeof($filetypes) > 0) ? $filetypes : null;
 	}
+	
+	/**
+     * Get mimetype id
+     *
+     * @access  public
+	 * @param	type
+     * @return  id
+     */
+	public function getMimetypeId($type)
+	{
+		$ids = array();
+
+		$this->db->select('id')->from('mimetypes')->where('mimetype', $type);
+		$q = $this->db->get();	
+		$rv = null;
+       	if ($q->num_rows() > 0)
+       	{
+           foreach($q->result_array() as $row) 
+		   { 
+               $rv = $row['id'];
+			}
+        }
+       return $rv;
+	}
 }
 ?>
