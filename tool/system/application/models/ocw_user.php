@@ -74,18 +74,14 @@ class OCW_user extends Model
      * Add a new user 
      *
      * @access  public
-     * @param   string name
-     * @param   string user name
-     * @param   string email address
+     * @param   array details
      * @return  string
      */
-	public function add_user($name, $uname, $email)
+	public function add_user($details)
 	{
-		$data = array('name'=>$name,
-					  'user_name'=>$uname,
-					  'email'=>$email,
-	        		  'password'=> $this->freakauth_light->_encode($email));
-		$this->db->insert('users',$data);
+		$email= $details['email'];
+		$details['password']= $this->freakauth_light->_encode($email);
+		$this->db->insert('users',$details);
 		return $this->exists($email);
 	}
 

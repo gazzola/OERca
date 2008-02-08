@@ -37,7 +37,7 @@ class Auth extends Controller
 		if ($_SERVER['QUERY_STRING'] <> '') { // coming from Sakai??
 			// get user role, user name and site id
 			$role = ($_REQUEST['role']=='maintain') 
-				  ? 'instructor' : ($_REQUEST['role']=='access' ? 'dscribe1':$_REQUEST['role']);
+				  ? 'instructor' : ($_REQUEST['role']=='access') ? 'dscribe1':($_REQUEST['role']=='Instructor') ? 'instructor':'';
 
 			/* Zhen's CTools integration code */
 			$userId = $_REQUEST['user'];
@@ -74,7 +74,11 @@ class Auth extends Controller
 			$this->db_session->set_userdata($newsessiondata);
 			
 			if (($userdata=$this->ocw_user->get_user($userId)) == false) {
-				$this->ocw_user->add_user($username, $userId, $useremail);
+				$newUserDetails['name'] = $username;
+				$newUserDetails['user_name'] = $userId;
+				$newUserDetails['email'] = $useremail;
+				$newUserDetails['role']=$role;
+				$this->ocw_user->add_user($newUserDetails);
 			}
 
 			if (($userdata=$this->ocw_user->get_user($userId)) !== false) {
@@ -88,7 +92,7 @@ class Auth extends Controller
 				{
 					// if there is no course, add the current one as the first course
 					// if there is no course, add the current one as the first course
-					$courseDetails['number']=$courseNumber;
+					$courseDetails['number']='';
 					$courseDetails['title'] = $courseTitle;
 					$courseDetails['start_date'] = $courseStartDate;
 					$courseDetails['end_date'] = $courseEndDate;
