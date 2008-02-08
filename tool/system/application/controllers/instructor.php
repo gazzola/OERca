@@ -217,10 +217,9 @@ class Instructor extends Controller {
 					// use curl to get the resource conent and write to local drive
 					$ch = curl_init();
 					$filePath=getcwd().'/ocwfile/'.$entityName;
-					echo $filePath;
 					$fp = fopen($filePath, "w");
 					curl_setopt($ch, CURLOPT_URL, $entityUrl);
-					curl_setopt ($ch, CURLOPT_COOKIE, $_SERVER["HTTP_COOKIE"]."; Path=/"); 
+					curl_setopt ($ch, CURLOPT_COOKIE, $_SERVER["HTTP_COOKIE"]."; Path=/");
 					curl_setopt($ch, CURLOPT_HEADER, true);
 					curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
 					curl_setopt($ch, CURLOPT_FILE, $fp);
