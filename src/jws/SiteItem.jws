@@ -606,6 +606,11 @@ System.out.println("id=" + s.getId());
 		resName.appendChild( dom.createTextNode(name) );
 		item.appendChild(resName);
 
+		//  Create and append the url child element.
+		Node resUrl = dom.createElement("url");
+		resUrl.appendChild( dom.createTextNode(url) );
+		item.appendChild(resUrl);
+
 		//  Create and append the type child element.
 		Node resType = dom.createElement("type");
 		resType.appendChild(dom.createTextNode(type));
