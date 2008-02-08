@@ -97,14 +97,14 @@ class Auth extends Controller
 					$courseDetails['collaborators']='';
 
 					// add course
-					$this->course->new_course($courseDetails);
+					$c=$this->course->new_course($courseDetails);
 					// add user role for the course
-					if(($u = $this->ocw_user->existsByUserName($userId)) !== false)
+					if(($u = $this->ocw_user->existsByUserName($userId)) != false)
 					{
-						if (($c = $this->course->existsByNumber($courseNumber)) !== false)
-						{
-							$this->course->add_user($u['id'], $c['id'], $role);		
-						}
+						$userDetails['user_id'] = $u['id'];
+						$userDetails['course_id'] = $c['id'];
+						$userDetails['role'] = $role; 
+						$this->course->add_user($userDetails);
 					}
 				}
 				

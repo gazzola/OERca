@@ -128,8 +128,7 @@ class OCW_user extends Model
 	public function existsByUserName($user_name)
 	{
 		$where = array('user_name'=>$user_name);
-		$query = $this->db->getwhere('users', $where); 
-		print '<pre>'; print_r($query); print '</pre>';
+		$query = $this->db->getwhere('users', $where);
 		return ($query->num_rows() > 0) ? $query->row_array() : false;
 	}
 

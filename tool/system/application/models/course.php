@@ -14,6 +14,7 @@ class Course extends Model
 	{
 		parent::Model();
 	}
+	
 	/**
      * add course 
 	 *
@@ -23,6 +24,21 @@ class Course extends Model
     public function new_course($details)
     {
 		$this->db->insert('courses', $details);
+		$this->db->select('*')->from('courses')->where('title',$details['title']);
+		$q = $this->db->get();
+		$course = $q->row_array();
+		return ($q->num_rows() > 0) ? $course : null;
+	}
+
+	/**
+     * add user with the role to the course
+	 *
+	 * @access  public
+	 * @return  array
+	 */
+    public function add_user($details)
+    {
+		$this->db->insert('acl', $details);
 	}
 
 	
@@ -58,6 +74,21 @@ class Course extends Model
 		return ($q->num_rows() > 0) ? $course : null;
 	}
 
+	/**
+     * Get course by number
+     *
+     * @access  public
+     * @param   string number
+     * @return  string
+     */
+	public function get_course_by_number($number, $details='*')
+	{
+		$this->db->select($details)->from('courses')->where('number',$number);
+		$q = $this->db->get();
+		$course = $q->row_array();
+		return ($q->num_rows() > 0) ? $course : null;
+	}
+	
     /**
      * Get all courses 
      *
@@ -71,7 +102,7 @@ class Course extends Model
 				  FROM ocw_courses, ocw_curriculums, ocw_schools
 				 WHERE ocw_curriculums.id = ocw_courses.curriculum_id
 				   AND ocw_schools.id = ocw_curriculums.school_id
-				 ORDER BY start_date DESC';
+				 ORDER BY ocw_courses.start_date DESC';
 		$q = $this->db->query($sql);
 
         if ($q->num_rows() > 0) {
