@@ -69,6 +69,5 @@ $config['app_shared_img']  = site_url().$config['assets_folder'].'/'.$config['as
 $config['app_fonts']  = $_SERVER['DOCUMENT_ROOT'].'/tool/'.$config['assets_folder'].'/'.$config['assets_design'].'/fonts/';
 $config['app_uploads_url']  = site_url().'uploads/';
 $config['app_uploads_path']  = $_SERVER['DOCUMENT_ROOT'].'/tool/uploads/';
-#$config['app_uploads_url']  = 'http://localhost/tool/uploads/';
 $config['app_site_url']  = site_url();
 ?>

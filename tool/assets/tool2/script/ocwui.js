@@ -1,3 +1,9 @@
+function close_material_pane(pane)
+{
+  $('do_edit_mat_info').fireEvent('click'); 
+  $(pane).parentNode.removeClass('active');
+}
+
 function update_prev_next() {
 	if (knobpos == 0) {
 			$('up-arrow').src = '/tool/assets/tool2/images/up-disabled.gif';
@@ -35,7 +41,61 @@ var Site = {
 		if($('imagebar')) Site.carousel();
 		if($('filter-type')) Site.filtertype();
 		if($('myTabs')) Site.setuptabs();
+
+    if ($('do_open_matinfo_pane')) Site.co_page_setup();
 	},
+
+
+  co_page_setup: function () {
+      // toggle edit panes for material attributes
+      var edit_mat = new Fx.Slide($('pane_matinfo')).hide();
+      $('do_open_matinfo_pane').addEvent('click', function(e) {
+        e = new Event(e);
+        edit_mat.toggle();
+        var addclass = ($('do_open_matinfo_pane').parentNode.className=='active') ? 'normal' : 'active';
+        var rmvclass = ($('do_open_matinfo_pane').parentNode.className=='active') ? 'active' : 'normal';
+        this.parentNode.removeClass(rmvclass).addClass(addclass);
+        e.stop(); 
+      });
+      $('do_close_matinfo_pane').addEvent('click', function(e) {
+        e = new Event(e);
+        edit_mat.toggle();
+        $('do_open_matinfo_pane').parentNode.removeClass('active').addClass('normal');
+        e.stop(); 
+      });
+
+      var view_comm = new Fx.Slide($('pane_matcomm')).hide();
+      $('do_open_matcomm_pane').addEvent('click', function(e) {
+        e = new Event(e);
+        view_comm.toggle();
+        var addclass = ($('do_open_matcomm_pane').parentNode.className=='active') ? 'normal' : 'active';
+        var rmvclass = ($('do_open_matcomm_pane').parentNode.className=='active') ? 'active' : 'normal';
+        this.parentNode.removeClass(rmvclass).addClass(addclass);
+        e.stop(); 
+      });
+      $('do_close_matcomm_pane').addEvent('click', function(e) {
+        e = new Event(e);
+        view_comm.toggle();
+        $('do_open_matcomm_pane').parentNode.removeClass('active').addClass('normal');
+        e.stop(); 
+      });
+
+      var upload_co = new Fx.Slide($('pane_uploadco')).hide();
+      $('do_open_uploadco_pane').addEvent('click', function(e) {
+        e = new Event(e);
+        upload_co.toggle();
+        var addclass = ($('do_open_uploadco_pane').parentNode.className=='active') ? 'normal' : 'active';
+        var rmvclass = ($('do_open_uploadco_pane').parentNode.className=='active') ? 'active' : 'normal';
+        this.parentNode.removeClass(rmvclass).addClass(addclass);
+        e.stop(); 
+      });
+      $('do_close_uploadco_pane').addEvent('click', function(e) {
+        e = new Event(e);
+        upload_co.toggle();
+        $('do_open_uploadco_pane').parentNode.removeClass('active').addClass('normal');
+        e.stop(); 
+      });
+  },
 
 
 	setuptabs: function () {
@@ -174,28 +234,6 @@ var Site = {
 			var myTips1 = new MooTips($$('.tooltip'), {
 				maxTitleChars: 50// long caption
 			});
-	/*
-			var myTips1 = new MooTips($$('.toolTipImg'), {
-				maxTitleChars: 50// long caption
-			});
-			var myTips2 = new MooTips($$('.toolTipImgDOM'), {
-				showDelay: 500// Delay for 500 milliseconds
-			});
-			var myTips3 = new MooTips($$('.toolTipImgAJAX'), {
-				evalAlways: true,		// always run the eval statement
-				maxTitleChars: 100,		// very long caption
-				fixed: true,			// fixed in place; note tip mouseover does not hide tip
-				offsets: {'x':100,'y':100} // offset by 100,100
-			});
-			var myTips4 = new MooTips($$('.toolTipImgEVAL1'), {
-				evalAlways: true,		// always run the eval statement
-				showOnClick: true,		// click image to show tooltip
-				showOnMouseEnter: false// do not show on mouse enter
-			});
-			var myTips5 = new MooTips($$('.toolTipImgEVAL2'), {});
-		}
-	*/
-   
 		},
 };
 window.addEvent('domready', Site.start);

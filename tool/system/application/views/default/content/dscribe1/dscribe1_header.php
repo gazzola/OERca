@@ -6,7 +6,7 @@
     <div id="navlist">
 		<ul id="navlist">
 			<li<?= (preg_match('|^dscribe1/home|', $ci_uri) > 0)? $att: ''?>><?=anchor("/dscribe1/home/$cid",$this->lang->line('ocw_ds_menu_home'))?></li>
-			<li<?= (preg_match('|^dscribe1/materials|', $ci_uri) > 0)? $att: ''?>><?=anchor("/materials/home/$cid/dscribe1",$this->lang->line('ocw_ds_menu_materials'))?></li>
+			<li<?= (preg_match('|^dscribe1/materials|', $ci_uri) > 0)? $att: ''?>><?=anchor("/materials/home/$cid/dscribe1",'Manage')?></li>
 			<li<?= (preg_match('|^dscribe1/profiles|', $ci_uri) > 0)? $att: ''?>><?=anchor("/dscribe1/profiles/$cid",$this->lang->line('ocw_ds_menu_profiles'))?></li>
 			<li<?= (preg_match('|^dscribe1/copyright|', $ci_uri) > 0)? $att: ''?>><?=anchor("/dscribe1/copyright/$cid",$this->lang->line('ocw_ds_menu_copyright'))?></li>
 			<li<?= (preg_match('|^dscribe1/tags|', $ci_uri) > 0)? $att: ''?>><?=anchor("/dscribe1/tags/$cid",$this->lang->line('ocw_ds_menu_tags'))?></li>

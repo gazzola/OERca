@@ -25,17 +25,24 @@
 		    <a href="">Courses</a> &raquo; <a href="<?=site_url('materials/home/'.$cid.'/'.$caller)?>"><?=$cname?></a> &raquo;  
         <?php echo (isset($material['name'])) ? $material['name'] : 'materials'; ?>
     </div>
+    <?php if (isset($material['name'])) { ?>
     <div id="materials_nav" style="float: right">
 		  <ul>
-			    <li><a id="do_edit_mat_info">Edit Material Info</a></li>
-			    <li><a id="do_view_mat_comm">View Material Comments</a></li>
-			    <li><a id="do_upload_conobj">Upload Content Object</a></li>
-			    <li><a href="<?=$material['ctools_url']?>">Download Material</a></li>
+			    <li class="normal"><a id="do_open_matinfo_pane">Edit Material Info</a></li>
+			    <li class="normal"><a id="do_open_matcomm_pane">View Material Comments</a></li>
+			    <li class="normal"><a id="do_open_uploadco_pane">Upload Content Object</a></li>
+			    <li class="normal"><a href="<?=$material['ctools_url']?>">Download Material</a></li>
       </ul>
     </div>
-     <div style="clear:both"></div>
-     <script type="text/javascript">
-   
-    </script>
+    <?php } ?>
+    <div style="clear:both"></div>
 	</div>
+
+   <?php 
+      if (isset($material['name'])) { 
+          $this->load->view(property('app_views_path').'/materials/_edit_material_info.php', $data); 
+          $this->load->view(property('app_views_path').'/materials/_edit_material_comments.php', $data); 
+          $this->load->view(property('app_views_path').'/materials/_add_content_objects.php', $data); 
+        } 
+   ?>
 <br/>

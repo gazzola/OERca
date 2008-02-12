@@ -217,8 +217,6 @@ div.collapse-container
 			margin: 0 auto;
 }
 
-
-
 #navlist { padding: 0 0 0 6px; }
 ul#navlist {
     margin: 0;
@@ -245,6 +243,34 @@ ul#navlist li#active a { background-color: #fff; color: #990033; }
     padding: 4px;
 }
 #navlist a:hover { background: #fff; }
+
+#materials_nav ul { margin: 0; padding: 0; }
+
+#materials_nav li.normal {
+  display: inline;
+  margin: 0 5px;
+  padding: 0 0 0 5px;
+  font: normal 100% helvetica, Arial, sans-serif;
+}
+#materials_nav li.normal a { background-color: #fff; color: #e60; }
+
+#materials_nav ul li.active { 
+    display: inline;
+    padding: 5px 10px 10px 10px;
+    background-color: #222;
+    margin: 6px 2px 0px 2px;
+    border: none;
+}
+#materials_nav li.active a { background-color: #222; color: #999; }
+
+.editpane {
+  padding: 20px;
+  border: 0 1px dotted #06030a;
+  background-color: #222;
+  height: 250px;
+  color: #999;
+}
+
 
 #boxes { padding-top: 10px; }
 .box {

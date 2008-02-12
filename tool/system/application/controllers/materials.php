@@ -67,7 +67,7 @@ class Materials extends Controller {
 		$data = array('title'=>'Edit Material &raquo; '.$material[0]['name'],
 					  'material'=>$material[0], 
 					  'numobjects'=>$numobjects, 
-					  'breadcrumb'=>$this->breadcrumb($cid,$material[0],'edit',$caller),
+					  #'breadcrumb'=>$this->breadcrumb($cid,$material[0],'edit',$caller),
 					  'cid'=>$cid,
 	   				  'course'=> $course,
 	   				  'cname' => $course['number'].' '.$course['title'],
