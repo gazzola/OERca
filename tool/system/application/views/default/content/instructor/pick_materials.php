@@ -36,7 +36,7 @@ if ($user <> '') {
 	$TOOL_NAME="Instructor";
 	$PAGE_NAME="Manager Course Materials";
 
-	$hidden = array('task' => 'add',
+	$hidden = array(//'task' => 'add',
 				'cid' => $cid,
 				'user' => $user,
 				'euid' =>$euid,
@@ -50,6 +50,8 @@ if ($user <> '') {
 				'url' => $url);
 	echo form_open('instructor/materials_option', '', $hidden);
 ?>
+<input type='hidden' id='task' name='task' value='add' />
+
 <table border="0" cellpadding="0" cellspacing="0" class="course_materials">
 <tr>
 	<td width="40%" style="font-weight: bold; text-align: center; border:1px solid #ccc;padding: 5px; background: #E5EBFF;">
@@ -145,7 +147,7 @@ if ($user <> '') {
  <td style="width: 10%; vertical-align:top;">
 	<br/><br/><br/><br/><br/>&nbsp;&nbsp;&nbsp;
 	<?php
-		$js = 'onClick="setTask(\'add\')"';
+		$js = 'onClick="setTask(\'adddd\')"';
 		echo form_submit('addbutton', 'Add >>', $js);
 	?>
 </td>
@@ -153,13 +155,19 @@ if ($user <> '') {
 
 <td width=40% style="vertical-align:top; font-weight: normal; text-align: left; border:1px solid #ccc; ">
  <div class="materials_list">
- <p class="instructions"><br/>To remove materials from this OCW materials list  - click on the <strong>remove</strong> link for that item.<br/><br/></p>
+ <!--<p class="instructions"><br/>To remove materials from this OCW materials list  - click on the <strong>remove</strong> link for that item.<br/><br/></p>-->
+<div class="instructions"><br/>Check the course items below that you want to download to your desktop. 
+			Then, click on <strong>Download</strong> to download the OCW materials. <br/><br/></div>
+ <?php
+		$js = 'onClick="setTask(\'download\')"';
+		echo form_submit('downloadbutton', 'Download >>', $js);
+	?>
 
 <?php if ($categories == null) { ?>
 	<p class="error">There is no category for you to process yet.</p> 
 	<?php } else { 
 	 foreach($categories as $category) { ?>
-		<div class="parent">&nbsp; <img src="<?= property('app_img').'/page.png'?>"  height=15 /> <?=$category?><a href="#" title="remove this item">( remove )</a>&nbsp;&nbsp;
+		<div class="parent">&nbsp; <img src="<?= property('app_img').'/page.png'?>"  height=15 /> <?=$category?>&nbsp;&nbsp;
 			<?php $categoryMaterials = $categoriesMaterials[$category];
 			if ($categoryMaterials == null) { 
 			// this is no material inside
@@ -169,8 +177,12 @@ if ($user <> '') {
 				// there is material inside
 			?>
 				<div class="child"> 
-	 			<?php foreach($categoryMaterials as $categoryMaterial) { ?>
-	 				<div><img src="<?= property('app_img').'/blank.gif'?>" height="15" /><img src="<?= property('app_img').'/ppt.jpg'?>" height="15" /> &nbsp;&nbsp; <?=$categoryMaterial['name']?> <a href="#" title="remove only this item">( remove )</a></div>
+	 			<?php foreach($categoryMaterials as $categoryMaterial) {?>
+	 				<div><img src="<?= property('app_img').'/blank.gif'?>" height="15" /><img src="<?= property('app_img').'/ppt.jpg'?>" height="15" /> &nbsp;&nbsp; 
+					<?php echo form_checkbox('chooseDownloadItem[]', $categoryMaterial['id'], FALSE); 
+								echo $categoryMaterial['name'];
+							?>
+					</div>
 				</div>
 	 		<?php }} ?>	
 	 	</div>

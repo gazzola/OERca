@@ -37,6 +37,25 @@ class Material extends Model
        return $rv;
    }
    
+      /**
+    * Find where the material is marked for ocw already
+    */
+    public function getMaterialName($id)
+    {
+       $this->db->select('name');
+       $where = "id='".$id."'";
+       $this->db->from('materials')->where($where);
+       $q = $this->db->get();
+       $rv = null;
+       if ($q->num_rows() > 0)
+       {
+           foreach($q->result_array() as $row) { 
+           		$rv = $row['name'];
+           }
+       }
+       return $rv;
+    }
+   
    /**
     * Find where the material is marked for ocw already
     */
@@ -49,8 +68,7 @@ class Material extends Model
        $rv = null;
        if ($q->num_rows() > 0)
        {
-           foreach($q->result_array() as $row) { 
-           //print '<pre>'; print_r($row); print '</pre>';
+           foreach($q->result_array() as $row) {
                    $rv = $row['id'];
            }
        }

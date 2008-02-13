@@ -148,6 +148,19 @@ class Dscribe1 extends Controller {
 		$this->data['title'] = $this->lang->line('ocw_ds_pagetitle_export'); 
        	$this->layout->buildPage('dscribe1/export', $this->data);
 	}
+	
+	/**
+     * generate the export zip file
+     *
+     * @access  public
+     * @param   int	course id		
+     * @param   string	task		
+     * @return  void
+     */
+	public function do_export($cid, $task='') 
+	{
+		
+	}
 
 	/**
      * Check to see if a user is an instructor or not 

@@ -28,6 +28,7 @@ class Instructor extends Controller {
 		$this->data = array();
 		
 		$this->load->helper('file');
+		$this->load->helper('download');
 	}
 
 	public function index($cid)
@@ -163,7 +164,19 @@ class Instructor extends Controller {
 	public function materials_option($task='') 
 	{
 		$task = $_POST['task'];
-		if ($task == 'add')
+		if ($task == 'download')
+		{
+			$entityIds = $_POST['chooseDownloadItem'];
+		   	$how_many = count($entityIds);
+			for ($i=0; $i<$how_many; $i++) 
+			{
+				$entityId = $entityIds[$i];
+				$name = $this->material->getMaterialName($entityId);
+				$data = file_get_contents(getcwd().'/ocwfile/'.$name); // Read the file's contents
+				force_download($name, $data);			
+			}
+		}
+		else if ($task == 'add')
 		{
 			$entityIds = $_POST['chooseItem'];
 		   	$how_many = count($entityIds);
