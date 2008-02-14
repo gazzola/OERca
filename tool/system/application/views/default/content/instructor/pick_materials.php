@@ -147,7 +147,7 @@ if ($user <> '') {
  <td style="width: 10%; vertical-align:top;">
 	<br/><br/><br/><br/><br/>&nbsp;&nbsp;&nbsp;
 	<?php
-		$js = 'onClick="setTask(\'adddd\')"';
+		$js = 'onClick="setTask(\'add\')"';
 		echo form_submit('addbutton', 'Add >>', $js);
 	?>
 </td>
