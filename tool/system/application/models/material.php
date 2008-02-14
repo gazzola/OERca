@@ -20,7 +20,6 @@ class Material extends Model
     * add material based on information given
     * 
     */
-<<<<<<< .mine
   public function add_material ($details)
   {
     $query=$this->db->insert('materials',$details);
@@ -37,27 +36,8 @@ class Material extends Model
     }
     return $rv;
   }
-
-  /**
-=======
-   public function add_material ($details)
-   {
-       $query=$this->db->insert('materials',$details);
-       $this->db->select('id');
-       $where = "course_id='".$details['course_id']."' AND name='".$details['name']."' AND in_ocw='1'";
-       $this->db->from('materials')->where($where);
-       $q = $this->db->get();
-       $rv = null;
-       if ($q->num_rows() > 0)
-       {
-           foreach($q->result_array() as $row) { 
-               $rv = $row['id'];
-           }
-       }
-       return $rv;
-   }
    
-      /**
+   /**
     * Find where the material is marked for ocw already
     */
     public function getMaterialName($id)
@@ -77,7 +57,6 @@ class Material extends Model
     }
    
    /**
->>>>>>> .r45538
     * Find where the material is marked for ocw already
     */
   public function findOCWMaterial($cid, $name)
@@ -89,25 +68,10 @@ class Material extends Model
     $rv = null;
     if ($q->num_rows() > 0)
     {
-<<<<<<< .mine
       foreach($q->result_array() as $row) { 
         //print '<pre>'; print_r($row); print '</pre>';
         $rv = $row['id'];
       }
-=======
-       $this->db->select('id');
-       $where = "course_id='".$details['course_id']."' AND name='".$details['name']."' AND in_ocw='1'";
-       $this->db->from('materials')->where($where);
-       $q = $this->db->get();
-       $rv = null;
-       if ($q->num_rows() > 0)
-       {
-           foreach($q->result_array() as $row) {
-                   $rv = $row['id'];
-           }
-       }
-       return $rv;
->>>>>>> .r45538
     }
     return $rv;
   }
