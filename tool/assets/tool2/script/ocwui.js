@@ -42,15 +42,73 @@ var Site = {
 		if($('filter-type')) Site.filtertype();
 		if($('myTabs')) Site.setuptabs();
 
+    if ($('do_open_courseinfo_pane')) Site.course_page_setup();
     if ($('do_open_matinfo_pane')) Site.co_page_setup();
 	},
 
+  course_page_setup: function() {
+      var edit_course = new Fx.Slide($('pane_courseinfo')).hide();
+      var upload_mat = new Fx.Slide($('pane_uploadmat')).hide();
+
+      $('do_open_courseinfo_pane').addEvent('click', function(e) {
+        e = new Event(e);
+
+        // hide other panes
+        upload_mat.hide();
+        $('do_open_uploadmat_pane').parentNode.className= 'normal';
+
+        edit_course.toggle();
+        var addclass = ($('do_open_courseinfo_pane').parentNode.className=='active') ? 'normal' : 'active';
+        var rmvclass = ($('do_open_courseinfo_pane').parentNode.className=='active') ? 'active' : 'normal';
+        this.parentNode.removeClass(rmvclass).addClass(addclass);
+        e.stop(); 
+      });
+      $('do_close_courseinfo_pane').addEvent('click', function(e) {
+        e = new Event(e);
+        edit_course.toggle();
+        $('do_open_courseinfo_pane').parentNode.removeClass('active').addClass('normal');
+        e.stop(); 
+      });
+
+
+      $('do_open_uploadmat_pane').addEvent('click', function(e) {
+        e = new Event(e);
+
+        // hide other pains
+        edit_course.hide();
+        $('do_open_courseinfo_pane').parentNode.className= 'normal';
+
+        upload_mat.toggle();
+        var addclass = ($('do_open_uploadmat_pane').parentNode.className=='active') ? 'normal' : 'active';
+        var rmvclass = ($('do_open_uploadmat_pane').parentNode.className=='active') ? 'active' : 'normal';
+        this.parentNode.removeClass(rmvclass).addClass(addclass);
+        e.stop(); 
+      });
+      $('do_close_uploadmat_pane').addEvent('click', function(e) {
+        e = new Event(e);
+        upload_mat.toggle();
+        $('do_open_uploadmat_pane').parentNode.removeClass('active').addClass('normal');
+        e.stop(); 
+      });
+
+  },
 
   co_page_setup: function () {
       // toggle edit panes for material attributes
       var edit_mat = new Fx.Slide($('pane_matinfo')).hide();
+      var view_comm = new Fx.Slide($('pane_matcomm')).hide();
+      var upload_co = new Fx.Slide($('pane_uploadco')).hide();
+
+
       $('do_open_matinfo_pane').addEvent('click', function(e) {
         e = new Event(e);
+
+        // close other panes
+        view_comm.hide();
+        upload_co.hide();
+        $('do_open_matcomm_pane').parentNode.className= 'normal';
+        $('do_open_uploadco_pane').parentNode.className= 'normal';
+
         edit_mat.toggle();
         var addclass = ($('do_open_matinfo_pane').parentNode.className=='active') ? 'normal' : 'active';
         var rmvclass = ($('do_open_matinfo_pane').parentNode.className=='active') ? 'active' : 'normal';
@@ -64,9 +122,15 @@ var Site = {
         e.stop(); 
       });
 
-      var view_comm = new Fx.Slide($('pane_matcomm')).hide();
       $('do_open_matcomm_pane').addEvent('click', function(e) {
         e = new Event(e);
+
+        // close other panes
+        edit_mat.hide();
+        upload_co.hide();
+        $('do_open_matinfo_pane').parentNode.className= 'normal';
+        $('do_open_uploadco_pane').parentNode.className= 'normal';
+
         view_comm.toggle();
         var addclass = ($('do_open_matcomm_pane').parentNode.className=='active') ? 'normal' : 'active';
         var rmvclass = ($('do_open_matcomm_pane').parentNode.className=='active') ? 'active' : 'normal';
@@ -80,9 +144,15 @@ var Site = {
         e.stop(); 
       });
 
-      var upload_co = new Fx.Slide($('pane_uploadco')).hide();
       $('do_open_uploadco_pane').addEvent('click', function(e) {
         e = new Event(e);
+
+        // close other panes
+        edit_mat.hide();
+        view_comm.hide();
+        $('do_open_matinfo_pane').parentNode.className= 'normal';
+        $('do_open_matcomm_pane').parentNode.className= 'normal';
+
         upload_co.toggle();
         var addclass = ($('do_open_uploadco_pane').parentNode.className=='active') ? 'normal' : 'active';
         var rmvclass = ($('do_open_uploadco_pane').parentNode.className=='active') ? 'active' : 'normal';

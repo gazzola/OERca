@@ -34,6 +34,7 @@
 <div id="header" class="column span-24 first last">
 	<div class="column span-15 first">
 	<a href="<?php echo base_url()?>"><h1>OCW Work Tool</h1></a>
+  <!--
 	<?php if (isset($breadcrumb)) { ?>
 	<p>
 		<?php for($i=0; $i < count($breadcrumb); $i++) { 
@@ -45,6 +46,7 @@
 		?>
 	</p>
 	<?php } ?>
+  -->
 	</div>
 
 	<div class="column span-9 last" style="text-align: right; padding-top: 15px;">

@@ -269,6 +269,7 @@ ul#navlist li#active a { background-color: #fff; color: #990033; }
   background-color: #222;
   height: 250px;
   color: #999;
+	z-index: 13000;
 }
 
 
