@@ -94,9 +94,6 @@ class OCW_user extends Model
     return (sizeof($dscribes) > 0) ? $dscribes : null;
   }
 
-
-<<<<<<< .mine
-=======
 	/**
      * Add a new user 
      *
@@ -111,7 +108,6 @@ class OCW_user extends Model
 		$this->db->insert('users',$details);
 		return $this->exists($email);
 	}
->>>>>>> .r45538
 
   /**
     * Add a new user 
@@ -122,7 +118,7 @@ class OCW_user extends Model
     * @param   string email address
     * @return  string
     */
-  public function add_user($name, $uname, $email)
+ /* public function add_user($details = NULL, $name, $uname, $email)
   {
     $data = array('name'=>$name,
       'user_name'=>$uname,
@@ -130,9 +126,8 @@ class OCW_user extends Model
       'password'=> $this->freakauth_light->_encode($email));
     $this->db->insert('users',$data);
     return $this->exists($email);
-  }
+  }*/
 
-<<<<<<< .mine
   /**
     * Get user info based on username 
     *
@@ -146,7 +141,7 @@ class OCW_user extends Model
     $query = $this->db->getwhere('users', $where); 
     return ($query->num_rows() > 0) ? $query->row_array() : false;
   }
-=======
+
 	/**
      * Check to see if a user already exists 
      *
@@ -175,36 +170,6 @@ class OCW_user extends Model
 		$query = $this->db->getwhere('users', $where);
 		return ($query->num_rows() > 0) ? $query->row_array() : false;
 	}
->>>>>>> .r45538
-
-  /**
-    * Check to see if a user already exists 
-    *
-    * @access  public
-    * @param   string	email 
-    * @return  string | boolean
-    */
-  public function exists($email)
-  {
-    $where = array('email'=>$email);
-    $query = $this->db->getwhere('users', $where); 
-    return ($query->num_rows() > 0) ? $query->row_array() : false;
-
-  }
-
-  /**
-    * Check to see if a user already exists by uniqname
-    *
-    * @access  public
-    * @param   string user_name 
-    * @return  string | boolean
-    */
-  public function existsByUserName($user_name)
-  {
-    $where = array('user_name'=>$user_name);
-    $query = $this->db->getwhere('users', $where); 
-    return ($query->num_rows() > 0) ? $query->row_array() : false;
-  }
 
   /**
     * get user name 
