@@ -7,11 +7,16 @@
  * @category	 Generation
  * @author	Ali Asad Lotia <lotia@umich.edu>
  */
+ 
+/**
+ * TODO: build in dynamic borders, currently they are fixed
+ */
+
 class OER_progbar {
   
   // set default length and height (pixels)
-  private $width = 300;
-  private $height = 120;
+  private $width = 600;
+  private $height = 60;
   
   // the image variable
   private $im;
@@ -94,10 +99,15 @@ class OER_progbar {
     return ($this->im);
   }
   
-  public function get_prog_bar()
+  public function get_prog_bar($file = NULL)
   {
-    imagepng($this->im);
-    imagedestroy($this->im);
+    if (isset($file)) {
+      imagepng($this->im, $file);
+      
+      } else {
+      imagepng($this->im);
+      }
+      imagedestroy($this->im);
   }
   
   private function _set_bar_width($totalObjects, $numObjects)
