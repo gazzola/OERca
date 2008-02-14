@@ -78,8 +78,8 @@ form {
 }
 #imagebar {
 	background: #f8f8f8;
-    height: 500px;
-    overflow: hidden;
+  height: 500px;
+  overflow: hidden;
 }
 
 #mainPage h3 {
@@ -265,7 +265,8 @@ ul#navlist li#active a { background-color: #fff; color: #990033; }
 
 .editpane {
   padding: 20px;
-  border: 0 1px dotted #06030a;
+  border: 1px dotted #06030a;
+  border-top: 0; 
   background-color: #222;
   height: 250px;
   color: #999;

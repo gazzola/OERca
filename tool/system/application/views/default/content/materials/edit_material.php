@@ -21,127 +21,64 @@
 		$types .= '</optgroup>';
   } 
   $types .= '</select>';
+
+  $filter_types = array('Any'=>'Show All',
+            'Ask'=>'Ask Instructor',
+            'Done'=>'Cleared',
+            'Fair Use'=>'Fair Use',
+            'Search'=>'Search',
+            'Commission'=>'Commission',
+            'Permission'=>'Permission',
+            'Retain'=>'Retain',
+            'Remove'=>'Remove');
 ?>
 
 <input type="hidden" id="cid" name="cid" value="<?=$cid?>" />
 <input type="hidden" id="mid" name="mid" value="<?=$material['id']?>" />
 <input type="hidden" id="defcopy" name="defcopy" value="<?=$course['director']?>" />
+<input type="hidden" id="caller" name="caller" value="<?=$caller?>" />
 
-<!--
-<div id="infobar" class="column span-7 first colborder">
-	
-	<h3>Content Object Stats</h3>
-	<div class="collapsable">
-	<div  class="collapse-container">
-		<br>
-		<div class="formField"><h2 style="display: inline; color:#ccc">Total Objects:</h2>
-			<b>
-			<?= nbs(2).$objstats['total']?>
-			</b>
-		</div>
-		<br><br>
+<?php if ($numobjects > 0) { ?>
 
-		<div class="formField"><h2 style="display: inline; color:#ccc">Cleared:</h2>
-			<b>
-			<?= nbs(2).$objstats['cleared']?>
-			</b>
-		</div>
-		<br><br>
-
-		<div class="formField">
-			<h2 style="display: inline; color:#ccc">Ask Instructor:</h2>
-			<b>
-			 <?php echo nbs(2).$objstats['ask']; 
-				if ($objstats['ask'] > 0) { echo nbs(2).'<small><a href="'.site_url("materials/viewform/ask/$cid/".$material['id']).'">view ASK form</a></small>'; } ?> 
-			</b>
-		</div>
-		<br><br>
-
-		<div class="formField"><h2 style="display: inline; color:#ccc">Fair Use:</h2>
-			<b>
-			<?php 
-				if (isset($objstats['Fair Use'])) {
-					echo nbs(2).$objstats['Fair Use']; 
-					#echo nbs(2).'<small><a href="">view Fair Use form</a></small>'; 
-				} else { echo nbs(2).'0'; }
-			?> 
-			</b>
-		</div>
-		<br><br>
-
-		<div class="formField">
-			<h2 style="display: inline; color:#ccc">Searching:</h2>
-			<b>
-			<?php 
-				if (isset($objstats['Search'])) { echo nbs(2).$objstats['Search']; } 
-				else { echo nbs(2).'0'; }
-			?> 
-			</b>
-		</div>
-		<br><br>
-
-		<div class="formField">
-			<h2 style="display: inline; color:#ccc">Commissioning:</h2>
-			<b>
-			<?php 
-				if (isset($objstats['Commission'])) {
-					echo nbs(2).$objstats['Commission']; 
-				} else { echo nbs(2).'0'; }
-			?> 
-			</b>
-		</div>
-		<br><br>
-
-		<div class="formField">
-			<h2 style="display: inline; color:#ccc">Permission:</h2>
-			<b>
-			<?php 
-				if (isset($objstats['Permission'])) {
-					echo nbs(2).$objstats['Permission']; 
-					#echo nbs(2).'<small><a href="">view Permission form</a></small>'; 
-				} else { echo nbs(2).'0'; }
-			?> 
-			</b>
-		</div>
-		<br><br>
-
-		<div class="formField">
-			<h2 style="display: inline; color:#ccc">Retaining:</h2>
-			<b>
-			<?php 
-				if (isset($objstats['Retain'])) {
-					echo nbs(2).$objstats['Retain']; 
-				} else { echo nbs(2).'0'; }
-			?> 
-			</b>
-		</div>
-		<br><br>
-
-		<div class="formField">
-			<h2 style="display: inline; color:#ccc">Removing:</h2>
-			<b>
-			<?php 
-				if (isset($objstats['Remove'])) {
-					echo nbs(2).$objstats['Remove']; 
-				} else { echo nbs(2).'0'; }
-			?> 
-			</b>
-		</div>
-	</div>
-	</div>
-
-	<div class="clear"><br/></div>
+<div class="column span-24 first">
+    <div class="column span-6 first">
+        <?php echo form_dropdown('filter-type', $filter_types, $filter,'id="filter-type"'); ?> </h2>
+    </div>
+    <div class="column span-18 last">
+        <h2>Viewing <span id="upd">XX</span></h2> 
+    </div>
 </div>
--->
 
-<div class="column span-21 first last">
-	<?php if ($numobjects > 0) { ?>
-	<iframe src="<?=site_url("materials/content_objects/$cid/{$material['id']}")?>" width="650px" height="600px"></iframe>
-	<?php } else { ?>
-	<div class="column span-15 first last">
-		<p><br/>No content objects recorded for this material.</p>
-	</div>
-	<?php } ?>
+<div class="column span-24 first">
+    <div id="imagebar" class="column span-4 first" style="text-align: center;">
+      <div style="display: block; " class="carousel-component">
+        <div id="ulu" class="carousel-clip-region">
+          <ul  style="position: relative; top: 7px;" class="carousel-list carousel-vertical">
+            <?php echo $list; ?>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div id="imageknob" class="column span-1 last">
+      <img id="up-arrow" src="<?=property('app_img')?>/up-disabled.gif" alt="Previous Button"/>
+      <div id="area"><div id="knob"></div></div>
+      <img id="down-arrow" src="<?=property('app_img')?>/down-enabled.gif" alt="Next Button"/>
+    </div>
 </div>
+
+<div class="column span-18 last">
+  
+
+
+
+</div>
+
+<?php } else { ?>
+  <div class="column span-24 first last">
+		<p class="error">No content objects recorded for this material.</p>
+	</div>
+<?php } ?>
+
 
 <?php $this->load->view(property('app_views_path').'/materials/materials_footer.php', $data); ?>

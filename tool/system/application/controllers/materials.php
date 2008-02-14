@@ -27,11 +27,10 @@ class Materials extends Controller {
 			$materials =  $this->material->materials($cid,'',true,true);
 			$data = array('title'=>'Materials',
 						  'materials'=>$materials, 
-						  'breadcrumb'=>$this->breadcrumb($cid),
-	   					  'cname' => $this->course->course_title($cid), 
+	   					'cname' => $this->course->course_title($cid), 
 						  'cid'=>$cid,
 						  'caller'=>$caller,
-					  	  'tags'=>$tags
+					  	'tags'=>$tags
 					 	);
        		$this->layout->buildPage('materials/index', $data);
 	}
@@ -52,57 +51,34 @@ class Materials extends Controller {
        exit;
 	}
 
-	public function edit($cid, $mid, $caller='')
+	public function edit($cid, $mid, $caller='', $filter='Any')
 	{
 		$tags =  $this->tag->tags();
 		$mimetypes =  $this->mimetype->mimetypes();
-		$material =  $this->material->materials($cid,$mid,true);
 		$numobjects =  $this->coobject->num_objects($mid);
-		$subtypes =  $this->coobject->object_subtypes();
 		$objstats =  $this->coobject->object_stats($mid);
-	    $course = $this->course->get_course($cid); 
-
-		//$this->ocw_utils->dump($subtypes);
+		$subtypes =  $this->coobject->object_subtypes();
+	  $course = $this->course->get_course($cid); 
+		$material =  $this->material->materials($cid,$mid,true);
+		$objects =  $this->coobject->coobjects($mid,'',$filter);
 
 		$data = array('title'=>'Edit Material &raquo; '.$material[0]['name'],
 					  'material'=>$material[0], 
 					  'numobjects'=>$numobjects, 
-					  #'breadcrumb'=>$this->breadcrumb($cid,$material[0],'edit',$caller),
 					  'cid'=>$cid,
-	   				  'course'=> $course,
-	   				  'cname' => $course['number'].' '.$course['title'],
-				  	  'tags'=>$tags,
-				  	  'mimetypes'=>$mimetypes,
-				  	  'subtypes'=>$subtypes,
-				  	  'objstats'=>$objstats,
-				  	  'caller'=>$caller
-				);
-    	$this->layout->buildPage('materials/edit_material', $data);
-	}
+					  'mid'=>$mid,
+	   				'course'=> $course,
+	   				'cname' => $course['number'].' '.$course['title'],
+				  	'tags'=>$tags,
+				  	'mimetypes'=>$mimetypes,
+				  	'subtypes'=>$subtypes,
+				  	'objstats'=>$objstats,
+				  	'caller'=>$caller,
+		        'list' => $this->ocw_utils->create_co_list($cid,$mid,$objects),
+		        'filter' => $filter, 
+		);
 
-
-	public function breadcrumb($cid, $material='', $section='default', $caller='')
-	{
-		$breadcrumb = array();
-	   	$name = $this->course->course_title($cid); 
-
-		$breadcrumb[] = array('url'=>site_url(), 'name'=>'Home');
-		$breadcrumb[] = array('url'=>site_url('home'), 'name'=>'Manage Courses');
-
-		if ($section == 'default') {
-			$breadcrumb[] = array('url'=>'', 'name'=>$name);
-
-		} elseif ($section == 'edit') {
-			$breadcrumb[] = array('url'=>site_url('materials/home/'.$cid.'/'.$caller), 'name'=>$name);
-			$breadcrumb[] = array('url'=>'', 'name'=>$material['name']);
-
-		} elseif ($section == 'askform') {
-			$breadcrumb[] = array('url'=>site_url('materials/home/'.$cid), 'name'=>$name);
-			$breadcrumb[] = array('url'=>site_url('materials/edit/'.$cid.'/'.$material['id']), 
-								   'name'=>$material['name']);
-			$breadcrumb[] = array('url'=>'', 'name'=>'Verify Form');
-		}
-		return $breadcrumb;
+    $this->layout->buildPage('materials/edit_material', $data);
 	}
 
 	public function viewform($form, $cid, $mid='', $view='provenance')

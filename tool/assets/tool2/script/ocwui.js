@@ -1,9 +1,3 @@
-function close_material_pane(pane)
-{
-  $('do_edit_mat_info').fireEvent('click'); 
-  $(pane).parentNode.removeClass('active');
-}
-
 function update_prev_next() {
 	if (knobpos == 0) {
 			$('up-arrow').src = '/tool/assets/tool2/images/up-disabled.gif';
@@ -17,6 +11,16 @@ function update_prev_next() {
 			$('up-arrow').src = '/tool/assets/tool2/images/up-enabled.gif';
 			$('down-arrow').src = '/tool/assets/tool2/images/down-enabled.gif';
 	}
+}
+
+function scroll_highlight(item)
+{
+   var imgs = $$('.car-li');
+  
+		imgs.each( function(img, i) {
+        img.style.border = 'none';
+        img.style.backgroundColor = '#f8f8f8';
+    });
 }
 
 
@@ -174,8 +178,8 @@ var Site = {
 
 	filtertype: function() {
 		$('filter-type').addEvent('change', function(e) {
-			var url = $('server').value+'materials/content_objects/'+
-					  $('cid').value+'/'+$('mid').value+'/'+this.value;
+			var url = $('server').value+'materials/edit/'+
+					  $('cid').value+'/'+$('mid').value+'/'+$('caller').value+'/'+this.value;
             window.location.replace(url);
 		});
 	},
@@ -223,25 +227,26 @@ var Site = {
 
 	  carousel: function () {
 			var myScrollFx = new Fx.Scroll('imagebar', {
-				wait: false,
-	    		transition: Fx.Transitions.Quad.easeInOut
+				wait: false, transition: Fx.Transitions.Quad.easeInOut
 			});
 
-
-	
 			var mySlide = new Slider($('area'), $('knob'), {	
 					steps: numsteps, 
 					mode: 'vertical',	
 					onChange: function(step){
 						knobpos = step;
-						pos = $('carousel-item-'+step).getPosition();
-						myScrollFx.scrollTo(pos.x,pos.y-120);
-						min = (step == 0) ? 1 : (step*12) + 1;
-						max = min + 11;
+						myScrollFx.toElement($('carousel-item-'+step));
+            scroll_highlight('carousel-item-'+step);
+            $('carousel-item-'+step).style.border='1px solid #222';
+            $('carousel-item-'+step).style.backgroundColor = '#222';
+						min = (step == 0) ? 1 : step + 1;
+						max = min + 3;
 						max = (step == numsteps) ? numitems : max;
 						max = (max > numitems) ? numitems : max;
 						min = (numitems == 0) ? 0 : min;
-            			info = min+'-'+max+' of '+numitems;
+						min = (numitems == min) ? (numitems-3) : min;
+           	//info = min+'-'+max+' of '+numitems;
+           	info = min+' of '+numitems;
 						$('upd').setHTML(info);
 						update_prev_next();
 					},

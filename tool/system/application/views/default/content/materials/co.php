@@ -54,9 +54,9 @@
     		<ul  style="position: relative; top: 7px; padding-left:50px" 
                 class="carousel-list carousel-vertical">
 				<?php echo $list; ?>
-			</ul>
-            </div>
-        </div>
+			   </ul>
+       </div>
+     </div>
 	</div>
 
 	<div id="imageknob" class="column span-1 last">

@@ -170,29 +170,16 @@ class OCW_utils {
 	function create_co_list($cid,$mid,$objs)
 	{
 		$size = sizeof($objs);
-		$list = '<li id="carousel-item-0">';
+    $list = '';
+		#$list = '<li id="carousel-item-0">';
 	
 		for($i = 0; $i < $size; $i++) {
 			$y = $this->create_co_img($cid, $mid, 
 									  $objs[$i]['name'],
 									  $objs[$i]['location']);
-	
-			if ((($i+1) % 3) == 0) {
-				$list .= '<div class="column span-3 last">'.$y.'</div></li>';
-				if (($i+1) < $size) {
-					$list .=  ((($i + 1) % 12) == 0) 
-						  ? "\n<li id=\"carousel-item-".(($i+1)/12)."\">"  
-					  	: "\n<li>";
-				}
-			} else {
-				$list .= '<div class="column span-3 colborder">'.$y.'</div>';
-			}
+		  $list .= '<li class="car-li" id="carousel-item-'.$i.'">'.($i+1).'&nbsp;'.$y.'</li>';
 		} 
 	
-		if (preg_match('/<li>$/',$list)) {
-			$list = preg_replace('/<li>$/','',$list);
-		}
-		if (!preg_match('/<\/li>$/',$list)) { $list .= '</li>';  }
 		return $list;
 	}
 	

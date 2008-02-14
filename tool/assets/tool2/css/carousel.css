@@ -53,13 +53,15 @@
 .spot:hover {
     filter: alpha(opacity=100); -moz-opacity:1.0;
 }
-.spotlight {
-    border: 1px solid #2222ff;
+li.spotlight {
+    border: 1px solid red;
+}
+li.spotlight:hover {
+    border: 1px solid red;
     filter: alpha(opacity=100); -moz-opacity:1.0;
 }
-
-.non-spotlight {
-    border: 1px solid #e2edfa;
+li.non-spotlight {
+    border: 0px solid #ee0000;
     filter: alpha(opacity=60); -moz-opacity:0.6;
 }
  **/
@@ -129,23 +131,26 @@
 
 .carousel-component .carousel-list li { 
 	margin:0px;
-	padding:4px;	
+	padding:5px;	
+  padding-right:10px;
 }
 
 
 /* Applies only to vertical carousels */
 .carousel-component .carousel-vertical li { 
 	margin-bottom:5px;
-	text-align: left;
-	width: 440px;
-	font:10px verdana,arial,sans-serif;
+  margin-left: -25px;
+	text-align: center;
+	width: 150px;
+	font: 10px verdana,arial,sans-serif;
+  font-weight: bold;
 	color:#666;
 	border: 0px solid red;
 }
 
 .carousel-component .carousel-list li a { 
 	display:block;
-    margin: 3px;
+  margin: 10px;
 	outline:none;
 }
 
@@ -155,8 +160,9 @@
 
 .carousel-component .carousel-list li img { 
     display:block; 
-	border: 1px solid #eee;
+    border: 0px solid #eee;
     margin: 4px 0px 0px 4px;
+    padding-left: 20px;
 }
 									
 #up-arrow { 
