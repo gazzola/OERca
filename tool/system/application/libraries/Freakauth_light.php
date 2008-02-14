@@ -480,7 +480,7 @@ class Freakauth_light
                 if ($query->num_rows() == 1)
                 {
                     $row = $query->row();
-                    $fields = array('id', 'name', 'user_name', 'country_id', 'email',
+                    $fields = array('id', 'name', 'user_name','email',
                                   'role', 'last_visit', 'created', 'modified');
                     foreach($fields as $field) $userdata[$field] = $row->{$field};
 
