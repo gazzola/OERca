@@ -7,9 +7,9 @@
 
   $action_types = array('Fair Use'=>'Fair Use', 
 					    'Search'=>'Search',
-						'Commission'=>'Commission',
-						'Permission'=>'Permission',
-						'Retain'=>'Retain',
+						  'Commission'=>'Commission',
+						  'Permission'=>'Permission',
+						  'Retain'=>'Retain',
 					    'Remove'=>'Remove');
 	
   $types = '<select id="subtype_id" name="subtype_id">';
@@ -60,19 +60,17 @@
       </div>
     </div>
 
-    <div id="imageknob" class="column span-1 last">
+    <div id="imageknob" class="column span-2">
       <img id="up-arrow" src="<?=property('app_img')?>/up-disabled.gif" alt="Previous Button"/>
       <div id="area"><div id="knob"></div></div>
       <img id="down-arrow" src="<?=property('app_img')?>/down-enabled.gif" alt="Next Button"/>
     </div>
+
+    <div class="column span-18 last">
+	    <iframe id="edit-co-frame" src="<?=site_url("materials/object_info/$cid/{$material['id']}/{$coobjects[0]['name']}")?>" width="640px" height="600px"></iframe>
+    </div>
 </div>
 
-<div class="column span-18 last">
-  
-
-
-
-</div>
 
 <?php } else { ?>
   <div class="column span-24 first last">

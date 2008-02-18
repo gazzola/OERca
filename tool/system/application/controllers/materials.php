@@ -64,6 +64,7 @@ class Materials extends Controller {
 
 		$data = array('title'=>'Edit Material &raquo; '.$material[0]['name'],
 					  'material'=>$material[0], 
+					  'coobjects'=>$objects, 
 					  'numobjects'=>$numobjects, 
 					  'cid'=>$cid,
 					  'mid'=>$mid,

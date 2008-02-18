@@ -169,15 +169,14 @@ class OCW_utils {
 	
 	function create_co_list($cid,$mid,$objs)
 	{
-		$size = sizeof($objs);
     $list = '';
-		#$list = '<li id="carousel-item-0">';
+		$size = sizeof($objs);
 	
 		for($i = 0; $i < $size; $i++) {
 			$y = $this->create_co_img($cid, $mid, 
 									  $objs[$i]['name'],
-									  $objs[$i]['location']);
-		  $list .= '<li class="car-li" id="carousel-item-'.$i.'">'.($i+1).'&nbsp;'.$y.'</li>';
+									  $objs[$i]['location'],false);
+		  $list .= '<span id="'.$objs[$i]['name'].'"><li class="car-li" id="carousel-item-'.$i.'">'.($i+1).'&nbsp;'.$y.'</li></span>';
 		} 
 	
 		return $list;
@@ -209,7 +208,7 @@ class OCW_utils {
 
 	   return ($linkable) 
 				? $aurl.'<img id="'.$name.'" class="carousel-image tooltip" '.$title.' src="'.$imgUrl.'" '. $size .'"/></a>'.$this->create_slide($cid, $mid, $loc)
-				: '<img id="'.$name.'" class="carousel-image tooltip" '.$title.' src="'.$imgUrl.'" '.$size.' />';
+				: '<img id="'.$name.'" class="carousel-image tooltip" '.$title.' src="'.$imgUrl.'" '.$size.' />'.$this->create_slide($cid, $mid, $loc);
 	}
 
 	function create_corep_img($cid, $mid, $name, $loc, $linkable=true, $shrink=true) 

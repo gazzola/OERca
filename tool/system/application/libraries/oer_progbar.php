@@ -101,6 +101,7 @@ class OER_progbar {
   
   public function get_prog_bar($file = NULL)
   {
+		header("Content-type: image/png\n\n");
     if (isset($file)) {
       imagepng($this->im, $file);
       
@@ -114,6 +115,5 @@ class OER_progbar {
   {
     return(round($this->width * ($numObjects / $totalObjects)));
   }
-  
 }
 ?>

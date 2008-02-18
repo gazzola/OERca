@@ -2,19 +2,19 @@
 
 class Progress extends Controller {
 
-  public function __contstruct()
+  public function __construct()
   {
     parent::Controller();
+
+    $this->load->library('oer_progbar');
+    $this->load->model('ocw_user');
+    $this->load->model('material');
   }
 
   public function index()
   {
     $this->freakauth_light->check();
 
-    $this->load->library('oer_progbar');
-    $this->load->model('ocw_user');
-    $this->load->model('material');
-    
     $data = array('title' => 'Progress', 
                   'breadcrumb' => $this->breadcrumb(),
                   'role' => getUserProperty('role'));
@@ -27,7 +27,6 @@ class Progress extends Controller {
       $data['name'] = getUserProperty('name');
       $data['courses'] = $this->ocw_user->get_courses_simple($data['id']);
       foreach ($data['courses'] as $key => &$value) {
-        $value['image'] = $this->oer_progbar;
         $value['num']['total'] = $this->material->get_co_count($value['id']);
         $value['num']['done'] = $this->material->get_done_count($value['id']);
         $value['num']['ask'] = $this->material->get_ask_count($value['id']);
@@ -35,6 +34,12 @@ class Progress extends Controller {
       }
       $this->layout->buildPage('progress', $data);
     }
+  }
+
+  public function make_bar($total,$done,$ask,$rem)
+  {
+    $this->oer_progbar->build_prog_bar($total,$done,$ask,$rem);
+    $this->oer_progbar->get_prog_bar();
   }
 
   public function breadcrumb($section='default')
