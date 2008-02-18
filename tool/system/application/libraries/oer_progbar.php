@@ -21,7 +21,7 @@ class OER_progbar {
   // the image variable
   private $im;
   
-  // the colors values of the bars
+  // the color values of the bars
   private $white = array(255, 255, 255);
   private $green = array(68, 146, 34);
   private $yellow = array(241, 191, 36);
@@ -99,16 +99,11 @@ class OER_progbar {
     return ($this->im);
   }
   
-  public function get_prog_bar($file = NULL)
+  public function get_prog_bar()
   {
-		header("Content-type: image/png\n\n");
-    if (isset($file)) {
-      imagepng($this->im, $file);
-      
-      } else {
-      imagepng($this->im);
-      }
-      imagedestroy($this->im);
+    header("Content-type: image/png\n\n");
+    imagepng($this->im);
+    imagedestroy($this->im);
   }
   
   private function _set_bar_width($totalObjects, $numObjects)
