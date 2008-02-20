@@ -18,12 +18,12 @@ foreach($repl_objects as  $obj) {
 	<!-- replacement questions -->
 	<p>
 		<b>Is this a suitable replacement?</b><br/>
-		<input type="radio" name="rep_ok" id="repok_<?=$obj['id']?>" 
+		<input type="radio" name="rep_ok_<?=$obj['id']?>" id="repok_yes_<?=$obj['id']?>" 
 			   value="yes" class="do_askform_suityesno do_replacement_update" 
-				<?=($obj['suitable']=='yes')  ? 'checked="checked"' : ''?>/>&nbsp; Yes&nbsp;
-		<input type="radio" name="rep_ok" id="repok_<?=$obj['id']?>" 
+				<?=($obj['suitable']=='yes')  ? 'checked="checked" ' : ''?>/>&nbsp; Yes&nbsp;
+		<input type="radio" name="rep_ok_<?=$obj['id']?>" id="repok_no_<?=$obj['id']?>" 
 			   value="no" class="do_askform_suityesno do_replacement_update" 
-				<?=($obj['suitable']=='no')  ? 'checked="checked"' : ''?>/>&nbsp; No&nbsp;
+				<?=($obj['suitable']=='no')  ? 'checked="checked" ' : ''?>/>&nbsp; No&nbsp;
 	</p>
 
 
@@ -46,9 +46,9 @@ foreach($repl_objects as  $obj) {
 
 	<!-- tags -->
 	<br/><br/>
-	<p style="clear:both"><h3>Replacement Tags: <small>(click below to edit)</small></h3> 
+	<p style="clear:both"><h3>Replacement Keywords: <small>(click below to edit)</small></h3> 
 		<div id="holder_tags_<?=$obj['id']?>">
-			<span id="txt_tags_<?=$obj['id']?>" class="ine_tip" title="Click to edit text"><?php echo ($obj['tags']<>'') ? $obj['tags']:'No tags'?></span>
+			<span id="txt_tags_<?=$obj['id']?>" class="ine_tip" title="Click to edit text"><?php echo ($obj['tags']<>'') ? $obj['tags']:'No keywords'?></span>
 		</div>
 <?php 
 	$n = count($inplaceeditors) + 1; 
@@ -56,7 +56,7 @@ foreach($repl_objects as  $obj) {
 	$ine_holder = 'holder_tags_'.$obj['id'];
     $ine_url = "materials/update_replacement/$cid/$mid/{$obj['id']}/tags/";
 	$inplaceeditors[]="var editor$n = new InPlaceEditor('$ine_id','$ine_holder',".
-					  "'$ine_url','No tags'); ".
+					  "'$ine_url','No keywords'); ".
 					  "editor$n.hover('$ine_id','$ine_holder','#ffffcc','#fff');";
 ?>
 	</p>
@@ -122,8 +122,7 @@ foreach($repl_objects as  $obj) {
 <!-- Original -->
 <td style="vertical-align:top">
 <div id="new-col2-<?=$obj['id']?>" style="display: <?=($obj['ask_status']=='in progress') ? 'none':'block'?>;">
-	<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['name'],$obj['location'],false,false);?><br/>
-	<?=$this->ocw_utils->create_slide($cid,$mid,$obj['location'],'View slide for more context',false);?>
+	<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['name'],$obj['location'],false,false);?>
 </div>
 <div id="inprogress-col2-<?=$obj['id']?>" style="display: <?=($obj['ask_status']=='in progress') ? 'block':'none'?>;">
 

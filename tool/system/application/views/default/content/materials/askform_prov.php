@@ -22,7 +22,9 @@ foreach($prov_objects as  $obj) {
 <div id="new-col1-<?=$obj['id']?>" style="display: <?=($obj['ask_status']=='in progress') ? 'none':'block'?>;">
 	<!-- copyright questions -->
 	<p>
-		<b class="ine_tip" title="<?=$ttip?>">What does the content object show[<a>?</a>]</b><br/>
+		<b class="ine_tip" title="<?=$ttip?>">What does the content object show?</b>
+		<img src="<?=property('app_img')?>/info.gif" style="float:left; display:inline; margin:-16px 190px" class="ine_tip" title="<?=$ttip?>" /><br/>
+
        	<textarea name="description_<?=$obj['id']?>" id="desc_<?=$obj['id']?>" rows="10" cols="50" 
 				  class="do_ask_object_update"><?=$obj['description']?></textarea>
 	</p>
@@ -38,7 +40,6 @@ foreach($prov_objects as  $obj) {
 				<?=($obj['instructor_owns']=='no')  ? 'checked="checked"' : ''?>/>&nbsp; No&nbsp;
 	</p>
 
-
 	<div id="other_<?=$obj['id']?>" style="display: <?= ($obj['instructor_owns']=='no') ? 'block':'none'?>"> 
 	<p>
 		<b>Do you know who holds the copyright to this object?</b><br/>
@@ -47,24 +48,24 @@ foreach($prov_objects as  $obj) {
 				<?=($obj['other_copyholder'] <> '')  ? 'checked="checked"' : ''?>/>&nbsp; Yes&nbsp;
 		<input type="radio" name="who_owns_<?=$obj['id']?>" id="who_owns_<?=$obj['id']?>" 
 			   value="no" class="do_ask_object_update do_askform_whoyesno" 
-				<?=($obj['other_copyholder']=='' and $obj['unique'] <> 'pending')  ? 'checked="checked"' : ''?>/>&nbsp; No&nbsp;
+				<?=($obj['other_copyholder']=='')  ? 'checked="checked"' : ''?>/>&nbsp; No&nbsp;
 	</p>
 
 	<div id="who_yes_other_<?=$obj['id']?>" 
-		style="display: <?= ($obj['other_copyholder']=='') ? 'none':'block'?>"> 
+		style="margin-bottom: 20px; display: <?= ($obj['other_copyholder']=='') ? 'none':'block'?>"> 
 		<b>Name of the copyright holder:</b><br/>
 		<input type="text" name="other_copyholder_<?=$obj['id']?>" id="cpholder_<?=$obj['id']?>" 
 			   value="<?=$obj['other_copyholder']?>"size="30" class="do_ask_object_update"/>
 	</div>
 
-	<div id="who_no_other_<?=$obj['id']?>" style="display: <?= ($obj['other_copyholder']=='') ? 'block':'none'?>"> 
+	<div id="who_no_other_<?=$obj['id']?>" style="display: <?= ($obj['instructor_owns']=='no') ? 'block':'none'?>"> 
 		<b>Will a substitute object work or is this representation of this information unique?</b><br/>
 		<input type="radio" name="unique_<?=$obj['id']?>" id="unq_<?=$obj['id']?>" 
 			   value="yes" class="do_ask_object_update" 
-				<?=($obj['unique']=='yes')  ? 'checked="checked"' : ''?>/>&nbsp; Yes, a substitute will work&nbsp;
+				<?=($obj['is_unique']=='yes')  ? 'checked="checked"' : ''?>/>&nbsp; Yes, a substitute will work&nbsp;
 		<input type="radio" name="unique_<?=$obj['id']?>" id="unq_<?=$obj['id']?>" 
 			   value="no" class="do_ask_object_update" 
-				<?=($obj['unique']=='no')  ? 'checked="checked"' : ''?>/>&nbsp; No, a substitute will not work; it's unique&nbsp;
+				<?=($obj['is_unique']=='no')  ? 'checked="checked"' : ''?>/>&nbsp; No, a substitute will not work; it's unique&nbsp;
 	</div>
 	</div>
 
@@ -108,9 +109,9 @@ foreach($prov_objects as  $obj) {
 
 	<!-- tags -->
 	<br/><br/>
-	<p style="clear:both"><h3>Tags: <small>(click below to edit)</small></h3> 
+	<p style="clear:both"><h3>Keywords: <small>(click below to edit)</small></h3> 
 		<div id="holder_tags_<?=$obj['id']?>">
-			<span id="txt_tags_<?=$obj['id']?>" class="ine_tip" title="Click to edit text"><?php echo ($obj['tags']<>'') ? $obj['tags']:'No tags'?></span>
+			<span id="txt_tags_<?=$obj['id']?>" class="ine_tip" title="Click to edit text"><?php echo ($obj['tags']<>'') ? $obj['tags']:'No keywords'?></span>
 		</div>
 <?php 
 	$n = count($inplaceeditors) + 1; 
@@ -118,7 +119,7 @@ foreach($prov_objects as  $obj) {
 	$ine_holder = 'holder_tags_'.$obj['id'];
     $ine_url = "materials/update_object/$cid/$mid/{$obj['id']}/tags/";
 	$inplaceeditors[]="var editor$n = new InPlaceEditor('$ine_id','$ine_holder',".
-					  "'$ine_url','No tags'); ".
+					  "'$ine_url','No keywords'); ".
 					  "editor$n.hover('$ine_id','$ine_holder','#ffffcc','#fff');";
 ?>
 	</p>
@@ -147,7 +148,6 @@ foreach($prov_objects as  $obj) {
 <div id="new-col2-<?=$obj['id']?>" style="display: <?=($obj['ask_status']=='in progress') ? 'none':'block'?>;">
 	<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['name'],$obj['location'],false,false);?>
 <br/> <br/>
-	<p><?=$this->ocw_utils->create_slide($cid,$mid,$obj['location'],'View slide for more context',false);?></p>
 </div>
 
 

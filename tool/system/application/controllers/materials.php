@@ -180,9 +180,9 @@ class Materials extends Controller {
            underscores - remove when hosted on Bezak **/
 	   $val = ($val=='in_progress') ? 'in progress' : $val;
 	   $data = array($field=>$val);
-	  $this->coobject->update_replacement($oid, $data);
-       $this->ocw_utils->send_response('success');
-       exit;
+	   $this->coobject->update_replacement($oid, $data);
+     $this->ocw_utils->send_response('success');
+     exit;
 	}
 
 	public function add_object_comment($oid,$comments)

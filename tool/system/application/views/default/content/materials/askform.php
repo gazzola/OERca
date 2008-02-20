@@ -56,7 +56,7 @@ Thanks for your cooperation!
 <input type="hidden" id="mid" name="mid" value="<?=$mid?>" />
 <input type="hidden" id="view" name="view" value="<?=$view?>" />
 
-<h2>Content Objects in need of faculty input (<?=$numobjects?> items)</h2>
+<h2>Content Objects in need of faculty input (<?= ($num_avail['provenance'] + $num_avail['replacement'])?> items)</h2>
 
 <?php 
 

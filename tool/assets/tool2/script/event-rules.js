@@ -205,6 +205,7 @@ var Rules = {
 				field = 'other_copyholder';
 			    val = '';
 			}
+			if (field == 'unique') { field = 'is_unique'; }
 
 			var url = $('server').value+'materials/update_object/'+course_id+'/'+material_id;
 			url += '/'+object_id+'/'+field+'/'+escape(val);
@@ -295,12 +296,14 @@ var Rules = {
 			id = id.replace(/\w+_\w+_/g,'');
 			if (this.value == 'yes') {
 				if ($('who_yes_other_'+id)) {
-					$('who_yes_other_'+id).style.display = 'block';	
+					  $('who_yes_other_'+id).style.display = 'block';	
 				} 
-			   if ($('who_no_other_'+id)) { $('who_no_other_'+id).style.display = 'none';	}
-			} else {
 				if ($('who_no_other_'+id)) {
 					$('who_no_other_'+id).style.display = 'block';	
+				} 
+			} else {
+				if ($('who_no_other_'+id)) {
+					  $('who_no_other_'+id).style.display = 'block';	
 				} 
 			   if ($('who_yes_other_'+id)) { $('who_yes_other_'+id).style.display = 'none';	}
 			}
@@ -315,10 +318,12 @@ var Rules = {
 			var material_id = $('mid').value; 
 			var object_id; 
 			var field = this.name; 
+		  field = field.replace(/_\d+/g,'');
 			var val = this.value;
+
 			if (field=='rep_ok') { 
 				object_id = this.id;
-				object_id = object_id.replace(/repok_/g,'');
+				object_id = object_id.replace(/repok_\w+_/g,'');
 				field = 'suitable';
 			}
 			if (field == 'notsuitable') {

@@ -1,3 +1,10 @@
+function update_edit_co_frame(id)
+{
+  // update frame url.
+	var url = $('server').value+'materials/object_info/'+$('cid').value+'/'+$('mid').value+'/'+id;
+  $('edit-co-frame').src = url;
+}
+
 function update_prev_next() {
 	if (knobpos == 0) {
 			$('up-arrow').src = '/tool/assets/tool2/images/up-disabled.gif';
@@ -237,6 +244,8 @@ var Site = {
 						knobpos = step;
 						myScrollFx.toElement($('carousel-item-'+step));
             scroll_highlight('carousel-item-'+step);
+            update_edit_co_frame($('carousel-item-'+step).parentNode.id);
+
             $('carousel-item-'+step).style.border='1px solid #222';
             $('carousel-item-'+step).style.backgroundColor = '#222';
 						min = (step == 0) ? 1 : step + 1;
@@ -252,6 +261,29 @@ var Site = {
 					},
 			}).set(0);
 
+      var imglist = $$('.car-li');
+		  imglist.each( function(litem, i) {
+			    litem.addEvent('click', function() {
+            update_edit_co_frame(this.parentNode.id);
+						myScrollFx.toElement(this);
+            scroll_highlight(this.id);
+            this.style.border='1px solid #222';
+            this.style.backgroundColor = '#222';
+				  });
+
+          litem.oldborder = ''; 
+          litem.oldbgc = ''; 
+          litem.addEvent('mouseover', function() {
+            this.oldborder = this.style.border; 
+            this.oldbgc = this.style.backgroundColor; 
+            this.style.border='1px solid #ddd';
+            this.style.backgroundColor = '#ddd';
+          });
+          litem.addEvent('mouseout', function() {
+            this.style.border = this.oldborder;
+            this.style.backgroundColor = this.oldbgc; 
+          });
+			});
 
 			$('down-arrow').addEvent('click', function() {
 				if (knobpos < numsteps) {

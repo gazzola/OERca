@@ -7,8 +7,30 @@ if ($prov_objects != null) {
 <tr>
 <td style="vertical-align:top"><?=$count?></td>
 
-<td style="vertical-align:top">
-	<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['name'],$obj['location'],false,true);?><br/>
+<td style="vertical-align:top; width: 300px; padding: 10px;">
+  <p>
+	<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['name'],$obj['location'],false,true);?>
+  </p>
+
+	<!-- citation -->
+	<br/><br/>
+	<p style="clear:both"><h3>Citation:</h3> 
+		<div id="holder_citation_<?=$obj['id']?>">
+			<span id="txt_citation_<?=$obj['id']?>" class="ine_tip" title="Click to edit text">
+				<?php echo ($obj['citation']<>'') ? $obj['citation']:' No citation'?>
+			</span>
+		</div>
+	</p>
+
+	<!-- tags -->
+	<br/><br/>
+	<p style="clear:both"><h3>Keywords:</h3> 
+		<div id="holder_tags_<?=$obj['id']?>">
+			<span id="txt_tags_<?=$obj['id']?>" class="ine_tip" title="Click to edit text">
+				<?php echo ($obj['tags']<>'') ? $obj['tags']:' No keywords'?>
+			</span>
+		</div>
+	</p>
 </td>
 
 <td style="vertical-align: top">
@@ -23,7 +45,7 @@ if ($prov_objects != null) {
 			if ($obj['other_copyholder']=='') {
 				echo 'You indicated that you do not know who holds the copyright.';
 				echo '<br/><br/>';
-				if ($obj['unique']=='yes') {
+				if ($obj['is_unique']=='yes') {
 					echo 'You indicated that the representation of this information is unique';
 				} else {
 					echo 'You indicated that the representation of this information is not unique';
@@ -35,25 +57,6 @@ if ($prov_objects != null) {
 	?>
     </p>
 
-	<!-- citation -->
-	<br/><br/>
-	<p style="clear:both"><h3>Citation:</h3> 
-		<div id="holder_citation_<?=$obj['id']?>">
-			<span id="txt_citation_<?=$obj['id']?>" class="ine_tip" title="Click to edit text">
-				<?php echo ($obj['citation']<>'') ? $obj['citation']:' No citation'?>
-			</span>
-		</div>
-	</p>
-
-	<!-- tags -->
-	<br/><br/>
-	<p style="clear:both"><h3>Tags:</h3> 
-		<div id="holder_tags_<?=$obj['id']?>">
-			<span id="txt_tags_<?=$obj['id']?>" class="ine_tip" title="Click to edit text">
-				<?php echo ($obj['tags']<>'') ? $obj['tags']:' No tags'?>
-			</span>
-		</div>
-	</p>
 </td>
 </tr>	
 <?php $count++; }}} 
@@ -67,14 +70,10 @@ if ($repl_objects != null) {
 <td style="vertical-align:top"><?=$count?></td>
 
 <td style="vertical-align:top">
-	<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['name'],$obj['location'],false,true);?><br/>
-</td>
+	<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['name'],$obj['location'],false,true);?>
 
-<td style="vertical-align:top">
-	<p><h3>Replaced With:</h3>                
-		<?=$this->ocw_utils->create_corep_img($cid,$mid,$obj['name'],$obj['location'],false);?>
-    </p>
 	<!-- citation -->
+	<br/><br/>
 	<p style="clear:both"><h3>Citation:</h3> 
 		<div id="holder_citation_<?=$obj['id']?>">
 			<span id="txt_citation_<?=$obj['id']?>" class="ine_tip" title="Click to edit text">
@@ -84,13 +83,28 @@ if ($repl_objects != null) {
 	</p>
 
 	<!-- tags -->
-	<p style="clear:both"><h3>Tags:</h3> 
+	<br/><br/>
+	<p style="clear:both"><h3>Keywords:</h3> 
 		<div id="holder_tags_<?=$obj['id']?>">
 			<span id="txt_tags_<?=$obj['id']?>" class="ine_tip" title="Click to edit text">
-				<?php echo ($obj['tags']<>'') ? $obj['tags']:' No tags'?>
+				<?php echo ($obj['tags']<>'') ? $obj['tags']:' No keywords'?>
 			</span>
 		</div>
 	</p>
+</td>
+
+<td style="vertical-align:top">
+  <?php if ($obj['suitable']=='yes') { ?>
+    <h3>Replaced With:</h3>                
+		<?=$this->ocw_utils->create_corep_img($cid,$mid,$obj['name'],$obj['location'],false);?>
+  <?php } else { ?>
+    <h3>Rejected Replacement:</h3>                
+		<?=$this->ocw_utils->create_corep_img($cid,$mid,$obj['name'],$obj['location'],false);?>
+    <br/><br/>
+    <h3>Reason:</h3>                
+    <?= ($obj['unsuitable_reason']=='') ? 'No reason provided' : $obj['unsuitable_reason']; ?>
+  <?php } ?>
+
 </td>
 </tr>
 
