@@ -303,7 +303,7 @@ ul#topnavlist {
     margin: 0;
     padding-bottom: 32px;
     list-style-type: none;
-    border-bottom: none;
+    border-bottom: 1px solid #999;
 }
 ul#topnavlist li {
     float: left;
