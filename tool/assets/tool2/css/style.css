@@ -217,14 +217,14 @@ div.collapse-container
 			margin: 0 auto;
 }
 
-#navlist { padding: 0 0 0 6px; }
-ul#navlist {
+#topnavlist { padding: 0 0 0 6px; }
+ul#topnavlist {
     margin: 0;
     padding-bottom: 32px;
     list-style-type: none;
     border-bottom: 1px solid #999;
 }
-ul#navlist li {
+ul#topnavlist li {
     float: left;
     height: 22px;
     color: #000;
@@ -233,16 +233,16 @@ ul#navlist li {
     border: 1px solid #999;
     border-bottom: none;
 }
-ul#navlist li#active { border-bottom: 2px solid #fff; height: 21px;}
-ul#navlist li#active a { background-color: #fff; color: #990033; }
-#navlist a { 
+ul#topnavlist li#active { border-bottom: 2px solid #fff; height: 21px;}
+ul#topnavlist li#active a { background-color: #fff; color: #990033; }
+#topnavlist a { 
     float: left; 
     display: block;
     color: #000;
     text-decoration: none;
     padding: 4px;
 }
-#navlist a:hover { background: #fff; }
+#topnavlist a:hover { background: #fff; }
 
 #materials_nav ul { margin: 0; padding: 0; }
 
@@ -296,3 +296,30 @@ ul#navlist li#active a { background-color: #fff; color: #990033; }
     font-weight: bold;
     padding: 10px;
 }
+
+#topnavlist { padding: 0 0 0 6px; }
+ul#topnavlist {
+    margin: 0;
+    padding-bottom: 32px;
+    list-style-type: none;
+    border-bottom: none;
+}
+ul#topnavlist li {
+    float: left;
+    height: 22px;
+    color: #000;
+    background-color: #eee;
+    margin: 6px 2px 0px 2px;
+    border: 1px solid #999;
+    border-bottom: none;
+}
+ul#topnavlist li#active { border-bottom: 2px solid #fff; height: 21px;}
+ul#topnavlist li#active a { background-color: #fff; color: #990033; }
+#topnavlist a { 
+    float: left; 
+    display: block;
+    color: #000;
+    text-decoration: none;
+    padding: 4px;
+}
+#topnavlist a:hover { background: #fff; }
