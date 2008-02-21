@@ -45,20 +45,7 @@
 
 <div id="header" class="column span-24 first last">
 	<div class="column span-15 first">
-	<a href="<?php echo base_url()?>"><h1>OCW Work Tool</h1></a>
-  <!--
-	<?php if (isset($breadcrumb)) { ?>
-	<p>
-		<?php for($i=0; $i < count($breadcrumb); $i++) { 
-				  $u = $breadcrumb[$i]['url'];
-				  $n = $breadcrumb[$i]['name'];
-				  echo ($i == 0 or $i == count($breadcrumb)) ? '' : '&nbsp;&raquo;&nbsp;';
-				  echo ($u == '') ?  $n :  '<a href="'.$u.'">'.$n.'</a>'; 
-			  }
-		?>
-	</p>
-	<?php } ?>
-  -->
+	<a href="<?php echo base_url()?>"><h1>OER Work Tool</h1></a>
 	</div>
 
 	<div class="column span-9 last" style="text-align: right; padding-top: 15px;">
@@ -68,8 +55,18 @@
                      ((isAdmin())    ?
          anchor($this->config->item('FAL_admin_uri'), 'Admin Panel').' | ' : '').
          anchor($this->config->item('FAL_logout_uri'), 'Logout'); ?>
-     <?php } ?>
+     
 	</div>
+	
+	  <div id="navlist">
+    	<ul id="navlist">
+    	<?php $ci_uri = trim($this->uri->uri_string(), '/'); $att = ' id="active"';?>
+    		<li<?= (preg_match('|^home|', $ci_uri) > 0)? $att: ''?>><?=anchor("/home",$this->lang->line('ocw_ds_menu_home'))?></li>
+    		<li<?= (preg_match('|^manage|', $ci_uri) > 0)? $att: ''?>><?=anchor("/manage",'Manage Courses')?></li>
+    		</ul>
+    <?php } ?>
+    </div>
+  
 </div>
 <!-- end header -->
 
