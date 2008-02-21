@@ -58,12 +58,15 @@
      
 	</div>
 	
-	  <div id="navlist">
+	  <div id="navlist" class column-span-15 first>
     	<ul id="navlist">
     	<?php $ci_uri = trim($this->uri->uri_string(), '/'); $att = ' id="active"';?>
     		<li<?= (preg_match('|^home|', $ci_uri) > 0)? $att: ''?>><?=anchor("/home",$this->lang->line('ocw_ds_menu_home'))?></li>
     		<li<?= (preg_match('|^manage|', $ci_uri) > 0)? $att: ''?>><?=anchor("/manage",'Manage Courses')?></li>
     		</ul>
+    </div>
+    <div id="helpbutton" class="column-span 9 last" style="text-align: right; padding-top: 15px;">
+      <?php echo anchor(site_url('help'), 'Help/FAQ'); ?>
     <?php } ?>
     </div>
   
