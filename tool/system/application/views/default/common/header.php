@@ -47,7 +47,7 @@
 	<div class="column span-15 first">
 	<a href="<?php echo base_url()?>"><h1>OER Work Tool</h1></a>
 	<?php if (isValidUser()) { ?>
-	<ul id="navlist" >
+	<ul id="topnavlist" >
 	<?php $ci_uri = trim($this->uri->uri_string(), '/'); $att = ' id="active"';?>
 		<li<?= (preg_match('|^home|', $ci_uri) > 0)? $att: ''?>><?=anchor("/home",$this->lang->line('ocw_ds_menu_home'))?></li>
 		<li<?= (preg_match('|^manage|', $ci_uri) > 0)? $att: ''?>><?=anchor("/manage",'Manage Courses')?></li>
