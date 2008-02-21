@@ -46,30 +46,24 @@
 <div id="header" class="column span-24 first last">
 	<div class="column span-15 first">
 	<a href="<?php echo base_url()?>"><h1>OER Work Tool</h1></a>
+	<?php if (isValidUser()) { ?>
+	<ul id="navlist" >
+	<?php $ci_uri = trim($this->uri->uri_string(), '/'); $att = ' id="active"';?>
+		<li<?= (preg_match('|^home|', $ci_uri) > 0)? $att: ''?>><?=anchor("/home",$this->lang->line('ocw_ds_menu_home'))?></li>
+		<li<?= (preg_match('|^manage|', $ci_uri) > 0)? $att: ''?>><?=anchor("/manage",'Manage Courses')?></li>
+	</ul>
 	</div>
 
 	<div class="column span-9 last" style="text-align: right; padding-top: 15px;">
-	<?php if (isValidUser()) { ?>
+	
          <?php echo  'Welcome&nbsp;&nbsp;<b>'.getUserProperty('user_name').' ('.getUserProperty('role').')</b> | '.
 					anchor(site_url('auth/changepassword'), 'Change Password').' | '.
                      ((isAdmin())    ?
          anchor($this->config->item('FAL_admin_uri'), 'Admin Panel').' | ' : '').
-         anchor($this->config->item('FAL_logout_uri'), 'Logout'); ?>
-     
+         anchor($this->config->item('FAL_logout_uri'), 'Logout'); ?></ br>
+         <?php echo anchor(site_url('help'), 'Help/FAQ'); ?>
+     <?php } ?>
 	</div>
-	
-	  <div id="navlist" class column-span-15 first>
-    	<ul id="navlist">
-    	<?php $ci_uri = trim($this->uri->uri_string(), '/'); $att = ' id="active"';?>
-    		<li<?= (preg_match('|^home|', $ci_uri) > 0)? $att: ''?>><?=anchor("/home",$this->lang->line('ocw_ds_menu_home'))?></li>
-    		<li<?= (preg_match('|^manage|', $ci_uri) > 0)? $att: ''?>><?=anchor("/manage",'Manage Courses')?></li>
-    		</ul>
-    </div>
-    <div id="helpbutton" class="column-span 9 last" style="text-align: right; padding-top: 15px;">
-      <?php echo anchor(site_url('help'), 'Help/FAQ'); ?>
-    <?php } ?>
-    </div>
-  
 </div>
 <!-- end header -->
 
