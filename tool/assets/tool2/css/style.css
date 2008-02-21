@@ -217,14 +217,14 @@ div.collapse-container
 			margin: 0 auto;
 }
 
-#topnavlist { padding: 0 0 0 6px; }
-ul#topnavlist {
+#navlist { padding: 0 0 0 6px; }
+ul#navlist {
     margin: 0;
     padding-bottom: 32px;
     list-style-type: none;
     border-bottom: 1px solid #999;
 }
-ul#topnavlist li {
+ul#navlist li {
     float: left;
     height: 22px;
     color: #000;
@@ -233,16 +233,16 @@ ul#topnavlist li {
     border: 1px solid #999;
     border-bottom: none;
 }
-ul#topnavlist li#active { border-bottom: 2px solid #fff; height: 21px;}
-ul#topnavlist li#active a { background-color: #fff; color: #990033; }
-#topnavlist a { 
+ul#navlist li#active { border-bottom: 2px solid #fff; height: 21px;}
+ul#navlist li#active a { background-color: #fff; color: #990033; }
+#navlist a { 
     float: left; 
     display: block;
     color: #000;
     text-decoration: none;
     padding: 4px;
 }
-#topnavlist a:hover { background: #fff; }
+#navlist a:hover { background: #fff; }
 
 #materials_nav ul { margin: 0; padding: 0; }
 
