@@ -69,7 +69,7 @@ form {
 
 /* custom */
 #header {
-	border-bottom: 1px solid #688;
+	border-bottom: 0 solid #688;
 	margin-bottom: 20px;
 }
 #footer {
@@ -268,7 +268,8 @@ ul#navlist li#active a { background-color: #fff; color: #990033; }
   border: 1px dotted #06030a;
   border-top: 0; 
   background-color: #222;
-  height: 250px;
+  min-height: 250px;
+  height: 500px;
   color: #999;
 	z-index: 13000;
 }
