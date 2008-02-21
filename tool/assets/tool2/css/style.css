@@ -68,8 +68,12 @@ form {
 	}
 
 /* custom */
+#header_line {
+	border-bottom: 1px solid #688;
+	margin-bottom: 20px;
+}
 #header {
-	border-bottom: 0 solid #688;
+	border-bottom: 0px solid #688;
 	margin-bottom: 20px;
 }
 #footer {

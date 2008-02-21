@@ -43,20 +43,41 @@
 
 <div id="mainPage" class="container">
 
-<div id="header" class="column span-24 first last">
+<div id="<?= (isValidUser()) ? 'header':'header_line'?>" class="column span-24 first last">
 	<div class="column span-10 first last">
 	  <a href="<?php echo base_url()?>"><h1>OER Work Tool</h1></a>
 	</div>
 
 
+	<?php if (isValidUser()) { ?>
   <div class="column span-24 first last">
     <ul id="topnavlist" >
 	  <?php $ci_uri = trim($this->uri->uri_string(), '/'); $att = ' id="active"';?>
+
+    <?php if (getUserProperty('role') == 'dscribe1') { ?>
+
 		<li<?= (preg_match('/^home|\s*/', $ci_uri) > 0)? $att: ''?>><?=anchor("/home",$this->lang->line('ocw_ds_menu_home'))?></li>
 		<li<?= (preg_match('/^manage/', $ci_uri) > 0)? $att: ''?>><?=anchor("/manage",'Manage Courses')?></li>
+
+  
+    <?php } elseif (getUserProperty('role') == 'instructor') { ?>
+
+		<li<?= (preg_match('/^instructor\/home|\s/', $ci_uri) > 0)? $att: ''?>><?=anchor("/home",$this->lang->line('ocw_ds_menu_home'))?></li>
+    <li<?= (preg_match('|^instructor/materials|', $ci_uri) > 0)? $att: ''?>><?=anchor("/instructor/materials/$cid",$this->lang->line('ocw_ins_menu_materials'))?></li>
+		<li<?= (preg_match('/^manage/', $ci_uri) > 0)? $att: ''?>><?=anchor("/manage",'Manage Courses')?></li>
+    <li<?= (preg_match('|^instructor/review|', $ci_uri) > 0)? $att: ''?>><?=anchor("/instructor/review/$cid",$this->lang->line('ocw_ins_menu_review'))?></li>
+    <li<?= (preg_match('|^dscribe1/index|', $ci_uri) > 0)? $att: ''?>><?=anchor("/dscribe1/index/$cid",'View of dscribe1')?></li>
+
+    <?php } elseif (getUserProperty('role') == 'dscribe2') { ?>
+
+      <li<?= (preg_match('|^dscribe2/home|', $ci_uri) > 0)? $att: ''?>><?=anchor("/dscribe2/home/",'Home')?></li>
+      <li<?= (preg_match('|^dscribe2/courses|', $ci_uri) > 0)? $att: ''?>><?=anchor("/dscribe2/courses",'Manage Courses')?></li>
+      <li<?= (preg_match('|^dscribe2/dscribes|', $ci_uri) > 0)? $att: ''?>><?=anchor("/dscribe2/dscribes",'Manage dScribes')?></li>
+
+
+    <?php } ?>
 	  </ul>
 
-	  <?php if (isValidUser()) { ?>
 	  <div style="text-align: right; margin-top: -20px;">
          <?php echo  'Welcome&nbsp;&nbsp;<b>'.getUserProperty('user_name').' ('.getUserProperty('role').')</b> | '.
 					anchor(site_url('auth/changepassword'), 'Change Password').' | '.
@@ -65,8 +86,8 @@
          anchor(site_url('help'), 'Help/FAQ'). ' | '.
          anchor($this->config->item('FAL_logout_uri'), 'Logout'); ?>
 	  </div>
-    <?php } ?>
   </div>
+  <?php } ?>
 	
 </div>
 <!-- end header -->

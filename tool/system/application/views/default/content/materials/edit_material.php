@@ -43,6 +43,7 @@
 <div class="column span-24 first">
     <div class="column span-6 first">
         <?php echo form_dropdown('filter-type', $filter_types, $filter,'id="filter-type"'); ?> </h2>
+        <br/><br/>
     </div>
     <div class="column span-18 last">
         <h2>Viewing <span id="upd">XX</span></h2> 
@@ -67,7 +68,7 @@
     </div>
 
     <div class="column span-18 last">
-	    <iframe id="edit-co-frame" src="<?=site_url("materials/object_info/$cid/{$material['id']}/{$coobjects[0]['name']}")?>" width="640px" height="600px"></iframe>
+	    <iframe id="edit-co-frame" src="<?=site_url("materials/object_info/$cid/{$material['id']}/{$coobjects[0]['name']}")?>" width="100%" height="600px"></iframe>
     </div>
 </div>
 

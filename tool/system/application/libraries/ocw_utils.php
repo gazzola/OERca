@@ -260,7 +260,7 @@ class OCW_utils {
 	   $aurl = ($useimage) 
 			?'<a href="'.$imgurl.'" class="smoothbox" title="" rel="gallery-slide">'.$img.'</a>'
 			:'<a href="'.$imgurl.'" class="smoothbox" title="" rel="gallery-slide">'.$text.'</a>';
-	   return ($thumb_found) ? $aurl : '<small>no context view found</small>';
+	   return '<span style="clear:both"><br/>'.(($thumb_found) ? $aurl : '<small>no context view found</small>').'</span>';
 
 	}
 

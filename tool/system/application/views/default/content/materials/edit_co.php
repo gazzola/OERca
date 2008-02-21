@@ -6,6 +6,7 @@ echo style('style.css',array('media'=>"screen, projection"));
 echo style('table.css',array('media'=>"screen, projection"));
 echo style('multiupload.css',array('media'=>"screen, projection"));
 echo style('mootabs1.2.css',array('media'=>"screen, projection"));
+echo '<style type="text/css">body { padding: 0; margin:0; width: 700px; border:1px solid blue}</style>';
 
 echo script('mootools.js'); 
 echo script('tablesort.js');
@@ -38,14 +39,27 @@ echo script('multiupload.js');
   $log = $obj['log'];
 ?>
 
-<div id="mainPage" class="container" style="width: 480px;">
+<div id="mainPage" class="container" style="width: 400px; border:1px solid red;">
 
 <input type="hidden" id="cid" name="cid" value="<?=$cid?>" />
 <input type="hidden" id="mid" name="mid" value="<?=$mid?>" />
 <input type="hidden" id="oid" name="oid" value="<?=$obj['id']?>" />
 <input type="hidden" id="user" name="user" value="<?=$user?>" />
 
-<div class="column span-2 first colborder">
+
+<div class="column span-24 first last">
+  <div class="column span-10 first colborder">
+	    <?=$this->ocw_utils->create_co_img($cid,$mid,$obj['name'],$obj['location'],false,false);?>
+  </div>
+  <div class="column span-12 last">
+	    <?=$this->ocw_utils->create_corep_img($cid,$mid,$obj['name'],$obj['location'],false,true);?>
+  </div>
+  
+</div>
+
+<br/><br/>
+
+<div class="column span-2 first last colborder">
 	<div class="formLabel">Name:</div>
 	<h2 style="color:black"><?=$obj['name']?></h2>
 

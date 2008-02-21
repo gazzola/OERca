@@ -1,4 +1,4 @@
-<?php $this->load->view(property('app_views_path').'/dscribe2/dscribe2_header.php', $data); ?>
+<div class="column span-24 first last">
 
    <div id="boxes">
 
@@ -17,4 +17,4 @@
         </div>
    </div>
 
-<?php $this->load->view(property('app_views_path').'/dscribe2/dscribe2_footer.php', $data); ?>
+</div>

@@ -48,7 +48,7 @@ foreach($prov_objects as  $obj) {
 				<?=($obj['other_copyholder'] <> '')  ? 'checked="checked"' : ''?>/>&nbsp; Yes&nbsp;
 		<input type="radio" name="who_owns_<?=$obj['id']?>" id="who_owns_<?=$obj['id']?>" 
 			   value="no" class="do_ask_object_update do_askform_whoyesno" 
-				<?=($obj['other_copyholder']=='')  ? 'checked="checked"' : ''?>/>&nbsp; No&nbsp;
+				<?=($obj['other_copyholder']=='' && $obj['is_unique']<>'pending')  ? 'checked="checked"' : ''?>/>&nbsp; No&nbsp;
 	</p>
 
 	<div id="who_yes_other_<?=$obj['id']?>" 
@@ -152,8 +152,7 @@ foreach($prov_objects as  $obj) {
 
 
 <div id="inprogress-col2-<?=$obj['id']?>" style="display: <?=($obj['ask_status']=='in progress') ? 'block':'none'?>;">
-
-<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['name'],$obj['location'],false,true);?><br/>
+  <?=$this->ocw_utils->create_co_img($cid,$mid,$obj['name'],$obj['location'],false,true);?><br/>
 </div>
 </td>
 </tr>	

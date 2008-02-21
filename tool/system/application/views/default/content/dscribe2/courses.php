@@ -1,4 +1,4 @@
-<?php $this->load->view(property('app_views_path').'/dscribe2/dscribe2_header.php', $data); ?>
+<div class="column span-24 first last">
 
 <?php if ($courses == null) { ?>
 
@@ -60,4 +60,4 @@
 
 <?php } } ?>
 
-<?php $this->load->view(property('app_views_path').'/dscribe2/dscribe2_footer.php', $data); ?>
+</div>
