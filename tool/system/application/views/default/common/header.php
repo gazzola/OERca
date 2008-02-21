@@ -49,8 +49,8 @@
 	<?php if (isValidUser()) { ?>
 	<ul id="topnavlist" >
 	<?php $ci_uri = trim($this->uri->uri_string(), '/'); $att = ' id="active"';?>
-		<li<?= (preg_match('|^home|', $ci_uri) > 0)? $att: ''?>><?=anchor("/home",$this->lang->line('ocw_ds_menu_home'))?></li>
-		<li<?= (preg_match('|^manage|', $ci_uri) > 0)? $att: ''?>><?=anchor("/manage",'Manage Courses')?></li>
+		<li<?= (preg_match('/^home|\s*/', $ci_uri) > 0)? $att: ''?>><?=anchor("/home",$this->lang->line('ocw_ds_menu_home'))?></li>
+		<li<?= (preg_match('/^manage/', $ci_uri) > 0)? $att: ''?>><?=anchor("/manage",'Manage Courses')?></li>
 	</ul>
 	</div>
 
