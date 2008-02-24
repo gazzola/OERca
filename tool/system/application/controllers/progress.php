@@ -1,5 +1,12 @@
 <?php
-
+/**
+ * Progress Class
+ *
+ * @package OER Tool
+ * @author Ali Asad Lotia <lotia@umich.edu>
+ * @date 10 February 2008
+ * @copyright Copyright (c) 2006, University of Michigan
+ */
 class Progress extends Controller {
 
   public function __construct()

@@ -3,7 +3,7 @@
 
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<title>OCW Work Tool &raquo; <?php echo $title ?></title>
+	<title>OER Work Tool &raquo; <?php echo $title ?></title>
 
 	<?php 
 	   echo style('blueprint/screen.css',array('media'=>"screen, projection"));
