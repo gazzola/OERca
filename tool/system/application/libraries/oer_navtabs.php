@@ -103,6 +103,7 @@ class OER_navtabs {
     return($this->style_id);
   }
 
+
   /**
    * Set the default active tab, this is used when no controller is specified
    * in the url, and the user is routed to the default page defined in
@@ -118,7 +119,6 @@ class OER_navtabs {
   }
 
 
-
   /**
    * Get the default active tab, this is used when no controller is specified
    * in the url, and the user is routed to the default page defined in
@@ -127,9 +127,9 @@ class OER_navtabs {
    * @access  public
    * @return  int the number of the default active tab
    */
-  public function set_def_active_tab($active_tab_num)
+  public function get_def_active_tab($active_tab_num)
   {
-    $this->def_active_tab = $active_tab_num;
+    return($this->def_active_tab);
   }
 
 
