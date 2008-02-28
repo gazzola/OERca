@@ -1,7 +1,13 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
-
-
-class OER_navtabs {
+/**
+ * Navtab Class
+ *
+ * @package		OER Tool
+ * @subpackage	Libraries
+ * @category	 Generation
+ * @author	Ali Asad Lotia <lotia@umich.edu>
+ */
+class Navtab {
   /**
    * TODO: allow multiple ways to create the $tabs array. Passing it in the
    * required format may be a pain.

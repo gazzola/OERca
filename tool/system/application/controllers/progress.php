@@ -24,14 +24,14 @@ class Progress extends Controller {
 
     $data = array('title' => 'Progress', 
                   'breadcrumb' => $this->breadcrumb(),
-                  'role' => getUserProperty('role'));
+                  'role' => getUserProperty('role'),
+                  'name' => getUserProperty('name'));
 
     if ($data['role'] != 'dscribe1') {
       $this->layout->buildPage('notdscribe1', $data);
       
     } else if ($data['role'] == 'dscribe1') {
       $data['id'] = getUserProperty('id');
-      $data['name'] = getUserProperty('name');
       $data['courses'] = $this->ocw_user->get_courses_simple($data['id']);
       foreach ($data['courses'] as $key => &$value) {
         $value['num']['total'] = $this->material->get_co_count($value['id']);

@@ -19,7 +19,7 @@ $lang['ocw_ins_pagetitle_review'] = $lang['ocw_instructor'].' &raquo; Review';
 # menubar text
 $lang['ocw_ins_menu_home']	= 'Home';
 $lang['ocw_ins_menu_managematerials']	= 'Manage Materials';
-$lang['ocw_ins_menu_materials']	= 'Select Course Materials for OCW';
+$lang['ocw_ins_menu_materials']	= 'Select Course Materials';
 $lang['ocw_ins_menu_manage']	= 'Manage dScribes';
 $lang['ocw_ins_menu_review']	= 'Review for Export';
 

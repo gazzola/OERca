@@ -1,6 +1,7 @@
 <h1>This page to be decided</h1><br/>
 
 <div class="column span-24 first last">
-  You are not a dscribe1. The progress bar has not yet been designed
-  for you. Go eat fruit, it is good for you.
+  This is the homepage for <?=$name ?>. You are logged in as a <?=$role?>. If 
+  you were a dscribe1, you'd get a lovely progress bar. But... NO PROGRESS BAR
+  FOR YOU!
 </div>
