@@ -42,19 +42,15 @@
 <body>
 
 <div id="mainPage" class="container">
-<?php if (isValidUser()) { ?>
-  <div id="header">
-    <div class="column span-24 first last">
-      <h1>OER Work Tool</h1>
-      <br />
-      <h1>Help/FAQ</h1>
-    </div>
-  </div>
-  <div class="column span-24 first last">
+<div id="header_line">
+    <h1>OER Work Tool</h1>
     <br />
-    <b>This page is under construction</b>
-  </div>
-<?php } ?>
+    <h1>Help/FAQ</h1>
+</div>
+<div class="column span-24 first last">
+  <br />
+  <b>This page is under construction</b>
+</div>
 <div id="footer" class="column span-24 first last">
      <script type="text/javascript">EventSelectors.start(Rules);</script>
 </div>
