@@ -28,7 +28,7 @@ class Home extends Controller {
             $courses = $this->ocw_user->get_courses(getUserProperty('id'));
             $data = array('title'=>'Home','courses'=>$courses,'sysrole'=>getUserProperty('role'),
 						  'breadcrumb'=>$this->breadcrumb());
-            $this->layout->buildPage('home', $data);
+            $this->layout->buildPage('manage', $data);
         }
 	}
 

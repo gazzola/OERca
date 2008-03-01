@@ -48,8 +48,8 @@ class Dscribe2 extends Controller {
      * Display dScribe2 course dashboard 
      *
      * @access  public
-	 8 @param string task 
-	 8 @param int  course id 
+	   * @param string task 
+	   * @param int  course id 
      * @return  void
      */
 	public function courses($task='', $cid='')
