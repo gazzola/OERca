@@ -28,7 +28,7 @@ class Progress extends Controller {
                   'name' => getUserProperty('name'));
 
     if ($data['role'] != 'dscribe1') {
-      $this->layout->buildPage('notdscribe1', $data);
+      $this->layout->buildPage('homeother', $data);
       
     } else if ($data['role'] == 'dscribe1') {
       $data['id'] = getUserProperty('id');
@@ -39,7 +39,7 @@ class Progress extends Controller {
         $value['num']['ask'] = $this->material->get_ask_count($value['id']);
         $value['num']['rem'] = $this->material->get_rem_count($value['id']);
       }
-      $this->layout->buildPage('progress', $data);
+      $this->layout->buildPage('homedscribe1', $data);
     }
   }
 

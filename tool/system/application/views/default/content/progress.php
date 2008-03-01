@@ -5,7 +5,7 @@
               '/'.$value['num']['ask'].'/'.$value['num']['rem'];
    ?> 
   <div class="column span-16 first">
-    <img src="<?= site_url("/progress/make_bar/$params_url") ?>" alt=
+    <img src="<?= site_url("/home/make_bar/$params_url") ?>" alt=
       "Progress Bar">
   </div>
   <div class="column span-8 last" >
