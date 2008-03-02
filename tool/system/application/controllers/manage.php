@@ -1,6 +1,6 @@
 <?php
 /**
- * Controller for login Page
+ * Controller for manage Page
  *
  * @package	OCW Tool		
  * @author David Hutchful <dkhutch@umich.edu>
@@ -8,7 +8,7 @@
  * @copyright Copyright (c) 2006, University of Michigan
  */
 
-class Home extends Controller {
+class Manage extends Controller {
 
 	public function __construct()
 	{
