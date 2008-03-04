@@ -121,7 +121,7 @@ $cp_url = ($copy==null) ? '' : $copy['url'];
             <a href="javascript:void(0);" style="color:orange" class="do_show_hide_panel">Add questions</a>
             <br/>
           </small>
-          <div id="addpanel" style="display:block">
+          <div id="addpanel" style="display:none;">
             <textarea name="question" id="question" cols="40"></textarea>
             <p>
             <input type="button" value="Save" class="do_add_replacement_question" />
