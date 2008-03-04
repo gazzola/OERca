@@ -143,6 +143,13 @@ class Materials extends Controller {
 		redirect("materials/edit/$cid/$mid/", 'location');
 	}
 
+	public function add_object_zip($cid, $mid) 
+ 	{
+		//$this->ocw_utils->dump($_FILES); exit;
+		$this->coobject->add_zip($cid, $mid,2,$_FILES);
+		redirect("materials/edit/$cid/$mid/", 'location');
+	}
+
 	public function update_object($cid, $mid, $oid, $field, $val='') 
  	{
 	   /** HACK: dreamhost messing around and converting spaces to
@@ -212,14 +219,18 @@ class Materials extends Controller {
 	{
 		$subtypes =  $this->coobject->object_subtypes();
 		$obj = $this->coobject->coobjects($mid,$oname);
+    list($undef,$undef,$oid) = split("\.", $oname);
+    $oid = preg_replace('/o/','',$oid);
+		$repl_objects =  $this->coobject->replacements($mid,$oid); 
 
-		//$this->ocw_utils->dump($obj); exit;
+		//$this->ocw_utils->dump($repl_objects); exit;
 		$data = array(
 					  'obj'=>$obj[0],
 					  'cid'=>$cid,
 					  'mid'=>$mid,
 					  'user'=>'jsmith',
-				  	  'subtypes'=>$subtypes,
+				  	'subtypes'=>$subtypes,
+				  	'repl_obj'=>$repl_objects[0],
 				);
 
     	$this->load->view('default/content/materials/edit_co', $data);

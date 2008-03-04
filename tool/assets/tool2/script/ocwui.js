@@ -185,9 +185,10 @@ var Site = {
 
 	filtertype: function() {
 		$('filter-type').addEvent('change', function(e) {
+      var c = ($('caller').value=='') ? 'dscribe1' : $('caller').value;
 			var url = $('server').value+'materials/edit/'+
-					  $('cid').value+'/'+$('mid').value+'/'+$('caller').value+'/'+this.value;
-            window.location.replace(url);
+			  $('cid').value+'/'+$('mid').value+'/'+c+'/'+this.value;
+      window.location.replace(url);
 		});
 	},
 

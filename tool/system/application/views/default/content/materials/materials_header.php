@@ -2,9 +2,11 @@
 
 	<div style="border-bottom: 1px solid #eee; margin-top: -10px; margin-left: 5px; padding-bottom: 5px;">
     <div style="float: left">
-		    <a href="">Courses</a> &raquo; <a href="<?=site_url('materials/home/'.$cid.'/'.$caller)?>"><?=$cname?></a> &raquo;  
-        <?php echo (isset($material['name'])) ? $material['name'] : 'materials'; ?>
+		    <a href="<?=site_url('manage')?>">Courses</a> &raquo; 
+        <?php echo (isset($material['name'])) ? '<a href="'.site_url('materials/home/'.$cid.'/'.$caller).'">'.$cname.'</a>' : $cname; ?> 
+        <?php echo (isset($material['name']))?'&raquo; '.$material['name']:''?>
     </div>
+
     <?php if (isset($material['name'])) { ?>
     <div id="materials_nav" style="float: right">
 		  <ul>

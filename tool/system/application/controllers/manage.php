@@ -8,8 +8,8 @@
  * @copyright Copyright (c) 2006, University of Michigan
  */
 
-class Manage extends Controller {
-
+class Manage extends Controller 
+{
 	public function __construct()
 	{
 		parent::Controller();	
@@ -19,29 +19,18 @@ class Manage extends Controller {
 	{
 		$this->freakauth_light->check();
 
-        $this->load->model('ocw_user');
+    $this->load->model('ocw_user');
 
-        if (getUserProperty('role') == 'dscribe2') {
-            redirect('dscribe2/home/', 'location');
+    if (getUserProperty('role') == 'dscribe2') {
+        redirect('dscribe2/home/', 'location');
 
-        } else {
-            $courses = $this->ocw_user->get_courses(getUserProperty('id'));
-            $data = array('title'=>'Home','courses'=>$courses,'sysrole'=>getUserProperty('role'),
-						  'breadcrumb'=>$this->breadcrumb());
-            $this->layout->buildPage('manage', $data);
-        }
-	}
-
-	public function breadcrumb($section='default')
-	{
-		$breadcrumb = array();
-
-		$breadcrumb[] = array('url'=>site_url(), 'name'=>'Home');
-
-		if ($section == 'default') {
-			$breadcrumb[] = array('url'=>'', 'name'=>'Manage Courses');
-		}
-		return $breadcrumb;
+    } else {
+        $courses = $this->ocw_user->get_courses(getUserProperty('id'));
+        $data = array('title'=>'Home',
+									    'courses'=>$courses,
+											'sysrole'=>getUserProperty('role'));
+        $this->layout->buildPage('manage', $data);
+    }
 	}
 }
 ?>

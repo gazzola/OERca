@@ -3,7 +3,7 @@
   $copyholder = ($material['author']=='') ? $course['director'] : $material['author'];
 ?>
 
-<div id="pane_matinfo" class="editpane">
+<div id="pane_matinfo" class="editpane" style="height: 20px;">
 
 <div class="column span-7 first colborder">
 		<div class="formLabel">Name:</div>

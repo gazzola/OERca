@@ -310,24 +310,27 @@ class Coobject extends Model
 
 		$name = $data['name'];
 		$comment = $data['comment'];
+		$question = $data['question'];
 		unset($data['comment']);
 		unset($data['co_request']);
+		unset($data['question']);
 
 		// add new object
 		$this->db->insert('objects',$data);
 		$oid = $this->db->insert_id();
 
-		// add comments
+		// add  questions and comments
+		if ($question <> '') {
+			$this->add_question($oid, 2, array('question'=>$question));
+		}
 		if ($comment <> '') {
 			$this->add_comment($oid, 2, array('comments'=>$comment));
 		}
 
 		// add files
 		if (is_array($files['userfile_0'])) {
-			$fname = $files['userfile_0']['name'];
 			$type = $files['userfile_0']['type'];
 			$tmpname = $files['userfile_0']['tmp_name'];
-			$size = $files['userfile_0']['size'];
 
 			$path = $this->prep_path($name);
 
@@ -345,6 +348,55 @@ class Coobject extends Model
 			move_uploaded_file($tmpname, $path.'/'.$name.'_grab'.$ext);
 		}
 	}
+
+  // add content objects with data embedded in the file metadata
+  public function add_zip($cid, $mid, $uid, $files)
+  {
+    if (is_array($files['userfile'])) {
+        $zipfile = $files['userfile']['tmp_name'];
+        $files = $this->ocw_utils->unzip($zipfile, property('app_co_upload_path')); 
+        if ($files !== false) {
+            foreach($files as $newfile) {
+                    $xmp_data = $this->ocw_utils->xmp_data($newfile);
+                    // need a more dynamic way of getting this hash
+                    $subtypes = array('2D'=>'1','3D'=>'2','IIllustrative'=>'12',
+                                      'Cartoon' => '11', 'Comp' => '9', 'Map' => '10',
+                                      'Medical' => '8', 'PIllustrative' => '4', 'Patient' => '3',
+                                      'Specimen' => '5', 'Art' => '17', 'Artifact' => '21',
+                                      'Chemical' => '13', 'Diagram' => '19', 'Equation' => '15',
+                                      'Gene' => '14', 'Logo' => '18', 'Radiology' => '6', 'Microscopy' => '7');
+                    if ($xmp_data['objecttype']== 'CO') {
+                        $data['ask'] = $xmp_data['ask']; 
+                        $data['action_type'] = $xmp_data['action']; 
+                        $data['subtype_id'] = $subtypes[$xmp_data['subtype']]; 
+                        $data['question'] = (isset($xmp_data['question'])) ? $xmp_data['question'] : ''; 
+                        $data['citation'] = (isset($xmp_data['citation'])) ? $xmp_data['citation'] : 'none'; 
+                        $data['comment'] = (isset($xmp_data['comments'])) ? $xmp_data['comments'] : ''; 
+                        $data['description'] = $xmp_data['description']; 
+                        $data['tags'] = $xmp_data['keywords']; 
+            
+                        //TODO: handle copy right stuff
+                        #$xmp_data['copystatus']
+                        #$xmp_data['copyurl']
+                        #$xmp_data['copynotice']
+                        #$xmp_data['contributors']
+
+                        $filedata = array('userfile_0'=>array());
+                        $filedata['userfile_0']['type'] = 'image/jpeg';
+                        $filedata['userfile_0']['tmp_name'] = $newfile;
+	                      $this->add($cid, $mid, $uid, $data, $filedata);
+                    } else{
+                        // this is for replacements
+                    }
+            }
+
+        } else {
+            // zip file did not contain any jpg files
+        }
+    } else {
+      // no file -- do nothing.
+    }
+  }
 
 	public function prep_path($name)
 	{
@@ -503,7 +555,7 @@ class Coobject extends Model
 		$name = "c$cid.m$mid.";
 		$q = $this->db->query('SELECT MAX(id) + 1 AS nextid FROM ocw_objects'); 
 		$row = $q->result_array();
-		return $name.$row['nextid'];
+		return $name.$row[0]['nextid'];
 	}
 }
 ?>

@@ -35,7 +35,7 @@
         <td><?=ucfirst($c['director'])?></td>
 		<?php if ($sysrole <> 'user') { ?>
 		<td width="90px"> 
-			<?=anchor(site_url(strtolower($sysrole).'/home/'.$c['id']),
+			<?=anchor(site_url('/materials/home/'.$c['id']),
                       'Edit', array('title'=>'Edit course materials'))?> 
 		</td>
 		<?php } ?>
