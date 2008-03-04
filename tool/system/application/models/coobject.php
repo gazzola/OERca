@@ -528,7 +528,7 @@ class Coobject extends Model
     if (is_array($files['userfile']) and $files['userfile']['error']==0) {
         $zipfile = $files['userfile']['tmp_name'];
         $files = $this->ocw_utils->unzip($zipfile, property('app_co_upload_path')); 
-				$replace_info = array();
+				$replace_info = $orig_info = array();
 
         if ($files !== false) {
             foreach($files as $newfile) {
@@ -537,7 +537,8 @@ class Coobject extends Model
 									$pid = "c$cid.m$mid.slide";
 									$newpath = $this->prep_path($pid); 
 									$newpath = $newpath."/c$cid.m$mid.slide_$loc.$ext";
-									copy($newfile, $newpath); 
+									@copy($newfile, $newpath); 
+									@chmod($newpath,'0777');
 									unlink($newfile);
 							} else {
                     $xmp_data = $this->ocw_utils->xmp_data($newfile);
@@ -551,12 +552,14 @@ class Coobject extends Model
 																			 'Microscopy' => '7');
 									 $copy_status = array(''=>'unknown', 'True'=>'copyrighted',
 																				'False'=>'public domain');
+										$yesno = array('N'=>'no', 'Y'=>'yes');
 
-                    if (isset($xmp_data['objecttype']) and $xmp_data['objecttype']== 'CO') {
-												$data['location'] = preg_replace('/.*?(\d+)(R)?\.jpg/',"$1",$newfile);
-                        $data['ask'] = $xmp_data['ask']; 
-                        $data['action_type'] = $xmp_data['action']; 
+                    if (isset($xmp_data['objecttype']) ) {
+												# get data from xmp
                         $data['subtype_id'] = $subtypes[$xmp_data['subtype']]; 
+                        $data['ask'] = (isset($xmp_data['ask'])) ? $yesno[$xmp_data['ask']] : 'no'; 
+												$data['location'] = preg_replace('/.*?(\d+)(R)?\.jpg/',"$1",$newfile);
+                        $data['action_type'] = (isset($xmp_data['action'])) ? $xmp_data['action'] : ''; 
                         $data['question'] = (isset($xmp_data['question'])) ? $xmp_data['question'] : ''; 
                         $data['citation'] = (isset($xmp_data['citation'])) ? $xmp_data['citation'] : 'none'; 
                         $data['comment'] = (isset($xmp_data['comments'])) ? $xmp_data['comments'] : ''; 
@@ -572,10 +575,39 @@ class Coobject extends Model
                         $filedata['userfile_0']['type'] = 'image/jpeg';
                         $filedata['userfile_0']['tmp_name'] = $newfile;
 
-	                      $oid = $this->add($cid, $mid, $uid, $data, $filedata);
+                    		if ($xmp_data['objecttype']=='CO') {
+	                      		$oid = $this->add($cid, $mid, $uid, $data, $filedata);
+														$repfile = preg_replace('/\.jpg$/','R.jpg',$newfile);
 
-                    } elseif (isset($xmp_data['objecttype']) and $xmp_data['objecttype']=='RCO') {
-                        // this is for replacements
+														# go through and see if any replacement items are waiting to be inserted
+														if (in_array($repfile, array_keys($replace_info))) {
+																// replacement exists and has been processed so just add it!
+																list($data, $filedata) = $replace_info[$repfile];
+	                      				$rid = $this->add_replacement($cid, $mid, $oid, $data, $filedata);
+																unset($replace_info[$repfile]);
+																
+														} else { # place in queue just in case the replacement comes along later
+																$orig_info[$newfile] = $oid;
+														}
+
+												} elseif ($xmp_data['objecttype']=='RCO') {
+														// this is a replacement - we have to make sure the original has been added
+														// first before we add this. Otherwise, add it to a queue
+														$origfile = preg_replace('/R.jpg$/','.jpg',$newfile);
+														unset($data['action_type']);
+														unset($data['subtype_id']);
+
+														# go through and see if any original item has been inserted alredy 
+														if (in_array($origfile, array_keys($orig_info))) {
+																// original exists and has been processed so just add replacement 
+																$oid = $orig_info[$origfile];
+	                      				$rid = $this->add_replacement($cid, $mid, $oid, $data, $filedata);
+																unset($orig_info[$origfile]);
+																
+														} else { # place in queue just in case the original comes along later
+																$replace_info[$newfile] = array($data, $filedata);
+														}
+												}
                     }
 							}
             }
@@ -731,7 +763,7 @@ class Coobject extends Model
 
 	private function get_next_name($cid, $mid)
 	{
-		$name = "c$cid.m$mid.";
+		$name = "c$cid.m$mid.o";
 		$q = $this->db->query('SELECT MAX(id) + 1 AS nextid FROM ocw_objects'); 
 		$row = $q->result_array();
 		return $name.$row[0]['nextid'];
