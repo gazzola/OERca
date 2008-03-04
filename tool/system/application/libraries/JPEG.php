@@ -79,7 +79,7 @@ function get_jpeg_header_data( $filename )
         if ( ! $filehnd  )
         {
                 // Could't open the file - exit
-                echo "<p>Could not open file $filename</p>\n";
+                #echo "<p>Could not open file $filename</p>\n";
                 return FALSE;
         }
 
@@ -91,7 +91,7 @@ function get_jpeg_header_data( $filename )
         if ( $data != "\xFF\xD8" )
         {
                 // No SOI (FF D8) at start of file - This probably isn't a JPEG file - close file and return;
-                echo "<p>This probably is not a JPEG file</p>\n";
+                #echo "<p>This probably is not a JPEG file</p>\n";
                 fclose($filehnd);
                 return FALSE;
         }

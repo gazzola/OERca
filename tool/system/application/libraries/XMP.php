@@ -919,7 +919,7 @@ $GLOBALS[ 'XMP_tag_captions' ] = array (
 "xap:Questions" => "question",
 "xap:COTitle" => "title",
 "xap:Citation" => "citation",
-"xap:Contributors" => "contributors",
+"xap:Contributors" => "contributor",
 "dc:description" => "description",
 "dc:subject" => "keywords",
 );

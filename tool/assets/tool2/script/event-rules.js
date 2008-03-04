@@ -190,6 +190,22 @@ var Rules = {
 		}
 	},
 
+	'.do_object_cp_update' : function(element) {
+		element.onchange = function () {
+			var val = this.value;
+			var course_id = $('cid').value;
+			var material_id = $('mid').value; 
+			var object_id = this.name.replace(/copy_\w+_/g,'');
+			var field = this.name.replace(/copy_/g,'');
+			field = field.replace(/_\d+$/g,'');
+			var url = $('server').value+'materials/update_object_copyright/'+
+					  		object_id+'/'+field+'/'+escape(val)+'/original';
+      var fb = $('feedback');
+      new Ajax(url, {	method: 'get', update: fb}).request();
+		}
+	},
+
+
 	'.do_ask_object_update' : function(element) {
 		element.onchange = function () {
 			var response;
@@ -316,7 +332,8 @@ var Rules = {
 			var response;
 			var course_id = $('cid').value;
 			var material_id = $('mid').value; 
-			var object_id; 
+			var object_id = this.name; 
+		  object_id = object_id.replace(/^\w+_/g,'');
 			var field = this.name; 
 		  field = field.replace(/_\d+/g,'');
 			var val = this.value;
@@ -333,10 +350,8 @@ var Rules = {
 			}
 			var url = $('server').value+'materials/update_replacement/'+course_id+'/'+material_id;
 			url += '/'+object_id+'/'+field+'/'+escape(val);
-
-            var fb = $('feedback');
-
-            new Ajax(url, { method: 'get', update: fb, }).request();
+     	var fb = $('feedback');
+     	new Ajax(url, { method: 'get', update: fb, }).request();
 		}
 	},
 
@@ -351,8 +366,23 @@ var Rules = {
 			question_id = question_id.replace(/^\d+_/g,'');
 			var url = $('server').value+'materials/update_object_question/'+
 					  object_id+'/'+question_id+'/'+escape(val)+'/replacement';
-            var fb = $('feedback');
-            new Ajax(url, {	method: 'get', update: fb}).request();
+      var fb = $('feedback');
+      new Ajax(url, {	method: 'get', update: fb}).request();
+		}
+	},
+
+	'.do_replacement_cp_update' : function(element) {
+		element.onchange = function () {
+			var val = this.value;
+			var course_id = $('cid').value;
+			var material_id = $('mid').value; 
+			var object_id = this.name.replace(/copy_\w+_/g,'');
+			var field = this.name.replace(/copy_/g,'');
+			field = field.replace(/_\d+$/g,'');
+			var url = $('server').value+'materials/update_object_copyright/'+
+					  		object_id+'/'+field+'/'+escape(val)+'/replacement';
+      var fb = $('feedback');
+      new Ajax(url, {	method: 'get', update: fb}).request();
 		}
 	},
 

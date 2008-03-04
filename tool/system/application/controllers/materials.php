@@ -35,20 +35,14 @@ class Materials extends Controller {
        		$this->layout->buildPage('materials/index', $data);
 	}
 
-	public function update($cid,$mid,$field,$val)
+	public function update($cid,$mid,$field,$val,$resp=true)
 	{
-	    $data = array($field=>$val);
-	    $this->material->update($mid, $data);            
-		$this->ocw_utils->send_response('success');            
-		exit;
-	}
-
-	public function add_comment($cid,$mid,$comments)
-	{
-	   $data['comments'] = $comments;
-	   $this->material->add_comment($mid, 2, $data);
-       $this->ocw_utils->send_response('success');
-       exit;
+    $data = array($field=>$val);
+    $this->material->update($mid, $data);            
+		if ($resp) {
+			$this->ocw_utils->send_response('success');            
+			exit;
+		}
 	}
 
 	public function edit($cid, $mid, $caller='', $filter='Any')
@@ -140,6 +134,7 @@ class Materials extends Controller {
  	{
 		//$this->ocw_utils->dump($_FILES);
 		$this->coobject->add($cid, $mid,2,$_POST,$_FILES);
+		$this->update($cid,$mid,'embedded_co','1',false);
 		redirect("materials/edit/$cid/$mid/", 'location');
 	}
 
@@ -147,6 +142,7 @@ class Materials extends Controller {
  	{
 		//$this->ocw_utils->dump($_FILES); exit;
 		$this->coobject->add_zip($cid, $mid,2,$_FILES);
+		$this->update($cid,$mid,'embedded_co','1',false);
 		redirect("materials/edit/$cid/$mid/", 'location');
 	}
 
@@ -157,29 +153,44 @@ class Materials extends Controller {
 	   $val = ($val=='in_progress') ? 'in progress' : $val;
 
 		if ($field=='rep' or $field=='irep') {
-			$this->coobject->update_rep_image($cid, $mid, $oid, $_FILES);
-			$name = "c$cid.m$mid.o$oid";
-			if ($field == 'rep') {
-				redirect("materials/object_info/$cid/$mid/$name", 'location');
-			} elseif($field=='irep') {
-				redirect("materials/viewform/ask/$cid/$mid/", 'location');
-			}
-			exit;
+				$name = "c$cid.m$mid.o$oid";
+				if ($this->ocw_utils->replacement_exists($name)) {
+						$this->coobject->update_rep_image($cid, $mid, $oid, $_FILES);
+				} else {
+						$this->coobject->add_replacement($cid, $mid, $oid, array(), $_FILES);
+				}
+
+				if ($field == 'rep') {
+						redirect("materials/object_info/$cid/$mid/$name", 'location');
+				} elseif($field=='irep') {
+						redirect("materials/viewform/ask/$cid/$mid/", 'location');
+				}
+				exit;
 
 		} else {
-			if ($field=='action_type') {
-				$lgcm = 'Changed action type to '.$val;
-				$this->coobject->add_log($oid, 2, array('log'=>$lgcm));
-			} elseif ($field=='done') {
-				$lgcm = 'Changed cleared status to '.($val=='1')?'"yes"':'"no"';
-				$this->coobject->add_log($oid, 2, array('log'=>$lgcm));
-			} else {}
-			$data = array($field=>$val);
-			$this->coobject->update($oid, $data);
+				if ($field=='action_type') {
+						$lgcm = 'Changed action type to '.$val;
+						$this->coobject->add_log($oid, 2, array('log'=>$lgcm));
+				} elseif ($field=='done') {
+						$lgcm = 'Changed cleared status to '.($val=='1')?'"yes"':'"no"';
+						$this->coobject->add_log($oid, 2, array('log'=>$lgcm));
+				} else {}
+				$data = array($field=>$val);
+				$this->coobject->update($oid, $data);
 		}
+
+    $this->ocw_utils->send_response('success');
+   	exit;
+	}
+
+	public function add_comment($cid,$mid,$comments)
+	{
+	   $data['comments'] = $comments;
+	   $this->material->add_comment($mid, 2, $data);
        $this->ocw_utils->send_response('success');
        exit;
 	}
+
 
 	public function update_replacement($cid, $mid, $oid, $field, $val='') 
  	{
@@ -196,23 +207,34 @@ class Materials extends Controller {
 	{
 	   $data['comments'] = $comments;
 	   $this->coobject->add_comment($oid, 2, $data);
-       $this->ocw_utils->send_response('success');
-       exit;
+     $this->ocw_utils->send_response('success');
+     exit;
 	}
 
 	public function add_object_question($oid,$question)
 	{
 	   $data['question'] = $comments;
 	   $this->coobject->add_question($oid, 2, $data);
-       $this->ocw_utils->send_response('success');
-       exit;
+     $this->ocw_utils->send_response('success');
+     exit;
 	}
 
 	public function update_object_question($oid,$qid,$answer,$type='original')
 	{
 	   $data['answer'] = $answer;
 	   $this->coobject->update_question($oid, $qid, $data,$type);
-       $this->ocw_utils->send_response('success');
+     $this->ocw_utils->send_response('success');
+	}
+
+	public function update_object_copyright($oid,$field,$val,$type='original')
+	{
+		 $data = array($field=>$val);
+		 if ($this->coobject->copyright_exists($oid, $type)) {
+	   		 $this->coobject->update_copyright($oid, $data,$type);
+		 } else {
+	   		 $this->coobject->add_copyright($oid, $data,$type);
+		 }
+     $this->ocw_utils->send_response('success');
 	}
 
 	public function object_info($cid,$mid,$oname)

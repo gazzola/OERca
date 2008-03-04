@@ -1,5 +1,14 @@
+<?php 
+$copy_status = array('unknown'=>'Unknown', 'copyrighted'=>'Copyrighted','public domain'=>'Public Domain');
+$copy = $repl_obj['copyright'];
+$cp_status = ($copy==null) ? '' : $copy['status'];
+$cp_holder = ($copy==null) ? '' : $copy['holder'];
+$cp_notice = ($copy==null) ? '' : $copy['notice'];
+$cp_url = ($copy==null) ? '' : $copy['url'];
+?>
 <div id="Replacement" class="mootabs_panel">
 
+	<?php if ($this->ocw_utils->replacement_exists("c$cid.m$mid.o{$obj['id']}")) { ?>
   <!-- INFORMATION -->
   <div class="column span-17 first last">
     <br/><h3>Information</h3>
@@ -7,37 +16,37 @@
         <tr>
             <th>Location:</th>
             <td>
-            <input type="text" name="location" id="location" size="50" value="<?=$repl_obj['location']?>" class="do_replacement_update"/>
+            <input type="text" name="location_<?=$repl_obj['id']?>" id="location" size="50" value="<?=$repl_obj['location']?>" class="do_replacement_update"/>
             </td>
         </tr>
         <tr>
           <th>Author:</th>
           <td>
-            <input type="text" name="author" id="author" size="50" value="<?=$repl_obj['author']?>" class="do_replacement_update"/>
+            <input type="text" name="author_<?=$repl_obj['id']?>" id="author" size="50" value="<?=$repl_obj['author']?>" class="do_replacement_update"/>
           </td>
         </tr>
         <tr>
           <th>Contributor:</th>
           <td>
-            <input type="text" name="contributor" id="contributor" size="50" value="<?=$repl_obj['contributor']?>" class="do_replacement_update"/>
+            <input type="text" name="contributor_<?=$repl_obj['id']?>" id="contributor" size="50" value="<?=$repl_obj['contributor']?>" class="do_replacement_update"/>
           </td>
         </tr>
         <tr>
           <th style="vertical-align:top">Citation:</th>
           <td>
-            <textarea name="citation" id="citation" cols="6" rows="1" class="do_replacement_update"><?=$repl_obj['citation']?></textarea>
+            <textarea name="citation_<?=$repl_obj['id']?>" id="citation" cols="6" rows="1" class="do_replacement_update"><?=$repl_obj['citation']?></textarea>
           </td>
         </tr>
         <tr>
           <th style="vertical-align: top">Description:</th>
           <td>
-            <textarea name="description" id="description" cols="6" rows="1" class="do_replacement_update"><?=$repl_obj['description']?></textarea>
+            <textarea name="description_<?=$repl_obj['id']?>" id="description" cols="6" rows="1" class="do_replacement_update"><?=$repl_obj['description']?></textarea>
           </td>
         </tr>
         <tr>
           <th style="vertical-align: top">Keywords:</th>
           <td>
-            <textarea name="tags" id="tags" cols="6"  class="do_replacement_update"><?=$repl_obj['tags']?></textarea>
+            <textarea name="tags_<?=$repl_obj['id']?>" id="tags" cols="6"  class="do_replacement_update"><?=$repl_obj['tags']?></textarea>
           </td>
         </tr>
       </table>
@@ -50,26 +59,26 @@
         <tr>
           <th style="vertical-align: top">Copy Status:</th>
           <td>
-            <?php echo form_dropdown('copy_status',
-                  $copy_status, $repl_obj['location'] ,'id="copy_status" class="do_replacement_update"'); ?>
+            <?php echo form_dropdown('copy_status_'.$repl_obj['id'],
+                  $copy_status, $cp_status ,'id="copy_status" class="do_replacement_cp_update"'); ?>
           </td>
         </tr>
         <tr>
           <th style="vertical-align: top">Copy Holder:</th>
           <td>
-            <input type="text" name="copy_holder" id="copy_holder" size="50" value="<?=$repl_obj['contributor']?>" class="do_replacement_update"/>
+            <input type="text" name="copy_holder_<?=$repl_obj['id']?>" id="copy_holder" size="50" value="<?=$cp_holder?>" class="do_replacement_cp_update"/>
           </td>
         </tr>
         <tr>
           <th style="vertical-align: top">Copy Info URL:</th>
           <td>
-            <input type="text" name="copy_url" id="copy_url" size="50" value="<?=$repl_obj['contributor']?>" class="do_replacement_update"/>
+            <input type="text" name="copy_url_<?=$repl_obj['id']?>" id="copy_url" size="50" value="<?=$cp_url?>" class="do_replacement_cp_update"/>
           </td>
         </tr>
         <tr>
           <th style="vertical-align: top">Copy Notice:</th>
           <td>
-            <textarea name="copy_notice" id="copy_notice" cols="10"  class="do_replacement_update"><?=$repl_obj['tags']?></textarea>
+            <textarea name="copy_notice_<?=$repl_obj['id']?>" id="copy_notice" cols="10"  class="do_replacement_cp_update"><?=$cp_notice?></textarea>
           </td>
         </tr>
     </table>
@@ -86,8 +95,8 @@
 			  	<?php 
 				  	$yes = ($repl_obj['ask']=='yes') ? true : false;
 				  	$no = ($repl_obj['ask']=='yes') ? false : true;
-				  	echo form_radio('ask', 'yes', $yes, 'class="do_replacement_update"').'&nbsp;Yes&nbsp;'; 
-				  	echo form_radio('ask', 'no', $no, 'class="do_replacement_update"').'&nbsp;No';
+				  	echo form_radio('ask_'.$repl_obj['id'], 'yes', $yes, 'class="do_replacement_update"').'&nbsp;Yes&nbsp;'; 
+				  	echo form_radio('ask_'.$repl_obj['id'], 'no', $no, 'class="do_replacement_update"').'&nbsp;No';
 			  	?>
 				</td>
  	    </tr>
@@ -112,8 +121,8 @@
             <a href="javascript:void(0);" style="color:orange" class="do_show_hide_panel">Add questions</a>
             <br/>
           </small>
-          <div id="addpanel" style="display:none">
-            <textarea name="question" id="question" cols="50"></textarea>
+          <div id="addpanel" style="display:block">
+            <textarea name="question" id="question" cols="40"></textarea>
             <p>
             <input type="button" value="Save" class="do_add_replacement_question" />
             <input type="button" value="Cancel" class="do_show_hide_panel" />
@@ -199,7 +208,7 @@
     <?php  }  } ?>
  	</div>
 </div>
-
+<?php } ?>
 
 <!-- Uploads -->
 <div class="column span-17 first last">

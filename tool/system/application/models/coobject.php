@@ -49,12 +49,14 @@ class Coobject extends Model
 					if ($oname == $row['name']) {
 						$row['comments'] = $this->comments($row['id'],'user_id,comments,modified_on');
 						$row['questions'] = $this->questions($row['id'],'id,user_id,question,answer,modified_on');
+						$row['copyright'] = $this->copyright($row['id']);
 						$row['log'] = $this->logs($row['id'],'user_id,log,modified_on');
 						array_push($objects, $row);
 					}
 				} else {
 					$row['comments'] = $this->comments($row['id'],'user_id,comments,modified_on');
 					$row['questions'] = $this->questions($row['id'],'id,user_id,question,answer,modified_on');
+					$row['copyright'] = $this->copyright($row['id']);
 					$row['log'] = $this->logs($row['id'],'user_id,log,modified_on');
 					array_push($objects, $row);
 				}
@@ -98,6 +100,7 @@ class Coobject extends Model
 			foreach($q->result_array() as $row) {
 				$row['comments'] = $this->comments($row['id'],'user_id,comments,modified_on','replacement');
 				$row['questions'] = $this->questions($row['id'],'id,user_id,question,answer,modified_on','replacement');
+				$row['copyright'] = $this->copyright($row['id'],'*','replacement');
 				$row['log'] = $this->logs($row['id'],'user_id,log,modified_on','replacement');
 				array_push($objects, $row);
 			}
@@ -188,6 +191,32 @@ class Coobject extends Model
 	}
 
 	/**
+     * Get copyright info  for an ip objects 
+     *
+     * @access  public
+     * @param   int	oid ip object id		
+     * @param   string details fields to return	
+     * @param   string type either original object or replacement 
+     * @return  array
+     */
+	public function copyright($oid, $details='*', $type='original')
+	{
+		$cp = array();
+		$table = ($type == 'original') ? 'object_copyright' : 'object_replacement_copyright';
+		$this->db->select($details)->from($table)->where('object_id',$oid);
+		$q = $this->db->get();
+
+		if ($q->num_rows() > 0) {
+			foreach($q->result_array() as $row) {
+				array_push($cp, $row);
+			}
+		} 
+
+		return (sizeof($cp) > 0) ? $cp[0] : null;
+	}
+
+
+	/**
      * Get log  for an ip objects 
      *
      * @access  public
@@ -268,6 +297,52 @@ class Coobject extends Model
 	  $this->db->update($table,$data,"id=$qid AND object_id=$oid");
 	}
 
+	/**
+     * Add an object copyright
+     *
+     * @access  public
+     * @param   int object id
+     * @param   array data 
+     * @param   string type either original object or replacement 
+     * @return  void
+     */
+	public function add_copyright($oid, $data, $type='original')
+	{
+		$data['object_id'] = $oid;
+		$table = ($type == 'original') ? 'object_copyright' : 'object_replacement_copyright';
+		$this->db->insert($table,$data);
+	}
+
+	 /**
+     * update copyright 
+     *
+     * @access  public
+     * @param   int object id
+     * @param   array data 
+     * @param   string type either original object or replacement 
+     * @return  void
+     */
+	public function update_copyright($oid, $data, $type='original')
+	{
+	  $table = ($type == 'original') ? 'object_copyright' : 'object_replacement_copyright';
+	  $this->db->update($table,$data,"object_id=$oid");
+	}
+
+	 /**
+     * check to see if a copyright record already exists 
+     *
+     * @access  public
+     * @param   int object id
+     * @param   string type either original object or replacement 
+     * @return  boolean
+     */
+	public function copyright_exists($oid,$type='original')
+	{
+	  $table = ($type == 'original') ? 'ocw_object_copyright' : 'ocw_object_replacement_copyright';
+		$q = $this->db->query("SELECT COUNT(*) AS n FROM $table WHERE object_id=$oid"); 
+		$row = $q->result_array();
+		return ($row[0]['n'] > 0) ? true : false;
+	}
 
 	/**
      * Add an object log
@@ -311,9 +386,18 @@ class Coobject extends Model
 		$name = $data['name'];
 		$comment = $data['comment'];
 		$question = $data['question'];
+
+		$copy = array('status' => $data['copystatus'],
+								  'holder' => $data['copyholder'],
+								  'url' => $data['copyurl'],
+								  'notice' => $data['copynotice']);
 		unset($data['comment']);
 		unset($data['co_request']);
 		unset($data['question']);
+		unset($data['copystatus']);
+		unset($data['copyholder']);
+		unset($data['copyurl']);
+		unset($data['copynotice']);
 
 		// add new object
 		$this->db->insert('objects',$data);
@@ -325,6 +409,11 @@ class Coobject extends Model
 		}
 		if ($comment <> '') {
 			$this->add_comment($oid, 2, array('comments'=>$comment));
+		}
+		
+	 if ($copy['status']<>'' or $copy['holder']<>'' or
+			 $copy['notice']<>'' or $copy['url']<>''){
+			 $this->add_copyright($oid,$copy);
 		}
 
 		// add files
@@ -345,18 +434,112 @@ class Coobject extends Model
         	}
 
 			// move file to new location
-			move_uploaded_file($tmpname, $path.'/'.$name.'_grab'.$ext);
+			if (is_uploaded_file($tmpname)) {
+					move_uploaded_file($tmpname, $path.'/'.$name.'_grab'.$ext);
+			} else {
+					copy($tmpname, $path.'/'.$name.'_grab'.$ext);
+					unlink($tmpname);
+			}
 		}
+	
+		return $oid;
+	}
+
+	/**
+     * Add a replacement object
+     *
+     * @access  public
+     * @param   int course id
+     * @param   int material id
+     * @param   int object id
+     * @param   array data 
+     * @return  void
+     */
+	public function add_replacement($cid, $mid, $objid, $data, $files)
+	{
+		$data['material_id'] = $mid;
+		$data['object_id'] = $objid;
+		$data['name'] = "c$cid.m$mid.o$objid";
+
+		$name = $data['name'];
+		$comment = $data['comment'];
+		$question = $data['question'];
+
+		$copy = array('status' => $data['copystatus'],
+								  'holder' => $data['copyholder'],
+								  'url' => $data['copyurl'],
+								  'notice' => $data['copynotice']);
+		unset($data['comment']);
+		unset($data['question']);
+		unset($data['copystatus']);
+		unset($data['copyholder']);
+		unset($data['copyurl']);
+		unset($data['copynotice']);
+
+		// add new object
+		$this->db->insert('object_replacements',$data);
+		$oid = $this->db->insert_id();
+
+		// add  questions and comments
+		if ($question <> '') {
+			$this->add_question($oid, 2, array('question'=>$question),'replacement');
+		}
+		if ($comment <> '') {
+			$this->add_comment($oid, 2, array('comments'=>$comment),'replacement');
+		}
+		
+	 if ($copy['status']<>'' or $copy['holder']<>'' or
+			 $copy['notice']<>'' or $copy['url']<>''){
+			 $this->add_copyright($oid,$copy,'replacement');
+		}
+
+		// add files
+		if (is_array($files['userfile_0'])) {
+			$type = $files['userfile_0']['type'];
+			$tmpname = $files['userfile_0']['tmp_name'];
+
+			$path = $this->prep_path($name);
+
+			$ext = '';
+  			switch (strtolower($type))
+        	{
+                case 'image/gif':  $ext= '.gif'; break;
+                case 'jpg':
+                case 'image/jpeg': $ext= '.jpg'; break;
+                case 'image/png':  $ext= '.png'; break;
+                default: $ext='.png';
+        	}
+
+			// move file to new location
+			if (is_uploaded_file($tmpname)) {
+					move_uploaded_file($tmpname, $path.'/'.$name.'_rep'.$ext);
+			} else {
+					copy($tmpname, $path.'/'.$name.'_rep'.$ext);
+					unlink($tmpname);
+			}
+		}
+	
+		return $oid;
 	}
 
   // add content objects with data embedded in the file metadata
   public function add_zip($cid, $mid, $uid, $files)
   {
-    if (is_array($files['userfile'])) {
+    if (is_array($files['userfile']) and $files['userfile']['error']==0) {
         $zipfile = $files['userfile']['tmp_name'];
         $files = $this->ocw_utils->unzip($zipfile, property('app_co_upload_path')); 
+				$replace_info = array();
+
         if ($files !== false) {
             foreach($files as $newfile) {
+							if (preg_match('/Slide\d+|\-pres\.\d+/',$newfile)) { // find slides
+									list($loc, $ext) = $this->get_slide_info($newfile);
+									$pid = "c$cid.m$mid.slide";
+									$newpath = $this->prep_path($pid); 
+									$newpath = $newpath."/c$cid.m$mid.slide_$loc.$ext";
+									copy($newfile, $newpath); 
+									unlink($newfile);
+							} else {
                     $xmp_data = $this->ocw_utils->xmp_data($newfile);
                     // need a more dynamic way of getting this hash
                     $subtypes = array('2D'=>'1','3D'=>'2','IIllustrative'=>'12',
@@ -364,51 +547,47 @@ class Coobject extends Model
                                       'Medical' => '8', 'PIllustrative' => '4', 'Patient' => '3',
                                       'Specimen' => '5', 'Art' => '17', 'Artifact' => '21',
                                       'Chemical' => '13', 'Diagram' => '19', 'Equation' => '15',
-                                      'Gene' => '14', 'Logo' => '18', 'Radiology' => '6', 'Microscopy' => '7');
-                    if ($xmp_data['objecttype']== 'CO') {
+                                      'Gene' => '14', 'Logo' => '18', 'Radiology' => '6',
+																			 'Microscopy' => '7');
+									 $copy_status = array(''=>'unknown', 'True'=>'copyrighted',
+																				'False'=>'public domain');
+
+                    if (isset($xmp_data['objecttype']) and $xmp_data['objecttype']== 'CO') {
+												$data['location'] = preg_replace('/.*?(\d+)(R)?\.jpg/',"$1",$newfile);
                         $data['ask'] = $xmp_data['ask']; 
                         $data['action_type'] = $xmp_data['action']; 
                         $data['subtype_id'] = $subtypes[$xmp_data['subtype']]; 
                         $data['question'] = (isset($xmp_data['question'])) ? $xmp_data['question'] : ''; 
                         $data['citation'] = (isset($xmp_data['citation'])) ? $xmp_data['citation'] : 'none'; 
                         $data['comment'] = (isset($xmp_data['comments'])) ? $xmp_data['comments'] : ''; 
-                        $data['description'] = $xmp_data['description']; 
-                        $data['tags'] = $xmp_data['keywords']; 
+                        $data['contributor'] = (isset($xmp_data['contributor'])) ? $xmp_data['contributor'] : ''; 
+                        $data['description'] = (isset($xmp_data['description'])) ? $xmp_data['description'] : ''; 
+                        $data['tags'] = (isset($xmp_data['keywords'])) ? $xmp_data['keywords'] : ''; 
+                        $data['copystatus'] = (isset($xmp_data['copystatus'])) ? $copy_status[$xmp_data['copystatus']] : ''; 
+                        $data['copyurl'] = (isset($xmp_data['copyurl'])) ? $xmp_data['copyurl'] : ''; 
+                        $data['copynotice'] = (isset($xmp_data['copynotice'])) ? $xmp_data['copynotice'] : ''; 
+                        $data['copyholder'] = (isset($xmp_data['copyholder'])) ? $xmp_data['copyholder'] : ''; 
             
-                        //TODO: handle copy right stuff
-                        #$xmp_data['copystatus']
-                        #$xmp_data['copyurl']
-                        #$xmp_data['copynotice']
-                        #$xmp_data['contributors']
-
                         $filedata = array('userfile_0'=>array());
                         $filedata['userfile_0']['type'] = 'image/jpeg';
                         $filedata['userfile_0']['tmp_name'] = $newfile;
-	                      $this->add($cid, $mid, $uid, $data, $filedata);
-                    } else{
+
+	                      $oid = $this->add($cid, $mid, $uid, $data, $filedata);
+
+                    } elseif (isset($xmp_data['objecttype']) and $xmp_data['objecttype']=='RCO') {
                         // this is for replacements
                     }
+							}
             }
 
         } else {
             // zip file did not contain any jpg files
         }
     } else {
-      // no file -- do nothing.
+			exit('Cannot upload file: an error occured while uploading file. Please contact administrator.');
     }
   }
 
-	public function prep_path($name)
-	{
-		list($c,$m,$o) = split("\.", $name);
-		$path = property('app_uploads_path').$c;
-		if (!is_dir($path)) { mkdir($path); }
-		$path .= '/'.$m;
-		if (!is_dir($path)) { mkdir($path); }
-		$path .= '/'.$o;
-		if (!is_dir($path)) { mkdir($path); }
-		return $path;
-	}
 	/**
      * Update objects for a given material 
      *
@@ -426,7 +605,7 @@ class Coobject extends Model
      * Update replacement objects for a given material 
      *
      * @access  public
-     * @param   int	oid object ip id		
+     * @param   int	replacement id		
      * @param   array	data
      * @return  void
      */
@@ -556,6 +735,36 @@ class Coobject extends Model
 		$q = $this->db->query('SELECT MAX(id) + 1 AS nextid FROM ocw_objects'); 
 		$row = $q->result_array();
 		return $name.$row[0]['nextid'];
+	}
+
+	private function get_slide_info($file)
+	{
+		preg_match('/\.(\w+)$/', $file, $matches);
+		$ext = $matches[1];
+
+		if (preg_match('/Slide(\d+)\.\w+/',$file,$matches)) { // powerpoint 
+				return array(intval($matches[1]), $ext);
+
+		} elseif (preg_match('/\-pres\.(\d+)\.\w+/',$file,$matches)) { // keynote 
+				return array(intval($matches[1]), $ext);
+		} else { // return any number found
+				$i = preg_match('/(\d+)/',$file,$matches); 
+				return array(intval($matches[1]), $ext);
+		}
+	}
+
+	public function prep_path($name)
+	{
+		list($c,$m,$o) = split("\.", $name);
+		$path = property('app_uploads_path').$c;
+		if (!is_dir($path)) { mkdir($path); chmod($path, 0777); }
+		$path .= '/'.$m;
+		if (!is_dir($path)) { mkdir($path); chmod($path, 0777); }
+		if ($o <> 'slide') {
+				$path .= '/'.$o;
+				if (!is_dir($path)) { mkdir($path); chmod($path, 0777); }
+		}
+		return $path;
 	}
 }
 ?>

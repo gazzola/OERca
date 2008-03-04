@@ -2,6 +2,7 @@
 $action_types = array('Fair Use'=>'Fair Use', 'Search'=>'Search',
 						          'Commission'=>'Commission', 'Permission'=>'Permission',
 						          'Retain'=>'Retain', 'Remove'=>'Remove');
+
 $copy_status = array('unknown'=>'Unknown', 'copyrighted'=>'Copyrighted','public domain'=>'Public Domain');
 
 $types = '<select id="subtype_id" name="subtype_id" class="do_object_update">';
@@ -15,6 +16,11 @@ foreach($subtypes as $type => $subtype) {
 } 
 $types .= '</select>';
 
+$copy = $obj['copyright'];
+$cp_status = ($copy==null) ? '' : $copy['status'];
+$cp_holder = ($copy==null) ? '' : $copy['holder'];
+$cp_notice = ($copy==null) ? '' : $copy['notice'];
+$cp_url = ($copy==null) ? '' : $copy['url'];
 $questions = $obj['questions'];
 $comments = $obj['comments'];
 $log = $obj['log'];
@@ -75,26 +81,26 @@ $log = $obj['log'];
 				<tr>
 					<th style="vertical-align: top">Copy Status:</th>
 					<td>
-			  		<?php echo form_dropdown('copy_status', 
-				  				$copy_status, $obj['action_type'] ,'id="copy_status" class="do_object_update"'); ?>
+			  		<?php echo form_dropdown('copy_status_'.$obj['id'], 
+				  				$copy_status, $cp_status ,'id="copy_status" class="do_object_cp_update"'); ?>
 					</td>
 				</tr>
 				<tr>
 					<th style="vertical-align: top">Copy Holder:</th>
 					<td>
-      			<input type="text" name="copy_holder" id="copy_holder" size="50" value="<?=$obj['contributor']?>" class="do_object_update"/>
+      			<input type="text" name="copy_holder_<?=$obj['id']?>" id="copy_holder" size="50" value="<?=$cp_holder?>" class="do_object_cp_update"/>
 					</td>
 				</tr>
 				<tr>
 					<th style="vertical-align: top">Copy Info URL:</th>
 					<td>
-      			<input type="text" name="copy_url" id="copy_url" size="50" value="<?=$obj['contributor']?>" class="do_object_update"/>
+      			<input type="text" name="copy_url_<?=$obj['id']?>" id="copy_url" size="50" value="<?=$cp_url?>" class="do_object_cp_update"/>
 					</td>
 				</tr>
 				<tr>
 					<th style="vertical-align: top">Copy Notice:</th>
 					<td>
-		    		<textarea name="copy_notice" id="copy_notice" cols="10"  class="do_object_update"><?=$obj['tags']?></textarea>
+		    		<textarea name="copy_notice_<?=$obj['id']?>" id="copy_notice" cols="10"  class="do_object_cp_update"><?=$cp_notice?></textarea>
 					</td>
 				</tr>
     </table>
