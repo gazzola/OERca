@@ -52,10 +52,10 @@
 	<?php if (isValidUser()) { ?>
   <div class="column span-24 first last">
     <ul id="topnavlist" >
-	  <?php $ci_uri = trim($this->uri->uri_string(), '/'); $att = ' id="active"';?>
+	  <?php $ci_uri = trim($this->uri->uri_string(), '/'); $ci_uri = ($ci_uri=='') ? 'home' : $ci_uri; $att = ' id="active"';?>
     <?php if (getUserProperty('role') == 'dscribe1') { ?>
 
-		<li<?= (preg_match('/^home|\s*/', $ci_uri) > 0)? $att: ''?>><?=anchor("/home",$this->lang->line('ocw_ds_menu_home'))?></li>
+		<li<?= (preg_match('/^home/', $ci_uri) > 0)? $att: ''?>><?=anchor("/home",$this->lang->line('ocw_ds_menu_home'))?></li>
 		<li<?= (preg_match('/^(manage|materials)/', $ci_uri) > 0)? $att: ''?>><?=anchor("/manage",'Manage Courses')?></li>
 
     <?php } elseif (getUserProperty('role') == 'instructor') { ?>
