@@ -1,6 +1,7 @@
 <h1><?=$name . "'s"?> Status</h1><br />
 
-  <?php foreach ($courses as $key => $value) { 
+  <?php if ($courses) {
+    foreach ($courses as $key => $value) { 
        $params_url = $value['num']['total'].'/'.$value['num']['done']. 
               '/'.$value['num']['ask'].'/'.$value['num']['rem'];
    ?> 
@@ -11,6 +12,10 @@
   <div class="column span-8 last" >
     <br />
     <h2><?=$value['number'] ?> <?=$value['title'] ?></h2>
+  </div>
+  <?php }} else { ?>
+  <div class="column span-24 first last">
+    You have no courses at present. Ask one of the staff to assign a course.
   </div>
   <?php } ?>
 

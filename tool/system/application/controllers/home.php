@@ -16,6 +16,9 @@ class Home extends Controller {
     $this->load->library('oer_progbar');
     $this->load->model('ocw_user');
     $this->load->model('material');
+    $this->load->library('oer_layout');
+    $this->load->library('navtab');
+    $this->load->library('oer_manage_nav');
   }
 
   public function index()
@@ -38,7 +41,11 @@ class Home extends Controller {
         	$value['num']['ask'] = $this->material->get_ask_count($value['id']);
         	$value['num']['rem'] = $this->material->get_rem_count($value['id']);
       	}
-      	$this->layout->buildPage('homedscribe1', $data);
+      	// get the navigation tab set
+      	$tabset = $this->oer_manage_nav->get_tabset($data['role']);
+      	$this->navtab->set_tabs($tabset);
+      	$data['tabs'] = $this->navtab->make_tabs();
+      	$this->oer_layout->build_custom_page('homedscribe1', $data);
     }
   }
 

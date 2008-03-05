@@ -50,7 +50,7 @@ class Navtab {
    * Set navigation tab names and urls
    *
    * @access  public
-   * @param   array keys as tab names and values as urls
+   * @param   mixed array keys as tab names and values as urls
    * @return  void
    */
   public function set_tabs($tabs)
@@ -63,8 +63,7 @@ class Navtab {
    * Get navigation tab names and urls
    *
    * @access  public
-   * @return  array return the tabs names as keys and
-   *                urls as values
+   * @return  array return the tabs names as keys and urls as values
    */
   public function get_tabs()
   {

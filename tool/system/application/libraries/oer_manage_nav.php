@@ -26,7 +26,6 @@
     * Constructor
     *
     * @access   public
-    * @param    string the role of current user, int the current course id
     * @return   an instance of this class
     */
    public function __construct()
@@ -43,7 +42,7 @@
     * @access   private
     * @return   array the tab set for dscribe1 user role
     */
-    private function _dscribe1_tabs($cid)
+    private function _dscribe1_tabs()
     {
       $tabs = array(
         array(
@@ -68,7 +67,7 @@
       * @access   private
       * @return   array the tab set for instructor user role
       */
-      private function _instructor_tabs($cid)
+      private function _instructor_tabs()
       {
         $tabs = array(
           array(
@@ -79,7 +78,7 @@
           array(
             "arg" => array("instructor/materials"),
             "name" => "Select Course Materials",
-            "url" => site_url("instructor/materials/{$cid}")
+            "url" => site_url("instructor/materials/{$this->course_id}")
             ),
           array(
             "arg" => array("manage"),
@@ -89,12 +88,12 @@
           array(
             "arg" => array("instructor/review"),
             "name" => "Review for Export",
-            "url" => site_url("instructor/review/{$cid}")
+            "url" => site_url("instructor/review/{$this->course_id}")
             ),
           array(
             "arg" => array("dscribe1/index"),
             "name" => "View of dScribe1",
-            "url" => site_url("dscribe1/index/{$cid}"),
+            "url" => site_url("dscribe1/index/{$this->course_id}"),
             )
           );
 
@@ -108,7 +107,7 @@
         * @access   private
         * @return   array the tab set for dscribe2 user role
         */
-        private function _dscribe2_tabs($cid)
+        private function _dscribe2_tabs()
         {
           $tabs = array(
             array(
@@ -189,8 +188,9 @@
        * TODO: make different views possible and more generalized
        *
        * @access  public
-       * @param   string user role, int course id, string role for which tabs
-       *          should be displayed
+       * @param   string user role
+       * @param   int course id
+       * @param   string role for which tabs should be displayed
        * @return  void
        */
        public function get_tabset($role = NULL, $cid = NULL, 
@@ -207,7 +207,7 @@
           $this->set_cid($cid);
          }
           
-         return($this->$req_tabset($role));
+         return($this->$req_tabset());
        }
  }
 
