@@ -318,6 +318,12 @@ ul#topnavlist li {
     border: 1px solid #999;
     border-bottom: none;
 }
+#topnavlist li#inactive { 
+	background-color: white; 
+	border: 1px dashed #999; 
+	border-bottom:none;
+  background-color: #eee;
+} 
 ul#topnavlist li#active { border-bottom: 2px solid #fff; height: 21px;}
 ul#topnavlist li#active a { background-color: #fff; color: #990033; }
 #topnavlist a { 
@@ -325,6 +331,8 @@ ul#topnavlist li#active a { background-color: #fff; color: #990033; }
     display: block;
     color: #000;
     text-decoration: none;
-    padding: 4px;
 }
+#topnavlist li { padding: 3px; padding-bottom:0;} 
+#topnavlist li#active { background-color: white } 
 #topnavlist a:hover { background: #fff; }
+#topnavlist li:hover { background: #fff; }

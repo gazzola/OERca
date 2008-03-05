@@ -40,8 +40,7 @@ class Dscribe2 extends Controller {
 	public function home()
 	{
 		$this->data['title'] = 'dScribe2'; 
-		$this->data['breadcrumb'] = $this->breadcrumb(); 
-    	$this->layout->buildPage('dscribe2/index', $this->data);
+   	$this->layout->buildPage('dscribe2/index', $this->data);
 	}
 
 	/**
@@ -94,8 +93,7 @@ class Dscribe2 extends Controller {
 		} else {
 			$this->data['title'] = 'dScribe2 &raquo; Manage Courses'; 
 			$this->data['courses'] = $this->course->get_courses();
-			$this->data['breadcrumb'] = $this->breadcrumb('courses'); 
-     		$this->layout->buildPage('dscribe2/courses', $this->data);
+    	$this->layout->buildPage('dscribe2/courses', $this->data);
 		}
 	}
 
@@ -108,23 +106,7 @@ class Dscribe2 extends Controller {
 	public function dscribes()
 	{
 		$this->data['title'] = 'dScribe2 &raquo; Manage dScribes'; 
-		$this->data['breadcrumb'] = $this->breadcrumb('dscribes'); 
-     	$this->layout->buildPage('dscribe2/dscribes', $this->data);
-	}
-
-	public function breadcrumb($section='default')
-	{
-		$breadcrumb = array();
-
-		$breadcrumb[] = array('url'=>site_url(), 'name'=>'Home');
-		$breadcrumb[] = array('url'=>site_url('dscribe2'), 'name'=>'dScribe2 Interface');
-
-		if ($section == 'courses') {
-			$breadcrumb[] = array('url'=>'', 'name'=>'Manage Courses');
-		} elseif($section == 'dscribes') {
-			$breadcrumb[] = array('url'=>'', 'name'=>'Manage dScribes');
-		}
-		return $breadcrumb;
+    $this->layout->buildPage('dscribe2/dscribes', $this->data);
 	}
 }
 ?>

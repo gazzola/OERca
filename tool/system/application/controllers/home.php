@@ -29,23 +29,31 @@ class Home extends Controller {
                   'role' => getUserProperty('role'),
                   'name' => getUserProperty('name'));
 
-    if ($data['role'] != 'dscribe1') {
-      	$this->layout->buildPage('homeother', $data);
-      
-    } elseif ($data['role'] == 'dscribe1') {
+    if ($data['role'] == 'dscribe1') {
       	$data['id'] = getUserProperty('id');
       	$data['courses'] = $this->ocw_user->get_courses_simple($data['id']);
-      	foreach ($data['courses'] as $key => &$value) {
-        	$value['num']['total'] = $this->material->get_co_count($value['id']);
-        	$value['num']['done'] = $this->material->get_done_count($value['id']);
-        	$value['num']['ask'] = $this->material->get_ask_count($value['id']);
-        	$value['num']['rem'] = $this->material->get_rem_count($value['id']);
-      	}
+				if (is_array($data['courses'])) {
+      			foreach ($data['courses'] as $key => &$value) {
+        				$value['num']['total'] = $this->material->get_co_count($value['id']);
+        				$value['num']['done'] = $this->material->get_done_count($value['id']);
+        				$value['num']['ask'] = $this->material->get_ask_count($value['id']);
+        				$value['num']['rem'] = $this->material->get_rem_count($value['id']);
+      			}
+				}
       	// get the navigation tab set
       	$tabset = $this->oer_manage_nav->get_tabset($data['role']);
       	$this->navtab->set_tabs($tabset);
       	$data['tabs'] = $this->navtab->make_tabs();
       	$this->oer_layout->build_custom_page('homedscribe1', $data);
+      
+    } elseif ($data['role'] == 'dscribe2') {
+        redirect('dscribe2/home/', 'location');
+
+    } elseif ($data['role'] == 'instructor') {
+        redirect('instructor/home/', 'location');
+
+		} else {
+      	$this->layout->buildPage('homeother', $data);
     }
   }
 

@@ -1,8 +1,9 @@
 <?php $this->load->view(property('app_views_path').'/instructor/instructor_header.php', $data); ?>
 
-<p class="error">Under construction: A place to add and remove dscribes from the course</p>
-
 <!--
+<p class="error">Under construction: A place to add and remove dscribes from the course</p>
+-->
+
 <p><?php echo $this->lang->line('ocw_ins_dscribes_intro')?></p>
 
 <br>
@@ -74,6 +75,5 @@
 <?php endforeach; ?> 
 </table>
 <?php endif; ?>
--->
 
 <?php $this->load->view(property('app_views_path').'/instructor/instructor_footer.php', $data); ?>

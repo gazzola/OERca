@@ -31,10 +31,7 @@ class Instructor extends Controller {
 		$this->load->helper('download');
 	}
 
-	public function index($cid)
-	{
-		$this->home($cid);
-	}
+	public function index($cid='') { $this->home($cid); }
 
 	/**
      * Display instructor dashboard 
@@ -42,12 +39,12 @@ class Instructor extends Controller {
      * @access  public
      * @return  void
      */
-	public function home($cid)
+	public function home($cid='')
 	{
 		// make sure user is an instructor
 		$this->_isInstructor($cid); 
 		$this->data['title'] = $this->lang->line('ocw_instructor');
-       	$this->layout->buildPage('instructor/index', $this->data);
+   	$this->layout->buildPage('instructor/index', $this->data);
 	}
 
 	/**
@@ -61,7 +58,7 @@ class Instructor extends Controller {
 	{
 		$this->_isInstructor($cid); 
 		$this->data['title'] = $this->lang->line('ocw_ins_pagetitle_managemat'); 
-       	$this->layout->buildPage('instructor/manage_materials', $this->data);
+   	$this->layout->buildPage('instructor/manage_materials', $this->data);
 	}
 
 	/**
@@ -76,7 +73,7 @@ class Instructor extends Controller {
 	{
 		$this->_isInstructor($cid); 
 		$this->data['title'] = $this->lang->line('ocw_ins_pagetitle_review'); 
-       	$this->layout->buildPage('instructor/review_course', $this->data);
+   	$this->layout->buildPage('instructor/review_course', $this->data);
 	}
 
 	/**
@@ -133,7 +130,7 @@ class Instructor extends Controller {
 		$this->data['categories'] = $categories;
 		$this->data['categoriesMaterials'] = $categoriesMaterials;
 		$this->data['cid']=$cid;
-       	$this->layout->buildPage('instructor/pick_materials', $this->data);
+    $this->layout->buildPage('instructor/pick_materials', $this->data);
 	}
 
 	public function add_material($cid, $materialId) 
@@ -289,34 +286,24 @@ class Instructor extends Controller {
      * @param   int	course id		
      * @return  boolean
      */
-	private function _isInstructor($cid)
+	private function _isInstructor($cid='')
 	{
-		if ($this->ocw_user->has_role($this->uid, $cid, 'instructor')) {
-			$this->data['cid'] = $cid;
-			$this->data['cname'] = $this->course->course_title($cid);
-			$this->data['breadcrumb'] = $this->breadcrumb();
-			return true;
-
-		} else {
-			$msg = preg_replace('/{NAME}/',getUserProperty('name'), 
-					$this->lang->line('ocw_ins_error_notinstructor')); 
-			flashMsg($msg);
-       		redirect('home/', 'location');
+		if ($cid <> '') {
+				if ($this->ocw_user->has_role($this->uid, $cid, 'instructor')) {
+						$this->data['cid'] = $cid;
+						$this->data['cname'] = $this->course->course_title($cid);
+						return true;
+				} else {
+						$msg = preg_replace('/{NAME}/',getUserProperty('name'), 
+																$this->lang->line('ocw_ins_error_notinstructor')); 
+						flashMsg($msg);
+       			redirect('home/', 'location');
+				}
+		} elseif (getUserProperty('role') == 'instructor') {
+				return true;
 		}
+
 		return false;
 	} 
-
-	public function breadcrumb($section='default')
-	{
-		$breadcrumb = array();
-
-		$breadcrumb[] = array('url'=>site_url(), 'name'=>'Home');
-		$breadcrumb[] = array('url'=>site_url('home'), 'name'=>'Manage Courses');
-
-		if ($section == 'default') {
-			$breadcrumb[] = array('url'=>'', 'name'=> $this->data['cname']);
-		}
-		return $breadcrumb;
-	}
 }
 ?>

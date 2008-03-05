@@ -29,7 +29,7 @@
 	<?php foreach($curriculum as $course)	{ ?>
 		<?php foreach($course as $c) { ?>
 	<tr>
-		<td><?=anchor(site_url('dscribe1/materials/'.$c['id']),$c['number'].' '.$c['title'],array('title'=>'Edit course materials'))?></td>
+		<td><?=anchor(site_url('materials/home/'.$c['id']),$c['number'].' '.$c['title'],array('title'=>'Edit course materials'))?></td>
         <td><?=mdate('%d %M, %Y',mysql_to_unix($c['start_date']))?></td>
         <td><?=mdate('%d %M, %Y',mysql_to_unix($c['end_date']))?></td>
         <td width="40px"><?=ucfirst($c['cname'])?></td>
