@@ -90,22 +90,22 @@ class Instructor extends Controller {
 		// make sure user is an instructor
 		$this->_isInstructor($cid); 
 
-		if (isset($_POST['task'])) {
-			$task = $_POST['task'];
-        	$name = $_POST['name'];
-        	$uname = $_POST['username'];
-        	$email = $_POST['email'];
-        	$level = $_POST['level'];
-		}
+		if (isset($_POST['task'])) { $task = $_POST['task']; }
 
 		// add new dScribe
-        if ($task=='add_dscribe') {
-        } elseif ($task == 'remove') {
-        }
+   if ($task=='add_dscribe') {
+			 $r = $this->ocw_user->add_dscribe($cid, $_POST);
+			 if ($r!==true) {
+			 		flashMsg($r);
+       		redirect('instructor/dscribes/'.$cid, 'location');
+			}
+   } elseif ($task == 'remove') {
+			$this->ocw_user->remove_dscribe($cid, $did);
+   }
 
 		$this->data['dscribes'] = $this->ocw_user->dscribes($cid); 
 		$this->data['title'] = $this->lang->line('ocw_ins_pagetitle_manage'); 
-       	$this->layout->buildPage('instructor/manage_dscribes', $this->data);
+   	$this->layout->buildPage('instructor/manage_dscribes', $this->data);
 	}
 
 	/**

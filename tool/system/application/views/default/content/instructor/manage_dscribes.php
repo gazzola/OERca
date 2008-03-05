@@ -13,7 +13,7 @@
 		<form name="adminform" method="post" action="<?php echo site_url("instructor/dscribes/$cid")?>" style="margin:0px;">
 
 		<input type="hidden" name="task" value="add_dscribe" />
-		<input type="hidden" name="level" value="dscribe1" />
+		<input type="hidden" name="role" value="dscribe1" />
 
 		<table>
 			<tr>
@@ -34,7 +34,7 @@
 				<th style="text-align:right">
 					<?php echo $this->lang->line('ocw_ins_dscribes_username')?>: &nbsp;&nbsp;
 				</th>
-				<td><input type="text" id="username" name="username" tabindex="3" size="20" /></td>
+				<td><input type="text" id="user_name" name="user_name" tabindex="3" size="20" /></td>
 			</tr>
 			<tr>
 				<td>&nbsp;</td>
@@ -67,7 +67,7 @@
 	<td><?php safe_mailto($dscribe['email'])?><?php echo $dscribe['email'] ?></td>
 	<td><?php echo $dscribe['role']?></td>
 	<td>
-		<?php echo anchor(site_url('instructor/dscribes/remove/'.$dscribe['id']), 
+		<?php echo anchor(site_url("instructor/dscribes/$cid/remove/".$dscribe['id']), 
 					  '<img src="'.property('app_img').'/cross.png" title="Remove dScribe" />',
 					  array('title'=>'Remove dScribe', 'class'=>'confirm'))?>
     </td>

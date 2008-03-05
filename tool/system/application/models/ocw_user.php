@@ -104,29 +104,64 @@ class OCW_user extends Model
 	public function add_user($details)
 	{
 		$email= $details['email'];
-		$details['password']= $this->freakauth_light->_encode($email);
+		#$details['password']= $this->freakauth_light->_encode($email);
+		$details['password']= $this->freakauth_light->_encode('ocwpass');
 		$this->db->insert('users',$details);
 		return $this->exists($email);
 	}
 
   /**
-    * Add a new user 
+    * Add a dScribe to a course 
     *
     * @access  public
-    * @param   string name
-    * @param   string user name
-    * @param   string email address
-    * @return  string
+    * @param   mixed	data 
+    * @return  string | boolean
     */
- /* public function add_user($details = NULL, $name, $uname, $email)
+  public function add_dscribe($cid, $data)
   {
-    $data = array('name'=>$name,
-      'user_name'=>$uname,
-      'email'=>$email,
-      'password'=> $this->freakauth_light->_encode($email));
-    $this->db->insert('users',$data);
-    return $this->exists($email);
-  }*/
+		if ($data['name']=='') { return "Please specify name."; }
+		if ($data['email']=='') { return "Please specify an email address."; }
+		if ($data['user_name']=='') { return "Please specify a username."; }
+
+		if (($u = $this->get_user($data['user_name'])) !== false) { 
+				// user exists just add them to the course
+				$d = array('user_id'=>$u['id'], 'course_id'=>$cid, 'role'=>$data['role']);
+				$this->db->insert('acl',$d);
+		} else {
+				# try to add user first
+				if ($this->exists($data['email'])) { 
+						return "A user with this email already exists. Please pick a new one."; }
+
+				# prep new user data
+				unset($data['task']); unset($data['add_dscribe']);
+
+				if ($this->add_user($data)) {
+						$u = $this->get_user($data['user_name']);	
+						if ($u) {	
+							$d = array('user_id'=>$u['id'], 'course_id'=>$cid, 'role'=>$data['role']);
+							$this->db->insert('acl',$d);
+						}
+				} else {
+						return "Could not add new user. Please contact administrator";
+				}
+		}
+		return true;
+  }
+
+  /**
+    * remove a dScribe from a course 
+    *
+    * @access  public
+    * @param   int	course id 
+    * @param   int	dscribe id 
+    * @return  string | boolean
+    */
+  public function remove_dscribe($cid, $did)
+  {
+		$d = array('user_id'=>$did, 'course_id'=>$cid, 'role'=>'dscribe1');
+		$this->db->delete('acl',$d);
+		return true;
+	}
 
   /**
     * Get user info based on username 
