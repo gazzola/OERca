@@ -96,6 +96,7 @@
 
 	  <div style="text-align: right; margin-top: -20px;">
          <?php echo  'Welcome&nbsp;&nbsp;<b>'.getUserProperty('user_name').' ('.getUserProperty('role').')</b> | '.
+         anchor(site_url('auth/changepassword'), 'Change Password'). ' | '.
                      ((isAdmin())    ?
          anchor($this->config->item('FAL_admin_uri'), 'Admin Panel').' | ' : '').
          anchor_popup(site_url('helpfaq'), 'Help/FAQ'). ' | '.
