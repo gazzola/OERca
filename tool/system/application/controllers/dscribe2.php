@@ -103,8 +103,26 @@ class Dscribe2 extends Controller {
      * @access  public
      * @return  void
      */
-	public function dscribes()
+	public function dscribes($cid='none',$task='',$did='')
 	{
+		if (isset($_POST['cid'])) { $cid = $_POST['cid']; }
+		if (isset($_POST['task'])) { $task = $_POST['task']; }
+
+		// add new dScribe
+   	if ($task=='add_dscribe' and $cid<>'none') {
+			 	$r = $this->ocw_user->add_dscribe($cid, $_POST);
+			 	if ($r!==true) {
+			 			flashMsg($r);
+       			redirect('dscribe2/dscribes/'.$cid, 'location');
+				}
+  	} elseif ($task == 'remove' and $cid<>'none') {
+					$this->ocw_user->remove_dscribe($cid, $did);
+   	}
+
+		$this->data['cid'] = $cid;
+		$this->data['course'] = ($cid<>'none') ? $this->course->get_course($cid) : null;
+		$this->data['courses'] = $this->course->get_courses();
+		$this->data['dscribes'] = ($cid<>'none') ? $this->ocw_user->dscribes($cid) : null; 
 		$this->data['title'] = 'dScribe2 &raquo; Manage dScribes'; 
     $this->layout->buildPage('dscribe2/dscribes', $this->data);
 	}

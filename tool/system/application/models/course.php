@@ -41,8 +41,6 @@ class Course extends Model
 		$this->db->insert('acl', $details);
 	}
 
-	
-
 	/**
      * Get course
      *
