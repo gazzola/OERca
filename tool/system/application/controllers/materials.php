@@ -21,16 +21,21 @@ class Materials extends Controller {
 	
 	public function index($cid, $caller="") { $this->home($cid, $caller); }
 
-	public function home($cid, $caller='')
+	public function home($cid, $caller='', $openmat=false, $opencourse=false)
 	{
 			$tags =  $this->tag->tags();
 			$materials =  $this->material->materials($cid,'',true,true);
+			$mimetypes =  $this->mimetype->mimetypes();
+			
 			$data = array('title'=>'Materials',
 						  'materials'=>$materials, 
+							'mimetypes'=>$mimetypes,
 	   					'cname' => $this->course->course_title($cid), 
 						  'cid'=>$cid,
 						  'caller'=>$caller,
-					  	'tags'=>$tags
+					  	'tags'=>$tags,
+							'openmat'=>$openmat,
+							'opencourse'=>$opencourse
 					 	);
        		$this->layout->buildPage('materials/index', $data);
 	}
@@ -53,9 +58,39 @@ class Materials extends Controller {
        exit;
 	}
 
-	public function	add_material($cid)
+	public function	add_material($cid,$type)
 	{
+		$valid = true;
+		$errmsg = '';
 		$this->ocw_utils->dump($_POST);
+		$this->ocw_utils->dump($_FILES);
+
+		$idx = ($type=='bulk') ? 'zip_userfile_0' : 'single_userfile_0';
+		
+		if (!isset($_FILES[$idx]['name'])) {
+				$errmsg = 'Please specify a file to upload';
+				$valid = false;
+				
+		} elseif (isset($_FILES[$idx]['name']) && $type=='bulk' && !preg_match('/\.zip$/',$_FILES[$idx]['name'])) {
+				$errmsg .= (($errmsg=='') ? '':'<br/>')."Can only upload ZIP files for bulk uploads";
+				$valid = false;
+		}
+
+		if ($_POST['author']=='') {
+				$errmsg .= (($errmsg=='') ? '':'<br/>')."Author field is required.";
+				$valid = false;
+		}
+		
+		if ($valid == FALSE) {
+				$role = getUserProperty('role');
+				flashMsg($errmsg);
+				redirect("materials/home/$cid/$role/true", 'location');
+		}	else {
+			$msg = ($type=='bulk') ? 'Materials have been added.' 
+														 : 'Added material to course.';
+			flashMsg($msg);
+			redirect("materials/home/$cid", 'location');
+		}	
 	}
 
 	public function edit($cid, $mid, $caller='', $filter='Any')

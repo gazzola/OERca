@@ -1,4 +1,5 @@
 var orig_com_ap, orig_q_ap, repl_com_ap, repl_q_ap; // references for add panel divs
+var open_uploadmat_pane, open_editcourse_pane; // boolean values to determine if to open add pane - used in cases of errors
 
 function update_edit_co_frame(id)
 {
@@ -52,6 +53,7 @@ var Site = {
 		if($('myTabs')) Site.setuptabs();
 
     if ($('do_open_courseinfo_pane')) Site.course_page_setup();
+		
     if ($('do_open_matinfo_pane')) Site.co_page_setup();
 
 		if ($('orig_com_addpanel')) {
@@ -120,6 +122,12 @@ var Site = {
         e.stop(); 
       });
 
+			if (open_uploadmat_pane) { upload_mat.toggle();
+        	$('do_open_uploadmat_pane').parentNode.removeClass('normal').addClass('active');
+			}		
+			if (open_editcourse_pane) { edit_course.toggle();
+				$('do_open_courseinfo_pane').parentNode.removeClass('normal').addClass('active');
+		  }
   },
 
   co_page_setup: function () {

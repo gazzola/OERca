@@ -1,3 +1,8 @@
+<script type="text/javascript">
+	open_uploadmat_pane = <?php echo ($openmat) ? 'true' : 'false' ?>;
+	open_editcourse_pane = <?php echo ($opencourse) ? 'true' : 'false' ?>;
+</script>
+
 <?php
    if (getUserProperty('role') == 'dscribe1') { 
 			$course_list_url = site_url('manage');

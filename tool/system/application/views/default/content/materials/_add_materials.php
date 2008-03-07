@@ -1,45 +1,97 @@
-<?php	
+<?php		
+  $tags[0] = '-- select --';
 ?>
 
 <div id="pane_uploadmat" class="editpane">
+	<div class="column span-8 first colborder">
+		<h2>Single File Upload</h2>
+		<form action="<?=site_url("materials/add_material/$cid/single")?>" enctype="multipart/form-data" method="post"  id="add_new_material_single">
+			<input type="hidden" name="category" value="Resource Items" />
+			<input type="hidden" name="in_ocw" value="1" />
+			<input type="hidden" name="nodetype" value="parent" />
 
-<div class="column span-21 first last" style="text-align: center;">
+					<div class="formLabel">Author:</div>
+					<div class="formField">
+						<input type="text" name="author" id="author" class="input" size="50px"  />
+					</div>
+
+					<div class="formLabel">Collaborators:</div>
+					<div class="formField">
+						<input type="text" name="collaborators" id="collaborators" class="input" size="50px"  />
+					</div>
+
+					<div class="formLabel">CTools URL:</div>
+					<div class="formField">
+						<input type="text" name="ctools_url" id="ctools_url" class="input" size="50px"  />
+					</div>
+
+						<div class="formLabel">Tag:</div>
+						<div class="formField">
+							<?php echo form_dropdown('tag_id', $tags, '','id="tag_id"'); ?>
+						</div>
+
+						<div class="formLabel">Mimetype:</div>
+						<div class="formField">
+								<?php echo form_dropdown('mimetype_id', $mimetypes, ''); ?>
+						</div>
+
+
+						<div class="formLabel">Embedded COs?:</div>
+						<div class="formField">
+				        <input type="radio" name="embedded_co" id="emip_yes" class="update_material" value="1" checked="checked" />&nbsp;Yes
+				        <input type="radio" name="embedded_co" id="emip_no" class="update_material" value="0" />&nbsp;No
+						</div>
+
+					<div class="formLabel">Material:</div>
+					<div class="formField">
+				      	<input type="file" name="single_userfile" id="single_userfile" size="30" />
+				  </div>
+
+	  			<div class="formField">
+							<br/>
+							<input type="submit" value="Add" />
+					</div>		
+	</form>
+	</div>
 	
-<form action="<?=site_url("materials/add_material/$cid")?>" enctype="multipart/form-data" method = "post" id="add_new_material">
+<div class="column span-8 last">
+	<h2>Bulk Upload</h2>
+	<form action="<?=site_url("materials/add_material/$cid/bulk")?>" enctype="multipart/form-data" method="post" id="add_new_material_bulk">
 		<input type="hidden" name="category" value="Resource Items" />
 		<input type="hidden" name="in_ocw" value="1" />
 		<input type="hidden" name="nodetype" value="parent" />
 		
-		<div class="formLabel">Name:</div>
-		<div class="formField">
-			<input type="text" name="name" id="name" class="input" size="40px"/>
-		</div>
-
 		<div class="formLabel">Author:</div>
 		<div class="formField">
-			<input type="text" name="author" id="author" class="input" size="40px"  />
+			<input type="text" name="author" id="author" class="input" size="50px"  />
 		</div>
 
 		<div class="formLabel">Collaborators:</div>
 		<div class="formField">
-			<textarea name="collaborators" id="collaborators" cols="40" rows="4"></textarea>
+			<input type="text" name="collaborators" id="collaborators" class="input" size="50px"  />
 		</div>
 				
-		<div class="formLabel"><b>Zip file of Materials:</b></div>
+		<div class="formField">Zip file of Materials:</div>
 		<div class="formField">
-	      	<input type="file" name="userfile" id="userfile" size="30" />
-			    <small style="color:red">NB: any existing replacement image will be overwritten</small>	
+	      	<input type="file" name="zip_userfile" id="zip_userfile" size="30" />
 	  </div>
 
   	<div class="formField">
+				<br/>
 				<input type="submit" value="Add" />
-				<input type="button" value="Close" id="do_close_uploadmat_pane"/>
 		</div>		
-</form>
-	
+	</form>
 </div>
+
+
+<div class="column span-16 first last" style="margin-top:50px; text-align: left;">
+	<input type="button" value="Close" id="do_close_uploadmat_pane"/>
+</div>
+
 <script type="text/javascript">EventSelectors.start(Rules);</script>
 <script type="text/javascript">
- new MultiUpload( $('add_new_material').userfile, 1, null, true, true);
+ new MultiUpload( $('add_new_material_bulk').zip_userfile, 1, null, true, true);
+ new MultiUpload( $('add_new_material_single').single_userfile, 1, null, true, true);
 </script>
+
 </div>
