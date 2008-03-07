@@ -175,9 +175,7 @@ class Dscribe1 extends Controller {
 			$this->data['cid'] = $cid;
 			$this->coursedetails = $this->course->get_course($cid);
 			$this->data['course'] = $this->coursedetails;
-			$this->data['cname'] = $this->coursedetails['number'].' '.$this->coursedetails['title'];
-			$this->data['breadcrumb'] = $this->breadcrumb();
-			
+			$this->data['cname'] = $this->coursedetails['number'].' '.$this->coursedetails['title'];			
 			return true;
 
 		} else {
@@ -189,17 +187,5 @@ class Dscribe1 extends Controller {
 		return false;
 	} 
 
-	public function breadcrumb($section='default')
-	{
-		$breadcrumb = array();
-
-		$breadcrumb[] = array('url'=>site_url(), 'name'=>'Home');
-		$breadcrumb[] = array('url'=>site_url('home'), 'name'=>'Manage Courses');
-
-		if ($section == 'default') {
-			$breadcrumb[] = array('url'=>'', 'name'=> $this->data['cname']);
-		}
-		return $breadcrumb;
-	}
 }
 ?>

@@ -57,26 +57,26 @@ $cp_url = ($copy==null) ? '' : $copy['url'];
  	<br/><h3>Copyright</h3>
     <table width="100%">
         <tr>
-          <th style="vertical-align: top">Copy Status:</th>
+          <th style="vertical-align: top">Copyright Status:</th>
           <td>
             <?php echo form_dropdown('copy_status_'.$repl_obj['id'],
                   $copy_status, $cp_status ,'id="copy_status" class="do_replacement_cp_update"'); ?>
           </td>
         </tr>
         <tr>
-          <th style="vertical-align: top">Copy Holder:</th>
+          <th style="vertical-align: top">Copyright Holder:</th>
           <td>
             <input type="text" name="copy_holder_<?=$repl_obj['id']?>" id="copy_holder" size="50" value="<?=$cp_holder?>" class="do_replacement_cp_update"/>
           </td>
         </tr>
         <tr>
-          <th style="vertical-align: top">Copy Info URL:</th>
+          <th style="vertical-align: top">Copyright Info URL:</th>
           <td>
             <input type="text" name="copy_url_<?=$repl_obj['id']?>" id="copy_url" size="50" value="<?=$cp_url?>" class="do_replacement_cp_update"/>
           </td>
         </tr>
         <tr>
-          <th style="vertical-align: top">Copy Notice:</th>
+          <th style="vertical-align: top">Copyright Notice:</th>
           <td>
             <textarea name="copy_notice_<?=$repl_obj['id']?>" id="copy_notice" cols="10"  class="do_replacement_cp_update"><?=$cp_notice?></textarea>
           </td>
@@ -90,8 +90,8 @@ $cp_url = ($copy==null) ? '' : $copy['url'];
     <br/><h3>Status</h3>
 		<table width="100%">
 			<tr>
-				<th>Ask Instructor:</th>
-				<td colspan="2">
+				<th style="vertical-align: top">Ask Instructor:</th>
+				<td>
 			  	<?php 
 				  	$yes = ($repl_obj['ask']=='yes') ? true : false;
 				  	$no = ($repl_obj['ask']=='yes') ? false : true;
@@ -101,8 +101,8 @@ $cp_url = ($copy==null) ? '' : $copy['url'];
 				</td>
  	    </tr>
 			<tr>
-	    	<th>Instructor approves of image?</th>
-				<td colspan="2">
+	    	<th style="vertical-align: top">Instructor approves<br/> of image?</th>
+				<td>
 			  <?php 
 				  if ($repl_obj['suitable']=='yes') { 
               echo 'Yes'; 
@@ -110,8 +110,8 @@ $cp_url = ($copy==null) ? '' : $copy['url'];
 		        echo 'No<br/><br/>Reason:<br/><p>'.$repl_obj['unsuitable_reason'].'</p>';
           } else {
            	echo 'Waiting on response';
-         }
-        ?>
+          }
+         ?>
       </td>
 			</tr>
 	 </table>

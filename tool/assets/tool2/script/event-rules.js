@@ -17,7 +17,6 @@ var Rules = {
 			var url = $('server').value+'materials/update/'+course_id+'/'+
 					  material_id+'/tag_id/'+tag_id;	
 
-			var spinner = $('mat_activity').removeClass('ajax-done');
 			new Ajax(url,
             	{
 				 method: 'get',
@@ -25,7 +24,6 @@ var Rules = {
 			 	 onComplete:function(request){
                   	response = $('feedback').innerHTML;
                   	if (response != 'success') { alert(response); }
-				   	spinner.addClass('ajax-done');
             	} }).request();
 		}
 	},
@@ -54,13 +52,11 @@ var Rules = {
 				this.value = value;
 			} 
 
-			var spinner = $('mat_activity').removeClass('ajax-done');
-
 			var check = this.check(field, value);
 
 			if (check=='success') {
 				var url = $('server').value+'materials/update/'+course_id+'/'+
-						   material_id+'/'+field+'/'+escape(value);	
+						   material_id+'/'+field+'/'+encodeURIComponent(value);	
 
 				new Ajax(url,
             		{ method: 'get',
@@ -68,9 +64,6 @@ var Rules = {
 			 	 	  onComplete:function(request){
                   		response = $('feedback').innerHTML;
                   		if (response != 'success') { alert(response); }
-						else {
-				    		spinner.addClass('ajax-done');
-						}
             		} }).request();
 			} else {
 				alert(check);
@@ -97,14 +90,14 @@ var Rules = {
 			var material_id = $('mid').value; 
             var url = $('server').value+'materials/add_comment/'+course_id+'/'+material_id;
 
-			var comments = escape($('comments').value);
+			var comments = $('comments').value;
 	
 			if (comments == '') {
                 alert('Please enter a comment');
 			} else {
                 var fb = $('feedback');
                 var response;
-				url += '/'+comments;
+								url += '/'+encodeURIComponent(comments);
 
                 new Ajax(url,
                     {
