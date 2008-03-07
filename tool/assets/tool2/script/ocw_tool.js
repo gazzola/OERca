@@ -1,10 +1,3 @@
-if ($('addpanel')) {
-	var collapsible = new Fx.Slide($('addpanel'), { 
-						duration: 500, 
-						transition: Fx.Transitions.linear });
-	collapsible.hide();
-}	
-
 /**         
  * Load a spinning image next to a recently modified element
  * to indicate activity while the data is being proccessed.

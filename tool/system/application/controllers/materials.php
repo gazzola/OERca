@@ -213,7 +213,7 @@ class Materials extends Controller {
 
 	public function add_object_question($oid,$question)
 	{
-	   $data['question'] = $comments;
+	   $data['question'] = $question;
 	   $this->coobject->add_question($oid, 2, $data);
      $this->ocw_utils->send_response('success');
      exit;

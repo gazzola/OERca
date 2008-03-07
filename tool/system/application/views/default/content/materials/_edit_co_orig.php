@@ -147,42 +147,44 @@ $log = $obj['log'];
 	      	<input type="text" name="action_taken" id="action_taken" size="30" value="<?=$obj['action_taken']?>" class="do_object_update"/>
 				</td>
       </tr>
-			<tr>
-				<th>Questions:<br/>
+		</table>
+	</div>
+
+<!-- Questions -->
+<div class="column span-17 first last">
+  	<br/><h3>Questions</h3>
 					<small>
-						<a href="javascript:void(0);" style="color:orange" class="do_show_hide_panel">Add questions</a>
+						<a href="javascript:void(0);" onclick="orig_q_ap.toggle()">Add questions</a>
   					<br/>
 					</small>
-					<div id="addpanel" style="display:none">
+					
+					<div id="orig_q_addpanel">
    					<textarea name="question" id="question" cols="50"></textarea>
    					<p>
      				<input type="button" value="Save" class="do_add_object_question" />
-     				<input type="button" value="Cancel" class="do_show_hide_panel" />
+     				<input type="button" value="Cancel" class="orig_q_ap.hide()" />
      				<br/><hr style="border: 1px dotted #555"/><br/>
    					</p>
   				</div>
-				</th>
-  			<?php if ($questions == null) { ?>
-				<td colspan="2"> 
-     			<p id="noquestions">No questions posted</p>
-				</td>
-  			<?php } else { foreach($questions as $question) { ?>
-				<td>
-     			<p><b><?=$question['question']?><b></p>
-     			<p>
-        		<small>by&nbsp;<?=$this->ocw_user->username($question['user_id'])?>&nbsp;
-        <?=strtolower($this->ocw_utils->time_diff_in_words($question['modified_on']))?>
-        		</small>
-     			</p>
-     			<p><hr style="border: 1px dashed #eee"/></p>
-				</td>
-				<td>
-     			<p><?=$question['answer']?></p>
-     			<p><hr style="border: 1px dashed #eee"/></p>
-				</td>
-   			<?php  }  } ?>
-			</tr>
-		</table>
+				
+					<div class="clear"><br/></div>
+				
+				  <div id="objectqs">
+  					<?php if ($questions == null) { ?>
+				 			<p id="noquestions">No questions posted</p>
+						<?php } else { foreach($questions as $question) { ?>
+     					<p><b><?=$question['question']?><b></p>
+							<?php if ($question['answer']<>'') { ?>
+							<p style="margin-left: 5px; border: 1px dotted #eee; background-color:white"><?=$question['answer']?></p>
+     					<?php } ?>
+							<p>
+        				<small>by&nbsp;<?=$this->ocw_user->username($question['user_id'])?>&nbsp;
+        					<?=strtolower($this->ocw_utils->time_diff_in_words($question['modified_on']))?>
+        				</small>
+     					</p>
+     					<p><hr style="border: 1px dashed #eee"/></p>
+   					<?php  }  } ?>
+					</div>
 </div>
 
 <!-- COMMENTS -->
@@ -190,18 +192,18 @@ $log = $obj['log'];
   <br/><h3>Comments</h3>
 
 	<small>
-		<a href="javascript:void(0);" class="do_show_hide_panel">Add Comment</a>
+		<a href="javascript:void(0);" onclick="orig_com_ap.toggle();">Add Comment</a>
 	</small>
 
   <br/>
 
-	<div id="addpanel" style="display:none">
-   <textarea name="comments" id="comments" cols="50"></textarea>
-   <p>
+	<div id="orig_com_addpanel">
+   	<textarea name="comments" id="comments" cols="50"></textarea>
+   	<p>
      <input type="button" value="Save" class="do_add_object_comment" />
-     <input type="button" value="Cancel" class="do_show_hide_panel" />
+     <input type="button" value="Cancel" onclick="orig_com_ap.hide()" />
      <br/><hr style="border: 1px dotted #555"/><br/>
-   </p>
+   	</p>
   </div>
 
 	<div class="clear"><br/></div>

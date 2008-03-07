@@ -1,9 +1,12 @@
+var orig_com_ap, orig_q_ap, repl_com_ap, repl_q_ap; // references for add panel divs
+
 function update_edit_co_frame(id)
 {
   // update frame url.
-	var url = $('server').value+'materials/object_info/'+$('cid').value+'/'+$('mid').value+'/'+id;
+  var url = $('server').value+'materials/object_info/'+$('cid').value+'/'+$('mid').value+'/'+id;
   $('edit-co-frame').src = url;
 }
+
 
 function update_prev_next() {
 	if (knobpos == 0) {
@@ -20,11 +23,10 @@ function update_prev_next() {
 	}
 }
 
-function scroll_highlight(item)
+function scroll_dehighlight(item)
 {
    var imgs = $$('.car-li');
-  
-		imgs.each( function(img, i) {
+	 imgs.each( function(img, i) {
         img.style.border = 'none';
         img.style.backgroundColor = '#f8f8f8';
     });
@@ -36,25 +38,41 @@ var Site = {
 		if($('add_co')) { 
 			new MultiUpload( $('add_co').userfile, 1, null, true, true);
 
-
 			$('add_co').addEvent('submit', function(e) {
-
     			var location = escape($('location').value);
-
- 				if (location=='') { 
-					alert('Please enter a location'); 
-					return false; 
-				}
+					if (location=='') { 
+							alert('Please enter a location'); 
+							return false; 
+						}
 			});
-	  	}
-
-		if($('infobar')) Site.infobar();
+	  }
+		
 		if($('imagebar')) Site.carousel();
 		if($('filter-type')) Site.filtertype();
 		if($('myTabs')) Site.setuptabs();
 
     if ($('do_open_courseinfo_pane')) Site.course_page_setup();
     if ($('do_open_matinfo_pane')) Site.co_page_setup();
+
+		if ($('orig_com_addpanel')) {
+				orig_com_ap = new Fx.Slide($('orig_com_addpanel'), {duration: 500, transition: Fx.Transitions.linear });
+				orig_com_ap.hide();
+		}	
+
+		if ($('orig_q_addpanel')) {
+				orig_q_ap = new Fx.Slide($('orig_q_addpanel'), {duration: 500, transition: Fx.Transitions.linear });
+				orig_q_ap.hide();
+		}
+
+		if ($('repl_com_addpanel')) {
+				repl_com_ap = new Fx.Slide($('repl_com_addpanel'), {duration: 500, transition: Fx.Transitions.linear });
+				repl_com_ap.hide();
+		}	
+
+		if ($('repl_q_addpanel')) {
+				repl_q_ap = new Fx.Slide($('repl_q_addpanel'), {duration: 500, transition: Fx.Transitions.linear });
+				repl_q_ap.hide();
+		}
 	},
 
   course_page_setup: function() {
@@ -192,47 +210,6 @@ var Site = {
 		});
 	},
 
-	infobar: function(){
-		var list = $$('div.collapse');
-		var headings = $$('h3.collapsable');
-		var collapsibles = new Array();
-				
-		headings.each( function(heading, i) {
-
-					var collapsible = new Fx.Slide(list[i], { 
-						duration: 500, 
-						transition: Fx.Transitions.linear,
-						onComplete: function(request){ 
-							var open = request.getStyle('margin-top').toInt();
-							if(open >= 0) new Fx.Scroll(window).toElement(headings[i]);
-						}
-					});
-					
-					collapsibles[i] = collapsible;
-					
-					heading.onclick = function(){
-						var span = $E('span.sign', heading);
-		
-						var newHTML
-						if(span){
-							newHTML = span.innerHTML == '+' ? '-' : '+';
-							span.setHTML(newHTML);
-						}
-						
-						collapsible.toggle();
-						if (newHTML == '+') {
-							list[i].removeClass('add-overflow');
-						} else {
-							list[i].addClass('add-overflow');
-						}
-						return false;
-					}
-					
-					collapsible.hide();
-					
-			});
-		},
-
 	  carousel: function () {
 			var myScrollFx = new Fx.Scroll('imagebar', {
 				wait: false, transition: Fx.Transitions.Quad.easeInOut
@@ -244,32 +221,29 @@ var Site = {
 					onChange: function(step){
 						knobpos = step;
 						myScrollFx.toElement($('carousel-item-'+step));
-            scroll_highlight('carousel-item-'+step);
-            update_edit_co_frame($('carousel-item-'+step).parentNode.id);
-
-            $('carousel-item-'+step).style.border='1px solid #222';
-            $('carousel-item-'+step).style.backgroundColor = '#222';
-						min = (step == 0) ? 1 : step + 1;
-						max = min + 3;
-						max = (step == numsteps) ? numitems : max;
-						max = (max > numitems) ? numitems : max;
-						min = (numitems == 0) ? 0 : min;
-						min = (numitems == min) ? (numitems-3) : min;
-           	//info = min+'-'+max+' of '+numitems;
-           	info = min+' of '+numitems;
-						$('upd').setHTML(info);
 						update_prev_next();
 					},
 			}).set(0);
+			
+			$('upd').setHTML('1 of '+numitems);
+      $('carousel-item-0').style.border='1px solid #222';
+      $('carousel-item-0').style.backgroundColor = '#222';
 
       var imglist = $$('.car-li');
 		  imglist.each( function(litem, i) {
 			    litem.addEvent('click', function() {
+						obj_clicked = true;
             update_edit_co_frame(this.parentNode.id);
-						myScrollFx.toElement(this);
-            scroll_highlight(this.id);
+						mySlide.set(knobpos);
+
+						info = (i+1)+' of '+numitems;
+						$('upd').setHTML(info);
+            scroll_dehighlight(this.id);
+
             this.style.border='1px solid #222';
             this.style.backgroundColor = '#222';
+            this.oldborder = this.style.border; 
+            this.oldbgc = this.style.backgroundColor;
 				  });
 
           litem.oldborder = ''; 

@@ -1,4 +1,4 @@
-<?php 
+<?php
 $copy_status = array('unknown'=>'Unknown', 'copyrighted'=>'Copyrighted','public domain'=>'Public Domain');
 $copy = $repl_obj['copyright'];
 $cp_status = ($copy==null) ? '' : $copy['status'];

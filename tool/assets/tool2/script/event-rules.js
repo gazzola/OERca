@@ -127,48 +127,89 @@ var Rules = {
 	// object functions
 	'.do_add_object_comment': function(element) {
 		element.onclick = function(e) {
-		    new Event(e).stop();
-
+		  new Event(e).stop();
 			var object_id = $('oid').value; 
-            var url = $('server').value+'materials/add_object_comment/'+object_id;
-
+      var url = $('server').value+'materials/add_object_comment/'+object_id;
 			var comments = $('comments').value;
 			var get_comments = escape($('comments').value);
 				
 			if (comments == '') {
-                alert('Please enter a comment');
+          alert('Please enter a comment');
 			} else {
-                var fb = $('feedback');
-                var response;
-				var once = true;
-				url += '/'+get_comments; 
+          var fb = $('feedback');
+          var response;
+					var once = true;
+					url += '/'+get_comments; 
 
-                new Ajax(url,
-                    {
-					 method: 'get', 
-					 update: fb,
-                     onComplete:function() {
-                        response = fb.innerHTML;
-						if (once) {						
-								var disp = $('addpanel').style.display;
-								$('addpanel').style.display = (disp=='none') ? 'block' : 'none';
-                       	 	if (response=='success') {
-								var msg = "<small>by&nbsp;"+$('user').value+"&nbsp;today</small>";
-								var line = '<hr style="border: 1px solid #336699"/>';
-								var new_line = new Element('p').setHTML(line);
-								var new_time = new Element('p').setHTML(msg);
-								var new_cm = new Element('p').setHTML(comments);
-								new_line.injectTop( $('objectcomments') );
-								new_time.injectTop( $('objectcomments') );
-								new_cm.injectTop( $('objectcomments') );
-								$('comments').value = '';
-                        	} else {
-                            	alert(response);
-                       	 	}
-							once = false;
-					  }
-                }}).request();
-			}
+          new Ajax(url,
+                  {
+					 					method: 'get', 
+									 	update: fb,
+                    onComplete:function() {
+                       response = fb.innerHTML;
+											if (once) {						
+												orig_com_ap.toggle();
+                       	if (response=='success') {
+														var msg = "<small>by&nbsp;"+$('user').value+"&nbsp;today</small>";
+														var line = '<hr style="border: 1px solid #336699"/>';
+														var new_line = new Element('p').setHTML(line);
+														var new_time = new Element('p').setHTML(msg);
+														var new_cm = new Element('p').setHTML(comments);
+														new_line.injectTop( $('objectcomments') );
+														new_time.injectTop( $('objectcomments') );
+														new_cm.injectTop( $('objectcomments') );
+														$('comments').value = '';
+                        } else {
+                            alert(response);
+                       	}
+												once = false;
+					  					}
+           }}).request();
+			  }
+		}
+	},
+	
+	'.do_add_object_question': function(element) {
+		element.onclick = function(e) {
+		  new Event(e).stop();
+			var object_id = $('oid').value; 
+      var url = $('server').value+'materials/add_object_question/'+object_id;
+			var qs = $('question').value;
+			var get_qs = escape($('question').value);
+				
+			if (qs == '') {
+          alert('Please enter a question');
+			} else {
+          var fb = $('feedback');
+          var response;
+					var once = true;
+					url += '/'+get_qs; 
+			
+          new Ajax(url,
+                  {
+					 					method: 'get', 
+									 	update: fb,
+                    onComplete:function() {
+                       response = fb.innerHTML;
+											if (once) {						
+												orig_q_ap.toggle();
+                       	if (response=='success') {
+														var msg = "<small>by&nbsp;"+$('user').value+"&nbsp;today</small>";
+														var line = '<hr style="border: 1px solid #336699"/>';
+														var new_line = new Element('p').setHTML(line);
+														var new_time = new Element('p').setHTML(msg);
+														var new_cm = new Element('p').setHTML(qs);
+														new_line.injectTop( $('objectqs') );
+														new_time.injectTop( $('objectqs') );
+														new_cm.injectTop( $('objectqs') );
+														$('question').value = '';
+                        } else {
+                            alert(response);
+                       	}
+												once = false;
+					  					}
+           }}).request();
+			  }
 		}
 	},
 
@@ -418,10 +459,11 @@ var Rules = {
 	// hide and show add panel
 	'.do_show_hide_panel' : function (element) {
         element.onclick = function() {
-			var disp = $('addpanel').style.display;
-			$('addpanel').style.display = (disp=='none') ? 'block' : 'none';
+					var panel = $('addpanel');
+					var disp = panel.style.display;
+					panel.style.display = (disp=='none') ? 'block' : 'none';
         }
-    }
+    },
 }
 
 // Remove/Comment this if you do not wish to reapply Rules automatically
