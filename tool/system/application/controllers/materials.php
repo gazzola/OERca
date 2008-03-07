@@ -53,6 +53,10 @@ class Materials extends Controller {
        exit;
 	}
 
+	public function	add_material($cid)
+	{
+		$this->ocw_utils->dump($_POST);
+	}
 
 	public function edit($cid, $mid, $caller='', $filter='Any')
 	{

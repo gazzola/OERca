@@ -3,11 +3,10 @@
 
 <div id="pane_uploadmat" class="editpane">
 
-<div class="column span-21 first last" style="padding: 40px; text-align: center;">
+<div class="column span-21 first last" style="text-align: center;">
 	
-	<form>
+<form action="<?=site_url("materials/add_material/$cid")?>" enctype="multipart/form-data" method = "post" id="add_new_material">
 		<input type="hidden" name="category" value="Resource Items" />
-		<input type="hidden" name="course_id" value="<?=$cid?>" />
 		<input type="hidden" name="in_ocw" value="1" />
 		<input type="hidden" name="nodetype" value="parent" />
 		
@@ -25,12 +24,22 @@
 		<div class="formField">
 			<textarea name="collaborators" id="collaborators" cols="40" rows="4"></textarea>
 		</div>
-	</form>
+				
+		<div class="formLabel"><b>Zip file of Materials:</b></div>
+		<div class="formField">
+	      	<input type="file" name="userfile" id="userfile" size="30" />
+			    <small style="color:red">NB: any existing replacement image will be overwritten</small>	
+	  </div>
+
+  	<div class="formField">
+				<input type="submit" value="Add" />
+				<input type="button" value="Close" id="do_close_uploadmat_pane"/>
+		</div>		
+</form>
 	
-	<br/><br/>
-  
-	<input type="button" value="Done" id="do_close_uploadmat_pane"/>
-
 </div>
-
+<script type="text/javascript">EventSelectors.start(Rules);</script>
+<script type="text/javascript">
+ new MultiUpload( $('add_new_material').userfile, 1, null, true, true);
+</script>
 </div>
