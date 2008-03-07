@@ -50,7 +50,7 @@
 *
 ******************************************************************************/
 
-require_once $_SERVER['DOCUMENT_ROOT'].'/sandbox/ocw/ocw_xmp/XML.php';  
+require_once dirname(__FILE__).'/XML.php';  
 
 
 
