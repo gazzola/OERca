@@ -110,6 +110,7 @@ class Material extends Model
         }
       }
     }
+		
     return (sizeof($materials)) ? (($as_listing) ? $this->as_listing($materials):$materials) : null; 
   }
 
@@ -257,7 +258,7 @@ class Material extends Model
       if ($nodetype != 0) continue;
 
       if (!in_array($id, $done)) {
-        array_push($done, $id);
+        	array_push($done, $id);
 
         // find children
         list($children, $done) = 
@@ -408,6 +409,7 @@ class Material extends Model
 		
 		if ($type=='single') {
 				$details['name'] = $files[$idx]['name'];
+				$details['`order`'] = $this->get_nextorder_pos($cid);
 				$this->db->insert('materials',$details);
 				$mid = $this->db->insert_id();
 				$this->upload_materials($cid, $mid, $files[$idx]);
@@ -421,6 +423,7 @@ class Material extends Model
 									if (is_file($newfile) && !preg_match('/^\./',basename($newfile))) {
 											preg_match('/(\.\w+)$/',$newfile,$match);
 											$details['name'] = basename($newfile,$match[1]);
+											$details['`order`'] = $this->get_nextorder_pos($cid);
 											$this->db->insert('materials',$details);
 											$mid = $this->db->insert_id();
                      	$filedata = array();
@@ -467,6 +470,13 @@ class Material extends Model
 		$path .= '/m'.$mid;
 		if (!is_dir($path)) { mkdir($path); chmod($path, 0777); }
 		return $path;
+	}
+	
+	private function get_nextorder_pos($cid)
+	{
+		$q = $this->db->query("SELECT MAX(`order`) + 1 AS nextpos FROM ocw_materials WHERE course_id=$cid"); 
+		$row = $q->result_array();
+		return $row[0]['nextpos'];
 	}
 }
 ?>

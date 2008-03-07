@@ -26,7 +26,7 @@ class Materials extends Controller {
 			$tags =  $this->tag->tags();
 			$materials =  $this->material->materials($cid,'',true,true);
 			$mimetypes =  $this->mimetype->mimetypes();
-
+						
 			$data = array('title'=>'Materials',
 						  'materials'=>$materials, 
 							'mimetypes'=>$mimetypes,
