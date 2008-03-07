@@ -124,7 +124,7 @@ var Rules = {
 			var object_id = $('oid').value; 
       var url = $('server').value+'materials/add_object_comment/'+object_id;
 			var comments = $('comments').value;
-			var get_comments = escape($('comments').value);
+			var get_comments = encodeURIComponent($('comments').value);
 				
 			if (comments == '') {
           alert('Please enter a comment');
@@ -168,7 +168,7 @@ var Rules = {
 			var object_id = $('oid').value; 
       var url = $('server').value+'materials/add_object_question/'+object_id;
 			var qs = $('question').value;
-			var get_qs = escape($('question').value);
+			var get_qs = encodeURIComponent($('question').value);
 				
 			if (qs == '') {
           alert('Please enter a question');
@@ -216,7 +216,7 @@ var Rules = {
 			var url = $('server').value+'materials/update_object/'+course_id+'/'+material_id;
 			var val = this.value;
 			if (field=='done') { if (this.checked) { val = 1; } else {val=0; }	}
-			url += '/'+object_id+'/'+field+'/'+escape(val);
+			url += '/'+object_id+'/'+field+'/'+encodeURIComponent(val);
 
             var fb = $('feedback');
 
@@ -233,7 +233,7 @@ var Rules = {
 			var field = this.name.replace(/copy_/g,'');
 			field = field.replace(/_\d+$/g,'');
 			var url = $('server').value+'materials/update_object_copyright/'+
-					  		object_id+'/'+field+'/'+escape(val)+'/original';
+					  		object_id+'/'+field+'/'+encodeURIComponent(val)+'/original';
       var fb = $('feedback');
       new Ajax(url, {	method: 'get', update: fb}).request();
 		}
@@ -258,7 +258,7 @@ var Rules = {
 			if (field == 'unique') { field = 'is_unique'; }
 
 			var url = $('server').value+'materials/update_object/'+course_id+'/'+material_id;
-			url += '/'+object_id+'/'+field+'/'+escape(val);
+			url += '/'+object_id+'/'+field+'/'+encodeURIComponent(val);
             var fb = $('feedback');
             new Ajax(url, { method: 'get', update: fb, }).request();
 		}
@@ -274,7 +274,7 @@ var Rules = {
 			var view = $('view').value; 
 			var object_id = this.name.replace(/status_/g,'');
 			var url = $('server').value+'materials/update_object/'+course_id+'/'+
-					  material_id+'/'+object_id+'/ask_status/'+escape(val);
+					  material_id+'/'+object_id+'/ask_status/'+encodeURIComponent(val);
             var fb = $('feedback');
 			var response;
             new Ajax(url, { method: 'get',
@@ -303,7 +303,7 @@ var Rules = {
 			object_id = object_id.replace(/_\d+$/g,'');
 			question_id = question_id.replace(/^\d+_/g,'');
 			var url = $('server').value+'materials/update_object_question/'+
-					  object_id+'/'+question_id+'/'+escape(val);
+					  object_id+'/'+question_id+'/'+encodeURIComponent(val);
             var fb = $('feedback');
             new Ajax(url, {	method: 'get', update: fb}).request();
 		}
@@ -383,7 +383,7 @@ var Rules = {
 				field = 'unsuitable_reason';
 			}
 			var url = $('server').value+'materials/update_replacement/'+course_id+'/'+material_id;
-			url += '/'+object_id+'/'+field+'/'+escape(val);
+			url += '/'+object_id+'/'+field+'/'+encodeURIComponent(val);
      	var fb = $('feedback');
      	new Ajax(url, { method: 'get', update: fb, }).request();
 		}
@@ -395,7 +395,7 @@ var Rules = {
 			var object_id = $('oid').value; 
       var url = $('server').value+'materials/add_object_comment/'+object_id;
 			var comments = $('repl_comments').value;
-			var get_comments = escape($('repl_comments').value);
+			var get_comments = encodeURIComponent($('repl_comments').value);
 				
 			if (comments == '') {
           alert('Please enter a comment');
@@ -439,7 +439,7 @@ var Rules = {
 			var object_id = $('oid').value; 
       var url = $('server').value+'materials/add_object_question/'+object_id;
 			var qs = $('repl_question').value;
-			var get_qs = escape($('repl_question').value);
+			var get_qs = encodeURIComponent($('repl_question').value);
 				
 			if (qs == '') {
           alert('Please enter a question');
@@ -487,7 +487,7 @@ var Rules = {
 			object_id = object_id.replace(/_\d+$/g,'');
 			question_id = question_id.replace(/^\d+_/g,'');
 			var url = $('server').value+'materials/update_object_question/'+
-					  object_id+'/'+question_id+'/'+escape(val)+'/replacement';
+					  object_id+'/'+question_id+'/'+encodeURIComponent(val)+'/replacement';
       var fb = $('feedback');
       new Ajax(url, {	method: 'get', update: fb}).request();
 		}
@@ -502,7 +502,7 @@ var Rules = {
 			var field = this.name.replace(/copy_/g,'');
 			field = field.replace(/_\d+$/g,'');
 			var url = $('server').value+'materials/update_object_copyright/'+
-					  		object_id+'/'+field+'/'+escape(val)+'/replacement';
+					  		object_id+'/'+field+'/'+encodeURIComponent(val)+'/replacement';
       var fb = $('feedback');
       new Ajax(url, {	method: 'get', update: fb}).request();
 		}
@@ -518,7 +518,7 @@ var Rules = {
 			var view = $('view').value; 
 			var object_id = this.name.replace(/status_/g,'');
 			var url = $('server').value+'materials/update_replacement/'+course_id+'/'+
-					  material_id+'/'+object_id+'/ask_status/'+escape(val);
+					  material_id+'/'+object_id+'/ask_status/'+encodeURIComponent(val);
             var fb = $('feedback');
 			var response;
             new Ajax(url, { method: 'get',
