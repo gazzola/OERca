@@ -45,6 +45,15 @@ class Materials extends Controller {
 		}
 	}
 
+	public function add_comment($cid,$mid,$comments)
+	{
+	   $data['comments'] = $comments;
+	   $this->material->add_comment($mid, 2, $data);
+       $this->ocw_utils->send_response('success');
+       exit;
+	}
+
+
 	public function edit($cid, $mid, $caller='', $filter='Any')
 	{
 		$tags =  $this->tag->tags();
@@ -183,14 +192,6 @@ class Materials extends Controller {
    	exit;
 	}
 
-	public function add_comment($cid,$mid,$comments)
-	{
-	   $data['comments'] = $comments;
-	   $this->material->add_comment($mid, 2, $data);
-       $this->ocw_utils->send_response('success');
-       exit;
-	}
-
 
 	public function update_replacement($cid, $mid, $oid, $field, $val='') 
  	{
@@ -203,18 +204,18 @@ class Materials extends Controller {
      exit;
 	}
 
-	public function add_object_comment($oid,$comments)
+	public function add_object_comment($oid,$comments,$type='original')
 	{
 	   $data['comments'] = $comments;
-	   $this->coobject->add_comment($oid, 2, $data);
+	   $this->coobject->add_comment($oid, 2, $data,$type);
      $this->ocw_utils->send_response('success');
      exit;
 	}
 
-	public function add_object_question($oid,$question)
+	public function add_object_question($oid,$question,$type='original')
 	{
 	   $data['question'] = $question;
-	   $this->coobject->add_question($oid, 2, $data);
+	   $this->coobject->add_question($oid, 2, $data, $type);
      $this->ocw_utils->send_response('success');
      exit;
 	}

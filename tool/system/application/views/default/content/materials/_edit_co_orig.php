@@ -162,7 +162,7 @@ $log = $obj['log'];
    					<textarea name="question" id="question" cols="50"></textarea>
    					<p>
      				<input type="button" value="Save" class="do_add_object_question" />
-     				<input type="button" value="Cancel" class="orig_q_ap.hide()" />
+     				<input type="button" value="Cancel" onclick="orig_q_ap.hide()" />
      				<br/><hr style="border: 1px dotted #555"/><br/>
    					</p>
   				</div>

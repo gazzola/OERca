@@ -114,43 +114,44 @@ $cp_url = ($copy==null) ? '' : $copy['url'];
         ?>
       </td>
 			</tr>
-
-      <tr>
-        <th>Questions:<br/>
-          <small>
-            <a href="javascript:void(0);" style="color:orange" class="do_show_hide_panel">Add questions</a>
-            <br/>
-          </small>
-          <div id="addpanel" style="display:none;">
-            <textarea name="question" id="question" cols="40"></textarea>
-            <p>
-            <input type="button" value="Save" class="do_add_replacement_question" />
-            <input type="button" value="Cancel" class="do_show_hide_panel" />
-            <br/><hr style="border: 1px dotted #555"/><br/>
-            </p>
-          </div>
-        </th>
-        <?php if ($repl_obj['questions'] == null) { ?>
-        <td colspan="2">
-          <p id="noquestions">No questions posted</p>
-        </td>
-        <?php } else { foreach($repl_obj['questions'] as $question) { ?>
-        <td>
-          <p><b><?=$question['question']?><b></p>
-          <p>
-            <small>by&nbsp;<?=$this->ocw_user->username($question['user_id'])?>&nbsp;
-        <?=strtolower($this->ocw_utils->time_diff_in_words($question['modified_on']))?>
-            </small>
-          </p>
-          <p><hr style="border: 1px dashed #eee"/></p>
-        </td>
-        <td>
-          <p><?=$question['answer']?></p>
-          <p><hr style="border: 1px dashed #eee"/></p>
-        </td>
-        <?php  }  } ?>
-			</tr>
 	 </table>
+</div>
+
+<!-- Questions -->
+<div class="column span-17 first last">
+  	<br/><h3>Questions</h3>
+					<small>
+						<a href="javascript:void(0);" onclick="repl_q_ap.toggle()">Add questions</a>
+  					<br/>
+					</small>
+					
+					<div id="repl_q_addpanel">
+   					<textarea name="repl_question" id="repl_question" cols="50"></textarea>
+   					<p>
+     				<input type="button" value="Save" class="do_add_replacement_question" />
+     				<input type="button" value="Cancel" onclick="repl_q_ap.hide()" />
+     				<br/><hr style="border: 1px dotted #555"/><br/>
+   					</p>
+  				</div>
+				
+					<div class="clear"><br/></div>
+				
+				  <div id="replqs">
+  					<?php if ($repl_obj['questions'] == null) { ?>
+				 			<p id="noquestions">No questions posted</p>
+						<?php } else { foreach($repl_obj['questions'] as $question) { ?>
+     					<p><b><?=$question['question']?><b></p>
+							<?php if ($question['answer']<>'') { ?>
+							<p style="margin-left: 5px; border: 1px dotted #eee; background-color:white"><?=$question['answer']?></p>
+     					<?php } ?>
+							<p>
+        				<small>by&nbsp;<?=$this->ocw_user->username($question['user_id'])?>&nbsp;
+        					<?=strtolower($this->ocw_utils->time_diff_in_words($question['modified_on']))?>
+        				</small>
+     					</p>
+     					<p><hr style="border: 1px dashed #eee"/></p>
+   					<?php  }  } ?>
+					</div>
 </div>
 
 <!-- COMMENTS -->
@@ -158,23 +159,23 @@ $cp_url = ($copy==null) ? '' : $copy['url'];
   <br/><h3>Comments</h3>
 
 	<small>
-		<a href="javascript:void(0);" class="do_show_hide_panel">Add Comment</a>
+		<a href="javascript:void(0);" onclick="repl_com_ap.toggle();">Add Comment</a>
 	</small>
 
   <br/>
 
-	<div id="addpanel" style="display:none">
-   <textarea name="comments" id="comments" cols="50"></textarea>
-   <p>
+	<div id="repl_com_addpanel">
+   	<textarea name="repl_comments" id="repl_comments" cols="50"></textarea>
+   	<p>
      <input type="button" value="Save" class="do_add_replacement_comment" />
-     <input type="button" value="Cancel" class="do_show_hide_panel" />
+     <input type="button" value="Cancel" onclick="repl_com_ap.hide()" />
      <br/><hr style="border: 1px dotted #555"/><br/>
-   </p>
+   	</p>
   </div>
 
 	<div class="clear"><br/></div>
 
-  <div id="replacementcomments">
+  <div id="replcomments">
   <?php if ($repl_obj['comments'] == null) { ?>
      <p id="nocomments">No comments posted</p>
   <?php } else { foreach($repl_obj['comments'] as $comment) { ?>
@@ -188,6 +189,7 @@ $cp_url = ($copy==null) ? '' : $copy['url'];
    <?php  }  } ?>
    </div>
 </div>
+
 
 <!-- LOGS -->
 <div class="column span-17 first last">
