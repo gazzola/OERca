@@ -12,10 +12,9 @@ class Home extends Controller {
   public function __construct()
   {
     parent::Controller();
-
-    $this->load->library('oer_progbar');
     $this->load->model('ocw_user');
     $this->load->model('material');
+    $this->load->library('oer_progbar');
     $this->load->library('oer_layout');
     $this->load->library('navtab');
     $this->load->library('oer_manage_nav');
@@ -42,8 +41,7 @@ class Home extends Controller {
 				}
       	// get the navigation tab set
       	$tabset = $this->oer_manage_nav->get_tabset($data['role']);
-      	$this->navtab->set_tabs($tabset);
-      	$data['tabs'] = $this->navtab->make_tabs();
+      	$data['tabs'] = $this->navtab->make_tabs($tabset);
       	$this->oer_layout->build_custom_page('homedscribe1', $data);
       
     } elseif ($data['role'] == 'dscribe2') {

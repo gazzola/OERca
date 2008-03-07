@@ -80,7 +80,7 @@ class Navtab {
    */
   public function add_tabs($moretabs)
   {
-    $this->tabs = $this->tabs + $moretabs;
+    $this->tabs += $moretabs;
   }
 
 
@@ -145,8 +145,11 @@ class Navtab {
    * @return  string that contains formatted HTML for
    *                 the navigation tabs
    */
-  public function make_tabs()
+  public function make_tabs($tabset = NULL)
   {
+    if ($tabset) {
+      $this->set_tabs($tabset);
+    }
     $uri_seg = $this->CI->uri->segment(1);
     if ($uri_seg) {
       $uri_seg = "{$uri_seg}/{$this->CI->uri->segment(2)}";
