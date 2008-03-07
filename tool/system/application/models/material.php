@@ -390,5 +390,83 @@ class Material extends Model
   {
     return($this->get_co_count($cid, 'no'));
   }
+
+	/**
+	 * Add material functionality from add form
+	 * may include zip files. This will go away
+	 * when ctools import comes on line
+	 */
+	public function manually_add_materials($cid, $type, $details, $files)
+	{
+		if ($details['collaborators']=='') { unset($details['collaborators']);}
+		if ($details['ctools_url']=='') { unset($details['ctools_url']); }
+		$details['course_id'] = $cid;
+		$details['created_on'] = date('Y-m-d h:i:s');
+	
+		// add new material
+		$idx = ($type=='bulk') ? 'zip_userfile_0' : 'single_userfile_0';
+		
+		if ($type=='single') {
+				$details['name'] = $files[$idx]['name'];
+				$this->db->insert('materials',$details);
+				$mid = $this->db->insert_id();
+				$this->upload_materials($cid, $mid, $files[$idx]);
+		} else {
+					// handle zip files
+				if ($files[$idx]['error']==0) {
+		        $zipfile = $files[$idx]['tmp_name'];
+		        $files = $this->ocw_utils->unzip($zipfile, property('app_mat_upload_path')); 
+		    		if ($files !== false) {
+		            foreach($files as $newfile) {
+									if (is_file($newfile) && !preg_match('/^\./',basename($newfile))) {
+											preg_match('/(\.\w+)$/',$newfile,$match);
+											$details['name'] = basename($newfile,$match[1]);
+											$this->db->insert('materials',$details);
+											$mid = $this->db->insert_id();
+                     	$filedata = array();
+											$filedata['name'] = $newfile;
+                      $filedata['tmp_name'] = $newfile;
+											$this->upload_materials($cid, $mid, $filedata);
+									}
+								}
+		        }
+		    } else {
+					return('Cannot upload file: an error occurred while uploading file. Please contact administrator.');
+		    }
+		}
+		
+		return true;
+	}
+	
+	/** 
+	 * upload materials to correct path
+	 * TODO: version checking
+	 */
+	public function upload_materials($cid, $mid, $file)
+	{
+		$tmpname = $file['tmp_name'];
+		$path = $this->prep_path($cid,$mid);
+		
+		preg_match('/\.(\w+)$/',$file['name'],$match);
+		$ext = $match[1];
+		
+		// move file to new location
+		$name = "c$cid.m$mid";
+		if (is_uploaded_file($tmpname)) {
+				move_uploaded_file($tmpname, $path.'/'.$name.'.version_1.'.$ext);
+		} else {
+				copy($tmpname, $path.'/'.$name.'.version_1.'.$ext);
+				unlink($tmpname);
+		}
+	}
+	
+	public function prep_path($cid, $mid)
+	{
+		$path = property('app_uploads_path').'c'.$cid;
+		if (!is_dir($path)) { mkdir($path); chmod($path, 0777); }
+		$path .= '/m'.$mid;
+		if (!is_dir($path)) { mkdir($path); chmod($path, 0777); }
+		return $path;
+	}
 }
 ?>

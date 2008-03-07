@@ -60,6 +60,9 @@
 		<input type="hidden" name="category" value="Resource Items" />
 		<input type="hidden" name="in_ocw" value="1" />
 		<input type="hidden" name="nodetype" value="parent" />
+		<input type="hidden" name="ctools_url" value="" />
+		<input type="hidden" name="mimetype_id" value="6" />
+		
 		
 		<div class="formLabel">Author:</div>
 		<div class="formField">

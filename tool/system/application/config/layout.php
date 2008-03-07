@@ -71,4 +71,6 @@ $config['app_uploads_url']  = site_url().'uploads/';
 $config['app_uploads_path']  = $_SERVER['DOCUMENT_ROOT'].'/tool/uploads/';
 $config['app_site_url']  = site_url();
 $config['app_co_upload_path'] = $_SERVER['DOCUMENT_ROOT'].'/tool/tmp/couploads/';
+$config['app_mat_upload_path'] = $_SERVER['DOCUMENT_ROOT'].'/tool/tmp/matuploads/';
+
 ?>

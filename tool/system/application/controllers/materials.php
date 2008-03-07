@@ -26,7 +26,7 @@ class Materials extends Controller {
 			$tags =  $this->tag->tags();
 			$materials =  $this->material->materials($cid,'',true,true);
 			$mimetypes =  $this->mimetype->mimetypes();
-			
+
 			$data = array('title'=>'Materials',
 						  'materials'=>$materials, 
 							'mimetypes'=>$mimetypes,
@@ -62,8 +62,8 @@ class Materials extends Controller {
 	{
 		$valid = true;
 		$errmsg = '';
-		$this->ocw_utils->dump($_POST);
-		$this->ocw_utils->dump($_FILES);
+		//$this->ocw_utils->dump($_POST);
+		//$this->ocw_utils->dump($_FILES);
 
 		$idx = ($type=='bulk') ? 'zip_userfile_0' : 'single_userfile_0';
 		
@@ -86,10 +86,15 @@ class Materials extends Controller {
 				flashMsg($errmsg);
 				redirect("materials/home/$cid/$role/true", 'location');
 		}	else {
-			$msg = ($type=='bulk') ? 'Materials have been added.' 
-														 : 'Added material to course.';
-			flashMsg($msg);
-			redirect("materials/home/$cid", 'location');
+				$r = $this->material->manually_add_materials($cid, $type, $_POST,$_FILES);
+				if ($r !== true) {
+						flasMsg($r);
+						redirect("materials/home/$cid/$role/true", 'location');
+				} else {
+						$msg = ($type=='bulk') ? 'Materials have been added.' : 'Added material to course.';
+						flashMsg($msg);
+						redirect("materials/home/$cid", 'location');
+				}
 		}	
 	}
 

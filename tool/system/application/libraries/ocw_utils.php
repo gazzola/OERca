@@ -101,9 +101,10 @@ class OCW_utils {
 	 * @param	mixed 
 	 * @return	void
 	 */
-	function dump($var)
+	function dump($var, $exit=false)
 	{
 		print '<pre>'; print_r($var); print '</pre>';
+		if($exit) {exit();}
 	}
 
 	
@@ -362,10 +363,10 @@ class OCW_utils {
 
                   // Set the rights
                   if(file_exists($file_name)) {
-                      chmod($file_name, 0777);
-                      if (preg_match('/\.jpg$/',$file_name)) {
-                          array_push($zip_files, $file_name);
-                      }
+										 if (!preg_match('/^\./',$file_name,$match)) {
+                      	chmod($file_name, 0777);
+                      	array_push($zip_files, $file_name);
+										 } 
                       #echo "<span style=\"color:#1da319;\">file saved: </span>".$file_name."<br />";
                   } else {
                       #echo "<span style=\"color:red;\">file not found: </span>".$file_name."<br />";
