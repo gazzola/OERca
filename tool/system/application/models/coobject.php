@@ -110,10 +110,19 @@ class Coobject extends Model
 	}
 
 
-	public function num_objects($mid)
+	public function num_objects($mid,	$action_type='')
 	{
-		$this->db->select("COUNT(*) AS c")->from('objects');
-		$this->db->where('material_id',$mid);
+		$action_type = ($action_type == 'Any') ? '' : $action_type;
+		if ($action_type <> '') { 
+			switch ($action_type) {
+				case 'Ask': $idx = 'ask'; $ans = 'yes'; break;
+				case 'Done': $idx = 'done'; $ans = '1'; break;
+				default: $idx = 'action_type'; $ans = $action_type;
+			}
+			$where[$idx] = $ans; 
+		}
+		$where['material_id'] = $mid;		
+		$this->db->select("COUNT(*) AS c")->from('objects')->where($where);
 		$q = $this->db->get();
 		$row = $q->result_array();
 		return $row[0]['c'];

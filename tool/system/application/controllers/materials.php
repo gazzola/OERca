@@ -58,7 +58,7 @@ class Materials extends Controller {
 	{
 		$tags =  $this->tag->tags();
 		$mimetypes =  $this->mimetype->mimetypes();
-		$numobjects =  $this->coobject->num_objects($mid);
+		$numobjects =  $this->coobject->num_objects($mid,$filter);
 		$objstats =  $this->coobject->object_stats($mid);
 		$subtypes =  $this->coobject->object_subtypes();
 	  $course = $this->course->get_course($cid); 
