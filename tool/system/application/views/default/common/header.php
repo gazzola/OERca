@@ -62,8 +62,7 @@
     <?php } elseif (getUserProperty('role') == 'instructor') { ?>
 
 		  <li<?= (preg_match('/^(instructor|instructor\/home)/', $ci_uri) > 0)? $att: ''?>><?=anchor("/home",$this->lang->line('ocw_ds_menu_home'))?></li>
-
-		  <li<?= (preg_match('/^(managecourses|materials)/', $ci_uri) > 0)? $att: ''?>><?=anchor("/managecourses",'Manage Courses')?></li>
+      <li<?= (preg_match('/^(managecourses|materials)/', $ci_uri) > 0)? $att: ''?>><?=anchor("/manage",'Manage Courses')?></li>
 
 			<?php if (isset($cid)) { ?>
       <li<?= (preg_match('/^(instructor\/materials)/', $ci_uri) > 0)? $att: ''?>><?=anchor("/instructor/materials/$cid",$this->lang->line('ocw_ins_menu_materials'))?></li>
@@ -96,7 +95,6 @@
 
 	  <div style="text-align: right; margin-top: -20px;">
          <?php echo  'Welcome&nbsp;&nbsp;<b>'.getUserProperty('user_name').' ('.getUserProperty('role').')</b> | '.
-         anchor(site_url('auth/changepassword'), 'Change Password'). ' | '.
                      ((isAdmin())    ?
          anchor($this->config->item('FAL_admin_uri'), 'Admin Panel').' | ' : '').
          anchor_popup(site_url('helpfaq'), 'Help/FAQ'). ' | '.

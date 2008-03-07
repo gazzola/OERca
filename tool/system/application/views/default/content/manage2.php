@@ -20,7 +20,6 @@
         <th class="sortable-sortEnglishLonghandDateFormat">End Date</th>
         <th class="sortable">Curriculum</th>
         <th class="sortable">Director</th>
-		<?php if ($role <> 'user') { ?><th>&nbsp;&nbsp;</th><?php } ?>
     </tr>
     </thead>
     <tbody>
@@ -28,17 +27,23 @@
 	<?php foreach($curriculum as $course)	{ ?>
 		<?php foreach($course as $c) { ?>
 	<tr>
-		<td><?=$c['number'].' '.$c['title']?></td>
+		<td>
+		<?php if ($role <> 'user') { ?>
+			<?=anchor(site_url('/materials/home/'.$c['id']), $c['number'].' '.$c['title'], array('title'=>'Edit course materials'))?> 
+		<?php } else {?>
+			<?= $c['number'].' '.$c['title']?> 
+		<?php } ?>
+		</td>
         <td><?=mdate('%d %M, %Y',mysql_to_unix($c['start_date']))?></td>
         <td><?=mdate('%d %M, %Y',mysql_to_unix($c['end_date']))?></td>
         <td width="40px"><?=ucfirst($c['cname'])?></td>
         <td><?=ucfirst($c['director'])?></td>
-		<?php if ($role <> 'user') { ?>
+		<!--
 		<td width="90px"> 
 			<?=anchor(site_url('/materials/home/'.$c['id']),
                       'Edit', array('title'=>'Edit course materials'))?> 
 		</td>
-		<?php } ?>
+		-->
 	</tr>	
 	<?php }} ?>
 	</tbody>
