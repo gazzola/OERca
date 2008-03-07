@@ -53,7 +53,7 @@
         array(
           "arg" => array("manage"),
           "name" => "Manage Courses",
-          "url" => site_url("manage")
+          "url" => site_url("managecourses")
           )
         );
       
@@ -83,7 +83,7 @@
           array(
             "arg" => array("manage"),
             "name" => "Manage Courses",
-            "url" => site_url("manage")
+            "url" => site_url("managecourses")
             ),
           array(
             "arg" => array("instructor/review"),

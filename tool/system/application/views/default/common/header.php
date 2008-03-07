@@ -57,13 +57,13 @@
     <?php if (getUserProperty('role') == 'dscribe1') { ?>
 
 		<li<?= (preg_match('/^(home)|(dscribe\/home)|\s/', $ci_uri) > 0)? $att: ''?>><?=anchor("/home",$this->lang->line('ocw_ds_menu_home'))?></li>
-		<li<?= (preg_match('/^(manage|materials)/', $ci_uri) > 0)? $att: ''?>><?=anchor("/manage",'Manage Courses')?></li>
+		<li<?= (preg_match('/^(managecourses|materials)/', $ci_uri) > 0)? $att: ''?>><?=anchor("/managecourses",'Manage Courses')?></li>
 
     <?php } elseif (getUserProperty('role') == 'instructor') { ?>
 
 		  <li<?= (preg_match('/^(instructor|instructor\/home)/', $ci_uri) > 0)? $att: ''?>><?=anchor("/home",$this->lang->line('ocw_ds_menu_home'))?></li>
 
-		  <li<?= (preg_match('/^(manage|materials)/', $ci_uri) > 0)? $att: ''?>><?=anchor("/manage",'Manage Courses')?></li>
+		  <li<?= (preg_match('/^(managecourses|materials)/', $ci_uri) > 0)? $att: ''?>><?=anchor("/managecourses",'Manage Courses')?></li>
 
 			<?php if (isset($cid)) { ?>
       <li<?= (preg_match('/^(instructor\/materials)/', $ci_uri) > 0)? $att: ''?>><?=anchor("/instructor/materials/$cid",$this->lang->line('ocw_ins_menu_materials'))?></li>
