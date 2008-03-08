@@ -542,7 +542,6 @@ class Coobject extends Model
         if ($files !== false) {
             foreach($files as $newfile) {
 							if (preg_match('/\.jpg$/',$newfile)) {
-							
 									if (preg_match('/Slide\d+|\-pres\.\d+/',$newfile)) { // find slides
 											list($loc, $ext) = $this->get_slide_info($newfile);
 											$pid = "c$cid.m$mid.slide";
@@ -552,81 +551,100 @@ class Coobject extends Model
 											@chmod($newpath,'0777');
 											unlink($newfile);
 									} else {
-		                    $xmp_data = $this->ocw_utils->xmp_data($newfile);
-		                    // need a more dynamic way of getting this hash
-		                    $subtypes = array('2D'=>'1','3D'=>'2','IIllustrative'=>'12',
-		                                      'Cartoon' => '11', 'Comp' => '9', 'Map' => '10',
-		                                      'Medical' => '8', 'PIllustrative' => '4', 'Patient' => '3',
-		                                      'Specimen' => '5', 'Art' => '17', 'Artifact' => '21',
-		                                      'Chemical' => '13', 'Diagram' => '19', 'Equation' => '15',
-		                                      'Gene' => '14', 'Logo' => '18', 'Radiology' => '6',
-																					 'Microscopy' => '7');
-											 $copy_status = array(''=>'unknown', 'True'=>'copyrighted',
-																						'False'=>'public domain');
-												$yesno = array('N'=>'no', 'Y'=>'yes');
+		                  $xmp_data = $this->ocw_utils->xmp_data($newfile);
+	                    // need a more dynamic way of getting this hash
+	                    $subtypes = array('2D'=>'1','3D'=>'2','IIllustrative'=>'12',
+	                                      'Cartoon' => '11', 'Comp' => '9', 'Map' => '10',
+	                                      'Medical' => '8', 'PIllustrative' => '4', 'Patient' => '3',
+	                                      'Specimen' => '5', 'Art' => '17', 'Artifact' => '21',
+	                                      'Chemical' => '13', 'Diagram' => '19', 'Equation' => '15',
+	                                      'Gene' => '14', 'Logo' => '18', 'Radiology' => '6',
+																				 'Microscopy' => '7');
+										 	$copy_status = array(''=>'unknown', 'True'=>'copyrighted',
+																					'False'=>'public domain');
+											$yesno = array('N'=>'no', 'Y'=>'yes');
 
-		                    if (isset($xmp_data['objecttype']) ) {
-														# get data from xmp
-		                        $data['subtype_id'] = $subtypes[$xmp_data['subtype']]; 
-		                        $data['ask'] = (isset($xmp_data['ask'])) ? $yesno[$xmp_data['ask']] : 'no'; 
-														$data['location'] = preg_replace('/.*?(\d+)(R)?\.jpg/',"$1",$newfile);
-		                        $data['action_type'] = (isset($xmp_data['action'])) ? $xmp_data['action'] : ''; 
-		                        $data['question'] = (isset($xmp_data['question'])) ? $xmp_data['question'] : ''; 
-		                        $data['citation'] = (isset($xmp_data['citation'])) ? $xmp_data['citation'] : 'none'; 
-		                        $data['comment'] = (isset($xmp_data['comments'])) ? $xmp_data['comments'] : ''; 
-		                        $data['contributor'] = (isset($xmp_data['contributor'])) ? $xmp_data['contributor'] : ''; 
-		                        $data['description'] = (isset($xmp_data['description'])) ? $xmp_data['description'] : ''; 
-		                        $data['tags'] = (isset($xmp_data['keywords'])) ? $xmp_data['keywords'] : ''; 
-		                        $data['copystatus'] = (isset($xmp_data['copystatus'])) ? $copy_status[$xmp_data['copystatus']] : ''; 
-		                        $data['copyurl'] = (isset($xmp_data['copyurl'])) ? $xmp_data['copyurl'] : ''; 
-		                        $data['copynotice'] = (isset($xmp_data['copynotice'])) ? $xmp_data['copynotice'] : ''; 
-		                        $data['copyholder'] = (isset($xmp_data['copyholder'])) ? $xmp_data['copyholder'] : ''; 
-            
-		                        $filedata = array('userfile_0'=>array());
-		                        $filedata['userfile_0']['type'] = 'image/jpeg';
-		                        $filedata['userfile_0']['tmp_name'] = $newfile;
+	                    if (isset($xmp_data['objecttype']) ) {
+													# get data from xmp
+													$objectype = $xmp_data['objecttype'];
+	                        $data['subtype_id'] = $subtypes[$xmp_data['subtype']]; 
+	                        $data['ask'] = (isset($xmp_data['ask'])) ? $yesno[$xmp_data['ask']] : 'no'; 
+													$data['location'] = preg_replace('/.*?(\d+)(R)?\.jpg/',"$1",$newfile);
+	                        $data['action_type'] = (isset($xmp_data['action'])) ? $xmp_data['action'] : ''; 
+	                        $data['question'] = (isset($xmp_data['question'])) ? $xmp_data['question'] : ''; 
+	                        $data['citation'] = (isset($xmp_data['citation'])) ? $xmp_data['citation'] : 'none'; 
+	                        $data['comment'] = (isset($xmp_data['comments'])) ? $xmp_data['comments'] : ''; 
+	                        $data['contributor'] = (isset($xmp_data['contributor'])) ? $xmp_data['contributor'] : ''; 
+	                        $data['description'] = (isset($xmp_data['description'])) ? $xmp_data['description'] : ''; 
+	                        $data['tags'] = (isset($xmp_data['keywords'])) ? $xmp_data['keywords'] : ''; 
+	                        $data['copystatus'] = (isset($xmp_data['copystatus'])) ? $copy_status[$xmp_data['copystatus']] : ''; 
+	                        $data['copyurl'] = (isset($xmp_data['copyurl'])) ? $xmp_data['copyurl'] : ''; 
+	                        $data['copynotice'] = (isset($xmp_data['copynotice'])) ? $xmp_data['copynotice'] : ''; 
+	                        $data['copyholder'] = (isset($xmp_data['copyholder'])) ? $xmp_data['copyholder'] : ''; 
+           				
+											} else { // no xmp data
+													# get data from xmp
+	                        // $data['subtype_id'] = $subtypes[$xmp_data['subtype']]; 
+													$objecttype = (preg_match('/.*?(\d+)R\.jpg/',$newfile)) ? 'RCO' : 'CO';
+	                        $data['ask'] = 'no'; 
+													$data['location'] = preg_replace('/.*?(\d+)(R)?\.jpg/',"$1",$newfile);
+	                        $data['action_type'] = (isset($xmp_data['action'])) ? $xmp_data['action'] : ''; 
+	                        $data['citation'] = 'none'; 
+	                        $data['contributor'] = ''; 
+	                        $data['question'] = ''; 
+	                        $data['comment'] = ''; 
+	                        $data['copystatus'] =  ''; 
+	                        $data['copyurl'] = ''; 
+	                        $data['copynotice'] = ''; 
+	                        $data['copyholder'] =  ''; 
+											}
+											
+	                    $filedata = array('userfile_0'=>array());
+                      $filedata['userfile_0']['type'] = 'image/jpeg';
+                      $filedata['userfile_0']['tmp_name'] = $newfile;
 
-		                    		if ($xmp_data['objecttype']=='CO') {
-			                      		$oid = $this->add($cid, $mid, $uid, $data, $filedata);
-																$repfile = preg_replace('/\.jpg$/','R.jpg',$newfile);
+                   		if ($objecttype=='CO') {
+                      		$oid = $this->add($cid, $mid, $uid, $data, $filedata);
+													$repfile = preg_replace('/\.jpg$/','R.jpg',$newfile);
 
-																# go through and see if any replacement items are waiting to be inserted
-																if (in_array($repfile, array_keys($replace_info))) {
-																		// replacement exists and has been processed so just add it!
-																		list($data, $filedata) = $replace_info[$repfile];
-			                      				$rid = $this->add_replacement($cid, $mid, $oid, $data, $filedata);
-																		unset($replace_info[$repfile]);
-																
-																} else { # place in queue just in case the replacement comes along later
-																		$orig_info[$newfile] = $oid;
-																}
+													# go through and see if any replacement items are waiting to be inserted
+													if (in_array($repfile, array_keys($replace_info))) {
+															// replacement exists and has been processed so just add it!
+															list($data, $filedata) = $replace_info[$repfile];
+                      				$rid = $this->add_replacement($cid, $mid, $oid, $data, $filedata);
+															unset($replace_info[$repfile]);
+													
+													} else { # place in queue just in case the replacement comes along later
+															$orig_info[$newfile] = $oid;
+													}
 
-														} elseif ($xmp_data['objecttype']=='RCO') {
-																// this is a replacement - we have to make sure the original has been added
-																// first before we add this. Otherwise, add it to a queue
-																$origfile = preg_replace('/R.jpg$/','.jpg',$newfile);
-																unset($data['action_type']);
-																unset($data['subtype_id']);
+											} elseif ($objecttype=='RCO') {
+													// this is a replacement - we have to make sure the original has been added
+													// first before we add this. Otherwise, add it to a queue
+													$origfile = preg_replace('/R.jpg$/','.jpg',$newfile);
+													unset($data['action_type']);
+													unset($data['subtype_id']);
 
-																# go through and see if any original item has been inserted alredy 
-																if (in_array($origfile, array_keys($orig_info))) {
-																		// original exists and has been processed so just add replacement 
-																		$oid = $orig_info[$origfile];
-			                      				$rid = $this->add_replacement($cid, $mid, $oid, $data, $filedata);
-																		unset($orig_info[$origfile]);
-																
-																} else { # place in queue just in case the original comes along later
-																		$replace_info[$newfile] = array($data, $filedata);
-																}
-														}
-		                    }
+													# go through and see if any original item has been inserted alredy 
+													if (in_array($origfile, array_keys($orig_info))) {
+															// original exists and has been processed so just add replacement 
+															$oid = $orig_info[$origfile];
+                      				$rid = $this->add_replacement($cid, $mid, $oid, $data, $filedata);
+															unset($orig_info[$origfile]);
+													
+													} else { # place in queue just in case the original comes along later
+															$replace_info[$newfile] = array($data, $filedata);
+													}
+											}		
+	                        
 									}
-								
-							 } else {
-				           // zip file did not contain any jpg files
-							 }
-				    }
-	      }
+							} else {
+									// ignore: file is not a jpeg -- we need to know how to handle other filetypes.
+							}
+						 }		
+				 } else {
+				     // zip file did not contain any jpg files
+				 }
        
     } else {
 			exit('Cannot upload file: an error occurred while uploading file. Please contact administrator.');
