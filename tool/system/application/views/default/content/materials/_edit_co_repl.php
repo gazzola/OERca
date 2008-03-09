@@ -229,3 +229,6 @@ $cp_url = ($copy==null) ? '' : $copy['url'];
 </div>
 
 </div><!-- end of replacement -->
+<script type="text/javascript">
+ new MultiUpload( $('add_ip_rep').userfile, 1, null, true, true);
+</script>

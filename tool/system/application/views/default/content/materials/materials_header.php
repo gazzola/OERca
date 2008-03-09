@@ -1,6 +1,7 @@
 <script type="text/javascript">
-	open_uploadmat_pane = <?php echo ($openmat) ? 'true' : 'false' ?>;
-	open_editcourse_pane = <?php echo ($opencourse) ? 'true' : 'false' ?>;
+	<?php if (isset($openmat)) { ?>open_uploadmat_pane = <?php echo ($openmat) ? 'true;' : 'false;'; } ?>
+	<?php if (isset($opencourse)) { ?>open_editcourse_pane = <?php echo ($opencourse) ? 'true;' : 'false;'; } ?>
+	<?php if (isset($openco)) { ?>open_uploadco_pane = <?php echo ($openco) ? 'true;' : 'false;'; } ?>
 </script>
 
 <?php

@@ -1,5 +1,5 @@
 var orig_com_ap, orig_q_ap, repl_com_ap, repl_q_ap; // references for add panel divs
-var open_uploadmat_pane, open_editcourse_pane; // boolean values to determine if to open add pane - used in cases of errors
+var open_uploadmat_pane, open_editcourse_pane, open_uploadco_pane;		// boolean values to determine if to open add pane - used in case of errors
 
 function update_edit_co_frame(id)
 {
@@ -36,18 +36,6 @@ function scroll_dehighlight(item)
 
 var Site = {
 	start: function(){
-		if($('add_co')) { 
-			new MultiUpload( $('add_co').userfile, 1, null, true, true);
-
-			$('add_co').addEvent('submit', function(e) {
-    			var location = escape($('location').value);
-					if (location=='') { 
-							alert('Please enter a location'); 
-							return false; 
-						}
-			});
-	  }
-		
 		if($('imagebar')) Site.carousel();
 		if($('filter-type')) Site.filtertype();
 		if($('myTabs')) Site.setuptabs();
@@ -202,6 +190,10 @@ var Site = {
         $('do_open_uploadco_pane').parentNode.removeClass('active').addClass('normal');
         e.stop(); 
       });
+			
+			if (open_uploadco_pane) { upload_co.toggle();
+        	$('do_open_uploadco_pane').parentNode.removeClass('normal').addClass('active');
+			}
   },
 
 

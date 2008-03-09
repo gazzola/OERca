@@ -98,7 +98,7 @@ class Materials extends Controller {
 		}	
 	}
 
-	public function edit($cid, $mid, $caller='', $filter='Any')
+	public function edit($cid, $mid, $caller='', $filter='Any', $openco=false)
 	{
 		$tags =  $this->tag->tags();
 		$mimetypes =  $this->mimetype->mimetypes();
@@ -124,6 +124,7 @@ class Materials extends Controller {
 				  	'caller'=>$caller,
 		        'list' => $this->ocw_utils->create_co_list($cid,$mid,$objects),
 		        'filter' => $filter, 
+						'openco'=>$openco,
 		);
 
     $this->layout->buildPage('materials/edit_material', $data);
@@ -185,26 +186,64 @@ class Materials extends Controller {
 
 	public function add_object($cid, $mid) 
  	{
-		//$this->ocw_utils->dump($_FILES);
-		$this->coobject->add($cid, $mid,2,$_POST,$_FILES);
-		$this->update($cid,$mid,'embedded_co','1',false);
-		redirect("materials/edit/$cid/$mid/", 'location');
+		$valid = true;
+		$errmsg = '';
+
+		if (!isset($_FILES['userfile_0']['name'])) {
+				$errmsg = 'Please specify a file to upload';
+				$valid = false;
+				
+		} 
+
+		if ($_POST['location']=='') {
+				$errmsg .= (($errmsg=='') ? '':'<br/>')."Location field is required.";
+				$valid = false;
+		}
+		if ($_POST['ask']=='') {
+				$errmsg .= (($errmsg=='') ? '':'<br/>')."Ask Instructor field is required.";
+				$valid = false;
+		}
+		
+		if ($valid == FALSE) {
+				flashMsg($errmsg);
+				$role = getUserProperty('role');
+				redirect("materials/edit/$cid/$mid/$role/Any/true", 'location');
+		}	else {
+			$this->coobject->add($cid, $mid,2,$_POST,$_FILES);
+			$this->update($cid,$mid,'embedded_co','1',false);
+			flashMsg('Content object added');
+			redirect("materials/edit/$cid/$mid/", 'location');
+		}
+		
 	}
 
 	public function add_object_zip($cid, $mid) 
  	{
-		//$this->ocw_utils->dump($_FILES); exit;
-		$this->coobject->add_zip($cid, $mid,2,$_FILES);
-		$this->update($cid,$mid,'embedded_co','1',false);
-		redirect("materials/edit/$cid/$mid/", 'location');
+		$valid = true;
+		$errmsg = '';
+
+		if (!isset($_FILES['userfile']['name'])) {
+				$errmsg = 'Please specify a ZIP file to upload';
+				$valid = false;				
+		} elseif (isset($_FILES['userfile']['name'])  && !preg_match('/\.zip$/',$_FILES['userfile']['name'])) {
+				$errmsg .= (($errmsg=='') ? '':'<br/>')."Can only upload ZIP files for bulk uploads";
+				$valid = false;
+		}
+	
+		if ($valid == FALSE) {
+				flashMsg($errmsg);
+				$role = getUserProperty('role');
+				redirect("materials/edit/$cid/$mid/$role/Any/true", 'location');
+		}	else {
+				$this->coobject->add_zip($cid, $mid,2,$_FILES);
+				$this->update($cid,$mid,'embedded_co','1',false);
+				flashMsg('Content objects added');
+				redirect("materials/edit/$cid/$mid/", 'location');
+		}
 	}
 
 	public function update_object($cid, $mid, $oid, $field, $val='') 
  	{
-	   /** HACK: dreamhost messing around and converting spaces to
-           underscores - remove when hosted on Bezak **/
-	   $val = ($val=='in_progress') ? 'in progress' : $val;
-
 		if ($field=='rep' or $field=='irep') {
 				$name = "c$cid.m$mid.o$oid";
 				if ($this->ocw_utils->replacement_exists($name)) {

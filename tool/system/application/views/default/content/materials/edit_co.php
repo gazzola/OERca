@@ -64,9 +64,6 @@ echo script('multiupload.js');
 </div>
 
 <script type="text/javascript">EventSelectors.start(Rules);</script>
-<script type="text/javascript">
- new MultiUpload( $('add_ip_rep').userfile, 1, null, true, true);
-</script>
 <div id="feedback" style="display:none"></div>
 <input type="hidden" id="imgurl" value="<?=property('app_img')?>" />
 <input type="hidden" id="server" value="<?=site_url();?>" />
