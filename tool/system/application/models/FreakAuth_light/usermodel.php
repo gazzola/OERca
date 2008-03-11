@@ -171,6 +171,22 @@ class Usermodel extends Model
 		
 	// ------------------------------------------------------------------------
 	
+	    /**
+         * Queries the user table to get user data (login and password)
+         *
+         * @param varchar $username
+         * @return array
+         */
+        function getUserByCosignname($username)
+        {      
+                $this->db->where('user_name', $username);
+        return $this->db->get($this->_table);
+        }
+
+		
+	// ------------------------------------------------------------------------
+    
+	
 	/**
 	 * Inserts the values into the user table)
 	 *
