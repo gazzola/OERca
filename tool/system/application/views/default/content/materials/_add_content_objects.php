@@ -30,18 +30,18 @@ $action_types = array('Fair Use'=>'Fair Use', 'Search'=>'Search',
 			
 			<div class="formLabel">Ask Instructor:</div>
 			<div class="formField">
-				<input type="radio" name="ask" value="yes" />&nbsp;Yes&nbsp;
-		  	<input type="radio" name="ask" value="no" />&nbsp;No
+				<input type="radio" name="ask" value="yes"/>&nbsp;Yes&nbsp;
+		  	<input type="radio" name="ask" value="no" checked="checked"/>&nbsp;No
 			</div>
 			
 			<div class="formLabel">Action:</div>
 			<div class="formField">
 			<?php echo form_dropdown('action_type', $action_types, ''); ?>
-			</div>
-			
+			</div>		
+
 			<div class="formLabel">Content Type:</div>
     	<div class="formField"><?=$types?></div>
-			
+		
 			<div class="formLabel">Location:</div>
     	<div class="formField">
     			<input type="text" name="location" id="location" size="50" class="input" />

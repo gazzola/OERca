@@ -15,7 +15,7 @@ echo script('event-selectors.js');
 echo script('event-rules.js');
 echo script('ocwui.js');
 echo script('ocw_tool.js');
-echo script('multiupload.js'); 
+//echo script('multiupload.js'); 
 ?>
 
 <div id="mainPage" class="container" style="margin:0; padding:0; width: 600px;">
@@ -26,7 +26,7 @@ echo script('multiupload.js');
 <input type="hidden" id="user" name="user" value="<?=$user?>" />
 
 <div class="column span-17 first last" style="text-align: left">
-  <h3 style="font-size: 1.5em; color:#666">OER Content Object: <?=$obj['name']?></h3>
+  <h3 style="font-size: 1.5em; color:#666;">OER Content Object: <?=$obj['name']?></h3>
 </div>
 
 <div id="myTabs" class="column span-17 first last">

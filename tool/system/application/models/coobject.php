@@ -414,10 +414,10 @@ class Coobject extends Model
 
 		// add  questions and comments
 		if ($question <> '') {
-			$this->add_question($oid, 2, array('question'=>$question));
+			$this->add_question($oid, getUserProperty('id'), array('question'=>$question));
 		}
 		if ($comment <> '') {
-			$this->add_comment($oid, 2, array('comments'=>$comment));
+			$this->add_comment($oid, getUserProperty('id'), array('comments'=>$comment));
 		}
 		
 	 if ($copy['status']<>'' or $copy['holder']<>'' or
@@ -491,10 +491,10 @@ class Coobject extends Model
 
 		// add  questions and comments
 		if ($question <> '') {
-			$this->add_question($oid, 2, array('question'=>$question),'replacement');
+			$this->add_question($oid, getUserProperty('id'), array('question'=>$question),'replacement');
 		}
 		if ($comment <> '') {
-			$this->add_comment($oid, 2, array('comments'=>$comment),'replacement');
+			$this->add_comment($oid, getUserProperty('id'), array('comments'=>$comment),'replacement');
 		}
 		
 	 if ($copy['status']<>'' or $copy['holder']<>'' or

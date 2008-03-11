@@ -1,4 +1,8 @@
 <?php
+$ask_status = array('new'=>'Instructor has not looked at this object yet.',
+									  'in progress'=>'Instructor is working on this',
+									 	'done'=>'Instructor is done reviewing this object');
+									
 $copy_status = array('unknown'=>'Unknown', 'copyrighted'=>'Copyrighted','public domain'=>'Public Domain');
 $copy = $repl_obj['copyright'];
 $cp_status = ($copy==null) ? '' : $copy['status'];
@@ -90,13 +94,17 @@ $cp_url = ($copy==null) ? '' : $copy['url'];
     <br/><h3>Status</h3>
 		<table width="100%">
 			<tr>
-				<th style="vertical-align: top">Ask Instructor:</th>
+				<th style="vertical-align: top">Ask Instructor if replacement is suitable:</th>
 				<td>
 			  	<?php 
 				  	$yes = ($repl_obj['ask']=='yes') ? true : false;
 				  	$no = ($repl_obj['ask']=='yes') ? false : true;
 				  	echo form_radio('ask_'.$repl_obj['id'], 'yes', $yes, 'class="do_replacement_update"').'&nbsp;Yes&nbsp;'; 
 				  	echo form_radio('ask_'.$repl_obj['id'], 'no', $no, 'class="do_replacement_update"').'&nbsp;No';
+						if ($yes) {
+								echo '<br/><br/>&nbsp;&nbsp;<b>Status:&nbsp;'.$ask_status[$repl_obj['ask_status']].'</b>';
+								echo '&nbsp;&nbsp;<small>(<a target="_top" href="'.site_url("materials/viewform/ask/$cid/$mid/replacement").'">view ASK form</a>)</small>';
+					  }
 			  	?>
 				</td>
  	    </tr>
@@ -219,7 +227,7 @@ $cp_url = ($copy==null) ? '' : $copy['url'];
 			<form action="<?=site_url("materials/update_object/$cid/$mid/{$obj['id']}/rep")?>" enctype="multipart/form-data" id="add_ip_rep" method = "post">
 			<b>New Replacement Image:</b>
 			<div class="formField">
-      			<input type="file" name="userfile" id="userfile" size="30" />
+      			<input type="file" name="userfile_0" id="userfile_0" size="30" />
 		        <small style="color:red">NB: any existing replacement image will be overwritten</small>	
       </div>
 			<div class="formField">
@@ -229,6 +237,3 @@ $cp_url = ($copy==null) ? '' : $copy['url'];
 </div>
 
 </div><!-- end of replacement -->
-<script type="text/javascript">
- new MultiUpload( $('add_ip_rep').userfile, 1, null, true, true);
-</script>

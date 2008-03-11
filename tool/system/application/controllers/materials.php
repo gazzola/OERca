@@ -53,9 +53,9 @@ class Materials extends Controller {
 	public function add_comment($cid,$mid,$comments)
 	{
 	   $data['comments'] = $comments;
-	   $this->material->add_comment($mid, 2, $data);
-       $this->ocw_utils->send_response('success');
-       exit;
+	   $this->material->add_comment($mid, getUserProperty('id'), $data);
+     $this->ocw_utils->send_response('success');
+     exit;
 	}
 
 	public function	add_material($cid,$type)
@@ -209,7 +209,7 @@ class Materials extends Controller {
 				$role = getUserProperty('role');
 				redirect("materials/edit/$cid/$mid/$role/Any/true", 'location');
 		}	else {
-			$this->coobject->add($cid, $mid,2,$_POST,$_FILES);
+			$this->coobject->add($cid, $mid,getUserProperty('id'),$_POST,$_FILES);
 			$this->update($cid,$mid,'embedded_co','1',false);
 			flashMsg('Content object added');
 			redirect("materials/edit/$cid/$mid/", 'location');
@@ -235,7 +235,7 @@ class Materials extends Controller {
 				$role = getUserProperty('role');
 				redirect("materials/edit/$cid/$mid/$role/Any/true", 'location');
 		}	else {
-				$this->coobject->add_zip($cid, $mid,2,$_FILES);
+				$this->coobject->add_zip($cid, $mid,getUserProperty('id'),$_FILES);
 				$this->update($cid,$mid,'embedded_co','1',false);
 				flashMsg('Content objects added');
 				redirect("materials/edit/$cid/$mid/", 'location');
@@ -262,10 +262,10 @@ class Materials extends Controller {
 		} else {
 				if ($field=='action_type') {
 						$lgcm = 'Changed action type to '.$val;
-						$this->coobject->add_log($oid, 2, array('log'=>$lgcm));
+						$this->coobject->add_log($oid, getUserProperty('id'), array('log'=>$lgcm));
 				} elseif ($field=='done') {
-						$lgcm = 'Changed cleared status to '.($val=='1')?'"yes"':'"no"';
-						$this->coobject->add_log($oid, 2, array('log'=>$lgcm));
+						$lgcm = 'Changed cleared status to '.(($val==1)?'"yes"':'"no"');
+						$this->coobject->add_log($oid, getUserProperty('id'), array('log'=>$lgcm));
 				} else {}
 				$data = array($field=>$val);
 				$this->coobject->update($oid, $data);
@@ -278,9 +278,6 @@ class Materials extends Controller {
 
 	public function update_replacement($cid, $mid, $oid, $field, $val='') 
  	{
-	   /** HACK: dreamhost messing around and converting spaces to
-           underscores - remove when hosted on Bezak **/
-	   $val = ($val=='in_progress') ? 'in progress' : $val;
 	   $data = array($field=>$val);
 	   $this->coobject->update_replacement($oid, $data);
      $this->ocw_utils->send_response('success');
@@ -290,7 +287,7 @@ class Materials extends Controller {
 	public function add_object_comment($oid,$comments,$type='original')
 	{
 	   $data['comments'] = $comments;
-	   $this->coobject->add_comment($oid, 2, $data,$type);
+	   $this->coobject->add_comment($oid, getUserProperty('id'), $data,$type);
      $this->ocw_utils->send_response('success');
      exit;
 	}
@@ -298,7 +295,7 @@ class Materials extends Controller {
 	public function add_object_question($oid,$question,$type='original')
 	{
 	   $data['question'] = $question;
-	   $this->coobject->add_question($oid, 2, $data, $type);
+	   $this->coobject->add_question($oid, getUserProperty('id'), $data, $type);
      $this->ocw_utils->send_response('success');
      exit;
 	}
@@ -328,14 +325,15 @@ class Materials extends Controller {
     list($undef,$undef,$oid) = split("\.", $oname);
     $oid = preg_replace('/o/','',$oid);
 		$repl_objects =  $this->coobject->replacements($mid,$oid); 
-
-		//$this->ocw_utils->dump($repl_objects); exit;
+		$objstats =  $this->coobject->object_stats($mid);
+		
 		$data = array(
 					  'obj'=>$obj[0],
 					  'cid'=>$cid,
 					  'mid'=>$mid,
-					  'user'=>'jsmith',
+					  'user'=>getUserProperty('user_name'),
 				  	'subtypes'=>$subtypes,
+						'objstats' => $objstats,
 				  	'repl_obj'=>$repl_objects[0],
 				);
 

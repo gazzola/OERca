@@ -30,7 +30,7 @@ var Rules = {
 
 	// update ip object info on manage ip holder page 
 	'.update_material' : function(element) {
-		element.onchange = function () {
+				element.onchange = function () {
 			var response;
 			var course_id = $('cid').getValue();
 			var material_id = 0;
@@ -76,7 +76,7 @@ var Rules = {
             if (field=='author' && val=='') {
                 return('Please specify an author'); }
             
-			if (field=='category' && val=='') {
+						if (field=='category' && val=='') {
                 return('Please specify a category name'); }
 
             return 'success';
@@ -208,20 +208,24 @@ var Rules = {
 
 	'.do_object_update' : function(element) {
 		element.onchange = function () {
-			var response;
-			var course_id = $('cid').value;
-			var material_id = $('mid').value; 
-			var object_id = $('oid').value;
-			var field = this.name; 
-			var url = $('server').value+'materials/update_object/'+course_id+'/'+material_id;
-			var val = this.value;
-			if (field=='done') { if (this.checked) { val = 1; } else {val=0; }	}
-			url += '/'+object_id+'/'+field+'/'+encodeURIComponent(val);
-
-            var fb = $('feedback');
-
-            new Ajax(url, { method: 'get', update: fb, }).request();
+				var response;
+				var course_id = $('cid').value;
+				var material_id = $('mid').value; 
+				var object_id = $('oid').value;
+				var field = this.name; 
+				var url = $('server').value+'materials/update_object/'+course_id+'/'+material_id;
+				var val = this.value;
+				if (field=='done') { 	
+						if ($('ask_status').value=='false' && val==1) {
+							 alert('Cannot mark as cleared an object still under review by the instructor!');
+							 return false;
+						}
+				}
+				url += '/'+object_id+'/'+field+'/'+encodeURIComponent(val);
+      	var fb = $('feedback');
+				new Ajax(url, { method: 'get', update: fb, }).request();
 		}
+		element.onclick = element.onchange;
 	},
 
 	'.do_object_cp_update' : function(element) {

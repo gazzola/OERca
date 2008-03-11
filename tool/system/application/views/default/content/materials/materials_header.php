@@ -26,10 +26,13 @@
     <?php if (isset($material['name'])) { ?>
     <div id="materials_nav" style="float: right">
 		  <ul>
-			    <li class="normal"><a id="do_open_matinfo_pane">Edit Material Info</a></li>
-			    <li class="normal"><a id="do_open_matcomm_pane">View Material Comments</a></li>
-			    <li class="normal"><a id="do_open_uploadco_pane">Add Content Objects</a></li>
-			    <li class="normal"><a href="<?=$material['ctools_url']?>">Download Material</a></li>
+			  	<li class="normal"><a id="do_open_uploadco_pane">Add Content Objects</a></li>
+			    <li class="normal"><a id="do_open_matinfo_pane">Material Info</a></li>
+			    <li class="normal"><a id="do_open_matcomm_pane">Material Comments</a></li>
+					<?php if ($objstats['ask']>0) { ?>
+					<li class="normal"><a href="<?=site_url("materials/viewform/ask/$cid/$mid")?>">ASK form</a></li>
+					<?php		} ?>
+			    <li class="normal"><a href="<?=$material['ctools_url']?>">Download</a></li>
       </ul>
     </div>
 

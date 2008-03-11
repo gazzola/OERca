@@ -160,7 +160,7 @@ var MultiUpload = new Class(
 		if( $defined( show_filename_only ) ){
 			this.show_filename_only = show_filename_only;
 		} else {
-			this.show_filename_only = false;
+			this.show_filename_only = true;
 		}
 		
 		// Remove empty element before submitting form

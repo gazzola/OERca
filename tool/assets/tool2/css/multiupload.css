@@ -1,22 +1,27 @@
-div.multiupload{
-	border:1px outset gray;
+div.multiupload {
+	/*border:1px outset gray;
+	background:#eee;
+	*/
 	float:left;
 	padding:3px;
-	background:#eee;
 }
 div.multiupload div.list{
+	/*
 	border:1px inset gray;
-	background: #fff;
+	background: #ccc;
+	*/
 }
 div.multiupload div.list div.item{
 	margin:1px;
-	background: #eee;
+	width: 200px;
+	background: #000;
 }
 div.multiupload div.list div.item:hover{
+	color: black;
 	background: #ccc;
 }
-div.multiupload div.list img{
-	float:left;
+div.multiupload div.list img {
+	float:right	
 	margin: 3px;
 	cursor:pointer;
 }

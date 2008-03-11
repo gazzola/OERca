@@ -3,6 +3,10 @@ $action_types = array('Fair Use'=>'Fair Use', 'Search'=>'Search',
 						          'Commission'=>'Commission', 'Permission'=>'Permission',
 						          'Retain'=>'Retain', 'Remove'=>'Remove');
 
+$ask_status = array('new'=>'Instructor has not looked at this object yet.',
+									  'in progress'=>'Instructor is working on this',
+									 	'done'=>'Instructor is done reviewing this object');
+									
 $copy_status = array('unknown'=>'Unknown', 'copyrighted'=>'Copyrighted','public domain'=>'Public Domain');
 
 $types = '<select id="subtype_id" name="subtype_id" class="do_object_update">';
@@ -121,6 +125,8 @@ $log = $obj['log'];
 				  echo form_radio('done', '1', $yes, 'class="do_object_update"').'&nbsp;Yes&nbsp;'; 
 				  echo form_radio('done', '0', $no, 'class="do_object_update"').'&nbsp;No';
 			  ?>
+					<input type="hidden" name="ask_status" id="ask_status"
+								 value="<?= (($obj['ask']=='yes') ? (($obj['ask_status']=='done') ? 'true':'false'): 'true') ?>">
  	    </td>
 		</tr>
 		<tr>
@@ -130,8 +136,12 @@ $log = $obj['log'];
 				  $yes = ($obj['ask']=='yes') ? true : false;
 				  $no = ($obj['ask']=='yes') ? false : true;
 				  echo form_radio('ask', 'yes', $yes, 'class="do_object_update"').'&nbsp;Yes&nbsp;'; 
-				  echo form_radio('ask', 'no', $no, 'class="do_object_update"').'&nbsp;No';
-			  ?>
+				  echo form_radio('ask', 'no', $no, 'class="do_object_update"').'&nbsp;No&nbsp;&nbsp;';
+					if ($yes) {
+						echo '<b>Status:&nbsp;'.$ask_status[$obj['ask_status']].'</b>';
+						echo '&nbsp;&nbsp;<small>(<a target="_top" href="'.site_url("materials/viewform/ask/$cid/$mid").'">view ASK form</a>)</small>';
+			  	}
+			?>
  	    </td>
 			</tr>
 			<tr>
