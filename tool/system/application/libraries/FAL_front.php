@@ -49,33 +49,36 @@ class Fal_front
 	 */
 	function Fal_front()
 	{
-		$this->CI = &get_instance();
-		//loads necessary libraries
-        $this->CI->lang->load('freakauth');
-        $this->CI->load->model('FreakAuth_light/usermodel');
-	    if ($this->CI->config->item('FAL_use_country'))
+	 $this->CI = &get_instance();
+         //loads necessary libraries
+ 	 $this->CI->lang->load('freakauth');
+ 	 $this->CI->load->model('FreakAuth_light/usermodel');
+
+	 if ($this->CI->config->item('FAL_use_country'))
             $this->CI->load->model('country', 'country_model');
-        //lets load the validation class if it hasn't been already loaded
-        //it is needed by the FAL_validation library
-        if (!class_exists('CI_Validation'))
+
+         //lets load the validation class if it hasn't been already loaded
+         //it is needed by the FAL_validation library
+         if (!class_exists('CI_Validation'))
 		{
 		     $this->CI->load->library('validation');
 		}
-		//let's load the FAL_validation library if it isn't already loaded
-		if (!class_exists('FAL_validation'))
+
+	 //let's load the FAL_validation library if it isn't already loaded
+	 if (!class_exists('FAL_validation'))
 		{
 		     $this->CI->load->library('FAL_validation');
 		}
-		
-		//let's load the Freakauth_light library if it isn't already loaded
-		//or autoloaded
-		if (!class_exists('Freakauth_light'))
+
+	 //let's load the Freakauth_light library if it isn't already loaded
+	 //or autoloaded
+	 if (!class_exists('Freakauth_light'))
 		{
 		     $this->CI->load->library('Freakauth_light', 'freakauth_light');
 		}
        
-		//let's check if we have core classes extensions, and if we have them
-		//let's load them
+	//let's check if we have core classes extensions, and if we have them
+	//let's load them
     	if ($this->CI->config->item('FAL_use_extensions'))
     	{
     	    $this->_loadExtensions();
@@ -180,47 +183,51 @@ class Fal_front
             // redirects to homepage
             redirect('', 'location');
         }
+	// ------------- this means the user has not yet logged in successfully -- bdr ----------------
         else
         {
-            //sets the necessary form fields
-            $fields['name'] = $this->CI->lang->line('FAL_name_label');
-            $fields['user_name'] = $this->CI->lang->line('FAL_user_name_label');
-            $fields['password'] = $this->CI->lang->line('FAL_user_password_label');
-           
-           
-            $rules['user_name'] = $this->CI->config->item('FAL_user_name_field_validation_login');
-            $rules['password'] = $this->CI->config->item('FAL_user_password_field_validation_login');
-           
-            //do we want chaptcha for login?
-            if ($this->CI->config->item('FAL_use_captcha_login'))
-            {
-                $fields['security'] = $this->CI->lang->line('FAL_captcha_label');
-                $rules['security'] = $this->CI->config->item('FAL_user_captcha_field_validation');
+	    if ($this->CI->config->item('remote_user')) {
+		$username_login = $this->CI->config->item('remote_user');
+	    }
+	    else {
+	 	$username_login  = $_SERVER['REMOTE_USER'];
+	    }
+
+   	    // bdr -- I borrowed this from FAL_validation.php 
+	    // bdr -- Let's use the input username and checks against 'users' table
+	    // bdr -- ... of course I had to add "getUserByCosignname because the 
+	    // bdr --     getUserByUsername doesn't return anything useful - looks like a bug
+
+            $query = $this->CI->UserModel->getUserByCosignname($username_login);
+            if (($query != null) && ($query->num_rows() == 0)) {
+                // bdr -- should show error page - no such user, contact system admin
             }
-           
-            //-----------------------------------------------
-            //ADD MORE FIELDS AND RULES HERE IF YOU NEED THEM
-            //-----------------------------------------------
-            
-            $this->CI->fal_validation->set_fields($fields);
-            $this->CI->fal_validation->set_rules($rules);
-           
-            //let's run the individual validation of username and password
-            $validation_response = $this->CI->fal_validation->run();
-           
-            //if you change the keys of the validation rules
-            //remember to adjust the following 2 lines
-            //i.e. change $this->CI->fal_validation->user_name to $this->CI->fal_validation->your_user_name_key
-            $username_login = $this->CI->fal_validation->user_name;
-            $password_login = $this->CI->fal_validation->password;
-          
-            //everything went ok, let's log the user in and redirect him to the homepage
-            if (
-                $validation_response==TRUE
-                && $this->CI->fal_validation->login_check($username_login, $password_login)
-                && $this->CI->freakauth_light->login()
-                )
-            {
+            else
+                {
+		    // bdr -- here is stuff I pifered from freakauth_light->login 
+		    // bdr -- to fill in db_session stuff
+                        $row = $query->row();
+                        $fields = array('id', 'name', 'user_name','email',
+                                      'role', 'last_visit', 'created', 'modified');
+			foreach($fields as $field) $userdata[$field] = $row->{$field};
+
+                        // verifies if a user has not been banned from the site
+                        // (i.e. user table, banned=1)
+                        if ($row->{'banned'} == 0)
+                        {
+                            // bdr -- ***** BIG *****  fills in user data from user database ------
+        	            $this->CI->usermodel->updateUserForLogin($userdata['id']);
+        		    $this->CI->db_session->set_userdata($userdata);
+			    $validation_response = TRUE;
+                        }
+                        else
+                        {
+                            $message = $this->CI->lang->line('FAL_banned_user_message');
+			    $validation_response = FALSE;
+                        }
+		    // bdr -- ********************* end db_session fill-in stuff **************
+
+                // if everything went ok, let's log the user in and redirect him to the homepage
                 // Here is the 'redirect to requested page after login' thing.
                 // We test if the visitor was denied and sent to the login form.
                 $requested_page = $this->CI->db_session->flashdata('requested_page');
@@ -236,6 +243,7 @@ class Fal_front
                 // if no page was requested before, let's redirect the user
                 // according to his role
                 $role = $this->CI->db_session->userdata('role');
+
                 switch ($role)
                 {
                     case ('superadmin'):
@@ -251,24 +259,6 @@ class Fal_front
                 }
             }
            
-            // else display the login form (for the first time or once again)
-            else
-            {
-                // keep the page that was requested for the next login attempt
-                $this->CI->db_session->keep_flashdata('requested_page');
-                
-                if ($this->CI->config->item('FAL_use_captcha_login'))
-                {	
-                    $action='_login';
-                    $this->CI->freakauth_light->captcha_init($action);
-                    $data['captcha'] = $this->CI->config->item('FAL_captcha_image');
-                }
-               
-                $data['heading'] = $this->CI->lang->line('FAL_login_label');
-                return $this->CI->load->view($this->CI->config->item('FAL_login_view'), $data, TRUE);
-               
-                //$this->CI->output->enable_profiler(TRUE);
-            }
         }
     }
 
@@ -280,7 +270,31 @@ class Fal_front
      */
     function logout()
     {
-        $this->CI->freakauth_light->logout();
+	// bdr -- comment this line out and do Cosign logout stuff instead
+        // bdr --$this->CI->freakauth_light->logout();
+
+	// bdr -- this is code that trashes session stuff from freakauth_light.php
+        if ($this->CI->db_session)
+        {
+            $users = $this->CI->db_session->userdata('user_name');
+            if ($users != false)
+                // deletes the userdata stored in DB for the user that logged out
+            	if (isset($users))
+            	{
+                    unset($users);
+                    // is better to do a 1 call to unset_userdata passing an array?
+                    $this->CI->db_session->unset_userdata('id');
+                    $this->CI->db_session->unset_userdata('user_name');
+                    $this->CI->db_session->unset_userdata('role');
+                }
+            }
+	// bdr -- now let's delete the cookies and then send browser to www.umich.edu
+	$this->CI->load->helper('cookie');
+	delete_cookie("FreakAuth");
+	delete_cookie("cosign-oer.umms.med");
+	$logout_url = $this->CI->config->slash_item('logout_url');
+	echo '<META http-equiv="refresh" content="0;URL=https://weblogin.umich.edu/cgi-bin/logout?',$logout_url,'">';
+       // bdr -- don't need this:  redirect($this->CI->config->item('FAL_logout_success_action'), 'location');
     }
    
 	// --------------------------------------------------------------------
