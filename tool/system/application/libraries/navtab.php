@@ -164,7 +164,7 @@ class Navtab {
     // output the unordered list elements
     while ($i < count($this->tabs)) {
       // check for the default controller routing
-      if (!$uri_seg && ($i == ($this->$def_active_tab_num - 1))) {
+      if (!$uri_seg && ($i == ($this->def_active_tab - 1))) {
         $tab_markup .= "  $active_tab";
       } else {
         // compare url with possible arguments for each list element
