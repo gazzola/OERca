@@ -26,6 +26,25 @@ class Materials extends Controller {
 			$tags =  $this->tag->tags();
 			$materials =  $this->material->materials($cid,'',true,true);
 			$mimetypes =  $this->mimetype->mimetypes();
+			
+			// values for drop down lists
+			$courselevel = array("Undergraduate", "Graduate", "PhD", "M1", "M2");
+			$courselength = array("Half-Semester", "Semester");
+			
+			// form field attributes
+			$coursedescbox = array(
+			  'name' => 'description',
+			  'id' => 'description',
+			  'rows' => '8',
+			  'columns' => '20' 
+			  );
+			  
+			$coursehighlightbox = array(
+			  'name' => 'highlights',
+			  'id' => 'highlights',
+			  'rows' => '3',
+			  'columns' => '20'
+			  );
 						
 			$data = array('title'=>'Materials',
 						  'materials'=>$materials, 
@@ -35,9 +54,14 @@ class Materials extends Controller {
 						  'caller'=>$caller,
 					  	'tags'=>$tags,
 							'openmat'=>$openmat,
-							'opencourse'=>$opencourse
+							'opencourse'=>$opencourse,
+							'courselevel' => $courselevel,
+							'courselength' => $courselength,
+							'coursedescbox' => $coursedescbox,
+							'coursehighlightbox' => $coursehighlightbox
 					 	);
-       		$this->layout->buildPage('materials/index', $data);
+       
+       $this->layout->buildPage('materials/index', $data);
 	}
 
 	public function update($cid,$mid,$field,$val,$resp=true)
@@ -88,7 +112,7 @@ class Materials extends Controller {
 		}	else {
 				$r = $this->material->manually_add_materials($cid, $type, $_POST,$_FILES);
 				if ($r !== true) {
-						flasMsg($r);
+						flashMsg($r);
 						redirect("materials/home/$cid/$role/true", 'location');
 				} else {
 						$msg = ($type=='bulk') ? 'Materials have been added.' : 'Added material to course.';
