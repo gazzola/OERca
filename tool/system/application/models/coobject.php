@@ -420,6 +420,14 @@ class Coobject extends Model
      */
 	public function add($cid, $mid, $uid, $data, $files)
 	{
+		// check for slides and get any data embedded in the file
+		if (is_array($files['userfile_0'])) {
+				$filename = $files['userfile_0']['name'];
+				$tmpname = $files['userfile_0']['tmp_name'];
+				$data = $this->prep_data($cid, $mid, $data, $filename, $tmpname);
+				if ($data=='slide') { return true; }
+		}
+		
 		$data['material_id'] = $mid;
 		$data['modified_by'] = $uid;
 		$data['done'] = '0';
@@ -463,10 +471,9 @@ class Coobject extends Model
 		if (is_array($files['userfile_0'])) {
 			$type = $files['userfile_0']['type'];
 			$tmpname = $files['userfile_0']['tmp_name'];
-
 			$path = $this->prep_path($name);
 
-			$ext = '';
+			  $ext = '';
   			switch (strtolower($type))
         	{
                 case 'image/gif':  $ext= '.gif'; break;
@@ -500,6 +507,14 @@ class Coobject extends Model
      */
 	public function add_replacement($cid, $mid, $objid, $data, $files)
 	{
+		// check for slides and get any data embedded in the file
+		if (is_array($files['userfile_0'])) {
+				$filename = $files['userfile_0']['name'];
+				$tmpname = $files['userfile_0']['tmp_name'];
+				$data = $this->prep_data($cid, $mid, $data, $filename, $tmpname);
+				if ($data=='slide') { return true; }
+		}
+					
 		$data['material_id'] = $mid;
 		$data['object_id'] = $objid;
 		$data['name'] = "c$cid.m$mid.o$objid";
@@ -544,14 +559,14 @@ class Coobject extends Model
 			$path = $this->prep_path($name);
 
 			$ext = '';
-  			switch (strtolower($type))
-        	{
-                case 'image/gif':  $ext= '.gif'; break;
-                case 'jpg':
-                case 'image/jpeg': $ext= '.jpg'; break;
-                case 'image/png':  $ext= '.png'; break;
-                default: $ext='.png';
-        	}
+  		switch (strtolower($type))
+       	{
+               case 'image/gif':  $ext= '.gif'; break;
+               case 'jpg':
+               case 'image/jpeg': $ext= '.jpg'; break;
+               case 'image/png':  $ext= '.png'; break;
+               default: $ext='.png';
+       	}
 
 			// move file to new location
 			if (is_uploaded_file($tmpname)) {
@@ -565,6 +580,7 @@ class Coobject extends Model
 		return $oid;
 	}
 
+
   // add content objects with data embedded in the file metadata
   public function add_zip($cid, $mid, $uid, $files)
   {
@@ -577,100 +593,49 @@ class Coobject extends Model
             foreach($files as $newfile) {
 							if (preg_match('/\.jpg$/',$newfile)) {
 									if (preg_match('/Slide\d+|\-pres\.\d+/',$newfile)) { // find slides
-											list($loc, $ext) = $this->get_slide_info($newfile);
-											$pid = "c$cid.m$mid.slide";
-											$newpath = $this->prep_path($pid); 
-											$newpath = $newpath."/c$cid.m$mid.slide_$loc.$ext";
-											@copy($newfile, $newpath); 
-											@chmod($newpath,'0777');
-											unlink($newfile);
-									} else {
-		                  $xmp_data = $this->ocw_utils->xmp_data($newfile);
-	                    // need a more dynamic way of getting this hash
-	                    $subtypes = array('2D'=>'1','3D'=>'2','IIllustrative'=>'12',
-	                                      'Cartoon' => '11', 'Comp' => '9', 'Map' => '10',
-	                                      'Medical' => '8', 'PIllustrative' => '4', 'Patient' => '3',
-	                                      'Specimen' => '5', 'Art' => '17', 'Artifact' => '21',
-	                                      'Chemical' => '13', 'Diagram' => '19', 'Equation' => '15',
-	                                      'Gene' => '14', 'Logo' => '18', 'Radiology' => '6',
-																				 'Microscopy' => '7');
-										 	$copy_status = array(''=>'unknown', 'True'=>'copyrighted',
-																					'False'=>'public domain');
-											$yesno = array('N'=>'no', 'Y'=>'yes');
 
-	                    if (isset($xmp_data['objecttype']) ) {
-													# get data from xmp
-													$objectype = $xmp_data['objecttype'];
-	                        $data['subtype_id'] = $subtypes[$xmp_data['subtype']]; 
-	                        $data['ask'] = (isset($xmp_data['ask'])) ? $yesno[$xmp_data['ask']] : 'no'; 
-													$data['location'] = preg_replace('/.*?(\d+)(R)?\.jpg/',"$1",$newfile);
-	                        $data['action_type'] = (isset($xmp_data['action'])) ? $xmp_data['action'] : ''; 
-	                        $data['question'] = (isset($xmp_data['question'])) ? $xmp_data['question'] : ''; 
-	                        $data['citation'] = (isset($xmp_data['citation'])) ? $xmp_data['citation'] : 'none'; 
-	                        $data['comment'] = (isset($xmp_data['comments'])) ? $xmp_data['comments'] : ''; 
-	                        $data['contributor'] = (isset($xmp_data['contributor'])) ? $xmp_data['contributor'] : ''; 
-	                        $data['description'] = (isset($xmp_data['description'])) ? $xmp_data['description'] : ''; 
-	                        $data['tags'] = (isset($xmp_data['keywords'])) ? $xmp_data['keywords'] : ''; 
-	                        $data['copystatus'] = (isset($xmp_data['copystatus'])) ? $copy_status[$xmp_data['copystatus']] : ''; 
-	                        $data['copyurl'] = (isset($xmp_data['copyurl'])) ? $xmp_data['copyurl'] : ''; 
-	                        $data['copynotice'] = (isset($xmp_data['copynotice'])) ? $xmp_data['copynotice'] : ''; 
-	                        $data['copyholder'] = (isset($xmp_data['copyholder'])) ? $xmp_data['copyholder'] : ''; 
-           				
-											} else { // no xmp data
-													# get data from xmp
-	                        // $data['subtype_id'] = $subtypes[$xmp_data['subtype']]; 
-													$objecttype = (preg_match('/.*?(\d+)R\.jpg/',$newfile)) ? 'RCO' : 'CO';
-	                        $data['ask'] = 'no'; 
-													$data['location'] = preg_replace('/.*?(\d+)(R)?\.jpg/',"$1",$newfile);
-	                        $data['action_type'] = (isset($xmp_data['action'])) ? $xmp_data['action'] : ''; 
-	                        $data['citation'] = 'none'; 
-	                        $data['contributor'] = ''; 
-	                        $data['question'] = ''; 
-	                        $data['comment'] = ''; 
-	                        $data['copystatus'] =  ''; 
-	                        $data['copyurl'] = ''; 
-	                        $data['copynotice'] = ''; 
-	                        $data['copyholder'] =  ''; 
-											}
-											
+											$this->add_slide($cid,$mid,$newfile);
+
+									} else {
+											$objecttype = (preg_match('/.*?(\d+)R\.jpg/',$newfile)) ? 'RCO' : 'CO';				
 	                    $filedata = array('userfile_0'=>array());
+	                    $filedata['userfile_0']['name'] = basename($newfile);
                       $filedata['userfile_0']['type'] = 'image/jpeg';
                       $filedata['userfile_0']['tmp_name'] = $newfile;
+																							
+											if (!preg_match('/^\./',basename($newfile))) {
+                   				if ($objecttype=='CO') {
+		                     		$oid = $this->add($cid, $mid, $uid, array(), $filedata);
+														$repfile = preg_replace('/\.jpg$/','R.jpg',$newfile);
 
-                   		if ($objecttype=='CO') {
-                      		$oid = $this->add($cid, $mid, $uid, $data, $filedata);
-													$repfile = preg_replace('/\.jpg$/','R.jpg',$newfile);
+														# go through and see if any replacement items are waiting to be inserted
+														if (in_array($repfile, array_keys($replace_info))) {
+																// replacement exists and has been processed so just add it!
+																$filedata = $replace_info[$repfile];
+		                     				$rid = $this->add_replacement($cid, $mid, $oid, array(), $filedata);
+																unset($replace_info[$repfile]);
+												
+														} else { # place in queue just in case the replacement comes along later
+																$orig_info[$newfile] = $oid;
+														}
 
-													# go through and see if any replacement items are waiting to be inserted
-													if (in_array($repfile, array_keys($replace_info))) {
-															// replacement exists and has been processed so just add it!
-															list($data, $filedata) = $replace_info[$repfile];
-                      				$rid = $this->add_replacement($cid, $mid, $oid, $data, $filedata);
-															unset($replace_info[$repfile]);
-													
-													} else { # place in queue just in case the replacement comes along later
-															$orig_info[$newfile] = $oid;
-													}
+												} elseif ($objecttype=='RCO') {
+														// this is a replacement - we have to make sure the original has been added
+														// first before we add this. Otherwise, add it to a queue
+														$origfile = preg_replace('/R.jpg$/','.jpg',$newfile);
 
-											} elseif ($objecttype=='RCO') {
-													// this is a replacement - we have to make sure the original has been added
-													// first before we add this. Otherwise, add it to a queue
-													$origfile = preg_replace('/R.jpg$/','.jpg',$newfile);
-													unset($data['action_type']);
-													unset($data['subtype_id']);
-
-													# go through and see if any original item has been inserted alredy 
-													if (in_array($origfile, array_keys($orig_info))) {
-															// original exists and has been processed so just add replacement 
-															$oid = $orig_info[$origfile];
-                      				$rid = $this->add_replacement($cid, $mid, $oid, $data, $filedata);
-															unset($orig_info[$origfile]);
-													
-													} else { # place in queue just in case the original comes along later
-															$replace_info[$newfile] = array($data, $filedata);
-													}
-											}		
-	                        
+														# go through and see if any original item has been inserted alredy 
+														if (in_array($origfile, array_keys($orig_info))) {
+																// original exists and has been processed so just add replacement 
+																$oid = $orig_info[$origfile];
+		                     				$rid = $this->add_replacement($cid, $mid, $oid, array(), $filedata);
+																unset($orig_info[$origfile]);
+												
+														} else { # place in queue just in case the original comes along later
+																$replace_info[$newfile] = $filedata;
+														}
+												}		
+	                   }
 									}
 							} else {
 									// ignore: file is not a jpeg -- we need to know how to handle other filetypes.
@@ -722,6 +687,52 @@ class Coobject extends Model
      */
 	public function update_rep_image($cid, $mid, $oid, $files)
 	{
+		// check for slides and get any data embedded in the file
+		$data = array();
+		if (is_array($files['userfile_0'])) {
+				$filename = $files['userfile_0']['name'];
+				$tmpname = $files['userfile_0']['tmp_name'];
+				$data = $this->prep_data($cid, $mid, array(), $filename, $tmpname);
+				if ($data=='slide') { return true; }
+		}
+
+		$comment = $data['comment'];
+		$question = $data['question'];
+		$copy = array('status' => $data['copystatus'],
+								  'holder' => $data['copyholder'],
+								  'url' => $data['copyurl'],
+								  'notice' => $data['copynotice']);
+		unset($data['comment']);
+		unset($data['question']);
+		unset($data['copystatus']);
+		unset($data['copyholder']);
+		unset($data['copyurl']);
+		unset($data['copynotice']);
+		
+		// don't want to overwrite old values with empty strings
+		foreach($data as $k => $v) { if ($v=='') { unset($data[$k]); }}
+
+		// update new object if need be
+		if (sizeof($data) > 0) {
+				$data['material_id'] = $mid;
+				$data['object_id'] = $objid;
+				$data['id'] = $oid;
+				$this->update_replacement($oid, $data);
+		}
+
+		// add  questions and comments
+		if ($question <> '') {
+			$this->add_question($oid, getUserProperty('id'), array('question'=>$question),'replacement');
+		}
+		if ($comment <> '') {
+			$this->add_comment($oid, getUserProperty('id'), array('comments'=>$comment),'replacement');
+		}
+
+	 if ($copy['status']<>'' or $copy['holder']<>'' or
+			 $copy['notice']<>'' or $copy['url']<>''){
+			 $this->add_copyright($oid,$copy,'replacement');
+		}
+		
 		// add files
 		$name = "c$cid.m$mid.o$oid";
 
@@ -729,7 +740,6 @@ class Coobject extends Model
 			$fname = $files['userfile_0']['name'];
 			$type = $files['userfile_0']['type'];
 			$tmpname = $files['userfile_0']['tmp_name'];
-			$size = $files['userfile_0']['size'];
 
 			$path = $this->prep_path($name);
 
@@ -834,6 +844,50 @@ class Coobject extends Model
 		return $name.$row[0]['nextid'];
 	}
 
+
+	public function prep_path($name)
+	{
+		list($c,$m,$o) = split("\.", $name);
+		$path = property('app_uploads_path').$c;
+		if (!is_dir($path)) { mkdir($path); chmod($path, 0777); }
+		$path .= '/'.$m;
+		if (!is_dir($path)) { mkdir($path); chmod($path, 0777); }
+		if ($o <> 'slide') {
+				$path .= '/'.$o;
+				if (!is_dir($path)) { mkdir($path); chmod($path, 0777); }
+		}
+		return $path;
+	}
+	
+	public function prep_data($cid,$mid,$data,$filename,$pathtofile)
+	{
+			if (preg_match('/Slide\d+|\-pres\.\d+/',$filename)) { // find slides
+					$this->add_slide($cid,$mid,$pathtofile);
+					return 'slide';
+			} else {
+					$filedata = $this->get_xmp_data($pathtofile);
+					foreach($filedata as $k => $v) { // passed values supercede embedded ones
+										if (isset($data[$k])) {
+												$data[$k] = ($data[$k]=='') ? $v : $data[$k];
+										} else {
+												$data[$k] = $v;
+										}
+					}
+			}
+			return $data;
+	}
+	// add a slide
+	public function add_slide($cid, $mid, $slidefile)
+	{
+			list($loc, $ext) = $this->get_slide_info($slidefile);
+			$pid = "c$cid.m$mid.slide";
+			$newpath = $this->prep_path($pid); 
+			$newpath = $newpath."/c$cid.m$mid.slide_$loc.$ext";
+			@copy($slidefile, $newpath); 
+			@chmod($newpath,'0777');
+			unlink($slidefile);
+	}
+
 	private function get_slide_info($file)
 	{
 		preg_match('/\.(\w+)$/', $file, $matches);
@@ -849,19 +903,62 @@ class Coobject extends Model
 				return array(intval($matches[1]), $ext);
 		}
 	}
+	
+	public function get_xmp_data($newfile)
+	{	
+		$data = array();
+	  $xmp_data = $this->ocw_utils->xmp_data($newfile);
+		
+		// TODO: need a more dynamic way of getting this hash
+    $subtypes = array('2D'=>'1','3D'=>'2','IIllustrative'=>'12',
+                      'Cartoon' => '11', 'Comp' => '9', 'Map' => '10',
+                      'Medical' => '8', 'PIllustrative' => '4', 'Patient' => '3',
+                      'Specimen' => '5', 'Art' => '17', 'Artifact' => '21',
+                      'Chemical' => '13', 'Diagram' => '19', 'Equation' => '15',
+                      'Gene' => '14', 'Logo' => '18', 'Radiology' => '6',
+											 'Microscopy' => '7');
 
-	public function prep_path($name)
-	{
-		list($c,$m,$o) = split("\.", $name);
-		$path = property('app_uploads_path').$c;
-		if (!is_dir($path)) { mkdir($path); chmod($path, 0777); }
-		$path .= '/'.$m;
-		if (!is_dir($path)) { mkdir($path); chmod($path, 0777); }
-		if ($o <> 'slide') {
-				$path .= '/'.$o;
-				if (!is_dir($path)) { mkdir($path); chmod($path, 0777); }
+	 	$copy_status = array(''=>'unknown', 'True'=>'copyrighted',
+												'False'=>'public domain');
+
+		$yesno = array('N'=>'no', 'Y'=>'yes');
+
+    if (isset($xmp_data['objecttype']) ) {
+				# get data from xmp
+        $data['ask'] = (isset($xmp_data['ask'])) ? $yesno[$xmp_data['ask']] : 'no'; 
+				$data['location'] = preg_replace('/.*?(\d+)(R)?\.jpg/',"$1",$newfile);
+        $data['question'] = (isset($xmp_data['question'])) ? $xmp_data['question'] : ''; 
+        $data['citation'] = (isset($xmp_data['citation'])) ? $xmp_data['citation'] : 'none'; 
+        $data['comment'] = (isset($xmp_data['comments'])) ? $xmp_data['comments'] : ''; 
+        $data['contributor'] = (isset($xmp_data['contributor'])) ? $xmp_data['contributor'] : ''; 
+        $data['description'] = (isset($xmp_data['description'])) ? $xmp_data['description'] : ''; 
+        $data['tags'] = (isset($xmp_data['keywords'])) ? $xmp_data['keywords'] : ''; 
+        $data['copystatus'] = (isset($xmp_data['copystatus'])) ? $copy_status[$xmp_data['copystatus']] : ''; 
+        $data['copyurl'] = (isset($xmp_data['copyurl'])) ? $xmp_data['copyurl'] : ''; 
+        $data['copynotice'] = (isset($xmp_data['copynotice'])) ? $xmp_data['copynotice'] : ''; 
+        $data['copyholder'] = (isset($xmp_data['copyholder'])) ? $xmp_data['copyholder'] : ''; 
+				if ($xmp_data['objecttype']<>'RCO') {
+	          $data['subtype_id'] = $subtypes[$xmp_data['subtype']]; 
+	          $data['action_type'] = (isset($xmp_data['action'])) ? $xmp_data['action'] : ''; 
+				}			
+		} else {
+				$data['ask'] = 'no';
+				if (preg_match('/.*?(\d+)(R)?\.jpg/',$newfile)) { 
+					$data['location'] = preg_replace('/.*?(\d+)(R)?\.jpg/',"$1",$newfile);
+				} else {
+					$data['location'] = '';
+				}
+	      $data['citation'] = 'none'; 
+	      $data['question'] = ''; 
+	      $data['comment'] = ''; 
+	      $data['copystatus'] =  ''; 
+	      $data['copyurl'] = ''; 
+	      $data['copynotice'] = ''; 
+	      $data['copyholder'] =  '';
 		}
-		return $path;
+  	
+		return $data;
 	}
+	
 }
 ?>

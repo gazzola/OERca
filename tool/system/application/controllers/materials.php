@@ -251,11 +251,13 @@ class Materials extends Controller {
 				} else {
 						$this->coobject->add_replacement($cid, $mid, $oid, array(), $_FILES);
 				}
-
+				
+				$rnd = time().rand(10,10000); // used to overcome caching problem
+				
 				if ($field == 'rep') {
-						redirect("materials/object_info/$cid/$mid/$name", 'location');
+						redirect("materials/object_info/$cid/$mid/$name/$rnd", 'location');
 				} elseif($field=='irep') {
-						redirect("materials/viewform/ask/$cid/$mid/", 'location');
+						redirect("materials/viewform/ask/$cid/$mid/$rnd", 'location');
 				}
 				exit;
 

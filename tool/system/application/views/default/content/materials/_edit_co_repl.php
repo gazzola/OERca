@@ -228,7 +228,13 @@ $cp_url = ($copy==null) ? '' : $copy['url'];
 			<b>New Replacement Image:</b>
 			<div class="formField">
       			<input type="file" name="userfile_0" id="userfile_0" size="30" />
-		        <small style="color:red">NB: any existing replacement image will be overwritten</small>	
+						<input type="hidden" name="question" value="" />
+						<input type="hidden" name="comment" value="" />
+						<input type="hidden" name="copyurl" value="" />
+						<input type="hidden" name="copynotice" value="" />
+						<input type="hidden" name="copyholder" value="" />
+						<input type="hidden" name="copystatus" value="" />		       
+		 				<small style="color:red">NB: any existing replacement image will be overwritten</small>	
       </div>
 			<div class="formField">
       			<input type="submit" name="submit" id="submit" value="Upload" />

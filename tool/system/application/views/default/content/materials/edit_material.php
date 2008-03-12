@@ -76,7 +76,7 @@
 	    <?php echo form_dropdown('filter-type', $filter_types, $filter,'id="filter-type" style="width: 176px"'); ?>
 	    <br/><br/>
 		</p>
-		<p class="error">No content objects have been marked as '<?=$filter?>'.</p>
+		<p class="error">No content objects have been marked as '<?=$filter_types[$filter]?>'.</p>
 	</div>
 
 
