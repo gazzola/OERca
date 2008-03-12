@@ -25,6 +25,17 @@ $config['logout_url']     = "http://www.umich.edu/";
 
 /*
 |--------------------------------------------------------------------------
+| Testing username
+|--------------------------------------------------------------------------
+|
+| only use this if you are doing development and don't have/want
+| access to the weblogin.umich.edu for authentication
+| ***** NOTE:  for UM production system you MUSt comment this out *******
+*/
+/******* $config['remote_user']     = "bdr"; **********/
+
+/*
+|--------------------------------------------------------------------------
 | Index File
 |--------------------------------------------------------------------------
 |
