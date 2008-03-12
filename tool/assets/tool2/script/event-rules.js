@@ -86,24 +86,23 @@ var Rules = {
 	// manage comments 
 	'.do_add_material_comment': function(element) {
 		element.onclick = function() {
-			var course_id = $('cid').value;
-			var material_id = $('mid').value; 
-            var url = $('server').value+'materials/add_comment/'+course_id+'/'+material_id;
+				var course_id = $('cid').value;
+				var material_id = $('mid').value; 
+      	var url = $('server').value+'materials/add_comment/'+course_id+'/'+material_id;
 
-			var comments = $('comments').value;
-	
-			if (comments == '') {
+				var comments = escape($('comments').value);
+				if (comments == '') {
                 alert('Please enter a comment');
-			} else {
+				} else {
                 var fb = $('feedback');
                 var response;
 								url += '/'+encodeURIComponent(comments);
 
                 new Ajax(url,
                     {
-					 method: 'get', 
-					 update: fb,
-                     onComplete:function() {
+					 						method: 'get', 
+					 						update: fb,
+                     	onComplete:function() {
                         response = fb.innerHTML;
                         if (response=='success') {
                             url = $('server').value+'materials/edit/'+course_id+'/'+material_id;
@@ -111,7 +110,7 @@ var Rules = {
                         } else {
                             alert(response);
                         }
-                }}).request();
+               }}).request();
 			}
 		}
 	},
@@ -125,7 +124,7 @@ var Rules = {
       var url = $('server').value+'materials/add_object_comment/'+object_id;
 			var comments = $('comments').value;
 			var get_comments = encodeURIComponent($('comments').value);
-				
+
 			if (comments == '') {
           alert('Please enter a comment');
 			} else {

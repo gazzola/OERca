@@ -26,22 +26,38 @@ class Coobject extends Model
 	public function coobjects($mid, $oname='', $action_type='', $details='*')
 	{
 		$objects = array();
-		$where = array('material_id' => $mid);
+		$where = "material_id=$mid";
 
 		$action_type = ($action_type == 'Any') ? '' : $action_type;
-		if ($action_type <> '') { 
-			switch ($action_type) {
-				case 'Ask': $idx = 'ask'; $ans = 'yes'; break;
-				case 'Done': $idx = 'done'; $ans = '1'; break;
-				default: $idx = 'action_type'; $ans = $action_type;
+
+		if ($action_type=='AskRCO') {
+				$replacements = $this->replacements($mid,'','', $action_type='Ask');
+				if ($replacements != null) {
+						$where .= " AND id IN (";
+						$robj = array();
+						foreach($replacements as $o) {
+										if (!in_array($o['object_id'],$robj)) { 
+												$where .= ((sizeof($robj)) ? ', ':'') . $o['object_id'];
+														array_push($robj, $o['object_id']); 
+										}
+						}
+						$where .= ")";
+				} 
+				$action_type == '';
+
+		} else {
+			if ($action_type <> '') { 
+				switch ($action_type) {
+					case 'Ask': $idx = 'ask'; $ans = 'yes'; break;
+					case 'Done': $idx = 'done'; $ans = '1'; break;
+					default: $idx = 'action_type'; $ans = $action_type;
+				}
+				$where .= " AND $idx='$ans'";
 			}
-			$where[$idx] = $ans; 
 		}
+
 		$this->db->select($details)->from('objects')->where($where);
 		$q = $this->db->get();
-
-		/* HACK: dreamhost rewriting screws up the parameter values */
-		$oname = preg_replace("/_/", ".", $oname);
 
 		if ($q->num_rows() > 0) {
 			foreach($q->result_array() as $row) {
@@ -113,16 +129,24 @@ class Coobject extends Model
 	public function num_objects($mid,	$action_type='')
 	{
 		$action_type = ($action_type == 'Any') ? '' : $action_type;
-		if ($action_type <> '') { 
-			switch ($action_type) {
-				case 'Ask': $idx = 'ask'; $ans = 'yes'; break;
-				case 'Done': $idx = 'done'; $ans = '1'; break;
-				default: $idx = 'action_type'; $ans = $action_type;
-			}
-			$where[$idx] = $ans; 
-		}
-		$where['material_id'] = $mid;		
-		$this->db->select("COUNT(*) AS c")->from('objects')->where($where);
+		
+		if ($action_type == 'AskRCO') {
+				$table = 'object_replacements';
+				$where['Ask'] = 'yes'; 
+		} else {
+				if ($action_type <> '') { 
+						switch ($action_type) {
+								case 'Ask': $idx = 'ask'; $ans = 'yes'; break;
+								case 'Done': $idx = 'done'; $ans = '1'; break;
+								default: $idx = 'action_type'; $ans = $action_type;
+						}
+						$where[$idx] = $ans; 
+				}
+				$table = 'objects';
+		}		
+
+		$where['material_id'] = $mid;				
+		$this->db->select("COUNT(*) AS c")->from($table)->where($where);		
 		$q = $this->db->get();
 		$row = $q->result_array();
 		return $row[0]['c'];
@@ -132,14 +156,24 @@ class Coobject extends Model
 	{
 		$stats = array();
 		$stats['total'] = $this->num_objects($mid);
-
+		$stats['ask'] = 0;
+		$stats['cleared'] = 0;
+		
 		$q = $this->db->query("SELECT COUNT(*) AS c FROM ocw_objects WHERE material_id=$mid AND ask='yes'");
 		$row = $q->result_array();
 		$stats['ask'] = $row[0]['c'];
+		
+		$q = $this->db->query("SELECT COUNT(*) AS c FROM ocw_object_replacements WHERE material_id=$mid AND ask='yes'");
+		$row = $q->result_array();
+		$stats['ask'] += $row[0]['c'];
 
 		$q = $this->db->query("SELECT COUNT(*) AS c FROM ocw_objects WHERE material_id=$mid AND done='1'");
 		$row = $q->result_array();
 		$stats['cleared'] = $row[0]['c'];
+		
+		$q = $this->db->query("SELECT COUNT(*) AS c FROM ocw_object_replacements WHERE material_id=$mid AND ask_status='done'");
+		$row = $q->result_array();
+		$stats['cleared'] += $row[0]['c'];
 
 		$q = $this->db->query("SELECT action_type, COUNT(*) AS c FROM ocw_objects WHERE material_id=$mid GROUP BY action_type");
 		if ($q->num_rows() > 0) {

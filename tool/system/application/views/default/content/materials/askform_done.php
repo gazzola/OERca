@@ -36,6 +36,10 @@ if ($prov_objects != null) {
 <td style="vertical-align: top">
 	<p><h3>Actions Taken:</h3>                
 	<?php 
+		if ($obj['description']) {
+				echo 'You provided the following description:<br/><br/>';
+				echo '<p style="background-color:#ddd; padding:5px;">'.$obj['description'].'</p><br/><br/>';
+		}
 		if ($obj['instructor_owns']=='yes') { 
 			echo 'You indicated that you <i>hold</i> the copyright to this object.';
 		} else { 
@@ -43,15 +47,15 @@ if ($prov_objects != null) {
 			echo '<br/><br/>'; 
 
 			if ($obj['other_copyholder']=='') {
-				echo 'You indicated that you do not know who holds the copyright.';
+				echo 'You indicated that you <em>do not know</em> who holds the copyright.';
 				echo '<br/><br/>';
 				if ($obj['is_unique']=='yes') {
-					echo 'You indicated that the representation of this information is unique';
+					echo 'You indicated that the representation of this information <em>is unique</em>';
 				} else {
-					echo 'You indicated that the representation of this information is not unique';
+					echo 'You indicated that the representation of this information <em>is not unique</em>';
 				}
 		 	} else { 
-				echo 'You indicated that <b>'.$obj['other_copyholder'].'</b> holds the copyright.';
+				echo 'You indicated that <em>'.$obj['other_copyholder'].'</em> holds the copyright.';
 		 	} 
 		}
 	?>

@@ -102,11 +102,11 @@ class Materials extends Controller {
 	{
 		$tags =  $this->tag->tags();
 		$mimetypes =  $this->mimetype->mimetypes();
-		$numobjects =  $this->coobject->num_objects($mid,$filter);
 		$objstats =  $this->coobject->object_stats($mid);
 		$subtypes =  $this->coobject->object_subtypes();
 	  $course = $this->course->get_course($cid); 
 		$material =  $this->material->materials($cid,$mid,true);
+		$numobjects =  $this->coobject->num_objects($mid,$filter);
 		$objects =  $this->coobject->coobjects($mid,'',$filter);
 
 		$data = array('title'=>'Edit Material &raquo; '.$material[0]['name'],

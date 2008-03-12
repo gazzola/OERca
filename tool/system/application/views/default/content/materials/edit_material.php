@@ -25,7 +25,8 @@
   $types .= '</select>';
 
   $filter_types = array('Any'=>'Show All',
-            'Ask'=>'Ask Instructor',
+            'Ask'=>'Ask Instructor (Original)',
+						'AskRCO'=> 'Ask Instructor (Replacments)',
             'Done'=>'Cleared',
             'Fair Use'=>'Fair Use',
             'Search'=>'Search',
