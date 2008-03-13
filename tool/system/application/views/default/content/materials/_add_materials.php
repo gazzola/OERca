@@ -91,10 +91,4 @@
 	<input type="button" value="Close" id="do_close_uploadmat_pane"/>
 </div>
 
-<script type="text/javascript">EventSelectors.start(Rules);</script>
-<script type="text/javascript">
- new MultiUpload( $('add_new_material_bulk').zip_userfile, 1, null, true, true);
- new MultiUpload( $('add_new_material_single').single_userfile, 1, null, true, true);
-</script>
-
 </div>
