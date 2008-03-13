@@ -11,16 +11,16 @@ function update_edit_co_frame(id)
 
 function update_prev_next() {
 	if (knobpos == 0) {
-			$('up-arrow').src = $('imgurl').'/up-disabled.gif';
-			$('down-arrow').src = $('imgurl').'/down-enabled.gif';
+			$('up-arrow').src = $('imgurl').value+'/up-disabled.gif';
+			$('down-arrow').src = $('imgurl').value+'/down-enabled.gif';
 	}
 	if (knobpos == numsteps) {
-			$('up-arrow').src = $('imgurl').'/up-enabled.gif';
-			$('down-arrow').src = $('imgurl').'/tool/assets/tool2/images/down-disabled.gif';
+			$('up-arrow').src = $('imgurl').value+'/up-enabled.gif';
+			$('down-arrow').src = $('imgurl').value+'/tool/assets/tool2/images/down-disabled.gif';
 	}
 	if (knobpos < numsteps && knobpos > 0) {
-			$('up-arrow').src = $('imgurl').'/up-enabled.gif';
-			$('down-arrow').src = $('imgurl').'/down-enabled.gif';
+			$('up-arrow').src = $('imgurl').value+'/up-enabled.gif';
+			$('down-arrow').src = $('imgurl').value+'/down-enabled.gif';
 	}
 }
 
