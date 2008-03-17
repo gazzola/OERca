@@ -140,7 +140,7 @@ div.collapse-container
 #mainPage textarea {
 	background: #fbfbfb;
 	width: 225px;
-	height: 100px;
+	height: 100px; 
 	padding: 1px 0 1px 3px;
 	border: 1px solid #ccc;	
 	}		
@@ -149,7 +149,7 @@ div.collapse-container
 	float: left;	
 	text-align: left;
 	clear: both;
-	width: 100px;
+	width: 150px;
 	margin: 0 0 0px 0;	
 }
 	

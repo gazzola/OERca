@@ -24,6 +24,50 @@ class Courses extends Controller {
 		$data = array('title'=>'Courses','courses'=>$courses, 'breadcrumb'=>$this->breadcrumb());
        	$this->layout->buildPage('courses/index', $data);
 	}
+	
+	
+	/**
+	 * verify/sanitize the course info form
+	 *
+	 * @access  public
+	 * @param   int course id
+	 * @return  void
+	 */
+	public function check_course_info($cid)
+	{
+    $errmsg = '';
+    
+    $rules = array(
+      'id' => "required"
+      );
+    
+    $this->validation->set_rules($rules);
+    if ($this->validation->run() == FALSE)
+    {
+      $role = getUserProperty('role');
+			flashMsg($errmsg);
+			redirect("materials/home/$cid/$role/editcourse", 'location');
+    } else {
+      $msg = "Edited course information.";
+			flashMsg($msg);
+			$this->ocw_utils->dump($_POST);
+			$this->ocw_utils->dump($_FILES);
+    }
+	}
+	
+	
+	/**
+	 * add/edit course information
+	 *
+	 * @access  public
+	 * @param   int course id
+	 * @return  void
+	 */
+	public function edit_course_info($cid)
+	{
+	  $this->ocw_utils->dump($_POST);
+	  $this->ocw_utils->dump($_FILES);
+	}
 
 	public function breadcrumb($section='default')
 	{

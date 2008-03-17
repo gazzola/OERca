@@ -1,7 +1,7 @@
 <script type="text/javascript">
-	<?php if (isset($openmat)) { ?>open_uploadmat_pane = <?php echo ($openmat) ? 'true;' : 'false;'; } ?>
-	<?php if (isset($opencourse)) { ?>open_editcourse_pane = <?php echo ($opencourse) ? 'true;' : 'false;'; } ?>
-	<?php if (isset($openco)) { ?>open_uploadco_pane = <?php echo ($openco) ? 'true;' : 'false;'; } ?>
+	<?php if ($openpane == 'uploadmat') { ?>open_uploadmat_pane = <?php echo ($openpane == 'uploadmat') ? 'true;' : 'false;'; } ?>
+	<?php if ($openpane == 'editcourse') { ?>open_editcourse_pane = <?php echo ($openpane == 'editcourse') ? 'true;' : 'false;'; } ?>
+	<?php if ($openpane == 'uploadco') { ?>open_uploadco_pane = <?php echo ($openpane == 'uploadco') ? 'true;' : 'false;'; } ?>
 </script>
 
 <?php

@@ -21,30 +21,95 @@ class Materials extends Controller {
 	
 	public function index($cid, $caller="") { $this->home($cid, $caller); }
 
-	public function home($cid, $caller='', $openmat=false, $opencourse=false)
+	public function home($cid, $caller='', $openpane=NULL)
 	{
 			$tags =  $this->tag->tags();
 			$materials =  $this->material->materials($cid,'',true,true);
 			$mimetypes =  $this->mimetype->mimetypes();
 			
+			$school = array(
+			  "Architecture & Urban Planning",
+			  "Art & Design",
+			  "Business",
+			  "Dentistry",
+			  "Education",
+			  "Engineering",
+			  "Rackham School of Graduate Studies",
+			  "School of Information",
+			  "Kinesiology",
+			  "Law",
+			  "Literature, Science, and the Arts",
+			  "Medicine",
+			  "Music, Theatre & Dance",
+			  "Natural Resources & Environment",
+			  "Nursing",
+			  "Officer Education Programs",
+			  "Pharmacy",
+			  "Public Health",
+			  "Public Policy",
+			  "Social Work"
+			  );
+			
 			// values for drop down lists
-			$courselevel = array("Undergraduate", "Graduate", "PhD", "M1", "M2");
-			$courselength = array("Half-Semester", "Semester");
+			$courselevel = array("Undergraduate", "Masters", "PhD", "M1", "M2", 
+			"M3", "M4");
+			$courselength = array(
+			  1 => '1 week' ,
+			  2 => '2 weeks',
+			  3 => '3 weeks',
+			  4 => '4 weeks',
+			  5 => '5 weeks',
+			  6 => '6 weeks',
+			  7 => '7 weeks',
+			  8 => '8 weeks',
+			  9 => '9 weeks',
+			  10 => '10 weeks',
+			  11 => '11 weeks',
+			  12 => '12 weeks',
+			  13 => '13 weeks',
+			  14 => '14 weeks'
+			  );
+			  
+			$term = array("Fall", "Winter", "Spring", "Summer");
+			
+			$curryear = mdate('%Y');
+			
+			$year = array(
+			  ($curryear + 2) => ($curryear + 2),
+			  ($curryear + 1) => ($curryear + 1),
+			  ($curryear) => ($curryear),
+			  ($curryear - 1) => ($curryear - 1),
+			  ($curryear - 2) => ($curryear - 2),
+			  ($curryear - 3) => ($curryear - 3),
+			  ($curryear - 4) => ($curryear - 4),
+			  ($curryear - 5) => ($curryear - 5)
+			  );
 			
 			// form field attributes
 			$coursedescbox = array(
 			  'name' => 'description',
 			  'id' => 'description',
-			  'rows' => '8',
-			  'columns' => '20' 
+			  'wrap' => 'virtual',
+			  'rows' => '20',
+			  'cols' => '40'
 			  );
 			  
 			$coursehighlightbox = array(
 			  'name' => 'highlights',
 			  'id' => 'highlights',
-			  'rows' => '3',
-			  'columns' => '20'
+			  'wrap' => 'virtual',
+			  'rows' => '5',
+			  'cols' => '40'
 			  );
+			  
+			  
+			  $keywordbox = array(
+			    'name' => 'keywords',
+			    'id' => 'keywords',
+			    'wrap' => 'virtual',
+			    'rows' => '3',
+			    'cols' => '40'
+			    );
 						
 			$data = array('title'=>'Materials',
 						  'materials'=>$materials, 
@@ -53,12 +118,16 @@ class Materials extends Controller {
 						  'cid'=>$cid,
 						  'caller'=>$caller,
 					  	'tags'=>$tags,
-							'openmat'=>$openmat,
-							'opencourse'=>$opencourse,
+							'openpane'=>$openpane,
 							'courselevel' => $courselevel,
 							'courselength' => $courselength,
 							'coursedescbox' => $coursedescbox,
-							'coursehighlightbox' => $coursehighlightbox
+							'coursehighlightbox' => $coursehighlightbox,
+							'keywordbox' => $keywordbox,
+							'term' => $term,
+							'curryear' => $curryear,
+							'year' => $year,
+							'school' => $school
 					 	);
        
        $this->layout->buildPage('materials/index', $data);
@@ -108,12 +177,12 @@ class Materials extends Controller {
 		if ($valid == FALSE) {
 				$role = getUserProperty('role');
 				flashMsg($errmsg);
-				redirect("materials/home/$cid/$role/true", 'location');
+				redirect("materials/home/$cid/$role/uploadmat", 'location');
 		}	else {
 				$r = $this->material->manually_add_materials($cid, $type, $_POST,$_FILES);
 				if ($r !== true) {
 						flashMsg($r);
-						redirect("materials/home/$cid/$role/true", 'location');
+						redirect("materials/home/$cid/$role/uploadmat", 'location');
 				} else {
 						$msg = ($type=='bulk') ? 'Materials have been added.' : 'Added material to course.';
 						flashMsg($msg);
@@ -122,7 +191,7 @@ class Materials extends Controller {
 		}	
 	}
 
-	public function edit($cid, $mid, $caller='', $filter='Any', $openco=false)
+	public function edit($cid, $mid, $caller='', $filter='Any', $openco=FALSE)
 	{
 		$tags =  $this->tag->tags();
 		$mimetypes =  $this->mimetype->mimetypes();
