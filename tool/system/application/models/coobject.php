@@ -591,22 +591,23 @@ class Coobject extends Model
 
         if ($files !== false) {
             foreach($files as $newfile) {
+		
 							if (preg_match('/\.jpg$/',$newfile)) {
 									if (preg_match('/Slide\d+|\-pres\.\d+/',$newfile)) { // find slides
 
 											$this->add_slide($cid,$mid,$newfile);
 
 									} else {
-											$objecttype = (preg_match('/.*?(\d+)R\.jpg/',$newfile)) ? 'RCO' : 'CO';				
+											$objecttype = (preg_match('/^(\d+)R_(.*?)/',basename($newfile))) ? 'RCO' : 'CO';				
 	                    $filedata = array('userfile_0'=>array());
 	                    $filedata['userfile_0']['name'] = basename($newfile);
                       $filedata['userfile_0']['type'] = 'image/jpeg';
                       $filedata['userfile_0']['tmp_name'] = $newfile;
-																							
+
 											if (!preg_match('/^\./',basename($newfile))) {
                    				if ($objecttype=='CO') {
 		                     		$oid = $this->add($cid, $mid, $uid, array(), $filedata);
-														$repfile = preg_replace('/\.jpg$/','R.jpg',$newfile);
+														$repfile = preg_replace('/^(\d+)_/',"$1R_",basename($newfile));
 
 														# go through and see if any replacement items are waiting to be inserted
 														if (in_array($repfile, array_keys($replace_info))) {
@@ -616,13 +617,13 @@ class Coobject extends Model
 																unset($replace_info[$repfile]);
 												
 														} else { # place in queue just in case the replacement comes along later
-																$orig_info[$newfile] = $oid;
+																$orig_info[basename($newfile)] = $oid;
 														}
 
 												} elseif ($objecttype=='RCO') {
 														// this is a replacement - we have to make sure the original has been added
 														// first before we add this. Otherwise, add it to a queue
-														$origfile = preg_replace('/R.jpg$/','.jpg',$newfile);
+														$origfile = preg_replace('/^(\d+)R_/',"$1_",basename($newfile));
 
 														# go through and see if any original item has been inserted alredy 
 														if (in_array($origfile, array_keys($orig_info))) {
@@ -632,7 +633,7 @@ class Coobject extends Model
 																unset($orig_info[$origfile]);
 												
 														} else { # place in queue just in case the original comes along later
-																$replace_info[$newfile] = $filedata;
+																$replace_info[basename($newfile)] = $filedata;
 														}
 												}		
 	                   }
@@ -951,10 +952,13 @@ class Coobject extends Model
 
 		$yesno = array('N'=>'no', 'Y'=>'yes');
 
+		$loc = split('_',basename($newfile));
+		$loc = ereg_replace('R','',$loc[0]);
+
     if (isset($xmp_data['objecttype']) ) {
 				# get data from xmp
         $data['ask'] = (isset($xmp_data['ask'])) ? $yesno[$xmp_data['ask']] : 'no'; 
-				$data['location'] = preg_replace('/.*?(\d+)(R)?\.jpg/',"$1",$newfile);
+				$data['location'] = $loc;
         $data['question'] = (isset($xmp_data['question'])) ? $xmp_data['question'] : ''; 
         $data['citation'] = (isset($xmp_data['citation'])) ? $xmp_data['citation'] : 'none'; 
         $data['comment'] = (isset($xmp_data['comments'])) ? $xmp_data['comments'] : ''; 
@@ -971,8 +975,8 @@ class Coobject extends Model
 				}			
 		} else {
 				$data['ask'] = 'no';
-				if (preg_match('/.*?(\d+)(R)?\.jpg/',$newfile)) { 
-					$data['location'] = preg_replace('/.*?(\d+)(R)?\.jpg/',"$1",$newfile);
+				if (preg_match('/^(\d+)(R)?_/',basename($newfile))) { 
+					$data['location'] = $loc; 
 				} else {
 					$data['location'] = '';
 				}

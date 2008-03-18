@@ -5,6 +5,7 @@
 </script>
 
 <?php
+	$course_list_url = '';
    if (getUserProperty('role') == 'dscribe1') { 
 			$course_list_url = site_url('manage');
    } elseif (getUserProperty('role') == 'dscribe2') { 
