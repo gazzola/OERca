@@ -158,7 +158,7 @@ class Materials extends Controller {
 		//$this->ocw_utils->dump($_POST);
 		//$this->ocw_utils->dump($_FILES);
 
-		$idx = ($type=='bulk') ? 'zip_userfile_0' : 'single_userfile_0';
+		$idx = ($type=='bulk') ? 'zip_userfile' : 'single_userfile';
 		
 		if (!isset($_FILES[$idx]['name'])) {
 				$errmsg = 'Please specify a file to upload';
@@ -217,7 +217,7 @@ class Materials extends Controller {
 				  	'caller'=>$caller,
 		        'list' => $this->ocw_utils->create_co_list($cid,$mid,$objects),
 		        'filter' => $filter, 
-						'openco'=>$openco,
+						'openpane'=>$openco,
 		);
 
     $this->layout->buildPage('materials/edit_material', $data);

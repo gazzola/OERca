@@ -1,6 +1,9 @@
 var orig_com_ap, orig_q_ap, repl_com_ap, repl_q_ap; // references for add panel divs
 var open_uploadmat_pane, open_editcourse_pane, open_uploadco_pane;		// boolean values to determine if to open add pane - used in case of errors
 
+var btn_up_active = false;
+var btn_down_active = true;
+
 function update_edit_co_frame(id)
 {
   // update frame url.
@@ -13,14 +16,17 @@ function update_prev_next() {
 	if (knobpos == 0) {
 			$('up-arrow').src = $('imgurl').value+'/up-disabled.gif';
 			$('down-arrow').src = $('imgurl').value+'/down-enabled.gif';
+			btn_up_active = false; btn_down_active = true;
 	}
-	if (knobpos == numsteps) {
+	if (knobpos >= (numsteps - 1)) {
 			$('up-arrow').src = $('imgurl').value+'/up-enabled.gif';
-			$('down-arrow').src = $('imgurl').value+'/tool/assets/tool2/images/down-disabled.gif';
+			$('down-arrow').src = $('imgurl').value+'/down-disabled.gif';
+			btn_up_active = true; btn_down_active = false;
 	}
-	if (knobpos < numsteps && knobpos > 0) {
+	if (knobpos < (numsteps - 1) && knobpos > 0) {
 			$('up-arrow').src = $('imgurl').value+'/up-enabled.gif';
 			$('down-arrow').src = $('imgurl').value+'/down-enabled.gif';
+			btn_up_active = true; btn_down_active = true;
 	}
 }
 
@@ -221,7 +227,7 @@ var Site = {
 					onChange: function(step){
 						knobpos = step;
 						myScrollFx.toElement($('carousel-item-'+step));
-						update_prev_next();
+						//update_prev_next();
 					},
 			}).set(0);
 			
@@ -261,18 +267,18 @@ var Site = {
 			});
 
 			$('down-arrow').addEvent('click', function() {
-				if (knobpos < numsteps) {
-					knobpos += 1;
-					mySlide.set(knobpos);
+				if ((knobpos < numsteps) && btn_down_active) {
+						knobpos += 1;
+						mySlide.set(knobpos);
+						update_prev_next();
 				}
-				update_prev_next();
 			});
 			$('up-arrow').addEvent('click', function() {
-				if (knobpos > 0) {
-					knobpos -= 1;
-					mySlide.set(knobpos);
+				if ((knobpos > 0) && btn_up_active) {
+						knobpos -= 1;
+						mySlide.set(knobpos);
+						update_prev_next();
 				}
-				update_prev_next();
 			});
 
 			Element.Events.extend({
@@ -296,20 +302,20 @@ var Site = {
 			$('ulu').addEvents({
 				'wheeldown': function(e) {
 						e = new Event(e).stop();
-						if (knobpos < numsteps) {
-							knobpos += 1;
-							mySlide.set(knobpos);
+						if ((knobpos < numsteps) && btn_down_active) {
+								 knobpos += 1;
+								 mySlide.set(knobpos);
+								 update_prev_next();
 						}
-						update_prev_next();
 				},
  
 				'wheelup': function(e) {
 						e = new Event(e).stop();
-						if (knobpos > 0) {
+						if ((knobpos > 0) && btn_up_active) {
 							knobpos -= 1;
 							mySlide.set(knobpos);
+							update_prev_next();
 						}
-						update_prev_next();
 				}
 			});
 

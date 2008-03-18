@@ -11,7 +11,9 @@
 |	http://www.your-site.com/
 |
 */
-$config['base_url']	= "https://{$_SERVER['HTTP_HOST']}/tool/";
+$config['base_url']	= "http://{$_SERVER['HTTP_HOST']}/tool/";
+
+$config['remote_user']	= "tpain";
 
 /*
 |--------------------------------------------------------------------------

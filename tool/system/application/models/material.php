@@ -405,7 +405,7 @@ class Material extends Model
 		$details['created_on'] = date('Y-m-d h:i:s');
 	
 		// add new material
-		$idx = ($type=='bulk') ? 'zip_userfile_0' : 'single_userfile_0';
+		$idx = ($type=='bulk') ? 'zip_userfile' : 'single_userfile';
 		
 		if ($type=='single') {
 				$details['name'] = $files[$idx]['name'];
