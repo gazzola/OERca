@@ -277,11 +277,11 @@ class OCW_utils {
 	   $imgurl = '';
 
 	   if (is_readable($p_imgpath) || is_readable($j_imgpath)) {
-			$thumb_found = true;	
-			$imgurl = (is_readable($p_imgpath)) ? $p_imgurl : $j_imgurl;
+				 $thumb_found = true;	
+				 $imgurl = (is_readable($p_imgpath)) ? $p_imgurl : $j_imgurl;
 	   } else {
-			$thumb_found = false;	
-			$name = "none";
+				 $thumb_found = false;	
+				 $name = "none";
 	   }
 
      return ($thumb_found) ? true : false; 

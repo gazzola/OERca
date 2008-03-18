@@ -650,6 +650,50 @@ class Coobject extends Model
     }
   }
 
+  /**
+    * remove material based on information given
+    * 
+	  * TODO: remove materials and related objects from harddisk
+    */
+  public function remove_object($mid, $oid)
+  {
+		# remove material objects and related info
+		$this->db->select('id')->from('object_replacements')->where("object_id='$oid'");
+
+		$replacements = $this->db->get();
+
+		if ($replacements->num_rows() > 0) {
+				foreach($replacements->result_array() as $row) {
+								$this->remove_replacement($row['id']);
+				}
+		}
+
+		# remove object and it's related info 
+		$this->db->delete('object_questions', array('object_id'=>$oid));
+		$this->db->delete('object_comments', array('object_id'=>$oid));
+		$this->db->delete('object_copyright', array('object_id'=>$oid));
+		$this->db->delete('object_log', array('object_id'=>$oid));
+		$this->db->delete('objects', array('id'=>$oid));
+
+		return true;
+  }
+
+  /**
+    * remove material based on information given
+    * 
+	  * TODO: remove materials and related objects from harddisk
+    */
+  public function remove_replacement($rid)
+  {
+			# remove replacement objects and related info 
+			$this->db->delete('object_replacement_questions', array('object_id'=>$rid));
+			$this->db->delete('object_replacement_comments', array('object_id'=>$rid));
+			$this->db->delete('object_replacement_copyright', array('object_id'=>$rid));
+			$this->db->delete('object_replacement_log', array('object_id'=>$rid));
+			$this->db->delete('object_replacements', array('id'=>$rid));
+			return true;
+  }
+
 	/**
      * Update objects for a given material 
      *
@@ -757,33 +801,6 @@ class Coobject extends Model
 			move_uploaded_file($tmpname, $path.'/'.$name.'_rep'.$ext);
 		}
 	}
-
-	/**
-     * Remove an ip object
-     *
-     * @access  public
-     * @param   int ip object id
-     * @return  void
-     */
-	public function remove($ipid)
-	{
-		$data = array('id'=>$ipid);
-		$this->db->delete('objects',$data);
-	}
-
-	/**
-     * Remove an ip object replacement
-     *
-     * @access  public
-     * @param   int ip object id
-     * @return  void
-     */
-	public function remove_replacement($ipid)
-	{
-		$data = array('id'=>$ipid);
-		$this->db->delete('object_replacements',$data);
-	}
-
 
 	/**
      * Get Object types 

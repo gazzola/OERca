@@ -36,6 +36,43 @@ class Material extends Model
     }
     return $rv;
   }
+
+  /**
+    * remove material based on information given
+    * 
+	  * TODO: remove materials and related objects from harddisk
+    */
+  public function remove_material($cid, $mid)
+  {
+		# remove material objects and related info -- this should
+		# just call the objects delete function as some point 
+		$this->db->select('id')->from('objects')->where("material_id='$mid'");
+		$objects = $this->db->get();
+
+		if ($objects->num_rows() > 0) {
+				foreach($objects->result_array() as $row) {
+								$this->db->delete('object_replacement_questions', array('object_id'=>$row['id']));
+								$this->db->delete('object_replacement_comments', array('object_id'=>$row['id']));
+								$this->db->delete('object_replacement_copyright', array('object_id'=>$row['id']));
+								$this->db->delete('object_replacement_log', array('object_id'=>$row['id']));
+								$this->db->delete('object_replacements', array('object_id'=>$row['id']));
+
+								$this->db->delete('object_questions', array('object_id'=>$row['id']));
+								$this->db->delete('object_comments', array('object_id'=>$row['id']));
+								$this->db->delete('object_copyright', array('object_id'=>$row['id']));
+								$this->db->delete('object_log', array('object_id'=>$row['id']));
+								$this->db->delete('objects', array('material_id'=>$mid));
+				}
+		}
+
+		# remove material comments 
+		$this->db->delete('material_comments', array('material_id'=>$mid));
+
+		# remove material
+    $this->db->delete('materials',array('id'=>$mid, 'course_id'=>$cid));
+
+		return true;
+  }
    
    /**
     * Find where the material is marked for ocw already

@@ -20,6 +20,7 @@
 		<th class="sortable"><strong>Author</strong></th>
 		<th class="sortable"><strong>CO Status</strong></th>
 		<th class="sortable"><strong>Ask Items?</strong></th>
+		<th><strong>&nbsp;</strong></th>
 	</tr>
 	</thead>
 
@@ -54,6 +55,9 @@
 			 <?php 
 				if ($objstats['ask'] > 0) { echo '<small>Yes&nbsp;(<a href="'.site_url("materials/viewform/ask/$cid/".$material['id']).'">view ASK form</a>)</small>'; } else { echo 'no ask items'; }?> 
 			</b>
+		</td>
+		<td>
+				<a href="<?=site_url("materials/remove_material/$cid/{$material['id']}")?>" title="Remove material" class="confirm">Remove</a>
 		</td>
 		<?php } ?>
 	</tr>

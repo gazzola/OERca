@@ -34,19 +34,25 @@ echo script('ocw_tool.js');
 		<li title="Original" style="padding-left:10px; margin-left:0;"><h2>Original</h2>
 	    <?=$this->ocw_utils->create_co_img($cid,$mid,$obj['name'],$obj['location'],false,false,false);?>
       <br/>
-      <a href="#">&nbsp;</a>
+      <a href="<?=site_url("materials/remove_object/$cid/$mid/{$obj['id']}/original")?>" title="delete content object" style="text-align: center" class="confirm" target="_top">Delete content object &raquo;</a>
     </li>
 
 		<li title="Replacement" style="margin-left: 13px;"><h2>Replacement</h2>
       <?php 
-        if ($this->ocw_utils->replacement_exists($obj['name'])) {
+				$x = $this->ocw_utils->replacement_exists($obj['name']);
+        if ($x) {
             echo $this->ocw_utils->create_corep_img($cid,$mid,$obj['name'],$obj['location'],false,false);
         } else {
             echo '<img src="'.property('app_img').'/norep.png" width="300" height="300" />';
         }
       ?>
-      <br/>
-      <a href="#upload" style="text-align: center">Upload replacement &raquo;</a>
+     	<br/>
+			<?php if ($x) { 
+								$r = $this->coobject->replacements($mid,$obj['id']);
+			?>
+				<a href="<?=site_url("materials/remove_object/$cid/$mid/{$r[0]['id']}/replacement/{$r[0]['name']}")?>" style="text-align: center" title="delete replacement objects" class="confirm" target="_top">Delete replacement &raquo;</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+			<?php } ?>
+      	<a href="#upload" style="text-align: center" title="upload replacements">Upload replacement &raquo;</a>
     </li>
   </ul>
 

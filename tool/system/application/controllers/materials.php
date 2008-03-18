@@ -191,6 +191,13 @@ class Materials extends Controller {
 		}	
 	}
 
+	public function	remove_material($cid, $mid)
+	{
+		$this->material->remove_material($cid, $mid);
+		flashMsg('Material removed!');
+		redirect("materials/home/$cid", 'location');
+	}
+	
 	public function edit($cid, $mid, $caller='', $filter='Any', $openco=FALSE)
 	{
 		$tags =  $this->tag->tags();
@@ -276,6 +283,20 @@ class Materials extends Controller {
 		$data['filter'] = $filter; 
 		$this->load->view('default/content/materials/co', $data);
 	}
+
+	public function	remove_object($cid, $mid, $oid, $type="original", $name="")
+	{
+		if ($type=='original') {
+				flashMsg('Content object removed!');
+				$this->coobject->remove_object($mid, $oid);
+				redirect("materials/edit/$cid/$mid", 'location');
+		} else {
+				flashMsg('Replacement object removed!');
+				$this->coobject->remove_replacement($oid);
+				redirect("materials/object_info/$cid/$mid/$name", 'location');
+		}
+	}
+	
 
 	public function add_object($cid, $mid) 
  	{
