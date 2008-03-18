@@ -46,6 +46,8 @@ class Material extends Model
   {
 		# remove material objects and related info -- this should
 		# just call the objects delete function as some point 
+		$this->load->model('coobject');
+
 		$this->db->select('id')->from('objects')->where("material_id='$mid'");
 		$objects = $this->db->get();
 
@@ -70,6 +72,9 @@ class Material extends Model
 
 		# remove material
     $this->db->delete('materials',array('id'=>$mid, 'course_id'=>$cid));
+
+		$c = ereg_replace("\.",'/',"c$cid.m$mid");
+		$this->ocw_utils->remove_dir(property('app_uploads_path').$c);
 
 		return true;
   }

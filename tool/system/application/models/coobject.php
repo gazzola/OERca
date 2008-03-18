@@ -655,7 +655,7 @@ class Coobject extends Model
     * 
 	  * TODO: remove materials and related objects from harddisk
     */
-  public function remove_object($mid, $oid)
+  public function remove_object($cid, $mid, $oid)
   {
 		# remove material objects and related info
 		$this->db->select('id')->from('object_replacements')->where("object_id='$oid'");
@@ -664,7 +664,7 @@ class Coobject extends Model
 
 		if ($replacements->num_rows() > 0) {
 				foreach($replacements->result_array() as $row) {
-								$this->remove_replacement($row['id']);
+								$this->remove_replacement($row['id'],$row['name']);
 				}
 		}
 
@@ -675,6 +675,9 @@ class Coobject extends Model
 		$this->db->delete('object_log', array('object_id'=>$oid));
 		$this->db->delete('objects', array('id'=>$oid));
 
+		$c = ereg_replace("\.",'/',"c$cid.m$mid.o$oid");
+		rmdir(property('app_uploads_path').$c);
+
 		return true;
   }
 
@@ -683,7 +686,7 @@ class Coobject extends Model
     * 
 	  * TODO: remove materials and related objects from harddisk
     */
-  public function remove_replacement($rid)
+  public function remove_replacement($rid, $name)
   {
 			# remove replacement objects and related info 
 			$this->db->delete('object_replacement_questions', array('object_id'=>$rid));
@@ -691,6 +694,14 @@ class Coobject extends Model
 			$this->db->delete('object_replacement_copyright', array('object_id'=>$rid));
 			$this->db->delete('object_replacement_log', array('object_id'=>$rid));
 			$this->db->delete('object_replacements', array('id'=>$rid));
+	   
+			$imgpath = ereg_replace("\.",'/',$name);
+	   	$p_imgpath = property('app_uploads_path').$imgpath.'/'.$name.'_rep.png';
+	   	$j_imgpath = property('app_uploads_path').$imgpath.'/'.$name.'_rep.jpg';
+
+			if (file_exists($p_imgpath)) { unlink($p_imgpath); } 
+			elseif (file_exists($j_imgpath)) { unlink($j_imgpath); }
+
 			return true;
   }
 

@@ -287,6 +287,27 @@ class OCW_utils {
      return ($thumb_found) ? true : false; 
 	}
 
+	function remove_dir($dir)
+  {
+        if(is_dir($dir))
+        {
+            $dir = (substr($dir, -1) != "/")? $dir."/":$dir;
+            $openDir = opendir($dir);
+            while($file = readdir($openDir))
+            {
+                if(!in_array($file, array(".", "..")))
+                {
+                    if(!is_dir($dir.$file))
+                        @unlink($dir.$file);
+                    else
+                        $this->remove_dir($dir.$file);
+                }
+            }
+            closedir($openDir);
+            @rmdir($dir);
+        }
+   }
+
     /**
      * Escape url 
      *

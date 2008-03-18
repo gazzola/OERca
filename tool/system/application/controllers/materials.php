@@ -288,13 +288,13 @@ class Materials extends Controller {
 	{
 		if ($type=='original') {
 				flashMsg('Content object removed!');
-				$this->coobject->remove_object($mid, $oid);
-				redirect("materials/edit/$cid/$mid", 'location');
+				$this->coobject->remove_object($cid, $mid, $oid);
 		} else {
 				flashMsg('Replacement object removed!');
-				$this->coobject->remove_replacement($oid);
-				redirect("materials/object_info/$cid/$mid/$name", 'location');
+				$this->coobject->remove_replacement($oid, $name);
+				//redirect("materials/object_info/$cid/$mid/$name", 'location');
 		}
+		redirect("materials/edit/$cid/$mid", 'location');
 	}
 	
 
