@@ -518,7 +518,9 @@ class Material extends Model
 	{
 		$q = $this->db->query("SELECT MAX(`order`) + 1 AS nextpos FROM ocw_materials WHERE course_id=$cid"); 
 		$row = $q->result_array();
-		return $row[0]['nextpos'];
+		if ($row[0]['nextpos']) {
+		  return $row[0]['nextpos'];
+		} else return 0;
 	}
 }
 ?>
