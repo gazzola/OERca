@@ -32,7 +32,12 @@ class Materials extends Controller {
     $mimetypes =  $this->mimetype->mimetypes();
     $school_id = $this->school->get_school_list();
     $subj_id = $this->subject->get_subj_list();
-
+    $coursedetails = $this->course->get_course($cid);
+    $missing_menu_val = "-- select --";
+    $school_id[0] = $missing_menu_val;
+    $subj_id[0] = $missing_menu_val;
+    //TODO: consider combining enum fetches into a single DB call since
+    //      DB queries are expensive operations
     $courselevel = NULL;
     $clevelsindb = $this->dbmetadata->
       get_enum_vals('ocw', 'ocw_courses', 'level');
@@ -73,7 +78,8 @@ class Materials extends Controller {
       'id' => 'description',
       'wrap' => 'virtual',
       'rows' => '20',
-      'cols' => '40'
+      'cols' => '40',
+      'value' => $coursedetails['description']
       );
 
     $coursehighlightbox = array(
@@ -81,7 +87,8 @@ class Materials extends Controller {
       'id' => 'highlights',
       'wrap' => 'virtual',
       'rows' => '5',
-      'cols' => '40'
+      'cols' => '40',
+      'value' => $coursedetails['highlights']
       );
 
     $keywordbox = array(
@@ -89,7 +96,8 @@ class Materials extends Controller {
       'id' => 'keywords',
       'wrap' => 'virtual',
       'rows' => '3',
-      'cols' => '40'
+      'cols' => '40',
+      'value' => $coursedetails['keywords']
       );
 
     $data = array('title'=>'Materials',
@@ -109,8 +117,10 @@ class Materials extends Controller {
       'curryear' => $curryear,
       'year' => $year,
       'school_id' => $school_id,
-      'subj_id' => $subj_id
+      'subj_id' => $subj_id,
+      'coursedetails' => $coursedetails
       );
+      
     $this->layout->buildPage('materials/index', $data);
   }
 

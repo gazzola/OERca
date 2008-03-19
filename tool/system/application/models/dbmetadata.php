@@ -35,8 +35,7 @@ class DBMetadata extends Model
   {
     $rawqueryresult = NULL;
     $matchedvals= NULL;
-    $enumvals = NULL;
-    
+        
     $sql = "SELECT COLUMNS.DATA_TYPE, COLUMNS.COLUMN_TYPE
     FROM information_schema.COLUMNS
     WHERE COLUMNS.TABLE_SCHEMA = '$dbname'

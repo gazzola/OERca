@@ -46,7 +46,7 @@ class Courses extends Controller {
       'year' => "integer|maxlength[4]|xss_clean",
       'director' => "maxlength[70]|xss_clean",
       'creator' => "maxlength[255]|xss_clean",
-      'collaborator' => "maxlength[65535]|xss_clean",
+      'collaborators' => "maxlength[65535]|xss_clean",
       'copyright_holder' => "maxlength[255]|xss_clean",
       'language' => "maxlength[255]|xss_clean",
       'highlights' => "maxlength[200]|xss_clean",
@@ -65,7 +65,7 @@ class Courses extends Controller {
       'year' => "Year",
       'director' => "Director",
       'creator' => "Creator",
-      'collaborator' => "Copyright Holder",
+      'collaborators' => "Copyright Holder",
       'language' => "Language",
       'highlights' => "Highlights",
       'description' => "Description",
@@ -80,10 +80,45 @@ class Courses extends Controller {
 	    flashMsg($this->validation->error_string);
 			redirect("materials/home/$cid/$role/editcourse", 'location');
     } else {
-      $msg = "Edited course information.";
+      if ($_POST['cnum']) {
+        $data['number'] = $_POST['cnum'];
+      }
+      if ($_POST['title']) {
+        $data['title'] = $_POST['title'];
+      }
+      if ($_POST['director']) {
+        $data['director'] = $_POST['director'];
+      }
+      if ($_POST['creator']) {
+        $data['creator'] = $_POST['creator'];
+      }
+      if ($_POST['collaborators']) {
+        $data['collaborator'] = $_POST['collaborators'];
+      }
+      if ($_POST['language']) {
+        $data['language'] = $_POST['language'];
+      }
+      if ($_POST['highlights']) {
+        $data['highlight'] = $_POST['highlights'];
+      }
+      if ($_POST['description']) {
+        $data['description'] = $_POST['description'];
+      }
+      if ($_POST['keywords']) {
+        $data['keywords'] = $_POST['keywords'];
+      }
+      
+      $data['school_id'] = $_POST['school_id'];
+      $data['subject_id'] = $_POST['subj_id'];
+      $data['level'] = $_POST['courselevel'];
+      $data['length'] = $_POST['courselength'];
+      $data['term'] = $_POST['term'];
+      $data['year'] = $_POST['year'];
+      // now update the course info
+			$this->course->update_course($cid, $data);
+			$msg = "Edited course information.";
 			flashMsg($msg);
-			$this->ocw_utils->dump($_POST);
-			$this->ocw_utils->dump($_FILES);
+      redirect("materials/home/$cid", "location");
     }
 	}
 	
