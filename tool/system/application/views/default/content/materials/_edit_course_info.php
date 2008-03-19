@@ -49,16 +49,15 @@
 
         <div class="formLabel">Year:</div>
         <div class="formField">
-          <?php echo form_dropdown('year', $year, $curryear, 'id="year"'); 
-          ?>
+          <?php echo form_dropdown('year', $year, $curryear, 'id="year"'); ?>
         </div>
       </div>
       
       <div class="column span-6 colborder">
        <div class="formLabel">Director (Med School Only):</div>
-        <div class="formField">
-          <input type="text" name="director" id="director" class="input" />
-        </div>
+       <div class="formField">
+         <input type="text" name="director" id="director" class="input" />
+       </div>
         
         <div class="formLabel">Creator:</div>
         <div class="formField">
@@ -73,7 +72,8 @@
         
         <div class="formLabel">Copyright Holder:</div>
         <div class="formField">
-          <input type="text" name="copyright" id="copyright" class="input" />
+          <input type="text" name="copyright_holder" id="copyright_holder"
+           class="input" />
         </div>
         
         <div class="formLabel">Language:</div>

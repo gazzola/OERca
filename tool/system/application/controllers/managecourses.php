@@ -118,9 +118,8 @@ class ManageCourses extends Controller {
      while ($depth > 0) {
        $array = array_shift($array);
        $depth--;
-     }
-     
-     return($array);
+     }   
+     return $array;
    }
 }
 ?>

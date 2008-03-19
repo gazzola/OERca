@@ -8,121 +8,111 @@
 
 class Materials extends Controller {
 
-	public function __construct()
-	{
-		parent::Controller();	
-		$this->load->model('tag');
-		$this->load->model('mimetype');
-		$this->load->model('course');
-		$this->load->model('material');
-		$this->load->model('coobject');
-		$this->load->model('ocw_user');
-		$this->load->model('school');
-		$this->load->model('subject');
-	}
-	
-	public function index($cid, $caller="") { $this->home($cid, $caller); }
+  public function __construct()
+  {
+    parent::Controller();	
+    $this->load->model('tag');
+    $this->load->model('mimetype');
+    $this->load->model('course');
+    $this->load->model('material');
+    $this->load->model('coobject');
+    $this->load->model('ocw_user');
+    $this->load->model('school');
+    $this->load->model('subject');
+    $this->load->model('dbmetadata');
+  }
+
+  public function index($cid, $caller="") { $this->home($cid, $caller); }
 
   // TODO: highlight the currently selected field
-	public function home($cid, $caller='', $openpane=NULL)
-	{
-			$tags =  $this->tag->tags();
-			$materials =  $this->material->materials($cid,'',true,true);
-			$mimetypes =  $this->mimetype->mimetypes();
-			$school_id = $this->school->get_school_list();
-			$subj_id = $this->subject->get_subj_list();
-			
-			// get these from database
-			// values for drop down lists
-			$courselevel = array(
-			  "Undergraduate" => "Undergraduate",
-			  "Masters" => "Masters",
-			  "PhD" => "PhD",
-			  "M1" => "M1",
-			  "M2" => "M2", 
-			  "M3" => "M3",
-			  "M4" => "M4");
-			  
-			$courselength = array(
-			  1 => '1 week' ,
-			  2 => '2 weeks',
-			  3 => '3 weeks',
-			  4 => '4 weeks',
-			  5 => '5 weeks',
-			  6 => '6 weeks',
-			  7 => '7 weeks',
-			  8 => '8 weeks',
-			  9 => '9 weeks',
-			  10 => '10 weeks',
-			  11 => '11 weeks',
-			  12 => '12 weeks',
-			  13 => '13 weeks',
-			  14 => '14 weeks'
-			  );
-			  
-			$term = array("Fall", "Winter", "Spring", "Summer");
-			
-			$curryear = mdate('%Y');
-			
-			$year = array(
-			  ($curryear + 2) => ($curryear + 2),
-			  ($curryear + 1) => ($curryear + 1),
-			  ($curryear) => ($curryear),
-			  ($curryear - 1) => ($curryear - 1),
-			  ($curryear - 2) => ($curryear - 2),
-			  ($curryear - 3) => ($curryear - 3),
-			  ($curryear - 4) => ($curryear - 4),
-			  ($curryear - 5) => ($curryear - 5)
-			  );
-			
-			// form field attributes
-			$coursedescbox = array(
-			  'name' => 'description',
-			  'id' => 'description',
-			  'wrap' => 'virtual',
-			  'rows' => '20',
-			  'cols' => '40'
-			  );
-			  
-			$coursehighlightbox = array(
-			  'name' => 'highlights',
-			  'id' => 'highlights',
-			  'wrap' => 'virtual',
-			  'rows' => '5',
-			  'cols' => '40'
-			  );
-			  
-			  
-			  $keywordbox = array(
-			    'name' => 'keywords',
-			    'id' => 'keywords',
-			    'wrap' => 'virtual',
-			    'rows' => '3',
-			    'cols' => '40'
-			    );
-						
-			$data = array('title'=>'Materials',
-						  'materials'=>$materials, 
-							'mimetypes'=>$mimetypes,
-	   					'cname' => $this->course->course_title($cid), 
-						  'cid'=>$cid,
-						  'caller'=>$caller,
-					  	'tags'=>$tags,
-							'openpane'=>$openpane,
-							'courselevel' => $courselevel,
-							'courselength' => $courselength,
-							'coursedescbox' => $coursedescbox,
-							'coursehighlightbox' => $coursehighlightbox,
-							'keywordbox' => $keywordbox,
-							'term' => $term,
-							'curryear' => $curryear,
-							'year' => $year,
-							'school_id' => $school_id,
-							'subj_id' => $subj_id
-					 	);
-       
-       $this->layout->buildPage('materials/index', $data);
-	}
+  public function home($cid, $caller='', $openpane=NULL)
+  {
+    $tags =  $this->tag->tags();
+    $materials =  $this->material->materials($cid,'',true,true);
+    $mimetypes =  $this->mimetype->mimetypes();
+    $school_id = $this->school->get_school_list();
+    $subj_id = $this->subject->get_subj_list();
+
+    $courselevel = NULL;
+    $clevelsindb = $this->dbmetadata->
+      get_enum_vals('ocw', 'ocw_courses', 'level');
+    foreach ($clevelsindb as $levelval) {
+      $courselevel[$levelval] = $levelval;
+    }
+
+    $courselength = NULL;
+    $clengthindb = $this->dbmetadata->
+      get_enum_vals('ocw', 'ocw_courses', 'length');
+    foreach ($clengthindb as $lengthval) {
+      $courselength[$lengthval] = $lengthval;
+    }
+
+    $term = NULL;
+    $termnamesindb = $this->dbmetadata->
+      get_enum_vals('ocw', 'ocw_courses', 'term');
+    foreach ($termnamesindb as $termname) {
+      $term[$termname] = $termname;
+    }
+
+    $curryear = mdate('%Y');
+
+    $year = array(
+      ($curryear + 2) => ($curryear + 2),
+      ($curryear + 1) => ($curryear + 1),
+      ($curryear) => ($curryear),
+      ($curryear - 1) => ($curryear - 1),
+      ($curryear - 2) => ($curryear - 2),
+      ($curryear - 3) => ($curryear - 3),
+      ($curryear - 4) => ($curryear - 4),
+      ($curryear - 5) => ($curryear - 5)
+      );
+
+    // form field attributes
+    $coursedescbox = array(
+      'name' => 'description',
+      'id' => 'description',
+      'wrap' => 'virtual',
+      'rows' => '20',
+      'cols' => '40'
+      );
+
+    $coursehighlightbox = array(
+      'name' => 'highlights',
+      'id' => 'highlights',
+      'wrap' => 'virtual',
+      'rows' => '5',
+      'cols' => '40'
+      );
+
+    $keywordbox = array(
+      'name' => 'keywords',
+      'id' => 'keywords',
+      'wrap' => 'virtual',
+      'rows' => '3',
+      'cols' => '40'
+      );
+
+    $data = array('title'=>'Materials',
+      'materials'=>$materials, 
+      'mimetypes'=>$mimetypes,
+      'cname' => $this->course->course_title($cid), 
+      'cid'=>$cid,
+      'caller'=>$caller,
+      'tags'=>$tags,
+      'openpane'=>$openpane,
+      'courselevel' => $courselevel,
+      'courselength' => $courselength,
+      'coursedescbox' => $coursedescbox,
+      'coursehighlightbox' => $coursehighlightbox,
+      'keywordbox' => $keywordbox,
+      'term' => $term,
+      'curryear' => $curryear,
+      'year' => $year,
+      'school_id' => $school_id,
+      'subj_id' => $subj_id
+      );
+    $this->layout->buildPage('materials/index', $data);
+  }
 
 	public function update($cid,$mid,$field,$val,$resp=true)
 	{

@@ -1,6 +1,6 @@
 <?php
 /**
- * @package OCW Tool
+ * @package OER Tool
  * @author  Ali Asad Lotia <lotia@umich.edu>
  * @date    18 March 2008
  * @copyright Copyright (c) 2006, University of Michigan
@@ -20,7 +20,7 @@ class Subject extends Model
   
   
   /**
-   * get the list of all subjects
+   * get the list of subjects
    *
    * @access  public
    * @param   int school id (optional), will constrain by school if specified
