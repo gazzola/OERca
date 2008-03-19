@@ -27,18 +27,32 @@ class Courses extends Controller {
 	
 	
 	/**
-	 * verify/sanitize the course info form
+	 * verify/sanitize and then add the course info
 	 *
 	 * @access  public
 	 * @param   int course id
 	 * @return  void
 	 */
-	public function check_course_info($cid)
+	public function edit_course_info($cid)
 	{
-    $errmsg = '';
+    $errmsg = 'This is bad';
     
     $rules = array(
-      'id' => "required"
+      'subnum' => "integer|maxlength[4]|xss_clean",
+      'cnum' => "integer|maxlength[4]|xss_clean",
+      'title' => "maxlength[255]|xss_clean",
+      'director' => "maxlength[70]|xss_clean",
+      'creator' => "maxlength[255]|xss_clean",
+      'collaborator' => "maxlength[65535]|xss_clean",
+      'school_id' => "integer|maxlength[3]|xss_clean",
+      'courselevel' => "alpha|maxlength[15]|xss_clean",
+      'courselength' => "integer|maxlength[2]|xss_clean",
+      'term' => "alpha|maxlength[8]|xss_clean",
+      'year' => "integer|maxlength[4]|xss_clean",
+      'copyright' => "maxlength[255]|xss_clean",
+      'language' => "maxlength[255]|xss_clean",
+      'school_id' => "integer|maxlength[3]|xss_clean",
+      'subj_id' => "integer|maxlength[4]|xss_clean",
       );
     
     $this->validation->set_rules($rules);
@@ -55,19 +69,6 @@ class Courses extends Controller {
     }
 	}
 	
-	
-	/**
-	 * add/edit course information
-	 *
-	 * @access  public
-	 * @param   int course id
-	 * @return  void
-	 */
-	public function edit_course_info($cid)
-	{
-	  $this->ocw_utils->dump($_POST);
-	  $this->ocw_utils->dump($_FILES);
-	}
 
 	public function breadcrumb($section='default')
 	{

@@ -17,42 +17,32 @@ class Materials extends Controller {
 		$this->load->model('material');
 		$this->load->model('coobject');
 		$this->load->model('ocw_user');
+		$this->load->model('school');
+		$this->load->model('subject');
 	}
 	
 	public function index($cid, $caller="") { $this->home($cid, $caller); }
 
+  // TODO: highlight the currently selected field
 	public function home($cid, $caller='', $openpane=NULL)
 	{
 			$tags =  $this->tag->tags();
 			$materials =  $this->material->materials($cid,'',true,true);
 			$mimetypes =  $this->mimetype->mimetypes();
+			$school_id = $this->school->get_school_list();
+			$subj_id = $this->subject->get_subj_list();
 			
-			$school = array(
-			  "Architecture & Urban Planning",
-			  "Art & Design",
-			  "Business",
-			  "Dentistry",
-			  "Education",
-			  "Engineering",
-			  "Rackham School of Graduate Studies",
-			  "School of Information",
-			  "Kinesiology",
-			  "Law",
-			  "Literature, Science, and the Arts",
-			  "Medicine",
-			  "Music, Theatre & Dance",
-			  "Natural Resources & Environment",
-			  "Nursing",
-			  "Officer Education Programs",
-			  "Pharmacy",
-			  "Public Health",
-			  "Public Policy",
-			  "Social Work"
-			  );
-			
+			// get these from database
 			// values for drop down lists
-			$courselevel = array("Undergraduate", "Masters", "PhD", "M1", "M2", 
-			"M3", "M4");
+			$courselevel = array(
+			  "Undergraduate" => "Undergraduate",
+			  "Masters" => "Masters",
+			  "PhD" => "PhD",
+			  "M1" => "M1",
+			  "M2" => "M2", 
+			  "M3" => "M3",
+			  "M4" => "M4");
+			  
 			$courselength = array(
 			  1 => '1 week' ,
 			  2 => '2 weeks',
@@ -127,7 +117,8 @@ class Materials extends Controller {
 							'term' => $term,
 							'curryear' => $curryear,
 							'year' => $year,
-							'school' => $school
+							'school_id' => $school_id,
+							'subj_id' => $subj_id
 					 	);
        
        $this->layout->buildPage('materials/index', $data);

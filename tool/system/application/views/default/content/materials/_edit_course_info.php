@@ -1,40 +1,33 @@
 <?php	
+// TODO: Narrow down pulldown choices using on select events in previous
+// menu
 ?>
 
 <div id="pane_courseinfo" class="editpane">
   <div class="column span-21 firstlast">
-    <?php echo form_open_multipart("courses/check_course_info/$cid"); ?>
+    <?php echo form_open_multipart("courses/edit_course_info/$cid"); ?>
       <div class="column span-6 colborder">
-        <div class="formLabel">Course ID:</div>
+        <div class="formLabel">School:</div>
         <div class="formField">
-          <input type="text" name="id" id ="id" class="input" />
+          <?php echo form_dropdown('school_id', $school_id, '', 
+          'id="school_id"'); ?>
+        </div>
+      
+        <div class="formLabel">Course Subject:</div>
+        <div class="formField">
+          <?php echo form_dropdown('subj_id', $subj_id, '', 'id="subj_id"');
+           ?>
+        </div>
+      
+        <div class="formLabel">Course Number:</div>
+        <div class="formField">
+          <input type="text" name="cnum" id ="cnum" class="input" />
         </div>
 
         <div class="formLabel">Title:</div>
         <div class="formField">
           <input type="text" name="title" id="title" class="input"
           />
-        </div>
-
-        <div class="formLabel">Director (Med School Only):</div>
-        <div class="formField">
-          <input type="text" name="director" id="director" class="input" />
-        </div>
-        
-        <div class="formLabel">Creator:</div>
-        <div class="formField">
-          <input type="text" name="creator" id="creator" class="input" />
-        </div>
-
-        <div class="formLabel">Collaborator:</div>
-        <div class="formField">
-          <input type="text" name="collaborator" id="collaborator"
-          class="input" />
-        </div>
-
-        <div class="formLabel">School:</div>
-        <div class="formField">
-          <?php echo form_dropdown('school', $school, '', 'id="school"'); ?>
         </div>
 
         <div class="formLabel">Level:</div>
@@ -62,9 +55,25 @@
       </div>
       
       <div class="column span-6 colborder">
-        <div class="formLabel">Rights:</div>
+       <div class="formLabel">Director (Med School Only):</div>
         <div class="formField">
-          <input type="text" name="rights" id="rights" class="input" />
+          <input type="text" name="director" id="director" class="input" />
+        </div>
+        
+        <div class="formLabel">Creator:</div>
+        <div class="formField">
+          <input type="text" name="creator" id="creator" class="input" />
+        </div>
+
+        <div class="formLabel">Collaborator:</div>
+        <div class="formField">
+          <input type="text" name="collaborator" id="collaborator"
+          class="input" />
+        </div>
+        
+        <div class="formLabel">Copyright Holder:</div>
+        <div class="formField">
+          <input type="text" name="copyright" id="copyright" class="input" />
         </div>
         
         <div class="formLabel">Language:</div>
@@ -73,20 +82,15 @@
           class="input" />
         </div>
         
-        <div class="formLabel">Subject:</div>
-        <div class="formField">
-          <input type="text" name="subject" id="subject" class="input" />
-        </div>
-        
-        <div class="formLabel">Curricular Information:</div>
+        <!-- <div class="formLabel">Curricular Information:</div>
         <div class="formField">
           <input type="text" name="currinfo" id="currinfo" class="input" />
-        </div>
+        </div> -->
         
-        <div class="formLabel">Lifecycle Version:</div>
+        <!-- <div class="formLabel">Lifecycle Version:</div>
         <div class="formField">
           <input type="text" name="lcversion" id="lcversion" class="input" />
-        </div>
+        </div> -->
         
         <div class="formLabel">Course Image/Icon:</div>
         <div class="formField">

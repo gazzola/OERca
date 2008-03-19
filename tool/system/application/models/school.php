@@ -98,5 +98,25 @@ class School extends Model
 		$query = $this->db->get('schools'); 
 		return ($query->num_rows() > 0) ? true : false;
 	}
+	
+	
+	/**
+	 * Get a list of all schools
+	 *
+	 * @access public
+	 * @return array composed of schools id's and names
+	 */
+	public function get_school_list()
+	{
+	  $school_list = NULL;
+	  $this->db->select('id, name')->order_by('name');
+	  $query = $this->db->get('schools');
+	  
+	  foreach ($query->result() as $row) {
+	    $school_list[$row->id] = $row->name;
+	  }
+	  
+	  return $school_list;
+	}
 }
 ?>
