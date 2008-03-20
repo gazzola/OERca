@@ -96,7 +96,7 @@ class Courses extends Controller {
       } else $data['creator'] = '';
       if ($_POST['collaborators']) {
         $data['collaborator'] = $_POST['collaborators'];
-      } else $data['collaborator'] = '';
+      } else $data['collaborators'] = '';
       if ($_POST['language']) {
         $data['language'] = $_POST['language'];
       }
