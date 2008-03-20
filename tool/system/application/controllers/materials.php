@@ -146,12 +146,12 @@ class Materials extends Controller {
 	{
 		$valid = true;
 		$errmsg = '';
-		//$this->ocw_utils->dump($_POST);
-		//$this->ocw_utils->dump($_FILES);
+		#$this->ocw_utils->dump($_POST);
+		#$this->ocw_utils->dump($_FILES,true);
 
 		$idx = ($type=='bulk') ? 'zip_userfile' : 'single_userfile';
 		
-		if (!isset($_FILES[$idx]['name'])) {
+		if (!isset($_FILES[$idx]['name']) || $_FILES[$idx]['name']=='') {
 				$errmsg = 'Please specify a file to upload';
 				$valid = false;
 				
@@ -294,7 +294,7 @@ class Materials extends Controller {
 		$valid = true;
 		$errmsg = '';
 
-		if (!isset($_FILES['userfile_0']['name'])) {
+		if (!isset($_FILES['userfile_0']['name']) || $_FILES['userfile_0']['name']=='') {
 				$errmsg = 'Please specify a file to upload';
 				$valid = false;
 				
@@ -327,7 +327,7 @@ class Materials extends Controller {
 		$valid = true;
 		$errmsg = '';
 
-		if (!isset($_FILES['userfile']['name'])) {
+		if (!isset($_FILES['userfile']['name']) || $_FILES['userfile']['name']=='') {
 				$errmsg = 'Please specify a ZIP file to upload';
 				$valid = false;				
 		} elseif (isset($_FILES['userfile']['name'])  && !preg_match('/\.zip$/',$_FILES['userfile']['name'])) {

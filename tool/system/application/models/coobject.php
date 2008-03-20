@@ -677,7 +677,7 @@ class Coobject extends Model
 		$this->db->delete('objects', array('id'=>$oid));
 
 		$c = ereg_replace("\.",'/',"c$cid.m$mid.o$oid");
-		rmdir(property('app_uploads_path').$c);
+		@rmdir(property('app_uploads_path').$c);
 
 		return true;
   }
