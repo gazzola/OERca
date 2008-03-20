@@ -2,6 +2,8 @@
 	<?php if ($openpane == 'uploadmat') { ?>open_uploadmat_pane = <?php echo ($openpane == 'uploadmat') ? 'true;' : 'false;'; } ?>
 	<?php if ($openpane == 'editcourse') { ?>open_editcourse_pane = <?php echo ($openpane == 'editcourse') ? 'true;' : 'false;'; } ?>
 	<?php if ($openpane == 'uploadco') { ?>open_uploadco_pane = <?php echo ($openpane == 'uploadco') ? 'true;' : 'false;'; } ?>
+	<?php if ($openpane == 'editinst') { ?>open_editinst_pane = <?php echo
+	  ($openpane == 'editinst') ? 'true' : 'false;'; } ?>
 </script>
 
 <?php
@@ -41,6 +43,8 @@
 
     <div id="materials_nav" style="float: right">
 		  <ul>
+		      <li class="normal"><a id="do_open_instinfo_pane">Edit Instructor
+		        Info</a></li>
 			    <li class="normal"><a id="do_open_courseinfo_pane">Edit Course Info</a></li>
 			    <li class="normal"><a id="do_open_uploadmat_pane">Add Materials</a></li>
       </ul>
@@ -58,6 +62,8 @@
       } else {
           $this->load->view(property('app_views_path').'/materials/_edit_course_info.php', $data); 
           $this->load->view(property('app_views_path').'/materials/_add_materials.php', $data); 
+          
+$this->load->view(property('app_views_path').'/materials/_edit_instructor_info.php', $data);
       } 
    ?>
 <br/>

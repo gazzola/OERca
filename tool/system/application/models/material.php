@@ -514,6 +514,8 @@ class Material extends Model
 		return $path;
 	}
 	
+	// TODO: change the SQL query to check for null and return 0? is that a good
+	//      idea
 	private function get_nextorder_pos($cid)
 	{
 		$q = $this->db->query("SELECT MAX(`order`) + 1 AS nextpos FROM ocw_materials WHERE course_id=$cid"); 

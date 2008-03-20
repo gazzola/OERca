@@ -25,6 +25,7 @@ class Materials extends Controller {
   public function index($cid, $caller="") { $this->home($cid, $caller); }
 
   // TODO: highlight the currently selected field
+  // TODO: move stuff into smaller functions, the home function is quite long
   public function home($cid, $caller='', $openpane=NULL)
   {
     $tags =  $this->tag->tags();

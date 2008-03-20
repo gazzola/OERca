@@ -83,8 +83,8 @@
         
         <div class="formLabel">Language:</div>
         <div class="formField">
-          <input type="text" name="language" id="language" value="English" 
-          class="input" />
+          <input type="text" name="language" id="language" 
+          value="<? $coursedetails['language'] ?>" class="input" />
         </div>
         
         <!-- <div class="formLabel">Curricular Information:</div>
@@ -96,7 +96,7 @@
         <div class="formField">
           <input type="text" name="lcversion" id="lcversion" class="input" />
         </div> -->
-        
+        <!-- TODO: Enable image upload -->
         <!-- <div class="formLabel">Course Image/Icon:</div>
         <div class="formField">
           <input type="file" name="icon" id="icon">
