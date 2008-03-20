@@ -592,7 +592,7 @@ class Coobject extends Model
         if ($files !== false) {
             foreach($files as $newfile) {
 		
-							if (preg_match('/\.jpg$/',$newfile)) {
+							if (preg_match('/\.jpg$/i',$newfile)) {
 									if (preg_match('/Slide\d+|\-pres\.\d+/',$newfile)) { // find slides
 
 											$this->add_slide($cid,$mid,$newfile);
@@ -771,7 +771,6 @@ class Coobject extends Model
 		// update new object if need be
 		if (sizeof($data) > 0) {
 				$data['material_id'] = $mid;
-				$data['object_id'] = $objid;
 				$data['id'] = $oid;
 				$this->update_replacement($oid, $data);
 		}

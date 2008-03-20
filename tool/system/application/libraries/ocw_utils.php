@@ -323,7 +323,7 @@ class OCW_utils {
 
     function xmp_data($filename)
     {
-      if (preg_match('/\.jpg$/',$filename)) {
+      if (preg_match('/\.jpg$/i',$filename)) {
           include_once 'metadata.class.php';
           $mdata = new ImageMetadata($filename);
           return $mdata->get_ocw_array();
