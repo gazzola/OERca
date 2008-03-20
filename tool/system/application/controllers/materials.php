@@ -165,8 +165,8 @@ class Materials extends Controller {
 				$valid = false;
 		}
 		
+		$role = getUserProperty('role');
 		if ($valid == FALSE) {
-				$role = getUserProperty('role');
 				flashMsg($errmsg);
 				redirect("materials/home/$cid/$role/uploadmat", 'location');
 		}	else {
