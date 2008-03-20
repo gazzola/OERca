@@ -80,6 +80,8 @@ class Courses extends Controller {
 	    flashMsg($this->validation->error_string);
 			redirect("materials/home/$cid/$role/editcourse", 'location');
     } else {
+      // TODO: check to see if
+      
       if ($_POST['cnum']) {
         $data['number'] = $_POST['cnum'];
       }
@@ -88,7 +90,7 @@ class Courses extends Controller {
       }
       if ($_POST['director']) {
         $data['director'] = $_POST['director'];
-      }
+      } else $data['director'] = '';
       if ($_POST['creator']) {
         $data['creator'] = $_POST['creator'];
       }

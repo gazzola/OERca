@@ -36,7 +36,7 @@ class Materials extends Controller {
     $missing_menu_val = "-- select --";
     $school_id[0] = $missing_menu_val;
     $subj_id[0] = $missing_menu_val;
-    //TODO: consider combining enum fetches into a single DB call since
+    // TODO: consider combining enum fetches into a single DB call since
     //      DB queries are expensive operations
     $courselevel = NULL;
     $clevelsindb = $this->dbmetadata->
@@ -99,7 +99,9 @@ class Materials extends Controller {
       'cols' => '40',
       'value' => $coursedetails['keywords']
       );
-
+    if ($coursedetails['year'] != 0000) {
+      $curryear = $coursedetails['year'];
+    }
     $data = array('title'=>'Materials',
       'materials'=>$materials, 
       'mimetypes'=>$mimetypes,
