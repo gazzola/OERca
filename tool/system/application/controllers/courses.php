@@ -84,31 +84,31 @@ class Courses extends Controller {
       
       if ($_POST['cnum']) {
         $data['number'] = $_POST['cnum'];
-      }
+      } else $data['number'] = NULL;
       if ($_POST['title']) {
         $data['title'] = $_POST['title'];
-      }
+      } else $data['title'] = '';
       if ($_POST['director']) {
         $data['director'] = $_POST['director'];
       } else $data['director'] = '';
       if ($_POST['creator']) {
         $data['creator'] = $_POST['creator'];
-      }
+      } else $data['creator'] = '';
       if ($_POST['collaborators']) {
         $data['collaborator'] = $_POST['collaborators'];
-      }
+      } else $data['collaborator'] = '';
       if ($_POST['language']) {
         $data['language'] = $_POST['language'];
       }
       if ($_POST['highlights']) {
         $data['highlight'] = $_POST['highlights'];
-      }
+      } else $data['highlight'] = '';
       if ($_POST['description']) {
         $data['description'] = $_POST['description'];
-      }
+      } else $data['description'] = '';
       if ($_POST['keywords']) {
         $data['keywords'] = $_POST['keywords'];
-      }
+      } else $data['keywords'] = '';
       
       $data['school_id'] = $_POST['school_id'];
       $data['subject_id'] = $_POST['subj_id'];
