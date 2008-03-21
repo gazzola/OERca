@@ -102,7 +102,7 @@ class Courses extends Controller {
       }
       if ($_POST['highlights']) {
         $data['highlight'] = $_POST['highlights'];
-      } else $data['highlight'] = '';
+      } else $data['highlights'] = '';
       if ($_POST['description']) {
         $data['description'] = $_POST['description'];
       } else $data['description'] = '';

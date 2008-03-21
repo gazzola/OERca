@@ -3,7 +3,7 @@
 
 <div id="pane_instinfo" class="editpane">
   <div class="column span-21 firstlast">
-    <?php echo form_open_multipart("instructors/edit_instructor_info")?>
+    <?php echo form_open_multipart("instructor/edit_inst_info/$cid")?>
       <div class="formLabel">Name:</div>
       <div class="formField">
         <input type="text" name="name" id="name" class="input" />
