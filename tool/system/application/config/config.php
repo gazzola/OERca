@@ -34,8 +34,7 @@ $config['logout_url']     = "http://www.umich.edu/";
 | access to the weblogin.umich.edu for authentication
 | ***** NOTE:  for UM production system you MUSt comment this out *******
 */
-/******* $config['remote_user']     = "bdr"; **********/
-
+$config['remote_user']     = "lotia";
 /*
 |--------------------------------------------------------------------------
 | Index File
@@ -329,7 +328,6 @@ $config['time_reference'] = 'local';
 |
 */
 $config['rewrite_short_tags'] = TRUE;
-
 $config['upload_path'] = './uploads/';
 $config['allowed_types'] = 'gif|jpg|png';
 $config['max_size'] = '100';

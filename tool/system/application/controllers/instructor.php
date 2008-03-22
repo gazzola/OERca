@@ -23,6 +23,8 @@ class Instructor extends Controller {
 		$this->load->model('course');
 		$this->load->model('material');
 		$this->load->model('mimetype');
+		$this->load->model('instructors');
+		$this->load->model('course');
 	
 		$this->uid = getUserProperty('id');	
 		$this->data = array();
@@ -304,6 +306,66 @@ class Instructor extends Controller {
 		}
 
 		return false;
-	} 
+	}
+	
+	
+	/**
+	 * Edit instructor info
+	 *
+	 * @access  public
+	 * @param   int cid
+	 * @return  void
+	 */
+	// TODO: reduce the number of DB calls. FIX THE DB SCHEMA!
+	public function edit_inst_info($cid)
+	{
+	  $data = NULL;
+	  $inst_id;
+	  $courseinfo = $this->course->get_course($cid);
+	  $rules = array(
+	    'name' => "minlength[1]|maxlength[255]|xssclean",
+	    'title' => "maxlength[400]|xssclean",
+	    'information' => 'maxlength[800]|xssclean',
+	    'uri' => 'maxlength[255]|xssclean'
+	    );
+	    
+	  $fields = array(
+	    'name' => "Name",
+	    'title' => "Title",
+	    'info' => "Information",
+	    'uri' => "URI"
+	    );
+	    
+	    $this->validation->set_rules($rules);
+	    $this->validation->set_fields($fields);
+	    if ($this->validation->run() == FALSE) {
+	      $role = getUserProperty('role');
+	      flashMsg($this->validation->error_string);
+	      redirect("materials/home/$cid/$role/editinst", 'location');
+	    } else if (!$courseinfo['instructor_id']) {
+	      if ($_POST['name']) {
+	        $this->instructors->add_inst_to_course($_POST['name'],$cid);
+	        // get course info again now that an instructor_id is defined
+	        $courseinfo = $this->course->get_course($cid);
+        }
+      } else if ($courseinfo['instructor_id']) {
+        if ($_POST['name']) {
+          $data['name'] = $_POST['name'];
+        }
+	      if ($_POST['title']) {
+	        $data['title'] = $_POST['title'];
+        }
+        if ($_POST['info']) {
+	        $data['info'] = $_POST['info'];
+        }
+        if ($_POST['uri']) {
+	        $data['uri'] = $_POST['uri'];
+        }
+        $this->instructors->update_inst($courseinfo['instructor_id'], $data);
+        $msg = "Edited the instructor info";
+    	  flashMsg($msg);
+        redirect("materials/home/$cid", "location");
+	    }
+	}
 }
 ?>

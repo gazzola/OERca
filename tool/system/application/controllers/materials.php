@@ -20,6 +20,7 @@ class Materials extends Controller {
     $this->load->model('school');
     $this->load->model('subject');
     $this->load->model('dbmetadata');
+    $this->load->model('instructors');
   }
 
   public function index($cid, $caller="") { $this->home($cid, $caller); }
@@ -34,11 +35,27 @@ class Materials extends Controller {
     $school_id = $this->school->get_school_list();
     $subj_id = $this->subject->get_subj_list();
     $coursedetails = $this->course->get_course($cid);
+    
+    // only get instructor details if an instructor is defined for the course
+    $instdetails = array(
+      "name" => NULL,
+      "title" => NULL,
+      "info" => NULL,
+      "uri" => NULL,
+      "imagefile" => NULL
+      );
+    if ($coursedetails['instructor_id']) {
+    $instdetails = $this->instructors->
+    get_inst($coursedetails['instructor_id']);
+    }
+    
     $missing_menu_val = "-- select --";
     $school_id[0] = $missing_menu_val;
     $subj_id[0] = $missing_menu_val;
     // TODO: consider combining enum fetches into a single DB call since
     //      DB queries are expensive operations
+    
+    // get the enum values for the pulldowns
     $courselevel = NULL;
     $clevelsindb = $this->dbmetadata->
       get_enum_vals('ocw', 'ocw_courses', 'level');
@@ -100,9 +117,31 @@ class Materials extends Controller {
       'cols' => '40',
       'value' => $coursedetails['keywords']
       );
+      
+      
+    $titlebox = array(
+      'name' => 'title',
+      'id' => 'title',
+      'wrap' => 'virtual',
+      'rows' => '10',
+      'cols' => '40',
+      'value' => $instdetails['title']
+      );
+      
+    $inst_infobox = array(
+      'name' => 'info',
+      'id' => 'info',
+      'wrap' => 'virtual',
+      'rows' => '20',
+      'cols' => '40',
+      'value' => $instdetails['info']
+      );
+      
     if ($coursedetails['year'] != 0000) {
       $curryear = $coursedetails['year'];
     }
+    
+    
     $data = array('title'=>'Materials',
       'materials'=>$materials, 
       'mimetypes'=>$mimetypes,
@@ -121,7 +160,10 @@ class Materials extends Controller {
       'year' => $year,
       'school_id' => $school_id,
       'subj_id' => $subj_id,
-      'coursedetails' => $coursedetails
+      'coursedetails' => $coursedetails,
+      'titlebox' => $titlebox,
+      'inst_infobox' => $inst_infobox,
+      'instdetails' => $instdetails
       );
       
     $this->layout->buildPage('materials/index', $data);

@@ -6,22 +6,24 @@
     <?php echo form_open_multipart("instructor/edit_inst_info/$cid")?>
       <div class="formLabel">Name:</div>
       <div class="formField">
-        <input type="text" name="name" id="name" class="input" />
+        <input type="text" name="name" id="name" class="input" 
+        value="<?=$instdetails['name'] ?>" />
       </div>
       
       <div class="formLabel">Title:</div>
       <div class="formField">
-        <input type="text" name="title" id="title" class="input" />
+        <?php echo form_textarea($titlebox); ?>
       </div>
       
       <div class="formLabel">Information:</div>
       <div class="formField">
-        <input type="text" name="info" id="info" class="input" />
+        <?php echo form_textarea($inst_infobox); ?>
       </div>
       
       <div class="formLabel">URI:</div>
       <div class="formField">
-        <input type="text" name="uri" id="uri" class="input">
+        <input type="text" name="uri" id="uri" class="input" 
+        value="<?=$instdetails['uri'] ?>" />
       </div>
       
       <!-- ><div class-"formLabel">Image:</div>

@@ -16,6 +16,7 @@ class Courses extends Controller {
 		$this->load->model('course');
 		$this->load->model('material');
 		$this->load->model('coobject');
+		$this->load->model('instructors');
 	}
 	
 	public function index()
@@ -74,14 +75,11 @@ class Courses extends Controller {
     
     $this->validation->set_rules($rules);
     $this->validation->set_fields($fields);
-    if ($this->validation->run() == FALSE)
-    {
+    if ($this->validation->run() == FALSE) {
       $role = getUserProperty('role');
 	    flashMsg($this->validation->error_string);
 			redirect("materials/home/$cid/$role/editcourse", 'location');
     } else {
-      // TODO: check to see if
-      
       if ($_POST['cnum']) {
         $data['number'] = $_POST['cnum'];
       } else $data['number'] = NULL;
@@ -91,11 +89,23 @@ class Courses extends Controller {
       if ($_POST['director']) {
         $data['director'] = $_POST['director'];
       } else $data['director'] = '';
+      
+      // check if an instructor has been assigned to the course
+      $has_inst = $this->course->get_course_by_number($cid, 'instructor_id');
+      // update the instructor name if specified
       if ($_POST['creator']) {
-        $data['creator'] = $_POST['creator'];
-      } else $data['creator'] = '';
+        if ($has_inst['instructor_id']) {
+          
+          $inst_data['name'] = $_POST['creator'];
+          $this->instructors->update_inst($hasinst['instructor_id'], 
+          $inst_data);
+          } 
+        else if (!$has_inst['instructor_id']) {
+          $this->instructors->add_inst_to_course($_POST['creator'], $cid);
+        }
+      }
       if ($_POST['collaborators']) {
-        $data['collaborator'] = $_POST['collaborators'];
+        $data['collaborators'] = $_POST['collaborators'];
       } else $data['collaborators'] = '';
       if ($_POST['language']) {
         $data['language'] = $_POST['language'];

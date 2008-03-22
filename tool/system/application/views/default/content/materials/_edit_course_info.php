@@ -66,7 +66,7 @@
         <div class="formLabel">Creator:</div>
         <div class="formField">
           <input type="text" name="creator" id="creator" 
-          value="<?=$coursedetails['creator'] ?>" class="input" />
+          value="<?=$instdetails['name'] ?>" class="input" />
         </div>
 
         <div class="formLabel">Collaborators:</div>
