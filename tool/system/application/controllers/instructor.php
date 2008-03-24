@@ -354,13 +354,13 @@ class Instructor extends Controller {
         }
 	      if ($_POST['title']) {
 	        $data['title'] = $_POST['title'];
-        }
+        } else $data['title'] = $_POST['title'];
         if ($_POST['info']) {
 	        $data['info'] = $_POST['info'];
-        }
+        } else $data['info'] = '';
         if ($_POST['uri']) {
 	        $data['uri'] = $_POST['uri'];
-        }
+        } else $data['uri'] = '';
         $this->instructors->update_inst($courseinfo['instructor_id'], $data);
         $msg = "Edited the instructor info";
     	  flashMsg($msg);
