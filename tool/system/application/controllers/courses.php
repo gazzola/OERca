@@ -78,7 +78,7 @@ class Courses extends Controller {
     if ($this->validation->run() == FALSE) {
       $role = getUserProperty('role');
 	    flashMsg($this->validation->error_string);
-			redirect("materials/home/$cid/$role/editcourse", 'location');
+		redirect("materials/home/$cid/$role/editcourse", 'location');
     } else {
       if ($_POST['cnum']) {
         $data['number'] = $_POST['cnum'];
@@ -111,7 +111,7 @@ class Courses extends Controller {
         $data['language'] = $_POST['language'];
       }
       if ($_POST['highlights']) {
-        $data['highlight'] = $_POST['highlights'];
+        $data['highlights'] = $_POST['highlights'];
       } else $data['highlights'] = '';
       if ($_POST['description']) {
         $data['description'] = $_POST['description'];
