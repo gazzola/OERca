@@ -476,7 +476,8 @@ class Material extends Model
 		$path = property('app_uploads_path');
 		
 	  # get course directory name
-		$q = $this->db->select('filename')->from('course_files')->where("course_id=$cid")->order_by('created_on desc')->limit(1);
+		$this->db->select('filename')->from('course_files')->where("course_id=$cid")->order_by('created_on desc')->limit(1);
+		$q = $this->db->get();
 		$r = $q->row();
 		$path .= 'cdir_'.$r->filename;
 
@@ -514,7 +515,8 @@ class Material extends Model
 			$path = property('app_uploads_path');
 		
 	  	# get course directory name
-			$q = $this->db->select('filename')->from('course_files')->where("course_id=$cid")->order_by('created_on desc')->limit(1);
+			$this->db->select('filename')->from('course_files')->where("course_id=$cid")->order_by('created_on desc')->limit(1);
+			$q = $this->db->get();
 			$r = $q->row();
 			$path .= 'cdir_'.$r->filename;
 
