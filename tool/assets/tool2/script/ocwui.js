@@ -8,7 +8,8 @@ var btn_down_active = true;
 function update_edit_co_frame(id)
 {
   // update frame url.
-  var url = $('server').value+'materials/object_info/'+$('cid').value+'/'+$('mid').value+'/'+id;
+	var oid = (id).replace(/objspan_/g,'');
+  var url = $('server').value+'materials/object_info/'+$('cid').value+'/'+$('mid').value+'/'+oid;
   $('edit-co-frame').src = url;
 }
 

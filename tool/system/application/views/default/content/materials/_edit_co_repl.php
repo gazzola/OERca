@@ -12,7 +12,7 @@ $cp_url = ($copy==null) ? '' : $copy['url'];
 ?>
 <div id="Replacement" class="mootabs_panel">
 
-	<?php if ($this->ocw_utils->replacement_exists("c$cid.m$mid.o{$obj['id']}")) { ?>
+	<?php if ($this->coobject->replacement_exists($cid, $mid, $obj['id'])) { ?>
   <!-- INFORMATION -->
   <div class="column span-17 first last">
     <br/><h3>Information</h3>

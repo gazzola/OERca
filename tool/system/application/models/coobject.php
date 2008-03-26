@@ -23,7 +23,7 @@ class Coobject extends Model
      * @param   string	details 
      * @return  array
      */
-	public function coobjects($mid, $oname='', $action_type='', $details='*')
+	public function coobjects($mid, $oid='', $action_type='', $details='*')
 	{
 		$objects = array();
 		$where = "material_id=$mid";
@@ -61,21 +61,21 @@ class Coobject extends Model
 
 		if ($q->num_rows() > 0) {
 			foreach($q->result_array() as $row) {
-				if ($oname <> '') {
-					if ($oname == $row['name']) {
-						$row['comments'] = $this->comments($row['id'],'user_id,comments,modified_on');
-						$row['questions'] = $this->questions($row['id'],'id,user_id,question,answer,modified_on');
-						$row['copyright'] = $this->copyright($row['id']);
-						$row['log'] = $this->logs($row['id'],'user_id,log,modified_on');
-						array_push($objects, $row);
+					if ($oid <> '') {
+							if ($oid == $row['id']) {
+									$row['comments'] = $this->comments($row['id'],'user_id,comments,modified_on');
+									$row['questions'] = $this->questions($row['id'],'id,user_id,question,answer,modified_on');
+									$row['copyright'] = $this->copyright($row['id']);
+									$row['log'] = $this->logs($row['id'],'user_id,log,modified_on');
+									array_push($objects, $row);
+							}
+					} else {
+							$row['comments'] = $this->comments($row['id'],'user_id,comments,modified_on');
+							$row['questions'] = $this->questions($row['id'],'id,user_id,question,answer,modified_on');
+							$row['copyright'] = $this->copyright($row['id']);
+							$row['log'] = $this->logs($row['id'],'user_id,log,modified_on');
+							array_push($objects, $row);
 					}
-				} else {
-					$row['comments'] = $this->comments($row['id'],'user_id,comments,modified_on');
-					$row['questions'] = $this->questions($row['id'],'id,user_id,question,answer,modified_on');
-					$row['copyright'] = $this->copyright($row['id']);
-					$row['log'] = $this->logs($row['id'],'user_id,log,modified_on');
-					array_push($objects, $row);
-				}
 			}
 		} 
 
@@ -424,17 +424,16 @@ class Coobject extends Model
 		if (is_array($files['userfile_0'])) {
 				$filename = $files['userfile_0']['name'];
 				$tmpname = $files['userfile_0']['tmp_name'];
+				$data['name'] = $filename;
 				$data = $this->prep_data($cid, $mid, $data, $filename, $tmpname);
 				if ($data=='slide') { return true; }
 		}
 		
+		$data['done'] = '0';
 		$data['material_id'] = $mid;
 		$data['modified_by'] = $uid;
-		$data['done'] = '0';
 		$data['status'] = 'in progress';
-		$data['name'] = $this->get_next_name($cid, $mid);
 
-		$name = $data['name'];
 		$comment = $data['comment'];
 		$question = $data['question'];
 
@@ -469,27 +468,34 @@ class Coobject extends Model
 
 		// add files
 		if (is_array($files['userfile_0'])) {
-			$type = $files['userfile_0']['type'];
-			$tmpname = $files['userfile_0']['tmp_name'];
-			$path = $this->prep_path($name);
+				$type = $files['userfile_0']['type'];
+				$tmpname = $files['userfile_0']['tmp_name'];
+				$name = $this->generate_object_name($tmpname);
+				$path = $this->prep_path($this->material_path($cid, $mid).'/odir_'.$name);
 
 			  $ext = '';
   			switch (strtolower($type))
         	{
                 case 'image/gif':  $ext= '.gif'; break;
+                case 'image/tiff':  $ext= '.tiff'; break;
                 case 'jpg':
                 case 'image/jpeg': $ext= '.jpg'; break;
                 case 'image/png':  $ext= '.png'; break;
                 default: $ext='.png';
         	}
 
-			// move file to new location
-			if (is_uploaded_file($tmpname)) {
-					move_uploaded_file($tmpname, $path.'/'.$name.'_grab'.$ext);
-			} else {
-					copy($tmpname, $path.'/'.$name.'_grab'.$ext);
-					unlink($tmpname);
-			}
+				// move file to new location
+				if (is_uploaded_file($tmpname)) {
+						move_uploaded_file($tmpname, $path.'/'.$name.'_grab'.$ext);
+				} else {
+						copy($tmpname, $path.'/'.$name.'_grab'.$ext);
+						unlink($tmpname);
+				}
+				# store new filename
+				$this->db->insert('object_files', array('object_id'=>$oid,
+																								'filename'=>$name,
+																								'modified_on'=>date('Y-m-d h:i:s'),
+																								'created_on'=>date('Y-m-d h:i:s')));
 		}
 	
 		return $oid;
@@ -511,15 +517,14 @@ class Coobject extends Model
 		if (is_array($files['userfile_0'])) {
 				$filename = $files['userfile_0']['name'];
 				$tmpname = $files['userfile_0']['tmp_name'];
+				$data['name'] = $filename;
 				$data = $this->prep_data($cid, $mid, $data, $filename, $tmpname);
 				if ($data=='slide') { return true; }
 		}
 					
 		$data['material_id'] = $mid;
 		$data['object_id'] = $objid;
-		$data['name'] = "c$cid.m$mid.o$objid";
 
-		$name = $data['name'];
 		$comment = $data['comment'];
 		$question = $data['question'];
 
@@ -536,48 +541,49 @@ class Coobject extends Model
 
 		// add new object
 		$this->db->insert('object_replacements',$data);
-		$oid = $this->db->insert_id();
+		$rid = $this->db->insert_id();
 
 		// add  questions and comments
 		if ($question <> '') {
-			$this->add_question($oid, getUserProperty('id'), array('question'=>$question),'replacement');
+			$this->add_question($rid, getUserProperty('id'), array('question'=>$question),'replacement');
 		}
 		if ($comment <> '') {
-			$this->add_comment($oid, getUserProperty('id'), array('comments'=>$comment),'replacement');
+			$this->add_comment($rid, getUserProperty('id'), array('comments'=>$comment),'replacement');
 		}
 		
 	 if ($copy['status']<>'' or $copy['holder']<>'' or
 			 $copy['notice']<>'' or $copy['url']<>''){
-			 $this->add_copyright($oid,$copy,'replacement');
+			 $this->add_copyright($rid,$copy,'replacement');
 		}
 
 		// add files
 		if (is_array($files['userfile_0'])) {
-			$type = $files['userfile_0']['type'];
-			$tmpname = $files['userfile_0']['tmp_name'];
+				$type = $files['userfile_0']['type'];
+				$tmpname = $files['userfile_0']['tmp_name'];
+				$name = $this->object_filename($objid);
+				$path = $this->prep_path($this->material_path($cid, $mid).'/odir_'.$name);
 
-			$path = $this->prep_path($name);
-
-			$ext = '';
-  		switch (strtolower($type))
+				$ext = '';
+  			switch (strtolower($type))
        	{
                case 'image/gif':  $ext= '.gif'; break;
+               case 'image/tiff':  $ext= '.tiff'; break;
                case 'jpg':
                case 'image/jpeg': $ext= '.jpg'; break;
                case 'image/png':  $ext= '.png'; break;
                default: $ext='.png';
        	}
 
-			// move file to new location
-			if (is_uploaded_file($tmpname)) {
-					move_uploaded_file($tmpname, $path.'/'.$name.'_rep'.$ext);
-			} else {
-					copy($tmpname, $path.'/'.$name.'_rep'.$ext);
-					unlink($tmpname);
-			}
+				// move file to new location
+				if (is_uploaded_file($tmpname)) {
+						move_uploaded_file($tmpname, $path.'/'.$name.'_rep'.$ext);
+				} else {
+						copy($tmpname, $path.'/'.$name.'_rep'.$ext);
+						unlink($tmpname);
+				}
 		}
 	
-		return $oid;
+		return $rid;
 	}
 
 
@@ -592,7 +598,7 @@ class Coobject extends Model
         if ($files !== false) {
             foreach($files as $newfile) {
 		
-							if (preg_match('/\.jpg$/i',$newfile)) {
+							if (preg_match('/\.jpe?g$/i',$newfile)) {
 									if (preg_match('/Slide\d+|\-pres\.\d+/',$newfile)) { // find slides
 
 											$this->add_slide($cid,$mid,$newfile);
@@ -665,7 +671,7 @@ class Coobject extends Model
 
 		if ($replacements->num_rows() > 0) {
 				foreach($replacements->result_array() as $row) {
-								$this->remove_replacement($row['id'],$row['name']);
+								$this->remove_replacement($cid, $mid, $oid, $row['id']);
 				}
 		}
 
@@ -676,18 +682,33 @@ class Coobject extends Model
 		$this->db->delete('object_log', array('object_id'=>$oid));
 		$this->db->delete('objects', array('id'=>$oid));
 
-		$c = ereg_replace("\.",'/',"c$cid.m$mid.o$oid");
-		@rmdir(property('app_uploads_path').$c);
+		# remove object from filesystem
+		$path = $this->object_path($cid, $mid, $oid);
+		if (!is_null($path)) {
+				$this->ocw_utils->remove_dir(property('app_uploads_path').$path);
+		}
 
 		return true;
   }
 
+	/* remove a bunch of objects for a given material */
+	public function remove_objects($cid, $mid)
+	{
+		$this->db->select('id')->from('objects')->where("material_id='$mid'");
+    $objects = $this->db->get();
+
+    if ($objects->num_rows() > 0) {
+        foreach($objects->result_array() as $row) {
+                $this->remove_object($cid, $mid, $row['id']);
+				}
+		}
+	}
+
   /**
-    * remove material based on information given
+    * remove replacement based on information given
     * 
-	  * TODO: remove materials and related objects from harddisk
     */
-  public function remove_replacement($rid, $name)
+  public function remove_replacement($cid, $mid, $oid, $rid)
   {
 			# remove replacement objects and related info 
 			$this->db->delete('object_replacement_questions', array('object_id'=>$rid));
@@ -696,12 +717,15 @@ class Coobject extends Model
 			$this->db->delete('object_replacement_log', array('object_id'=>$rid));
 			$this->db->delete('object_replacements', array('id'=>$rid));
 	   
-			$imgpath = ereg_replace("\.",'/',$name);
-	   	$p_imgpath = property('app_uploads_path').$imgpath.'/'.$name.'_rep.png';
-	   	$j_imgpath = property('app_uploads_path').$imgpath.'/'.$name.'_rep.jpg';
+			$name = $this->object_filename($oid);
+			$path = property('app_uploads_path').$this->object_path($cid, $mid, $oid);
+	   	$p_imgpath = $path."/{$name}_rep.png";
+	   	$j_imgpath = $path."/{$name}_rep.jpg";
+	   	$g_imgpath = $path."/{$name}_rep.gif";
 
 			if (file_exists($p_imgpath)) { unlink($p_imgpath); } 
 			elseif (file_exists($j_imgpath)) { unlink($j_imgpath); }
+			elseif (file_exists($g_imgpath)) { unlink($g_imgpath); }
 
 			return true;
   }
@@ -748,6 +772,7 @@ class Coobject extends Model
 		if (is_array($files['userfile_0'])) {
 				$filename = $files['userfile_0']['name'];
 				$tmpname = $files['userfile_0']['tmp_name'];
+				$data['name'] = $filename;
 				$data = $this->prep_data($cid, $mid, array(), $filename, $tmpname);
 				if ($data=='slide') { return true; }
 		}
@@ -789,29 +814,50 @@ class Coobject extends Model
 		}
 		
 		// add files
-		$name = "c$cid.m$mid.o$oid";
-
 		if (is_array($files['userfile_0'])) {
-			$fname = $files['userfile_0']['name'];
-			$type = $files['userfile_0']['type'];
-			$tmpname = $files['userfile_0']['tmp_name'];
+				$type = $files['userfile_0']['type'];
+				$tmpname = $files['userfile_0']['tmp_name'];
+				$name = $this->object_filename($oid);
+				$path = $this->prep_path($this->material_path($cid, $mid).'/odir_'.$name);
 
-			$path = $this->prep_path($name);
-
-			$ext = '';
+				$ext = '';
   			switch (strtolower($type))
         	{
                 case 'image/gif':  $ext= '.gif'; break;
+                case 'image/tiff':  $ext= '.tiff'; break;
                 case 'jpg':
                 case 'image/jpeg': $ext= '.jpg'; break;
                 case 'image/png':  $ext= '.png'; break;
                 default: $ext='.png';
         	}
 
-			// move file to new location
-			move_uploaded_file($tmpname, $path.'/'.$name.'_rep'.$ext);
+				// move file to new location
+				move_uploaded_file($tmpname, $path.'/'.$name.'_rep'.$ext);
 		}
 	}
+
+
+	public function replacement_exists($cid, $mid, $oid) 
+	{
+		 $name = $this->object_filename($oid);
+		 $path = $this->object_path($cid, $mid, $oid);
+
+	   $p_imgurl = property('app_uploads_url').$path.'/'.$name.'_rep.png';
+	   $p_imgpath = property('app_uploads_path').$path.'/'.$name.'_rep.png';
+	   $j_imgurl = property('app_uploads_url').$path.'/'.$name.'_rep.jpg';
+	   $j_imgpath = property('app_uploads_path').$path.'/'.$name.'_rep.jpg';
+	   $g_imgurl = property('app_uploads_url').$path.'/'.$name.'_rep.gif';
+	   $g_imgpath = property('app_uploads_path').$path.'/'.$name.'_rep.gif';
+
+	   if (is_readable($p_imgpath) || is_readable($j_imgpath) || is_readable($g_imgpath)) {
+				 $thumb_found = true;	
+	   } else {
+				 $thumb_found = false;	
+	   }
+
+     return ($thumb_found) ? true : false; 
+	}
+
 
 	/**
      * Get Object types 
@@ -849,10 +895,10 @@ class Coobject extends Model
 			foreach($q->result_array() as $row) {
 				$count++;
 				if ($row['id'] == ($oid - 1)) {
-					$prev = '<a href="'.site_url("materials/object_info/$cid/$mid/{$row['name']}").'">&laquo;&nbsp;Previous</a>';
+					$prev = '<a href="'.site_url("materials/object_info/$cid/$mid/{$row['id']}").'">&laquo;&nbsp;Previous</a>';
 				}
 				if ($row['id'] == ($oid + 1)) {
-					$next = '<a href="'.site_url("materials/object_info/$cid/$mid/{$row['name']}").'">Next&nbsp;&raquo;</a>';
+					$next = '<a href="'.site_url("materials/object_info/$cid/$mid/{$row['id']}").'">Next&nbsp;&raquo;</a>';
 				}
 				if ($row['id'] == $oid) { $thisnum = $count; }
 			}
@@ -864,26 +910,21 @@ class Coobject extends Model
 		return $prev.'&nbsp;&nbsp;-&nbsp;'.$mid.'&nbsp;-&nbsp;&nbsp;'.$next; 
 	}
 
-	private function get_next_name($cid, $mid)
+	public function prep_path($name, $slide=false)
 	{
-		$name = "c$cid.m$mid.o";
-		$q = $this->db->query('SELECT MAX(id) + 1 AS nextid FROM ocw_objects'); 
-		$row = $q->result_array();
-		return $name.$row[0]['nextid'];
-	}
+		$dirs = @split("/", $name);
 
+		$path = property('app_uploads_path').$dirs[0]; // course directory
+		$this->oer_filename->mkdir($path);
 
-	public function prep_path($name)
-	{
-		list($c,$m,$o) = split("\.", $name);
-		$path = property('app_uploads_path').$c;
-		if (!is_dir($path)) { mkdir($path); chmod($path, 0777); }
-		$path .= '/'.$m;
-		if (!is_dir($path)) { mkdir($path); chmod($path, 0777); }
-		if ($o <> 'slide') {
-				$path .= '/'.$o;
-				if (!is_dir($path)) { mkdir($path); chmod($path, 0777); }
+		$path .= '/'.$dirs[1];  // material directory
+		$this->oer_filename->mkdir($path);
+
+		if (!$slide) {
+				$path .= '/'.$dirs[2]; // object directory
+				$this->oer_filename->mkdir($path);
 		}
+
 		return $path;
 	}
 	
@@ -904,34 +945,36 @@ class Coobject extends Model
 			}
 			return $data;
 	}
+
 	// add a slide
 	public function add_slide($cid, $mid, $slidefile)
 	{
-			list($loc, $ext) = $this->get_slide_info($slidefile);
-			$pid = "c$cid.m$mid.slide";
-			$newpath = $this->prep_path($pid); 
-			$newpath = $newpath."/c$cid.m$mid.slide_$loc.$ext";
-			@copy($slidefile, $newpath); 
-			@chmod($newpath,'0777');
-			unlink($slidefile);
+			preg_match('/\.(\w+)$/', $slidefile, $matches);
+			$ext = $matches[1];
+
+			if (preg_match('/Slide(\d+)\.\w+/',$slidefile,$matches)) { // powerpoint 
+					$loc = intval($matches[1]);
+
+			} elseif (preg_match('/\-pres\.(\d+)\.\w+/',$slidefile,$matches)) { // keynote 
+					$loc = intval($matches[1]);
+
+			} else { // return any number found
+					$i = preg_match('/(\d+)/',$slidefile,$matches); 
+					$loc = intval($matches[1]);
+			}
+
+			$path = $this->material_path($cid, $mid);
+			if (!is_null($path)) {
+					$newpath = $this->prep_path($path, true); 
+					$newpath = $newpath."/{$this->material_filename($mid)}_slide_$loc.$ext";
+					@copy($slidefile, $newpath); 
+					@chmod($newpath,'0777');
+					unlink($slidefile);
+			} else {
+					exit('Could not find path to add slide.');
+			}
 	}
 
-	private function get_slide_info($file)
-	{
-		preg_match('/\.(\w+)$/', $file, $matches);
-		$ext = $matches[1];
-
-		if (preg_match('/Slide(\d+)\.\w+/',$file,$matches)) { // powerpoint 
-				return array(intval($matches[1]), $ext);
-
-		} elseif (preg_match('/\-pres\.(\d+)\.\w+/',$file,$matches)) { // keynote 
-				return array(intval($matches[1]), $ext);
-		} else { // return any number found
-				$i = preg_match('/(\d+)/',$file,$matches); 
-				return array(intval($matches[1]), $ext);
-		}
-	}
-	
 	public function get_xmp_data($newfile)
 	{	
 		$data = array();
@@ -948,6 +991,9 @@ class Coobject extends Model
 
 	 	$copy_status = array(''=>'unknown', 'True'=>'copyrighted',
 												'False'=>'public domain');
+
+		$act_types = array('Comm'=>'Commission','FU'=>'Fair Use','Perm'=>'Permission','Remove'=>'Remove',
+											 'Retain'=>'Retain', 'Search'=>'Search');
 
 		$yesno = array('N'=>'no', 'Y'=>'yes');
 
@@ -970,7 +1016,7 @@ class Coobject extends Model
         $data['copyholder'] = (isset($xmp_data['copyholder'])) ? $xmp_data['copyholder'] : ''; 
 				if ($xmp_data['objecttype']<>'RCO') {
 	          $data['subtype_id'] = $subtypes[$xmp_data['subtype']]; 
-	          $data['action_type'] = (isset($xmp_data['action'])) ? $xmp_data['action'] : ''; 
+	          $data['action_type'] = (isset($xmp_data['action'])) ? $act_types[$xmp_data['action']] : ''; 
 				}			
 		} else {
 				$data['ask'] = 'no';
@@ -990,6 +1036,126 @@ class Coobject extends Model
   	
 		return $data;
 	}
+
+	/* return the path to a material on the file system 
+	 *
+   * returns path to latest version of material unless
+   * all is true and then it returns paths to all versions	
+	 */
+	public function material_path($cid, $mid, $all=false)
+	{
+			$path = '';
+		
+	  	# get course directory name
+			$path .= 'cdir_'.$this->course_filename($cid);
+
+			$mat_path = $this->material_filename($mid, $all);
+
+			if (!is_null($mat_path)) {
+					if ($all) {
+						 	$cpath = $path;
+							$path = array();
+      				foreach($mat_path as $mp) { 
+        							array_push($path, $cpath.'/mdir_'.$mp);
+							}
+					} else {
+							$path .= '/mdir_'.$mat_path;
+					}
+  		} else {
+					return null;
+			}
+			return $path;
+	}
+
+	/* return the path to an object on the file system 
+	 *
+   * returns path to latest version of material unless
+   * all is true and then it returns paths to all versions	
+	 */
+	public function object_path($cid, $mid, $oid)
+	{
+			$path = $this->material_path($cid,$mid); 
 	
+			if (!is_null($path)) {	
+					$path .= '/odir_'.$this->object_filename($oid);
+			}
+
+			return $path;
+	}
+
+	public function course_filename($cid)
+	{
+			$this->db->select('filename')->from('course_files')->where("course_id=$cid")->order_by('created_on desc')->limit(1);
+			$q = $this->db->get();
+			if ($q->num_rows() > 0) {
+					$r = $q->row();
+					return $r->filename;
+			} else {
+					return null;
+			}
+	}
+
+	public function material_filename($mid, $all=false)
+	{
+			$name = '';
+
+			$this->db->select('filename')->from('material_files')->where("material_id=$mid")->order_by('created_on desc');
+			if (!$all) { $this->db->limit(1); }
+
+			$q = $this->db->get();
+
+			if ($q->num_rows() > 0) {
+					if ($all) {
+							$name = array();
+      				foreach($q->result_array() as $row) { 
+        							array_push($name, $row['filename']);
+							}
+					} else {
+							$r = $q->row();
+							$name = $r->filename;
+					}
+  		} else {
+					return null;
+			}
+
+			return $name;
+	}
+
+	public function object_filename($oid)
+	{
+			$this->db->select('filename')->from('object_files')->where("object_id=$oid")->order_by('created_on desc')->limit(1);
+
+			$q = $this->db->get();
+
+			if ($q->num_rows() > 0) {
+					$r = $q->row();
+					return $r->filename;
+			} else {
+					return null;
+			}
+	}
+
+  private function object_name_exists($name)
+  {
+     $this->db->select('filename')->from('object_files')->where("filename='$name'");
+     $q = $this->db->get();
+     return ($q->num_rows() > 0) ? true : false;
+  }
+
+  private function generate_object_name($filename)
+  {
+   		$digest = '';
+      $generate_own = false;
+      do {
+          if ($generate_own) {
+              $digest = $this->oer_filename->random_name($filename);
+          } else {
+              $digest = $this->oer_filename->file_digest($filename);
+          }
+          $generate_own = true;
+      } while ($this->object_name_exists($digest));
+
+      return $digest;
+  }
 }
 ?>

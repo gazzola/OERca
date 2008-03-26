@@ -133,17 +133,5 @@ class Courses extends Controller {
       redirect("materials/home/$cid", "location");
     }
 	}
-	
-
-	public function breadcrumb($section='default')
-	{
-		$breadcrumb = array();
-
-		if ($section == 'default') {
-			$breadcrumb[] = array('url'=>site_url(), 'name'=>'Home');
-			$breadcrumb[] = array('url'=>'', 'name'=>'Courses');
-		}
-		return $breadcrumb;
-	}
 }
 ?>

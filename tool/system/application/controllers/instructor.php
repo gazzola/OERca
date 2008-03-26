@@ -254,7 +254,6 @@ class Instructor extends Controller {
 									'embedded_co' => '',
 									'nodetype' => 'child',
 									'parent' => '',
-									//'order' =>'',
 									'modified' => '',
 									'created_on' => date('Y-m-d h:i:s', $entityCreatedOn),
 									'modified_on' => date('Y-m-d h:i:s', $entityModifiedOn)

@@ -38,7 +38,7 @@
 |	$autoload['libraries'] = array('database', 'session', 'xmlrpc');
 */
 
-$autoload['libraries'] = array('database', 'ocw_utils','layout','upload', 'Freakauth_light', 'Db_session','Validation');
+$autoload['libraries'] = array('database', 'oer_filename', 'ocw_utils','layout','upload', 'Freakauth_light', 'Db_session','Validation');
 
 
 /*

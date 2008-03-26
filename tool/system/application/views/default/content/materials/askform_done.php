@@ -9,7 +9,7 @@ if ($prov_objects != null) {
 
 <td style="vertical-align:top; width: 300px; padding: 10px;">
   <p>
-	<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['name'],$obj['location'],false,true);?>
+	<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],false,true);?>
   </p>
 
 	<!-- citation -->
@@ -74,7 +74,7 @@ if ($repl_objects != null) {
 <td style="vertical-align:top"><?=$count?></td>
 
 <td style="vertical-align:top">
-	<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['name'],$obj['location'],false,true);?>
+	<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],false,true);?>
 
 	<!-- citation -->
 	<br/><br/>
@@ -100,10 +100,10 @@ if ($repl_objects != null) {
 <td style="vertical-align:top">
   <?php if ($obj['suitable']=='yes') { ?>
     <h3>Replaced With:</h3>                
-		<?=$this->ocw_utils->create_corep_img($cid,$mid,$obj['name'],$obj['location'],false);?>
+		<?=$this->ocw_utils->create_corep_img($cid,$mid,$obj['id'],$obj['location'],false);?>
   <?php } else { ?>
     <h3>Rejected Replacement:</h3>                
-		<?=$this->ocw_utils->create_corep_img($cid,$mid,$obj['name'],$obj['location'],false);?>
+		<?=$this->ocw_utils->create_corep_img($cid,$mid,$obj['id'],$obj['location'],false);?>
     <br/><br/>
     <h3>Reason:</h3>                
     <?= ($obj['unsuitable_reason']=='') ? 'No reason provided' : $obj['unsuitable_reason']; ?>

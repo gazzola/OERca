@@ -44,7 +44,7 @@ class Materials extends Controller {
       "uri" => NULL,
       "imagefile" => NULL
       );
-    if ($coursedetails['instructor_id']) {
+    if (isset($coursedetails['instructor_id'])) {
     $instdetails = $this->instructors->
     get_inst($coursedetails['instructor_id']);
     }
@@ -320,15 +320,14 @@ class Materials extends Controller {
 		$this->load->view('default/content/materials/co', $data);
 	}
 
-	public function	remove_object($cid, $mid, $oid, $type="original", $name="")
+	public function	remove_object($cid, $mid, $oid, $type='original', $rid='')
 	{
 		if ($type=='original') {
 				flashMsg('Content object removed!');
 				$this->coobject->remove_object($cid, $mid, $oid);
 		} else {
 				flashMsg('Replacement object removed!');
-				$this->coobject->remove_replacement($oid, $name);
-				//redirect("materials/object_info/$cid/$mid/$name", 'location');
+				$this->coobject->remove_replacement($cid, $mid, $oid, $rid);
 		}
 		redirect("materials/edit/$cid/$mid", 'location');
 	}
@@ -395,8 +394,7 @@ class Materials extends Controller {
 	public function update_object($cid, $mid, $oid, $field, $val='') 
  	{
 		if ($field=='rep' or $field=='irep') {
-				$name = "c$cid.m$mid.o$oid";
-				if ($this->ocw_utils->replacement_exists($name)) {
+				if ($this->coobject->replacement_exists($cid, $mid, $oid)) {
 						$this->coobject->update_rep_image($cid, $mid, $oid, $_FILES);
 				} else {
 						$this->coobject->add_replacement($cid, $mid, $oid, array(), $_FILES);
@@ -405,7 +403,7 @@ class Materials extends Controller {
 				$rnd = time().rand(10,10000); // used to overcome caching problem
 				
 				if ($field == 'rep') {
-						redirect("materials/object_info/$cid/$mid/$name/$rnd", 'location');
+						redirect("materials/object_info/$cid/$mid/$oid/$rnd", 'location');
 				} elseif($field=='irep') {
 						redirect("materials/viewform/ask/$cid/$mid/$rnd", 'location');
 				}
@@ -470,12 +468,10 @@ class Materials extends Controller {
      $this->ocw_utils->send_response('success');
 	}
 
-	public function object_info($cid,$mid,$oname)
+	public function object_info($cid,$mid,$oid)
 	{
 		$subtypes =  $this->coobject->object_subtypes();
-		$obj = $this->coobject->coobjects($mid,$oname);
-    list($undef,$undef,$oid) = split("\.", $oname);
-    $oid = preg_replace('/o/','',$oid);
+		$obj = $this->coobject->coobjects($mid,$oid);
 		$repl_objects =  $this->coobject->replacements($mid,$oid); 
 		$objstats =  $this->coobject->object_stats($mid);
 		
@@ -490,12 +486,6 @@ class Materials extends Controller {
 				);
 
     	$this->load->view('default/content/materials/edit_co', $data);
-	}
-		
-	public function make_image($text)
-	{
-		$this->ocw_utils->new_image($text);
-		exit;
 	}
 }
 ?>

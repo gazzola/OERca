@@ -66,7 +66,7 @@
 </div>
 
 <div class="column span-18 last">
-  <iframe id="edit-co-frame" name="edit-co-frame" src="<?=site_url("materials/object_info/$cid/{$material['id']}/{$coobjects[0]['name']}")?>" scrolling="no" marginwidth="0" marginheight="0" frameborder="0" vspace="0" hspace="0" style="overflow:visible; width:100%; "></iframe>
+  <iframe id="edit-co-frame" name="edit-co-frame" src="<?=site_url("materials/object_info/$cid/{$material['id']}/{$coobjects[0]['id']}")?>" scrolling="no" marginwidth="0" marginheight="0" frameborder="0" vspace="0" hspace="0" style="overflow:visible; width:100%; "></iframe>
 </div>
 <?php } elseif ($numobjects == 0 && $filter<>'' && $filter<>'Any') { ?>
  

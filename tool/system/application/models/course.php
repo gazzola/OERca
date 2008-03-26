@@ -16,18 +16,29 @@ class Course extends Model
 	}
 	
 	/**
-     * add course 
+   * add course 
 	 *
 	 * @access  public
 	 * @return  array
 	 */
-    public function new_course($details)
-    {
-		$this->db->insert('courses', $details);
-		$this->db->select('*')->from('courses')->where('title',$details['title']);
-		$q = $this->db->get();
-		$course = $q->row_array();
-		return ($q->num_rows() > 0) ? $course : null;
+   public function new_course($details)
+   {
+			$this->db->insert('courses', $details);
+			$this->db->select('*')->from('courses')->where('title',$details['title']);
+			$q = $this->db->get();
+			$course = $q->row_array();
+	
+			if ($q->num_rows() > 0) {
+					$filename = $this->generate_course_name($course['title'].$course['start_date'].
+																								 $course['end_date']);
+					$dirname = property('app_uploads_path').$filename; 
+					$this->oer_filename->mkdir($dirname);
+					$this->db->insert('course_files',
+													array('filename'=>$filename,'modified_on'=>'NOW()', 
+														    'created_on'=>'NOW()','course_id'=>$course['id']));
+			}
+
+			return ($q->num_rows() > 0) ? $course : null;
 	}
 
 	/**
@@ -155,5 +166,24 @@ class Course extends Model
 		$course = $q->row_array();
 		return ($q->num_rows() > 0) ? $course : null;
 	}
+
+
+  private function course_name_exists($name)
+  {
+     $this->db->select('filename')->from('course_files')->where("filename='$name'");
+     $q = $this->db->get();   
+     return ($q->num_rows() > 0) ? true : false;
+  }
+
+  private function generate_course_name($uniqstr)
+  {
+      $digest = '';
+      do {
+         $digest = $this->oer_filename->random_name($uniqstr);
+				 $uniqstr = $digest;
+      } while ($this->course_name_exists($digest));
+
+      return $digest;
+  }
 }
 ?>

@@ -13,6 +13,8 @@ class Material extends Model
   public function __construct()
   {
     parent::Model();
+		# remove material objects and related info 
+		$this->load->model('coobject','co');
   }
 
 
@@ -40,41 +42,23 @@ class Material extends Model
   /**
     * remove material based on information given
     * 
-	  * TODO: remove materials and related objects from harddisk
     */
   public function remove_material($cid, $mid)
   {
-		# remove material objects and related info -- this should
-		# just call the objects delete function as some point 
-		$this->load->model('coobject');
-
-		$this->db->select('id')->from('objects')->where("material_id='$mid'");
-		$objects = $this->db->get();
-
-		if ($objects->num_rows() > 0) {
-				foreach($objects->result_array() as $row) {
-								$this->db->delete('object_replacement_questions', array('object_id'=>$row['id']));
-								$this->db->delete('object_replacement_comments', array('object_id'=>$row['id']));
-								$this->db->delete('object_replacement_copyright', array('object_id'=>$row['id']));
-								$this->db->delete('object_replacement_log', array('object_id'=>$row['id']));
-								$this->db->delete('object_replacements', array('object_id'=>$row['id']));
-
-								$this->db->delete('object_questions', array('object_id'=>$row['id']));
-								$this->db->delete('object_comments', array('object_id'=>$row['id']));
-								$this->db->delete('object_copyright', array('object_id'=>$row['id']));
-								$this->db->delete('object_log', array('object_id'=>$row['id']));
-								$this->db->delete('objects', array('material_id'=>$mid));
-				}
-		}
+    # remove content objects and their related files
+		$this->co->remove_objects($cid, $mid);
 
 		# remove material comments 
 		$this->db->delete('material_comments', array('material_id'=>$mid));
 
-		# remove material
+		# remove material from db
     $this->db->delete('materials',array('id'=>$mid, 'course_id'=>$cid));
 
-		$c = ereg_replace("\.",'/',"c$cid.m$mid");
-		$this->ocw_utils->remove_dir(property('app_uploads_path').$c);
+		# remove material from filesystem
+		$paths = $this->material_path($cid, $mid, true);
+		if (!is_null($paths)) {
+				foreach($paths as $path) { $this->ocw_utils->remove_dir($path); }
+		}
 
 		return true;
   }
@@ -485,34 +469,78 @@ class Material extends Model
 	
 	/** 
 	 * upload materials to correct path
-	 * TODO: version checking
 	 */
 	public function upload_materials($cid, $mid, $file)
 	{
 		$tmpname = $file['tmp_name'];
-		$path = $this->prep_path($cid,$mid);
+		$path = property('app_uploads_path');
 		
+	  # get course directory name
+		$q = $this->db->select('filename')->from('course_files')->where("course_id=$cid")->order_by('created_on desc')->limit(1);
+		$r = $q->row();
+		$path .= 'cdir_'.$r->filename;
+
+		# get material direcotry name
+		$name = $this->generate_material_name($tmpname);
+		$path .= '/mdir_'.$name;
+		$this->oer_filename->mkdir($path);
+
+		# get file extension
 		preg_match('/\.(\w+)$/',$file['name'],$match);
 		$ext = $match[1];
 		
 		// move file to new location
-		$name = "c$cid.m$mid";
 		if (is_uploaded_file($tmpname)) {
-				move_uploaded_file($tmpname, $path.'/'.$name.'.version_1.'.$ext);
+				move_uploaded_file($tmpname, $path.'/'.$name.'.'.$ext);
 		} else {
-				copy($tmpname, $path.'/'.$name.'.version_1.'.$ext);
+				copy($tmpname, $path.'/'.$name.'.'.$ext);
 				unlink($tmpname);
 		}
+
+		# store new filename
+		$this->db->insert('material_files', array('material_id'=>$mid,
+																							'filename'=>$name,
+																							'modified_on'=>date('Y-m-d h:i:s'),
+																							'created_on'=>date('Y-m-d h:i:s')));
+	}
+
+	/* return the path to a material on the file system 
+	 *
+   * returns path to latest version of material unless
+   * all is true and then it returns paths to all versions	
+	 */
+	private function material_path($cid, $mid, $all=false)
+	{
+			$path = property('app_uploads_path');
+		
+	  	# get course directory name
+			$q = $this->db->select('filename')->from('course_files')->where("course_id=$cid")->order_by('created_on desc')->limit(1);
+			$r = $q->row();
+			$path .= 'cdir_'.$r->filename;
+
+			$this->db->select('filename')->from('material_files')->where("material_id=$mid")->order_by('created_on desc');
+			if (!$all) { $this->db->limit(1); }
+    	
+			$q = $this->db->get();
+    
+			if ($q->num_rows() > 0) {
+					if ($all) {
+						 	$cpath = $path;
+							$path = array();
+      				foreach($q->result_array() as $row) { 
+        							array_push($path, $cpath.'/mdir_'.$row['filename']);
+							}
+					} else {
+							$r = $q->row();
+							$path .= '/mdir_'.$r->filename;
+					}
+  		} else {
+					return null;
+			}
+
+			return $path;
 	}
 	
-	public function prep_path($cid, $mid)
-	{
-		$path = property('app_uploads_path').'c'.$cid;
-		if (!is_dir($path)) { mkdir($path); chmod($path, 0777); }
-		$path .= '/m'.$mid;
-		if (!is_dir($path)) { mkdir($path); chmod($path, 0777); }
-		return $path;
-	}
 	
 	// TODO: change the SQL query to check for null and return 0? is that a good
 	//      idea
@@ -523,6 +551,28 @@ class Material extends Model
 		if ($row[0]['nextpos']) {
 		  return $row[0]['nextpos'];
 		} else return 0;
+	}
+
+	private function material_name_exists($name)
+	{
+		 $this->db->select('filename')->from('material_files')->where("filename='$name'");	
+		 $q = $this->db->get();	
+		 return ($q->num_rows() > 0) ? true : false;
+	}
+	private function generate_material_name($filename)
+	{
+			$digest = '';
+			$generate_own = false;
+			do {
+					if ($generate_own) {
+							$digest = $this->oer_filename->random_name($filename);
+					} else {
+							$digest = $this->oer_filename->file_digest($filename);
+					}
+					$generate_own = true;
+			} while ($this->material_name_exists($digest));
+
+			return $digest;
 	}
 }
 ?>
