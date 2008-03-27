@@ -598,7 +598,6 @@ class Coobject extends Model
         if ($files !== false) {
             foreach($files as $newfile) {
 		
-							if (preg_match('/\.jpe?g$/i',$newfile)) {
 									if (preg_match('/Slide\d+|\-pres\.\d+/',$newfile)) { // find slides
 
 											$this->add_slide($cid,$mid,$newfile);
@@ -626,7 +625,7 @@ class Coobject extends Model
 																$orig_info[basename($newfile)] = $oid;
 														}
 
-												} elseif ($objecttype=='RCO') {
+													} elseif ($objecttype=='RCO') {
 														// this is a replacement - we have to make sure the original has been added
 														// first before we add this. Otherwise, add it to a queue
 														$origfile = preg_replace('/^(\d+)R_/',"$1_",basename($newfile));
@@ -644,13 +643,10 @@ class Coobject extends Model
 												}		
 	                   }
 									}
-							} else {
-									// ignore: file is not a jpeg -- we need to know how to handle other filetypes.
-							}
-						 }		
-				 } else {
+						}		
+				} else {
 				     // zip file did not contain any jpg files
-				 }
+				}
        
     } else {
 			exit('Cannot upload file: an error occurred while uploading file. Please contact administrator.');
