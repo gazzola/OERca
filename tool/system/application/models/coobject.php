@@ -488,8 +488,8 @@ class Coobject extends Model
 				if (is_uploaded_file($tmpname)) {
 						move_uploaded_file($tmpname, $path.'/'.$name.'_grab'.$ext);
 				} else {
-						copy($tmpname, $path.'/'.$name.'_grab'.$ext);
-						unlink($tmpname);
+						@copy($tmpname, $path.'/'.$name.'_grab'.$ext);
+						@unlink($tmpname);
 				}
 				# store new filename
 				$this->db->insert('object_files', array('object_id'=>$oid,
@@ -579,7 +579,7 @@ class Coobject extends Model
 						move_uploaded_file($tmpname, $path.'/'.$name.'_rep'.$ext);
 				} else {
 						copy($tmpname, $path.'/'.$name.'_rep'.$ext);
-						unlink($tmpname);
+						@unlink($tmpname);
 				}
 		}
 	
@@ -606,7 +606,21 @@ class Coobject extends Model
 											$objecttype = (preg_match('/^(\d+)R_(.*?)/',basename($newfile))) ? 'RCO' : 'CO';				
 	                    $filedata = array('userfile_0'=>array());
 	                    $filedata['userfile_0']['name'] = basename($newfile);
-                      $filedata['userfile_0']['type'] = 'image/jpeg';
+											
+											preg_match('/\.(\w+)$/', basename($newfile), $matches);
+											$ext = $type = '';
+											if (isset($matches[1])) { $ext = $matches[1]; }
+											switch (strtolower($ext))
+							        	{
+							                case 'gif':  $type = 'image/gif'; break;
+							                case 'tiff': $type = 'image/tiff'; break;
+							                case 'jpg':
+							                case 'jpeg': $type = 'image/jpeg'; break;
+							                case 'png':  $type = 'image/png'; break;
+							                default: $type = 'image/jpeg';
+							        	}
+	
+                      $filedata['userfile_0']['type'] = $type;
                       $filedata['userfile_0']['tmp_name'] = $newfile;
 
 											if (!preg_match('/^\./',basename($newfile))) {
@@ -719,9 +733,9 @@ class Coobject extends Model
 	   	$j_imgpath = $path."/{$name}_rep.jpg";
 	   	$g_imgpath = $path."/{$name}_rep.gif";
 
-			if (file_exists($p_imgpath)) { unlink($p_imgpath); } 
-			elseif (file_exists($j_imgpath)) { unlink($j_imgpath); }
-			elseif (file_exists($g_imgpath)) { unlink($g_imgpath); }
+			if (file_exists($p_imgpath)) { @unlink($p_imgpath); } 
+			elseif (file_exists($j_imgpath)) { @unlink($j_imgpath); }
+			elseif (file_exists($g_imgpath)) { @unlink($g_imgpath); }
 
 			return true;
   }
@@ -965,7 +979,7 @@ class Coobject extends Model
 					$newpath = $newpath."/{$this->material_filename($mid)}_slide_$loc.$ext";
 					@copy($slidefile, $newpath); 
 					@chmod($newpath,'0777');
-					unlink($slidefile);
+					@unlink($slidefile);
 			} else {
 					exit('Could not find path to add slide.');
 			}
