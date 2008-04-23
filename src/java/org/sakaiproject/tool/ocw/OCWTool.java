@@ -420,7 +420,8 @@ public class OCWTool extends HttpServlet
 		    else
 		    {
 		    	// otherwise go to dScribe view
-		    	url = url + "dscribe/";
+		    	url = url + "dscribe1/";
+			courseDirector="";
 		    }
 		    
 		    if (r != null) {
@@ -508,8 +509,8 @@ public class OCWTool extends HttpServlet
 	    // If user can update site, add config menu
 	    // placement and config should be defined in tool mode
 	    // in non-tool mode, there's no config to update
-	    if (placement != null && config != null &&
-		SiteService.allowUpdateSite(siteid)) {
+	    if (placement != null && config != null)
+	    {
 		if (writeOwnerPage(out, height, url, element, oururl))
 		    return;
 	    }
@@ -545,7 +546,6 @@ public class OCWTool extends HttpServlet
 	private boolean writeOwnerPage(PrintWriter out, int height, String url, String element, String oururl) {
 
 	    String bodyonload = "";
-
 	    if (url == null)
 		return false;
 
