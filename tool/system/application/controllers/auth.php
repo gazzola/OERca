@@ -36,9 +36,16 @@ class Auth extends Controller
 
 		if ($_SERVER['QUERY_STRING'] <> '') { // coming from Sakai??
 			// get user role, user name and site id
-			$role = ($_REQUEST['role']=='maintain') 
-				  ? 'instructor' : ($_REQUEST['role']=='access') ? 'dscribe1':($_REQUEST['role']=='Instructor') ? 'instructor':'';
-
+			if ($_REQUEST['role']=='maintain' || $_REQUEST['role']=='Instructor')
+			{ 
+				$role = 'instructor';
+			}
+			else
+			{
+				// defaults to dscribe1 for now.
+				$role = 'dscribe1';
+			}
+			
 			/* Zhen's CTools integration code */
 			$userId = $_REQUEST['user'];
 			$username = $_REQUEST['username'];
