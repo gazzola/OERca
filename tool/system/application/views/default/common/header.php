@@ -55,8 +55,14 @@
 
     <?php if (getUserProperty('role') == 'dscribe1') { ?>
 
-		<li<?= (preg_match('/^(home)|(dscribe\/home)|\s/', $ci_uri) > 0)? $att: ''?>><?=anchor("/home",$this->lang->line('ocw_ds_menu_home'))?></li>
-		<li<?= (preg_match('/^(manage|materials)/', $ci_uri) > 0)? $att: ''?>><?=anchor("/manage",'Manage Courses')?></li>
+	  <li<?= (preg_match('/^(home)|(dscribe\/home)|\s/', $ci_uri) > 0)? $att: ''?>><?=anchor("/home",$this->lang->line('ocw_ds_menu_home'))?></li>
+	  <li<?= (preg_match('/^(manage|materials)/', $ci_uri) > 0)? $att: ''?>><?=anchor("/manage",'Manage Courses')?></li>
+		
+		<?php if (isset($cid)) { ?>
+      <li<?= (preg_match('/^(dscribe|export)/', $ci_uri) > 0)? $att: ''?>><?=anchor("/dscribe1/export/$cid",$this->lang->line('ocw_ds_menu_export'))?></li>
+			<?php } else { ?>
+      <li id="inactive"><?=$this->lang->line('ocw_ds_menu_export')?></li>
+			<?php  } ?>
 
     <?php } elseif (getUserProperty('role') == 'instructor') { ?>
 

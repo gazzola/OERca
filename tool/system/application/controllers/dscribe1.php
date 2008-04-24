@@ -145,7 +145,8 @@ class Dscribe1 extends Controller {
 	public function export($cid, $task='') 
 	{
 		$this->_isValidUser($cid); 
-		$this->data['title'] = $this->lang->line('ocw_ds_pagetitle_export'); 
+		$this->data['title'] = $this->lang->line('ocw_ds_pagetitle_export');
+		$this->data['cid']=$cid; 
        	$this->layout->buildPage('dscribe1/export', $this->data);
 	}
 	
@@ -157,9 +158,13 @@ class Dscribe1 extends Controller {
      * @param   string	task		
      * @return  void
      */
-	public function do_export($cid, $task='') 
+	public function do_export() 
 	{
 		
+		$cid = $_POST['cid'];
+		$this->data['cid']=$cid;
+		$this->data['cname'] = $this->course->course_title($cid);	
+       	$this->layout->buildPage('dscribe1/export', $this->data);
 	}
 
 	/**
@@ -175,7 +180,7 @@ class Dscribe1 extends Controller {
 			$this->data['cid'] = $cid;
 			$this->coursedetails = $this->course->get_course($cid);
 			$this->data['course'] = $this->coursedetails;
-			$this->data['cname'] = $this->coursedetails['number'].' '.$this->coursedetails['title'];			
+			$this->data['cname'] = $this->course->course_title($cid);			
 			return true;
 
 		} else {

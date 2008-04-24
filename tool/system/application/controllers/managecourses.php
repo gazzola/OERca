@@ -115,10 +115,14 @@ class ManageCourses extends Controller {
     */
    private function _get_first_array_val($array, $depth)
    {
-     while ($depth > 0) {
-       $array = array_shift($array);
-       $depth--;
-     }   
+   	
+   	 if ($array != NULL)
+   	 {
+	     while ($depth > 0) {
+	       $array = array_shift($array);
+	       $depth--;
+	     }
+   	 }   
      return $array;
    }
 }

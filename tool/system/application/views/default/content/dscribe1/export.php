@@ -1,6 +1,8 @@
 <?php $this->load->view(property('app_views_path').'/dscribe1/dscribe1_header.php', $data); ?>
 <?php
-echo form_open('dscribe1/export', '', '');
+	echo $cid;
+	echo form_open('dscribe1/do_export', '');
+	echo form_hidden('cid', $cid);
 ?>
 <table border="0" cellpadding="0" cellspacing="0">
 <tr>
@@ -14,9 +16,10 @@ echo form_open('dscribe1/export', '', '');
 	</td>
   </tr>
 </table>
+
 <?php
-		echo form_submit('exportbutton', 'Export');
-		$string = "</div></div>";
-		echo form_close($string);
+	echo form_submit('exportButton', 'Export');
+	$string = "</div></div>";
+	echo form_close($string);
 ?>
 <?php $this->load->view(property('app_views_path').'/dscribe1/dscribe1_footer.php', $data); ?>
