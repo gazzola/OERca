@@ -34,8 +34,8 @@
 $active_group = "default";
 
 $db['default']['hostname'] = "localhost";
-$db['default']['username'] = "ocwuser";
-$db['default']['password'] = "";
+$db['default']['username'] = "root";
+$db['default']['password'] = "root";
 $db['default']['database'] = "ocw";
 $db['default']['dbdriver'] = "mysql";
 $db['default']['dbprefix'] = "ocw_";

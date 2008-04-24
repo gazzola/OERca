@@ -1,6 +1,5 @@
 <?php $this->load->view(property('app_views_path').'/dscribe1/dscribe1_header.php', $data); ?>
 <?php
-	echo $cid;
 	echo form_open('dscribe1/do_export', '');
 	echo form_hidden('cid', $cid);
 ?>

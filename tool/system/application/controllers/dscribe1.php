@@ -22,6 +22,7 @@ class Dscribe1 extends Controller {
 
 		$this->load->helper('form');
 		$this->load->helper('text');
+		$this->load->library('zip');
 
 		$this->load->model('tag');
 		$this->load->model('course');
@@ -163,7 +164,18 @@ class Dscribe1 extends Controller {
 		
 		$cid = $_POST['cid'];
 		$this->data['cid']=$cid;
-		$this->data['cname'] = $this->course->course_title($cid);	
+		$cname=$this->course->course_title($cid);
+		$this->data['cname'] = $cname;	
+		
+		$name = 'mydata1.txt';
+		$data = 'A Data String!';
+		
+		$this->zip->add_data($name, $data);
+		
+		// Download the file to your desktop. Name it "SITENAME_IMSCP.zip"
+		$this->zip->download($cname.'_IMSCP.zip');
+		
+		
        	$this->layout->buildPage('dscribe1/export', $this->data);
 	}
 
