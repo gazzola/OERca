@@ -96,6 +96,16 @@ CREATE TABLE `ocw_claims_permission` (
   `id` bigint(20) NOT NULL auto_increment,
   `object_id` bigint(20) NOT NULL,
   `user_id` int(11) default NULL,
+  `contact_name` varchar(255) collate utf8_unicode_ci NOT NULL,
+  `contact_line1` varchar(255) collate utf8_unicode_ci NOT NULL,
+  `contact_line2` varchar(255) collate utf8_unicode_ci NOT NULL,
+  `contact_city` varchar(255) collate utf8_unicode_ci NOT NULL,
+  `contact_state` varchar(255) collate utf8_unicode_ci NOT NULL,
+  `contact_country` varchar(255) collate utf8_unicode_ci NOT NULL,
+  `contact_postalcode` varchar(255) collate utf8_unicode_ci NOT NULL,
+  `contact_phone` varchar(255) collate utf8_unicode_ci NOT NULL,
+  `contact_fax` varchar(255) collate utf8_unicode_ci NOT NULL,
+  `contact_email` varchar(255) collate utf8_unicode_ci NOT NULL,
   `info_sufficient` enum('yes','no') collate utf8_unicode_ci NOT NULL,
   `letter_sent` enum('yes','no') collate utf8_unicode_ci NOT NULL default 'no',
   `response_received` enum('yes','no') collate utf8_unicode_ci NOT NULL default 'no',
@@ -243,6 +253,22 @@ CREATE TABLE `ocw_curriculums` (
   UNIQUE KEY `name` (`name`),
   KEY `school_id` (`school_id`),
   CONSTRAINT `ocw_curriculums_ibfk_1` FOREIGN KEY (`school_id`) REFERENCES `ocw_schools` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- 
+-- Table structure for table `ocw_dscribe2_dscribe1`
+-- 
+
+DROP TABLE IF EXISTS `ocw_dscribe2_dscribe1`;
+CREATE TABLE IF NOT EXISTS `ocw_dscribe2_dscribe1` (
+  `id` bigint(20) NOT NULL,
+  `dscribe2_id` int(11) NOT NULL,
+  `dcsribe1_id` int(11) NOT NULL,
+  PRIMARY KEY  (`id`),
+  KEY `dscribe2_id` (`dscribe2_id`),
+  KEY `dcsribe1_id` (`dcsribe1_id`),
+  CONSTRAINT `ocw_dscribe2_dscribe1_ibfk_2` FOREIGN KEY (`dcsribe1_id`) REFERENCES `ocw_users` (`id`),
+  CONSTRAINT `ocw_dscribe2_dscribe1_ibfk_1` FOREIGN KEY (`dscribe2_id`) REFERENCES `ocw_users` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
