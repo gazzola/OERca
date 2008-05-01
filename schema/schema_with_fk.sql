@@ -1,16 +1,16 @@
 -- phpMyAdmin SQL Dump
--- version 2.10.1
+-- version 2.10.3deb1ubuntu0.2
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Apr 30, 2008 at 02:15 PM
--- Server version: 5.0.37
--- PHP Version: 5.2.2
+-- Generation Time: May 01, 2008 at 12:26 PM
+-- Server version: 5.0.45
+-- PHP Version: 5.2.3-1ubuntu6.3
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
 -- 
--- Database: `ocw`
+-- Database: `oerlatest`
 -- 
 
 -- --------------------------------------------------------
@@ -19,8 +19,7 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 -- Table structure for table `ocw_acl`
 -- 
 
-DROP TABLE IF EXISTS `ocw_acl`;
-CREATE TABLE `ocw_acl` (
+CREATE TABLE IF NOT EXISTS `ocw_acl` (
   `user_id` int(11) NOT NULL default '0',
   `course_id` bigint(20) NOT NULL default '0',
   `role` enum('instructor','dscribe1','dscribe2') collate utf8_unicode_ci NOT NULL default 'dscribe1',
@@ -35,8 +34,7 @@ CREATE TABLE `ocw_acl` (
 -- Table structure for table `ocw_ci_sessions`
 -- 
 
-DROP TABLE IF EXISTS `ocw_ci_sessions`;
-CREATE TABLE `ocw_ci_sessions` (
+CREATE TABLE IF NOT EXISTS `ocw_ci_sessions` (
   `session_id` varchar(40) NOT NULL default '0',
   `ip_address` varchar(16) NOT NULL default '0',
   `user_agent` varchar(50) NOT NULL,
@@ -51,8 +49,7 @@ CREATE TABLE `ocw_ci_sessions` (
 -- Table structure for table `ocw_claims_commission`
 -- 
 
-DROP TABLE IF EXISTS `ocw_claims_commission`;
-CREATE TABLE `ocw_claims_commission` (
+CREATE TABLE IF NOT EXISTS `ocw_claims_commission` (
   `id` bigint(20) NOT NULL auto_increment,
   `object_id` bigint(20) NOT NULL,
   `user_id` int(11) default NULL,
@@ -64,7 +61,7 @@ CREATE TABLE `ocw_claims_commission` (
   PRIMARY KEY  (`id`),
   KEY `object_id` (`object_id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -72,8 +69,7 @@ CREATE TABLE `ocw_claims_commission` (
 -- Table structure for table `ocw_claims_fairuse`
 -- 
 
-DROP TABLE IF EXISTS `ocw_claims_fairuse`;
-CREATE TABLE `ocw_claims_fairuse` (
+CREATE TABLE IF NOT EXISTS `ocw_claims_fairuse` (
   `id` bigint(20) NOT NULL auto_increment,
   `object_id` bigint(20) NOT NULL,
   `user_id` int(11) default NULL,
@@ -85,7 +81,7 @@ CREATE TABLE `ocw_claims_fairuse` (
   PRIMARY KEY  (`id`),
   KEY `object_id` (`object_id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -93,8 +89,7 @@ CREATE TABLE `ocw_claims_fairuse` (
 -- Table structure for table `ocw_claims_permission`
 -- 
 
-DROP TABLE IF EXISTS `ocw_claims_permission`;
-CREATE TABLE `ocw_claims_permission` (
+CREATE TABLE IF NOT EXISTS `ocw_claims_permission` (
   `id` bigint(20) NOT NULL auto_increment,
   `object_id` bigint(20) NOT NULL,
   `user_id` int(11) default NULL,
@@ -117,7 +112,7 @@ CREATE TABLE `ocw_claims_permission` (
   PRIMARY KEY  (`id`),
   KEY `object_id` (`object_id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -125,8 +120,7 @@ CREATE TABLE `ocw_claims_permission` (
 -- Table structure for table `ocw_claims_retain`
 -- 
 
-DROP TABLE IF EXISTS `ocw_claims_retain`;
-CREATE TABLE `ocw_claims_retain` (
+CREATE TABLE IF NOT EXISTS `ocw_claims_retain` (
   `id` bigint(20) NOT NULL auto_increment,
   `object_id` bigint(20) NOT NULL,
   `user_id` int(11) default NULL,
@@ -139,7 +133,7 @@ CREATE TABLE `ocw_claims_retain` (
   PRIMARY KEY  (`id`),
   KEY `object_id` (`object_id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -147,8 +141,7 @@ CREATE TABLE `ocw_claims_retain` (
 -- Table structure for table `ocw_copyright_contactinfo`
 -- 
 
-DROP TABLE IF EXISTS `ocw_copyright_contactinfo`;
-CREATE TABLE `ocw_copyright_contactinfo` (
+CREATE TABLE IF NOT EXISTS `ocw_copyright_contactinfo` (
   `id` bigint(20) NOT NULL,
   `copyright_holder_id` int(11) NOT NULL,
   PRIMARY KEY  (`id`),
@@ -161,8 +154,7 @@ CREATE TABLE `ocw_copyright_contactinfo` (
 -- Table structure for table `ocw_copyright_holders`
 -- 
 
-DROP TABLE IF EXISTS `ocw_copyright_holders`;
-CREATE TABLE `ocw_copyright_holders` (
+CREATE TABLE IF NOT EXISTS `ocw_copyright_holders` (
   `id` int(11) NOT NULL,
   `name` varchar(255) collate utf8_unicode_ci NOT NULL,
   `friend` enum('1','0') collate utf8_unicode_ci NOT NULL default '0',
@@ -175,13 +167,12 @@ CREATE TABLE `ocw_copyright_holders` (
 -- Table structure for table `ocw_corecomp`
 -- 
 
-DROP TABLE IF EXISTS `ocw_corecomp`;
-CREATE TABLE `ocw_corecomp` (
+CREATE TABLE IF NOT EXISTS `ocw_corecomp` (
   `id` bigint(20) NOT NULL auto_increment,
   `corecomp` varchar(255) collate utf8_unicode_ci NOT NULL,
   `description` text collate utf8_unicode_ci NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -189,8 +180,7 @@ CREATE TABLE `ocw_corecomp` (
 -- Table structure for table `ocw_courses`
 -- 
 
-DROP TABLE IF EXISTS `ocw_courses`;
-CREATE TABLE `ocw_courses` (
+CREATE TABLE IF NOT EXISTS `ocw_courses` (
   `id` bigint(20) NOT NULL auto_increment,
   `number` int(10) unsigned default NULL,
   `title` varchar(255) character set utf8 collate utf8_unicode_ci NOT NULL,
@@ -221,7 +211,7 @@ CREATE TABLE `ocw_courses` (
   KEY `copyright_holder_id` (`copyright_holder_id`),
   KEY `school_id` (`school_id`),
   KEY `subject_id` (`subject_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=22 ;
 
 -- --------------------------------------------------------
 
@@ -229,8 +219,7 @@ CREATE TABLE `ocw_courses` (
 -- Table structure for table `ocw_course_files`
 -- 
 
-DROP TABLE IF EXISTS `ocw_course_files`;
-CREATE TABLE `ocw_course_files` (
+CREATE TABLE IF NOT EXISTS `ocw_course_files` (
   `id` bigint(20) NOT NULL auto_increment,
   `course_id` bigint(20) NOT NULL,
   `filename` varchar(255) collate utf8_unicode_ci NOT NULL,
@@ -239,7 +228,7 @@ CREATE TABLE `ocw_course_files` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `filename` (`filename`),
   KEY `course_id` (`course_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=59 ;
 
 -- --------------------------------------------------------
 
@@ -247,8 +236,7 @@ CREATE TABLE `ocw_course_files` (
 -- Table structure for table `ocw_curriculums`
 -- 
 
-DROP TABLE IF EXISTS `ocw_curriculums`;
-CREATE TABLE `ocw_curriculums` (
+CREATE TABLE IF NOT EXISTS `ocw_curriculums` (
   `id` bigint(20) NOT NULL auto_increment,
   `school_id` int(10) unsigned NOT NULL,
   `name` varchar(255) collate utf8_unicode_ci NOT NULL,
@@ -257,7 +245,7 @@ CREATE TABLE `ocw_curriculums` (
   UNIQUE KEY `id` (`id`),
   UNIQUE KEY `name` (`name`),
   KEY `school_id` (`school_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=17 ;
 
 -- --------------------------------------------------------
 
@@ -265,8 +253,7 @@ CREATE TABLE `ocw_curriculums` (
 -- Table structure for table `ocw_dscribe2_dscribe1`
 -- 
 
-DROP TABLE IF EXISTS `ocw_dscribe2_dscribe1`;
-CREATE TABLE `ocw_dscribe2_dscribe1` (
+CREATE TABLE IF NOT EXISTS `ocw_dscribe2_dscribe1` (
   `id` bigint(20) NOT NULL,
   `dscribe2_id` int(11) NOT NULL,
   `dcsribe1_id` int(11) NOT NULL,
@@ -281,8 +268,7 @@ CREATE TABLE `ocw_dscribe2_dscribe1` (
 -- Table structure for table `ocw_instructors`
 -- 
 
-DROP TABLE IF EXISTS `ocw_instructors`;
-CREATE TABLE `ocw_instructors` (
+CREATE TABLE IF NOT EXISTS `ocw_instructors` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `name` varchar(255) collate utf8_unicode_ci NOT NULL,
   `title` text collate utf8_unicode_ci NOT NULL,
@@ -290,7 +276,7 @@ CREATE TABLE `ocw_instructors` (
   `uri` varchar(255) collate utf8_unicode_ci default NULL,
   `imagefile` varchar(255) collate utf8_unicode_ci NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=7 ;
 
 -- --------------------------------------------------------
 
@@ -298,8 +284,7 @@ CREATE TABLE `ocw_instructors` (
 -- Table structure for table `ocw_materials`
 -- 
 
-DROP TABLE IF EXISTS `ocw_materials`;
-CREATE TABLE `ocw_materials` (
+CREATE TABLE IF NOT EXISTS `ocw_materials` (
   `id` bigint(20) NOT NULL auto_increment,
   `course_id` bigint(20) NOT NULL,
   `category` varchar(255) collate utf8_unicode_ci NOT NULL default 'Resource Items',
@@ -321,7 +306,7 @@ CREATE TABLE `ocw_materials` (
   KEY `course_id` (`course_id`),
   KEY `mimetype_id` (`mimetype_id`),
   KEY `tag_id` (`tag_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=10346 ;
 
 -- --------------------------------------------------------
 
@@ -329,15 +314,14 @@ CREATE TABLE `ocw_materials` (
 -- Table structure for table `ocw_materials_corecomp`
 -- 
 
-DROP TABLE IF EXISTS `ocw_materials_corecomp`;
-CREATE TABLE `ocw_materials_corecomp` (
+CREATE TABLE IF NOT EXISTS `ocw_materials_corecomp` (
   `id` bigint(20) NOT NULL auto_increment,
   `material_id` bigint(20) NOT NULL,
   `corecomp_id` bigint(20) NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `material_id` (`material_id`),
   KEY `corecomp_id` (`corecomp_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -345,12 +329,11 @@ CREATE TABLE `ocw_materials_corecomp` (
 -- Table structure for table `ocw_material_categories`
 -- 
 
-DROP TABLE IF EXISTS `ocw_material_categories`;
-CREATE TABLE `ocw_material_categories` (
+CREATE TABLE IF NOT EXISTS `ocw_material_categories` (
   `id` int(11) NOT NULL auto_increment,
   `name` varchar(30) collate utf8_unicode_ci NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=6 ;
 
 -- --------------------------------------------------------
 
@@ -358,8 +341,7 @@ CREATE TABLE `ocw_material_categories` (
 -- Table structure for table `ocw_material_comments`
 -- 
 
-DROP TABLE IF EXISTS `ocw_material_comments`;
-CREATE TABLE `ocw_material_comments` (
+CREATE TABLE IF NOT EXISTS `ocw_material_comments` (
   `id` bigint(20) NOT NULL auto_increment,
   `material_id` bigint(20) NOT NULL default '0',
   `user_id` int(11) NOT NULL,
@@ -369,7 +351,7 @@ CREATE TABLE `ocw_material_comments` (
   PRIMARY KEY  (`id`),
   KEY `material_id` (`material_id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=22 ;
 
 -- --------------------------------------------------------
 
@@ -377,8 +359,7 @@ CREATE TABLE `ocw_material_comments` (
 -- Table structure for table `ocw_material_files`
 -- 
 
-DROP TABLE IF EXISTS `ocw_material_files`;
-CREATE TABLE `ocw_material_files` (
+CREATE TABLE IF NOT EXISTS `ocw_material_files` (
   `id` bigint(20) NOT NULL auto_increment,
   `material_id` bigint(20) NOT NULL,
   `filename` varchar(255) collate utf8_unicode_ci NOT NULL,
@@ -390,7 +371,7 @@ CREATE TABLE `ocw_material_files` (
   UNIQUE KEY `filename` (`filename`),
   KEY `material_id` (`material_id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=241 ;
 
 -- --------------------------------------------------------
 
@@ -398,13 +379,12 @@ CREATE TABLE `ocw_material_files` (
 -- Table structure for table `ocw_mimetypes`
 -- 
 
-DROP TABLE IF EXISTS `ocw_mimetypes`;
-CREATE TABLE `ocw_mimetypes` (
+CREATE TABLE IF NOT EXISTS `ocw_mimetypes` (
   `id` tinyint(4) NOT NULL auto_increment,
   `name` varchar(20) character set utf8 collate utf8_unicode_ci NOT NULL,
   `mimetype` varchar(70) character set utf8 collate utf8_unicode_ci NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=41 ;
 
 -- --------------------------------------------------------
 
@@ -412,8 +392,7 @@ CREATE TABLE `ocw_mimetypes` (
 -- Table structure for table `ocw_objects`
 -- 
 
-DROP TABLE IF EXISTS `ocw_objects`;
-CREATE TABLE `ocw_objects` (
+CREATE TABLE IF NOT EXISTS `ocw_objects` (
   `id` bigint(20) NOT NULL auto_increment,
   `material_id` bigint(20) NOT NULL default '0',
   `subtype_id` bigint(20) NOT NULL,
@@ -429,6 +408,8 @@ CREATE TABLE `ocw_objects` (
   `tags` longtext character set utf8 collate utf8_unicode_ci NOT NULL,
   `ask` enum('yes','no') character set utf8 collate utf8_unicode_ci NOT NULL,
   `ask_status` enum('new','in progress','done') character set utf8 collate utf8_unicode_ci NOT NULL default 'new',
+  `ask_dscribe2` enum('yes','no') character set utf8 collate utf8_unicode_ci NOT NULL default 'no',
+  `ask_dscribe2_status` enum('new','in progress','done') character set utf8 collate utf8_unicode_ci NOT NULL default 'new',
   `action_type` enum('Fair Use','Search','Commission','Permission','Retain','Remove') character set utf8 collate utf8_unicode_ci NOT NULL,
   `action_taken` varchar(255) character set utf8 collate utf8_unicode_ci NOT NULL,
   `status` varchar(255) character set utf8 collate utf8_unicode_ci NOT NULL,
@@ -440,7 +421,7 @@ CREATE TABLE `ocw_objects` (
   KEY `material_id` (`material_id`),
   KEY `subtype_id` (`subtype_id`),
   KEY `modified_by` (`modified_by`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=741 ;
 
 -- --------------------------------------------------------
 
@@ -448,8 +429,7 @@ CREATE TABLE `ocw_objects` (
 -- Table structure for table `ocw_object_comments`
 -- 
 
-DROP TABLE IF EXISTS `ocw_object_comments`;
-CREATE TABLE `ocw_object_comments` (
+CREATE TABLE IF NOT EXISTS `ocw_object_comments` (
   `id` bigint(20) NOT NULL auto_increment,
   `object_id` bigint(20) NOT NULL default '0',
   `user_id` int(11) NOT NULL,
@@ -459,7 +439,7 @@ CREATE TABLE `ocw_object_comments` (
   PRIMARY KEY  (`id`),
   KEY `user_id` (`user_id`),
   KEY `object_id` (`object_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -467,8 +447,7 @@ CREATE TABLE `ocw_object_comments` (
 -- Table structure for table `ocw_object_copyright`
 -- 
 
-DROP TABLE IF EXISTS `ocw_object_copyright`;
-CREATE TABLE `ocw_object_copyright` (
+CREATE TABLE IF NOT EXISTS `ocw_object_copyright` (
   `id` bigint(20) NOT NULL auto_increment,
   `object_id` bigint(20) NOT NULL,
   `status` enum('unknown','copyrighted','public domain') collate utf8_unicode_ci NOT NULL,
@@ -477,7 +456,7 @@ CREATE TABLE `ocw_object_copyright` (
   `url` text collate utf8_unicode_ci NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `object_id` (`object_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=53 ;
 
 -- --------------------------------------------------------
 
@@ -485,8 +464,7 @@ CREATE TABLE `ocw_object_copyright` (
 -- Table structure for table `ocw_object_files`
 -- 
 
-DROP TABLE IF EXISTS `ocw_object_files`;
-CREATE TABLE `ocw_object_files` (
+CREATE TABLE IF NOT EXISTS `ocw_object_files` (
   `id` bigint(20) NOT NULL auto_increment,
   `object_id` bigint(20) NOT NULL,
   `filename` varchar(255) collate utf8_unicode_ci NOT NULL,
@@ -495,7 +473,7 @@ CREATE TABLE `ocw_object_files` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `fname` (`object_id`,`filename`),
   KEY `object_id` (`object_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1133 ;
 
 -- --------------------------------------------------------
 
@@ -503,8 +481,7 @@ CREATE TABLE `ocw_object_files` (
 -- Table structure for table `ocw_object_log`
 -- 
 
-DROP TABLE IF EXISTS `ocw_object_log`;
-CREATE TABLE `ocw_object_log` (
+CREATE TABLE IF NOT EXISTS `ocw_object_log` (
   `id` bigint(20) NOT NULL auto_increment,
   `object_id` bigint(20) NOT NULL default '0',
   `user_id` int(11) NOT NULL,
@@ -514,7 +491,7 @@ CREATE TABLE `ocw_object_log` (
   PRIMARY KEY  (`id`),
   KEY `object_id` (`object_id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=120 ;
 
 -- --------------------------------------------------------
 
@@ -522,8 +499,7 @@ CREATE TABLE `ocw_object_log` (
 -- Table structure for table `ocw_object_questions`
 -- 
 
-DROP TABLE IF EXISTS `ocw_object_questions`;
-CREATE TABLE `ocw_object_questions` (
+CREATE TABLE IF NOT EXISTS `ocw_object_questions` (
   `id` bigint(20) NOT NULL auto_increment,
   `object_id` bigint(20) NOT NULL,
   `question` longtext character set utf8 collate utf8_unicode_ci NOT NULL,
@@ -536,7 +512,7 @@ CREATE TABLE `ocw_object_questions` (
   PRIMARY KEY  (`id`),
   KEY `object_id` (`object_id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=8 ;
 
 -- --------------------------------------------------------
 
@@ -544,8 +520,7 @@ CREATE TABLE `ocw_object_questions` (
 -- Table structure for table `ocw_object_replacements`
 -- 
 
-DROP TABLE IF EXISTS `ocw_object_replacements`;
-CREATE TABLE `ocw_object_replacements` (
+CREATE TABLE IF NOT EXISTS `ocw_object_replacements` (
   `id` bigint(20) NOT NULL auto_increment,
   `material_id` bigint(20) NOT NULL,
   `object_id` bigint(20) NOT NULL default '0',
@@ -564,7 +539,7 @@ CREATE TABLE `ocw_object_replacements` (
   PRIMARY KEY  (`id`),
   KEY `material_id` (`material_id`),
   KEY `object_id` (`object_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=98 ;
 
 -- --------------------------------------------------------
 
@@ -572,8 +547,7 @@ CREATE TABLE `ocw_object_replacements` (
 -- Table structure for table `ocw_object_replacement_comments`
 -- 
 
-DROP TABLE IF EXISTS `ocw_object_replacement_comments`;
-CREATE TABLE `ocw_object_replacement_comments` (
+CREATE TABLE IF NOT EXISTS `ocw_object_replacement_comments` (
   `id` bigint(20) NOT NULL auto_increment,
   `object_id` bigint(20) NOT NULL default '0',
   `user_id` int(11) NOT NULL,
@@ -583,7 +557,7 @@ CREATE TABLE `ocw_object_replacement_comments` (
   PRIMARY KEY  (`id`),
   KEY `object_id` (`object_id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=5 ;
 
 -- --------------------------------------------------------
 
@@ -591,8 +565,7 @@ CREATE TABLE `ocw_object_replacement_comments` (
 -- Table structure for table `ocw_object_replacement_copyright`
 -- 
 
-DROP TABLE IF EXISTS `ocw_object_replacement_copyright`;
-CREATE TABLE `ocw_object_replacement_copyright` (
+CREATE TABLE IF NOT EXISTS `ocw_object_replacement_copyright` (
   `id` bigint(20) NOT NULL auto_increment,
   `object_id` bigint(20) NOT NULL,
   `status` enum('unknown','copyrighted','public domain') collate utf8_unicode_ci NOT NULL,
@@ -601,7 +574,7 @@ CREATE TABLE `ocw_object_replacement_copyright` (
   `url` text collate utf8_unicode_ci NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `object_id` (`object_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=23 ;
 
 -- --------------------------------------------------------
 
@@ -609,8 +582,7 @@ CREATE TABLE `ocw_object_replacement_copyright` (
 -- Table structure for table `ocw_object_replacement_log`
 -- 
 
-DROP TABLE IF EXISTS `ocw_object_replacement_log`;
-CREATE TABLE `ocw_object_replacement_log` (
+CREATE TABLE IF NOT EXISTS `ocw_object_replacement_log` (
   `id` bigint(20) NOT NULL auto_increment,
   `object_id` bigint(20) NOT NULL default '0',
   `user_id` int(11) NOT NULL,
@@ -620,7 +592,7 @@ CREATE TABLE `ocw_object_replacement_log` (
   PRIMARY KEY  (`id`),
   KEY `object_id` (`object_id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -628,8 +600,7 @@ CREATE TABLE `ocw_object_replacement_log` (
 -- Table structure for table `ocw_object_replacement_questions`
 -- 
 
-DROP TABLE IF EXISTS `ocw_object_replacement_questions`;
-CREATE TABLE `ocw_object_replacement_questions` (
+CREATE TABLE IF NOT EXISTS `ocw_object_replacement_questions` (
   `id` bigint(20) NOT NULL auto_increment,
   `object_id` bigint(20) NOT NULL,
   `question` longtext character set utf8 collate utf8_unicode_ci NOT NULL,
@@ -642,7 +613,7 @@ CREATE TABLE `ocw_object_replacement_questions` (
   PRIMARY KEY  (`id`),
   KEY `object_id` (`object_id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -650,15 +621,14 @@ CREATE TABLE `ocw_object_replacement_questions` (
 -- Table structure for table `ocw_object_subtypes`
 -- 
 
-DROP TABLE IF EXISTS `ocw_object_subtypes`;
-CREATE TABLE `ocw_object_subtypes` (
+CREATE TABLE IF NOT EXISTS `ocw_object_subtypes` (
   `id` bigint(20) NOT NULL auto_increment,
   `name` varchar(255) collate utf8_unicode_ci NOT NULL,
   `type_id` int(11) NOT NULL,
   `description` text collate utf8_unicode_ci NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `type_id` (`type_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=23 ;
 
 -- --------------------------------------------------------
 
@@ -666,13 +636,12 @@ CREATE TABLE `ocw_object_subtypes` (
 -- Table structure for table `ocw_object_types`
 -- 
 
-DROP TABLE IF EXISTS `ocw_object_types`;
-CREATE TABLE `ocw_object_types` (
+CREATE TABLE IF NOT EXISTS `ocw_object_types` (
   `id` int(11) NOT NULL auto_increment,
   `type` varchar(255) character set utf8 collate utf8_unicode_ci NOT NULL,
   `description` text character set utf8 collate utf8_unicode_ci,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
 
 -- --------------------------------------------------------
 
@@ -680,13 +649,12 @@ CREATE TABLE `ocw_object_types` (
 -- Table structure for table `ocw_schools`
 -- 
 
-DROP TABLE IF EXISTS `ocw_schools`;
-CREATE TABLE `ocw_schools` (
+CREATE TABLE IF NOT EXISTS `ocw_schools` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `name` varchar(255) character set utf8 collate utf8_unicode_ci NOT NULL,
   `description` text character set utf8 collate utf8_unicode_ci NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=22 ;
 
 -- --------------------------------------------------------
 
@@ -694,15 +662,14 @@ CREATE TABLE `ocw_schools` (
 -- Table structure for table `ocw_subjects`
 -- 
 
-DROP TABLE IF EXISTS `ocw_subjects`;
-CREATE TABLE `ocw_subjects` (
+CREATE TABLE IF NOT EXISTS `ocw_subjects` (
   `id` int(10) unsigned NOT NULL auto_increment,
   `subj_code` varchar(15) collate utf8_unicode_ci NOT NULL,
   `subj_desc` varchar(255) collate utf8_unicode_ci NOT NULL,
   `school_id` int(10) unsigned NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `school_id` (`school_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=52 ;
 
 -- --------------------------------------------------------
 
@@ -710,13 +677,12 @@ CREATE TABLE `ocw_subjects` (
 -- Table structure for table `ocw_tags`
 -- 
 
-DROP TABLE IF EXISTS `ocw_tags`;
-CREATE TABLE `ocw_tags` (
+CREATE TABLE IF NOT EXISTS `ocw_tags` (
   `id` bigint(20) NOT NULL auto_increment,
   `name` varchar(255) character set utf8 collate utf8_unicode_ci NOT NULL,
   `Description` varchar(255) character set utf8 collate utf8_unicode_ci NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=16 ;
 
 -- --------------------------------------------------------
 
@@ -724,8 +690,7 @@ CREATE TABLE `ocw_tags` (
 -- Table structure for table `ocw_users`
 -- 
 
-DROP TABLE IF EXISTS `ocw_users`;
-CREATE TABLE `ocw_users` (
+CREATE TABLE IF NOT EXISTS `ocw_users` (
   `id` int(11) NOT NULL auto_increment,
   `name` varchar(255) character set utf8 collate utf8_unicode_ci NOT NULL,
   `user_name` varchar(45) NOT NULL,
@@ -738,7 +703,7 @@ CREATE TABLE `ocw_users` (
   `created` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   `modified` timestamp NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=24 ;
 
 -- 
 -- Constraints for dumped tables
@@ -847,9 +812,9 @@ ALTER TABLE `ocw_material_files`
 -- Constraints for table `ocw_objects`
 -- 
 ALTER TABLE `ocw_objects`
-  ADD CONSTRAINT `ocw_objects_ibfk_3` FOREIGN KEY (`modified_by`) REFERENCES `ocw_users` (`id`),
   ADD CONSTRAINT `ocw_objects_ibfk_1` FOREIGN KEY (`material_id`) REFERENCES `ocw_materials` (`id`),
-  ADD CONSTRAINT `ocw_objects_ibfk_2` FOREIGN KEY (`subtype_id`) REFERENCES `ocw_object_subtypes` (`id`);
+  ADD CONSTRAINT `ocw_objects_ibfk_2` FOREIGN KEY (`subtype_id`) REFERENCES `ocw_object_subtypes` (`id`),
+  ADD CONSTRAINT `ocw_objects_ibfk_3` FOREIGN KEY (`modified_by`) REFERENCES `ocw_users` (`id`);
 
 -- 
 -- Constraints for table `ocw_object_comments`
