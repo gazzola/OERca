@@ -24,7 +24,7 @@
 		<td>
 			<b>
 			 <?php 
-				if ($objstats['ask'] > 0) { echo '<small>Yes&nbsp;(<a href="'.site_url("materials/viewform/ask/$cid/".$child['id']).'">view ASK form</a>)</small>'; } else { echo 'no ask items'; }?> 
+				if ($objstats['ask'] > 0) { echo '<small>Yes&nbsp;(<a href="'.site_url("materials/askforms/$cid/".$child['id']).'">view ASK form</a>)</small>'; } else { echo 'no ask items'; }?> 
 			</b>
 		</td>
 	<?php } ?>

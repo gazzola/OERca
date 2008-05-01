@@ -940,7 +940,7 @@ class Coobject extends Model
 	
 	public function prep_data($cid,$mid,$data,$filename,$pathtofile)
 	{
-			if (preg_match('/Slide\d+|\-pres\.\d+/',$filename)) { // find slides
+			if (preg_match('/Slide\d+|\-pres\.\d+/i',$filename)) { // find slides
 					$this->add_slide($cid,$mid,$pathtofile);
 					return 'slide';
 			} else {
@@ -962,7 +962,7 @@ class Coobject extends Model
 			preg_match('/\.(\w+)$/', $slidefile, $matches);
 			$ext = $matches[1];
 
-			if (preg_match('/Slide(\d+)\.\w+/',$slidefile,$matches)) { // powerpoint 
+			if (preg_match('/Slide(\d+)\.\w+/i',$slidefile,$matches)) { // powerpoint 
 					$loc = intval($matches[1]);
 
 			} elseif (preg_match('/\-pres\.(\d+)\.\w+/',$slidefile,$matches)) { // keynote 

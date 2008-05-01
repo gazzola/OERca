@@ -103,7 +103,7 @@ $cp_url = ($copy==null) ? '' : $copy['url'];
 				  	echo form_radio('ask_'.$repl_obj['id'], 'no', $no, 'class="do_replacement_update"').'&nbsp;No';
 						if ($yes) {
 								echo '<br/><br/>&nbsp;&nbsp;<b>Status:&nbsp;'.$ask_status[$repl_obj['ask_status']].'</b>';
-								echo '&nbsp;&nbsp;<small>(<a target="_top" href="'.site_url("materials/viewform/ask/$cid/$mid/replacement").'">view ASK form</a>)</small>';
+								echo '&nbsp;&nbsp;<small>(<a target="_top" href="'.site_url("materials/askforms/$cid/$mid/replacement").'">view ASK form</a>)</small>';
 					  }
 			  	?>
 				</td>

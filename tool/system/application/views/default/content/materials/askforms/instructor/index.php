@@ -60,7 +60,7 @@ Thanks for your cooperation!
 
 <?php 
 
-$this->load->view(property('app_views_path').'/materials/askform_header.php', $data); 
+$this->load->view(property('app_views_path').'/materials/askforms/instructor/inst_header.php', $data); 
 	
 if ($num_avail[$view] == 0) {
 	echo '<div class="column span-24 first last"> 
@@ -93,13 +93,13 @@ if ($num_avail[$view] == 0) {
     <tbody>
 		<?php 
 			if ($view == 'provenance') {
-				$this->load->view(property('app_views_path').'/materials/askform_prov.php', $data); 
+				$this->load->view(property('app_views_path').'/materials/askforms/instructor/inst_prov.php', $data); 
 
 			} elseif ($view == 'replacement') {
-				$this->load->view(property('app_views_path').'/materials/askform_repl.php', $data); 
+				$this->load->view(property('app_views_path').'/materials/askforms/instructor/inst_repl.php', $data); 
 
 			} else {
-				$this->load->view(property('app_views_path').'/materials/askform_done.php', $data); 
+				$this->load->view(property('app_views_path').'/materials/askforms/instructor/inst_done.php', $data); 
 		    }
 		?>
 	</tbody>

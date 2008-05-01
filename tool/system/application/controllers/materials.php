@@ -266,43 +266,63 @@ class Materials extends Controller {
     $this->layout->buildPage('materials/edit_material', $data);
 	}
 
-	public function viewform($form, $cid, $mid='', $view='provenance')
+
+	// displays ask forms for dscribes, dscribes2 and instructors
+	public function askforms($cid, $mid='', $view='')
 	{
-		if ($form == 'ask') {
-			$prov_objects =  $this->coobject->coobjects($mid,'','Ask'); // objects with provenace questions
-			$repl_objects =  $this->coobject->replacements($mid,'','','Ask'); // objects with replacement questions
-			$material =  $this->material->materials($cid,$mid,true);
-			$num_obj = $num_repl = $num_prov = $num_done = 0;
+		$role = getUserProperty('role');
+		$data['cid'] = $cid; 
+		$data['mid'] = $mid; 
+		$data['title'] = 'Manage Content Objects'; 
 
-			if ($prov_objects != null) {	
-				foreach($prov_objects as $obj) {
-					if ($obj['ask_status'] == 'done') { $num_done++; }
-					if ($obj['ask_status'] <> 'done') { $num_prov++; }
-					$num_obj++;
-				}
-			}
-			if ($repl_objects != null) {	
-				foreach($repl_objects as $obj) {
-					if ($obj['ask_status'] == 'done') { $num_done++; }
-					if ($obj['ask_status'] <> 'done') { $num_repl++; }
-					$num_obj++;
-				}
-			}
+		if ($role == 'dscribe') {
+				$material =  $this->material->materials($cid,$mid,true);
+				$data['view'] = $view; 
+				$data['material'] = $material[0]; 
+				$data['course'] =  $this->course->get_course($cid); 
+    		$this->layout->buildPage('materials/askforms/dscribe/index', $data);
 
-			$data['num_done'] = $num_done; 
-			$data['num_prov'] = $num_prov; 
-			$data['num_repl'] = $num_repl; 
-			$data['numobjects'] = $num_obj;
-			$data['prov_objects'] = $prov_objects; 
-			$data['repl_objects'] = $repl_objects; 
-			$data['material'] = $material[0]; 
-			$data['course'] =  $this->course->get_course($cid); 
-			$data['list'] = $this->ocw_utils->create_co_list($cid,$mid,$prov_objects);
-			$data['cid'] = $cid; 
-			$data['mid'] = $mid; 
-			$data['view'] = $view; 
-			$data['title'] = 'Manage Content Objects'; 
-    		$this->layout->buildPage('materials/askform', $data);
+		} elseif ($role == 'dscribe2') {
+				$material =  $this->material->materials($cid,$mid,true);
+				//$this->ocw_utils->dump($material); exit;
+				$data['view'] = $view; 
+				$data['material'] = $material[0]; 
+				$data['course'] =  $this->course->get_course($cid); 
+    		$this->layout->buildPage('materials/askforms/dscribe2/index', $data);
+
+		} else {	// default: instructor view (no one really needs to login for this view)
+				$view = ($view == '') ? 'provenance' : $view;
+				$prov_objects =  $this->coobject->coobjects($mid,'','Ask'); // objects with provenace questions
+				$repl_objects =  $this->coobject->replacements($mid,'','','Ask'); // objects with replacement questions
+				$material =  $this->material->materials($cid,$mid,true);
+				$num_obj = $num_repl = $num_prov = $num_done = 0;
+
+				if ($prov_objects != null) {	
+						foreach($prov_objects as $obj) {
+										if ($obj['ask_status'] == 'done') { $num_done++; }
+										if ($obj['ask_status'] <> 'done') { $num_prov++; }
+										$num_obj++;
+						}
+				}
+				if ($repl_objects != null) {	
+						foreach($repl_objects as $obj) {
+										if ($obj['ask_status'] == 'done') { $num_done++; }
+										if ($obj['ask_status'] <> 'done') { $num_repl++; }
+										$num_obj++;
+						}
+				}
+
+				$data['view'] = $view; 
+				$data['num_done'] = $num_done; 
+				$data['num_prov'] = $num_prov; 
+				$data['num_repl'] = $num_repl; 
+				$data['numobjects'] = $num_obj;
+				$data['prov_objects'] = $prov_objects; 
+				$data['repl_objects'] = $repl_objects; 
+				$data['material'] = $material[0]; 
+				$data['course'] =  $this->course->get_course($cid); 
+				$data['list'] = $this->ocw_utils->create_co_list($cid,$mid,$prov_objects);
+    		$this->layout->buildPage('materials/askforms/instructor/index', $data);
 		}
 	}
 
@@ -405,7 +425,7 @@ class Materials extends Controller {
 				if ($field == 'rep') {
 						redirect("materials/object_info/$cid/$mid/$oid/$rnd", 'location');
 				} elseif($field=='irep') {
-						redirect("materials/viewform/ask/$cid/$mid/$rnd", 'location');
+						redirect("materials/askforms/$cid/$mid/$rnd", 'location');
 				}
 				exit;
 

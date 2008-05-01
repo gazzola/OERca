@@ -32,7 +32,7 @@ $config['logout_url']     = "http://www.umich.edu/";
 | access to the weblogin.umich.edu for authentication
 | ***** NOTE:  for UM production system you MUSt comment this out *******
 */
-/***** $config['remote_user']     = "lotia"; *****/
+$config['remote_user']     = "dkhutch"; 
 /*
 |--------------------------------------------------------------------------
 | Index File

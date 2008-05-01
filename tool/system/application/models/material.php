@@ -129,6 +129,7 @@ class Material extends Model
     if ($q->num_rows() > 0) {
       foreach($q->result_array() as $row) { 
         $row['comments'] = $this->comments($row['id'],'user_id,comments,modified_on');
+        $row['files'] = $this->material_files($cid, $row['id']);
         if ($in_ocw) {
           if ($row['in_ocw']) { $materials[]= $row; }
         } else {
@@ -177,6 +178,39 @@ class Material extends Model
     }
     return (sizeof($materials)) ? (($as_listing) ? $this->as_listing($materials):$materials) : null;
   }
+
+  /**
+    * Get files for a material 
+    *
+    * @access  public
+    * @param   int	cid course id 
+    * @param   int	mid material id 
+    * @param   string details fields to return	
+    * @return  array
+    */
+	public function material_files($cid, $mid, $details='*')
+	{
+    $files = array();
+		
+		// get course filename
+		$this->db->select('filename')->from('course_files')->where("course_id=$cid")->order_by('created_on desc')->limit(1);
+		$q = $this->db->get();
+		$r = $q->row();
+		$cname = 'cdir_'.$r->filename;
+
+    $this->db->select($details)->from('material_files')->where('material_id',$mid)->orderby('modified_on DESC');
+    $q = $this->db->get();
+
+    if ($q->num_rows() > 0) {
+      foreach($q->result_array() as $row) { 
+							$row['fileurl'] =  property('app_uploads_url').$cname.'/mdir_'.$row['filename'].'/'.$row['filename'];
+							$row['filepath'] = property('app_uploads_path').$cname.'/mdir_'.$row['filename'].'/'.$row['filename'];
+							array_push($files, $row); 
+			}
+    } 
+
+    return (sizeof($files) > 0) ? $files : null;
+	}
 
   /**
     * Get comments  for a material 

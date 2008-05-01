@@ -285,7 +285,7 @@ var Rules = {
                      		onComplete:function() {
                         		response = fb.innerHTML;
                         		if (response=='success') {
-                            		url = $('server').value+'materials/viewform/ask/'+
+                            		url = $('server').value+'materials/askforms/'+
 										course_id+'/'+material_id+'/'+view;
                             		window.location.replace(url);
                         		} else {
@@ -529,7 +529,7 @@ var Rules = {
                      		onComplete:function() {
                         		response = fb.innerHTML;
                         		if (response=='success') {
-                            		url = $('server').value+'materials/viewform/ask/'+
+                            		url = $('server').value+'materials/askforms/'+
 										course_id+'/'+material_id+'/'+view;
                             		window.location.replace(url);
                         		} else {

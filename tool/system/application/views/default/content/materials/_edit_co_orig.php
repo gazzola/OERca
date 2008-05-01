@@ -139,7 +139,7 @@ $log = $obj['log'];
 				  echo form_radio('ask', 'no', $no, 'class="do_object_update"').'&nbsp;No&nbsp;&nbsp;';
 					if ($yes) {
 						echo '<b>Status:&nbsp;'.$ask_status[$obj['ask_status']].'</b>';
-						echo '&nbsp;&nbsp;<small>(<a target="_top" href="'.site_url("materials/viewform/ask/$cid/$mid").'">view ASK form</a>)</small>';
+						echo '&nbsp;&nbsp;<small>(<a target="_top" href="'.site_url("materials/askforms/$cid/$mid").'">view ASK form</a>)</small>';
 			  	}
 			?>
  	    </td>
