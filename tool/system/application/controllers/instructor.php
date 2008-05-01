@@ -171,7 +171,7 @@ class Instructor extends Controller {
 			{
 				$entityId = $entityIds[$i];
 				$name = $this->material->getMaterialName($entityId);
-				$data = file_get_contents(getcwd().'/ocwfile/'.$name); // Read the file's contents
+				$data = file_get_contents(getcwd().'/uploads/'.$name); // Read the file's contents
 				force_download($name, $data);			
 			}
 		}
@@ -228,7 +228,7 @@ class Instructor extends Controller {
 					
 					// use curl to get the resource conent and write to local drive
 					$ch = curl_init();
-					$filePath=getcwd().'/ocwfile/'.$entityName;
+					$filePath=getcwd().'/uploads/'.$entityName;
 					$fp = fopen($filePath, "w");
 					curl_setopt($ch, CURLOPT_URL, $entityUrl);
 					curl_setopt ($ch, CURLOPT_COOKIE, $_SERVER["HTTP_COOKIE"]."; Path=/");
@@ -248,7 +248,7 @@ class Instructor extends Controller {
 									'ctools_url' => $entityUrl,
 									'author' => $entityCreator,
 									'collaborators' => '',
-									'tag_id' => '',	// empty tag for now
+									'tag_id' => '8',	// use this tag for now
 									'mimetype_id' => $entityTypeId,
 									'in_ocw' => 1,
 									'embedded_co' => '',
