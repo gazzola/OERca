@@ -268,33 +268,30 @@ class Materials extends Controller {
 
 
 	// displays ask forms for dscribes, dscribes2 and instructors
-	public function askforms($cid, $mid='', $view='')
+	public function askforms($cid, $mid='', $view='', $questions_to='')
 	{
 		$role = getUserProperty('role');
+		$view = (in_array($view, array('provenance','replacement','done')) && $questions_to != 'instructor') 
+				  ? 'general' : $view;
+
 		$data['cid'] = $cid; 
 		$data['mid'] = $mid; 
+		$data['role'] = $role; 
+		$data['view'] = $view; 
 		$data['title'] = 'Manage Content Objects'; 
 
-		if ($role == 'dscribe') {
-				$material =  $this->material->materials($cid,$mid,true);
-				$data['view'] = $view; 
-				$data['material'] = $material[0]; 
-				$data['course'] =  $this->course->get_course($cid); 
-    		$this->layout->buildPage('materials/askforms/dscribe/index', $data);
+		$data['course'] =  $this->course->get_course($cid); 
+		$material =  $this->material->materials($cid,$mid,true);
+		$data['material'] = $material[0]; 
 
-		} elseif ($role == 'dscribe2') {
-				$material =  $this->material->materials($cid,$mid,true);
-				//$this->ocw_utils->dump($material); exit;
-				$data['view'] = $view; 
-				$data['material'] = $material[0]; 
-				$data['course'] =  $this->course->get_course($cid); 
-    		$this->layout->buildPage('materials/askforms/dscribe2/index', $data);
+		/* data for html elements */
+		$data['select_questions_to'] = array('dscribe2'=>'dScribe2', 'instructor'=>'Instructor');
 
-		} else {	// default: instructor view (no one really needs to login for this view)
-				$view = ($view == '') ? 'provenance' : $view;
+		/* info for queries sent to instructor */
+		if ($questions_to == 'instructor' || !preg_match('/dscribe(\d)?/',$role)) {
+				$view = (!in_array($view, array('provenance','replacement','done'))) ? 'provenance' : $view;
 				$prov_objects =  $this->coobject->coobjects($mid,'','Ask'); // objects with provenace questions
 				$repl_objects =  $this->coobject->replacements($mid,'','','Ask'); // objects with replacement questions
-				$material =  $this->material->materials($cid,$mid,true);
 				$num_obj = $num_repl = $num_prov = $num_done = 0;
 
 				if ($prov_objects != null) {	
@@ -311,7 +308,7 @@ class Materials extends Controller {
 										$num_obj++;
 						}
 				}
-
+				
 				$data['view'] = $view; 
 				$data['num_done'] = $num_done; 
 				$data['num_prov'] = $num_prov; 
@@ -319,9 +316,23 @@ class Materials extends Controller {
 				$data['numobjects'] = $num_obj;
 				$data['prov_objects'] = $prov_objects; 
 				$data['repl_objects'] = $repl_objects; 
-				$data['material'] = $material[0]; 
-				$data['course'] =  $this->course->get_course($cid); 
+				$data['num_avail'] = array('provenance'=>$num_prov, 'replacement'=>$num_repl, 'done'=>$num_done);
 				$data['list'] = $this->ocw_utils->create_co_list($cid,$mid,$prov_objects);
+		}
+
+		if ($role == 'dscribe') {
+				$q2 = ($questions_to == '') ? 'instructor' : $questions_to;
+				$data['questions_to'] = $q2; 
+
+    		$this->layout->buildPage('materials/askforms/dscribe/index', $data);
+
+		} elseif ($role == 'dscribe2') {
+				$q2 = ($questions_to == '') ? 'dscribe2' : $questions_to;
+				$data['questions_to'] = $q2; 
+
+    		$this->layout->buildPage('materials/askforms/dscribe2/index', $data);
+
+		} else {	// default: instructor view (no one really needs to login for this view)
     		$this->layout->buildPage('materials/askforms/instructor/index', $data);
 		}
 	}

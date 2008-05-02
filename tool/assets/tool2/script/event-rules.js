@@ -548,6 +548,19 @@ var Rules = {
 					panel.style.display = (disp=='none') ? 'block' : 'none';
         }
     },
+
+	// ASKFORM actions
+	'#questions_to' : function (element) {
+			element.onchange = function() {
+							var cid = $('cid').value;
+							var mid = $('mid').value; 
+							var view = $('view').value; 
+							var val = this.value;
+							view = (val=='instructor') ? 'provenance' : 'general';
+              url = $('server').value+'materials/askforms/'+cid+'/'+mid+'/'+view+'/'+val;
+             	window.location.replace(url);
+			}
+	},
 }
 
 // Remove/Comment this if you do not wish to reapply Rules automatically

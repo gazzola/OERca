@@ -7,7 +7,6 @@ echo script('moo-ipe.js');
 echo script('multiupload.js');
 
 $sigs = array('high'=>'Very important', 'normal'=>'Important', 'low'=>'Not important'); 
-$num_avail = array('provenance'=>$num_prov, 'replacement'=>$num_repl, 'done'=>$num_done);
 ?>
 <style>
 p.txt{

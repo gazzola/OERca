@@ -29,7 +29,8 @@
 
 	   echo script('flash.js'); 
 
-    if (isset($material['name'])) {
+	  $ci_uri = trim($this->uri->uri_string(), '/'); 
+    if (isset($material['name']) && preg_match('|^materials/edit/\d+/\d+|', $ci_uri)) { 
         echo '<script type="text/javascript">';
         echo 'var numitems = '.$numobjects.';';
         echo 'var numsteps = numitems;';
