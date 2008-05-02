@@ -1,6 +1,8 @@
 var orig_com_ap, orig_q_ap, repl_com_ap, repl_q_ap; // references for add panel divs
 // boolean values to determine if to open add pane - used in case of errors
 var open_uploadmat_pane, open_editcourse_pane, open_uploadco_pane, open_editinst_pane;
+// boolean value for edit co page
+var open_coinfo_pane;
 
 var btn_up_active = false;
 var btn_down_active = true;
@@ -51,6 +53,8 @@ var Site = {
     if ($('do_open_courseinfo_pane')) Site.course_page_setup();
 
     if ($('do_open_matinfo_pane')) Site.co_page_setup();
+    
+    if ($('do_open_coinfo_pane')) Site.coinfo_page_setup();
 
     if ($('orig_com_addpanel')) {
       orig_com_ap = new Fx.Slide($('orig_com_addpanel'), {duration: 500, transition: Fx.Transitions.linear });
@@ -155,7 +159,33 @@ var Site = {
       $('do_open_instinfo_pane').parentNode.removeClass('normal').addClass('active');
     }
   },
+  // toggle the content object information panel
+  coinfo_page_setup: function() {
+ 
+      var co_info = new Fx.Slide($('pane_coinfo')).hide();
 
+    $('do_open_coinfo_pane').addEvent('click', function(e) {
+      e = new Event(e);
+
+	  // no other panels to hide
+
+      co_info.toggle();
+      var addclass = ($('do_open_coinfo_pane').parentNode.className=='active') ? 'normal' : 'active';
+      var rmvclass = ($('do_open_coinfo_pane').parentNode.className=='active') ? 'active' : 'normal';
+      this.parentNode.removeClass(rmvclass).addClass(addclass);
+      e.stop(); 
+    });
+    $('do_close_coinfo_pane').addEvent('click', function(e) {
+      e = new Event(e);
+      co_info.toggle();
+      $('do_open_coinfo_pane').parentNode.removeClass('active').addClass('normal');
+      e.stop(); 
+    });
+	
+    if (open_coinfo_pane) { co_info.toggle();
+      $('do_open_coinfo_pane').parentNode.removeClass('normal').addClass('active');
+    }
+  },
   co_page_setup: function () {
     // toggle edit panes for material attributes
     var edit_mat = new Fx.Slide($('pane_matinfo')).hide();

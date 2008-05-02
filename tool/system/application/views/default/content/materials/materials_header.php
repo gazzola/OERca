@@ -4,6 +4,8 @@
 	<?php if ($openpane == 'uploadco') { ?>open_uploadco_pane = <?php echo ($openpane == 'uploadco') ? 'true;' : 'false;'; } ?>
 	<?php if ($openpane == 'editinst') { ?>open_editinst_pane = <?php echo
 	  ($openpane == 'editinst') ? 'true' : 'false;'; } ?>
+	  
+	 <?php if ($openpane == 'coinfo') { ?>open_coinfo_pane = <?php echo ($openpane == 'coinfo') ? 'true;' : 'false;'; } ?>
 </script>
 
 <?php
@@ -32,7 +34,7 @@
 			  	<li class="normal"><a id="do_open_uploadco_pane">Add Content Objects</a></li>
 			    <li class="normal"><a id="do_open_matinfo_pane">Material Info</a></li>
 			    <li class="normal"><a id="do_open_matcomm_pane">Material Comments</a></li>
-					<?php if ($objstats['ask']>0) { ?>
+			    	<?php if ($objstats['ask']>0) { ?>
 					<li class="normal"><a href="<?=site_url("materials/askforms/$cid/$mid")?>">ASK form</a></li>
 					<?php		} ?>
 			    <li class="normal"><a href="<?=$material['ctools_url']?>">Download</a></li>

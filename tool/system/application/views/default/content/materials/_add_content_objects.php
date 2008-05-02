@@ -11,7 +11,7 @@ $types .= '</select>';
 
 $action_types = array('Fair Use'=>'Fair Use', 'Search'=>'Search',
 						          'Commission'=>'Commission', 'Permission'=>'Permission',
-						          'Retain'=>'Retain', 'Remove'=>'Remove');
+						          'Retain'=>'Retain: No Copyright', 'Remove'=>'Remove');
 ?>
 
 <div id="pane_uploadco" class="editpane">

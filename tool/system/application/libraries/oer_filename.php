@@ -56,7 +56,7 @@ class OER_Filename
    * @return  boolean true=created | false=not created
    */
   public function mkdir($dirpath)
-  {
+  {echo $dirpath;
 		if (!is_dir($dirpath)) {
 				mkdir($dirpath);
 				chmod($dirpath,0777);

@@ -117,6 +117,8 @@ var Rules = {
 
 
 	// object functions
+	
+	
 	'.do_add_object_comment': function(element) {
 		element.onclick = function(e) {
 		  new Event(e).stop();
@@ -225,6 +227,97 @@ var Rules = {
 				new Ajax(url, { method: 'get', update: fb, }).request();
 		}
 		element.onclick = element.onchange;
+	},
+	
+	'.do_object_action_type' : function(element) {
+		element.onclick = function() {
+			var id = this.id;
+			id = id.replace(/\w+_/g,'');
+			if (this.value == 'Fair Use') {
+				if ($('Fair Use')) {
+					$('Fair Use').style.display = 'block';}
+				if ($('Permission')) {
+					$('Permission').style.display = 'none';}
+				if ($('Commission')) {
+					$('Commission').style.display = 'none';}
+				if ($('Retain')) {
+					$('Retain').style.display = 'none';}
+			} else if (this.value == 'Permission') {
+				if ($('Fair Use')) {
+					$('Fair Use').style.display = 'none';	}
+				if ($('Permission')) {
+					$('Permission').style.display = 'block';}
+				if ($('Commission')) {
+					$('Commission').style.display = 'none';}
+				if ($('Retain')) {
+					$('Retain').style.display = 'none';}
+			} else if (this.value == 'Commission') {
+				if ($('Fair Use')) {
+					$('Fair Use').style.display = 'none';	}
+				if ($('Permission')) {
+					$('Permission').style.display = 'none';}
+				if ($('Commission')) {
+					$('Commission').style.display = 'block';}
+				if ($('Retain')) {
+					$('Retain').style.display = 'none';}
+			} else if (this.value == 'Retain') {
+				if ($('Fair Use')) {
+					$('Fair Use').style.display = 'none';	}
+				if ($('Permission')) {
+					$('Permission').style.display = 'none';}
+				if ($('Commission')) {
+					$('Commission').style.display = 'none';}
+				if ($('Retain')) {
+					$('Retain').style.display = 'block';}
+			}
+			else
+			{
+				if ($('Fair Use')) {
+					$('Fair Use').style.display = 'none';	}
+				if ($('Permission')) {
+					$('Permission').style.display = 'none';}
+				if ($('Commission')) {
+					$('Commission').style.display = 'none';}
+				if ($('Retain')) {
+					$('Retain').style.display = 'none';}
+			}
+		}
+	},
+	
+	'.do_object_ask_yesno' : function(element) {
+		element.onclick = function() {
+			var id = this.id;
+			id = id.replace(/\w+_/g,'');
+			if (this.value == 'yes') {
+				if ($('ask_yes')) {
+					$('ask_yes').style.display = 'block';	
+				} 
+			   if ($('ask_yes')) { $('ask_no').style.display = 'none';}
+			} else {
+				if ($('ask_no')) {
+					$('ask_no').style.display = 'block';	
+				} 
+			   if ($('ask_yes')) { $('ask_yes').style.display = 'none';	}
+			}
+		}
+	},
+	
+	'.do_object_ask_dscribe2_yesno' : function(element) {
+		element.onclick = function() {
+			var id = this.id;
+			id = id.replace(/\w+_/g,'');
+			if (this.value == 'yes') {
+				if ($('ask_dscribe2_yes')) {
+					$('ask_dscribe2_yes').style.display = 'block';	
+				} 
+			   if ($('ask_dscribe2_yes')) { $('ask_dscribe2_no').style.display = 'none';}
+			} else {
+				if ($('ask_dscribe2_no')) {
+					$('ask_dscribe2_no').style.display = 'block';	
+				} 
+			   if ($('ask_dscribe2_yes')) { $('ask_dscribe2_yes').style.display = 'none';	}
+			}
+		}
 	},
 
 	'.do_object_cp_update' : function(element) {
