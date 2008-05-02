@@ -267,18 +267,15 @@ class Materials extends Controller {
 	}
 
 
-	// displays ask forms for dscribes, dscribes2 and instructors
+	// displays ask forms for dscribes, dscribes2, instructors && ip review team
 	public function askforms($cid, $mid='', $view='', $questions_to='')
 	{
 		$role = getUserProperty('role');
-		$view = (in_array($view, array('provenance','replacement','done')) && $questions_to != 'instructor') 
-				  ? 'general' : $view;
 
 		$data['cid'] = $cid; 
 		$data['mid'] = $mid; 
 		$data['role'] = $role; 
-		$data['view'] = $view; 
-		$data['title'] = 'Manage Content Objects'; 
+		$data['title'] = 'Manage Content Objects &raquo; Ask Form'; 
 
 		$data['course'] =  $this->course->get_course($cid); 
 		$material =  $this->material->materials($cid,$mid,true);
@@ -286,9 +283,10 @@ class Materials extends Controller {
 
 		/* data for html elements */
 		$data['select_questions_to'] = array('dscribe2'=>'dScribe2', 'instructor'=>'Instructor');
+		if ($role == 'dscribe2') { $data['select_questions_to']['ipreview'] = 'IP Review Team'; }
 
 		/* info for queries sent to instructor */
-		if ($questions_to == 'instructor' || !preg_match('/dscribe(\d)?/',$role)) {
+		if ($questions_to=='instructor' || ($role=='dscribe1' && $questions_to=='')) {
 				$view = (!in_array($view, array('provenance','replacement','done'))) ? 'provenance' : $view;
 				$prov_objects =  $this->coobject->coobjects($mid,'','Ask'); // objects with provenace questions
 				$repl_objects =  $this->coobject->replacements($mid,'','','Ask'); // objects with replacement questions
@@ -318,19 +316,47 @@ class Materials extends Controller {
 				$data['repl_objects'] = $repl_objects; 
 				$data['num_avail'] = array('provenance'=>$num_prov, 'replacement'=>$num_repl, 'done'=>$num_done);
 				$data['list'] = $this->ocw_utils->create_co_list($cid,$mid,$prov_objects);
+
+		} elseif ($questions_to=='dscribe2' || ($role=='dscribe2' && $questions_to=='')) { // dscribes page info
+				$view = ($view=='') ? 'general' : $view;
+				$num_general = $num_fairuse = $num_permission = $num_commission = $num_nocopy = $num_done = 10;
+
+				$data['view'] = $view; 
+				$data['num_general'] = $num_general; 
+				$data['num_fairuse'] = $num_fairuse; 
+				$data['num_permission'] = $num_permission; 
+				$data['num_commission'] = $num_commission; 
+				$data['num_nocopy'] = $num_nocopy; 
+				$data['num_done'] = $num_done; 
+				$data['num_avail'] = array('general'=>$num_general, 'fairuse'=>$num_fairuse, 
+																	 'permission'=>$num_permission,'commission'=>$num_commission,
+																	 'nocopy'=>$num_nocopy, 'done'=>$num_done);
+				$data['need_input'] = ($data['num_general'] + $data['num_fairuse'] + $data['num_permission'] + 
+															 $data['num_commission'] + $data['num_nocopy']) -  $data['num_done']; 
+
+		} elseif (($questions_to=='ipreview' && in_array($role,array('dscribe2','ipreviewer'))) || 
+              ($role=='ipreviewer' && $questions_to=='')) { // ip review page info
+
 		}
 
-		if ($role == 'dscribe') {
+		/* go to the right view */
+		if ($role == 'dscribe1') {
 				$q2 = ($questions_to == '') ? 'instructor' : $questions_to;
 				$data['questions_to'] = $q2; 
 
-    		$this->layout->buildPage('materials/askforms/dscribe/index', $data);
+    		$this->layout->buildPage('materials/askforms/dscribe1/index', $data);
 
 		} elseif ($role == 'dscribe2') {
 				$q2 = ($questions_to == '') ? 'dscribe2' : $questions_to;
 				$data['questions_to'] = $q2; 
 
     		$this->layout->buildPage('materials/askforms/dscribe2/index', $data);
+
+		} elseif ($role == 'ipreviewer') {
+				$q2 = ($questions_to == '') ? 'ipreview' : $questions_to;
+				$data['questions_to'] = $q2; 
+
+    		$this->layout->buildPage('materials/askforms/ipreviewer/index', $data);
 
 		} else {	// default: instructor view (no one really needs to login for this view)
     		$this->layout->buildPage('materials/askforms/instructor/index', $data);
