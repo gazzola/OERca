@@ -470,15 +470,31 @@ class Materials extends Controller {
 				if ($field=='action_type') {
 						$lgcm = 'Changed action type to '.$val;
 						$this->coobject->add_log($oid, getUserProperty('id'), array('log'=>$lgcm));
+						$data = array($field=>$val);
+						$this->coobject->update($oid, $data);
 				} elseif ($field=='done') {
 						$lgcm = 'Changed cleared status to '.(($val==1)?'"yes"':'"no"');
 						$this->coobject->add_log($oid, getUserProperty('id'), array('log'=>$lgcm));
+						$data = array($field=>$val);
+						$this->coobject->update($oid, $data);
 				} elseif ($field=='fairuse_rationale')
 				{
 					$this->coobject->add_fairuse_rationale($oid, getUserProperty('id'), array('rationale'=>$val));
+				} elseif ($field=='commission_rationale')
+				{
+					$this->coobject->add_commission_rationale($oid, getUserProperty('id'), array('rationale'=>$val));
+				} elseif ($field=='retain_rationale')
+				{
+					$this->coobject->add_retain_rationale($oid, getUserProperty('id'), array('rationale'=>$val));
+				} elseif ($field=='question')
+				{
+					$this->coobject->add_additional_question($oid, getUserProperty('id'), array('question'=>$val,'role'=>'instructor'));
+				} elseif ($field=='dscribe2_question')
+				{
+					$this->coobject->add_additional_question($oid, getUserProperty('id'), array('question'=>$val,'role'=>'dscribe2'));
 				} else {
-				$data = array($field=>$val);
-				$this->coobject->update($oid, $data);
+					$data = array($field=>$val);
+					$this->coobject->update($oid, $data);
 				}
 		}
 
@@ -545,8 +561,22 @@ class Materials extends Controller {
 		$objstats =  $this->coobject->object_stats($mid);
 		
 		// get the fairuse retional
-		$fairuse_rationale = $this->coobject->getFairuseRationale($oid);
-		log_message('error', 'dfdad'.$fairuse_rationale);
+		$fairuse_rationale = $this->coobject->getRationale($oid, "claims_fairuse");
+		
+		// get the commission retional
+		$commission_rationale = $this->coobject->getRationale($oid, "claims_commission");
+		
+		// get the retain retional
+		$retain_rationale = $this->coobject->getRationale($oid, "claims_retain");
+		
+		// get the permission contact
+		$permission = $this->coobject->getClaimsPermission($oid);
+		
+		// get the instructor question
+		$question = $this->coobject->getQuestion($oid, "instructor");
+		
+		// get the dscribe2 question
+		$dscribe2_question = $this->coobject->getQuestion($oid, "dscribe2");
 		
 		$data = array(
 					  'obj'=>$obj[0],
@@ -557,7 +587,12 @@ class Materials extends Controller {
 						'objstats' => $objstats,
 				  	'repl_obj'=>$repl_objects[0],
 				  	'fairuse_rationale' => $fairuse_rationale,
+				  	'commission_rationale' => $commission_rationale,
+				  	'retain_rationale' => $retain_rationale,
+				  	'question'=> $question,
+				  	'dscribe2_question'=>$dscribe2_question,
 				);
+		$data = array_merge($data, $permission);
 
     	$this->load->view('default/content/materials/edit_co', $data);
 	}

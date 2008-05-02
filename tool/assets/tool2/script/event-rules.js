@@ -321,7 +321,7 @@ var Rules = {
 		}
 	},
 	
-	'.do_object_fairuse_rationale' : function(element) {
+	'.do_object_rationale' : function(element) {
 		element.onchange = function () {
 				var response;
 				var course_id = $('cid').value;

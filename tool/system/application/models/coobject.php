@@ -323,6 +323,49 @@ class Coobject extends Model
 		$table = ($type == 'original') ? 'object_questions' : 'object_replacement_questions';
 		$this->db->insert($table,$data);
 	}
+	
+	/**
+     * Add additional question 
+     *
+     * @access  public
+     * @param   int object id
+     * @param   int user id
+     * @param   array data 
+     * @return  void
+     */
+	public function add_additional_question($oid, $uid, $data)
+	{
+		$table = "object_questions";
+		// whether there is already a question without an answer
+		$this->db->where("object_id", $oid);
+		$role = $data['role'];
+		$this->db->where("role", "$role");
+		$q = $this->db->get($table);
+
+		if ($q->num_rows() > 0) 
+		{
+			
+			// there is already a record for this object
+			foreach($q->result_array() as $row) { 
+		        $id = $row['id'];
+		      }
+			// answered, log it and refresh to new question
+			$ndata['question'] = $data['question'];
+			$data['user_id'] = $uid;
+			$ndata['modified_on'] = date('Y-m-d h:i:s');
+        	$this->db->where("id=$id");
+        	$this->db->update($table, $ndata);
+		}
+		else
+		{
+			$data['object_id'] = $oid;
+			$data['user_id'] = $uid;
+			$data['created_on'] = date('Y-m-d h:i:s');
+			$data['modified_on'] = date('Y-m-d h:i:s');
+			$table = 'object_questions';
+			$this->db->insert($table,$data);
+		}
+	}
 
 	/**
      * update a question 
@@ -406,15 +449,14 @@ class Coobject extends Model
 		$table = ($type == 'original') ? 'object_log' : 'object_replacement_log';
 		$this->db->insert($table,$data);
 	}
-	
 
 	/**
 	 * Add the fairuse rationale for the object
 	 */
 	public function add_fairuse_rationale($oid, $uid, $data)
 	{
-		$table = 'claims_fairuse';
 		
+		$table = "claims_fairuse";
 		// whether there is already a record for this object
 		$this->db->select("*")->from($table)->where("object_id=$oid");
 		$q = $this->db->get();
@@ -439,6 +481,69 @@ class Coobject extends Model
 			$this->db->insert($table, $data);
 		}
 		
+	}
+	
+	/**
+	 * Add the commission rationale for the object
+	 */
+	public function add_commission_rationale($oid, $uid, $data)
+	{
+		$table = "claims_commission";
+		// whether there is already a record for this object
+		$this->db->select("*")->from($table)->where("object_id=$oid");
+		$q = $this->db->get();
+
+		if ($q->num_rows() > 0) {
+			// there is already a record for this object
+			foreach($q->result_array() as $row) { 
+		        $id = $row['id'];
+		      }
+		    $ndata['rationale'] = $data['rationale'];
+			$ndata['modified_on'] = date('Y-m-d h:i:s');
+        	$this->db->where("id=$id");
+        	$this->db->update($table, $ndata);
+		}
+		else
+		{
+			// no record yet, insert one
+			$data['object_id'] =$oid;
+			$data['user_id'] = $uid;
+			$data['created_on'] = date('Y-m-d h:i:s');
+			$data['modified_on'] = date('Y-m-d h:i:s');
+			$this->db->insert($table, $data);
+		}
+		
+	}
+	
+	/**
+	 * Add the retain rationale for the object
+	 */
+	public function add_retain_rationale($oid, $uid, $data)
+	{
+		$table = "claims_retain";
+		// whether there is already a record for this object
+		$this->db->select("*")->from($table)->where("object_id=$oid");
+		$q = $this->db->get();
+
+		if ($q->num_rows() > 0) {
+			// there is already a record for this object
+			foreach($q->result_array() as $row) { 
+		        $id = $row['id'];
+		      }
+		    $ndata['rationale'] = $data['rationale'];
+			$ndata['modified_on'] = date('Y-m-d h:i:s');
+        	$this->db->where("id=$id");
+        	$this->db->update($table, $ndata);
+		}
+		else
+		{
+			// no record yet, insert one
+			$data['object_id'] =$oid;
+			$data['user_id'] = $uid;
+			$data['created_on'] = date('Y-m-d h:i:s');
+			$data['modified_on'] = date('Y-m-d h:i:s');
+			$this->db->insert($table, $data);
+		}
 	}
 
 	public function update_contact($oid, $uid, $data)
@@ -470,12 +575,13 @@ class Coobject extends Model
 	}
 	
 	/**
-	 * get the fairuse rationale for the object
+	 * get the rationale for the object
 	 */
-	public function getFairuseRationale($oid)
+	public function getRationale($oid, $table)
 	{
 		// get the fairuse retional
-		$this->db->select("*")->from('claims_fairuse')->where("object_id=$oid");
+		$rationale="";
+		$this->db->select("*")->from($table)->where("object_id=$oid");
 		$q = $this->db->get();
 		if ($q->num_rows() > 0) {
 			// there is already a record for this object
@@ -484,6 +590,36 @@ class Coobject extends Model
 		      }
 		}
 		return $rationale;
+	}
+	
+	/**
+	 * get the question for the object
+	 */
+	public function getQuestion($oid, $role)
+	{
+		// get the fairuse retional
+		$question="";
+		$table = "object_questions";
+		$this->db->where("object_id", $oid);
+		$this->db->where("role", "$role");
+		$q = $this->db->get($table);
+		if ($q->num_rows() > 0) {
+			// there is already a record for this object
+			foreach($q->result_array() as $row) { 
+		        $question = $row['question'];
+		      }
+		}
+		return $question;
+	}
+	/**
+	 * get the claim permission data
+	 */
+	public function getClaimsPermission($oid)
+	{
+		$this->db->select("*")->from('claims_permission')->where("object_id=$oid");
+		$q = $this->db->get();
+		$permission = $q->row_array();
+		return $permission;
 	}
 
 	/**
