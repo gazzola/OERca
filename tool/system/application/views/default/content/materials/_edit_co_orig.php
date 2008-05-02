@@ -30,6 +30,7 @@ $comments = $obj['comments'];
 $log = $obj['log'];
 ?>
 
+<!--<a id="do_open_coinfo_pane" onClick='"class=do_open_coinfo_pane" '>Edit Content Object info</a>-->
 <div id="Original" class="mootabs_panel">
   <!-- STATUS -->
 <div class="column span-17 first last">
@@ -79,16 +80,96 @@ $log = $obj['log'];
   		<td colspan='4'>
   			<div id="Fair Use" style="display: <?= ($obj['action_type']=='Fair Use') ? 'block':'none'?>">
   				<p>
-					<b>Please provide the dScribe2 with your rationale for the fair use of this content object in the space below</b><br/>
-			       	<textarea name="fair_use_rationale" id="fair_use_rationale" rows="10" cols="50" class="do_fair_use_rationale"></textarea>
+					<b>Please provide the dScribe2 with your rationale for the fair use of this content object in the space below.</b><br/>
+			       	<textarea name="fairuse_rationale" id="fairuse_rationale" rows="10" cols="50" class="do_object_fairuse_rationale"><?=$fairuse_rationale?></textarea>
 				</p>
 	  		</div>
 	  		<div id="Permission" style="display: <?= ($obj['action_type']=='Permission') ? 'block':'none'?>">
   				<p>
 					<b>Provide a detailed description of the content object for reference in the permission form.</b><br/>
-			       	<textarea name="permission_description" id="permssion_description" rows="10" cols="50" class="do_permission_description"></textarea><br/>
+			       	<textarea name="description" id="description" rows="10" cols="50" class="do_update_description"><?=$obj['description']?></textarea><br/>
 			       	<b>Please provide the contact information for the copyright holder of this content object.</b><br/>
-			       	<textarea name="permission_contact" id="permssion_contact" rows="10" cols="50" class="do_permission_contact"></textarea>
+			       	<table>
+			       		<tr>
+			       			<th>
+			       				<label for="contact_name">Name:</label>
+			       			</th>
+			       			<td>
+			       				<input type="text"  name="contact_name" id="contact_name"  class="do_update_contact" size="50" />
+			       			</td>
+			       		</tr>
+			       		<tr>
+			       			<th>
+			       				<label for="contact_address_1">Address:</label>
+			       			</th>
+			       			<td>
+			       				<input type="text"  name="contact_line1" id="contact_line1" class="do_update_contact" size="50" />
+			       			</td>
+			       		</tr>
+			       		<tr>
+			       			<th>
+			       			</th>
+			       			<td>
+			       				<input type="text"  name="contact_line2" id="contact_line2"  class="do_update_contact" size="50" />
+			       			</td>
+			       		</tr>
+			       		<tr>
+			       			<th>
+			       				<label for="contact_city">City:</label>
+			       			</th>
+			       			<td>
+			       				<input type="text"  name="contact_city" id="contact_city"  class="do_update_contact" size="50" />
+			       			</td>
+			       		</tr>
+			       		<tr>
+			       			<th>
+			       				<label for="contact_state">State:</label>
+			       			</th>
+			       			<td>
+			       				<input type="text"  name="contact_state" id="contact_state"  class="do_update_contact" size="50" />
+			       			</td>
+			       		</tr>
+			       		<tr>
+			       			<th>
+			       				<label for="contact_country">Country:</label>
+			       			</th>
+			       			<td>
+			       				<input type="text"  name="contact_country" id="contact_country"  class="do_update_contact" size="50" />
+			       			</td>
+			       		</tr>
+			       		<tr>
+			       			<th>
+			       				<label for="contact_postalcode">Postal Code:</label>
+			       			</th>
+			       			<td>
+			       				<input type="text"  name="contact_postalcode" id="contact_postalcode"  class="do_update_contact" size="50" />
+			       			</td>
+			       		</tr>
+			       		<tr>
+			       			<th>
+			       				<label for="contact_phone">Phone:</label>
+			       			</th>
+			       			<td>
+			       				<input type="text"  name="contact_phone" id="contact_phone"  class="do_update_contact" size="50" />
+			       			</td>
+			       		</tr>
+			       		<tr>
+			       			<th>
+			       				<label for="contact_fax">Fax:</label>
+			       			</th>
+			       			<td>
+			       				<input type="text"  name="contact_fax" id="contact_fax"  class="do_update_contact" size="50" />
+			       			</td>
+			       		</tr>
+			       		<tr>
+			       			<th>
+			       				<label for="contact_email">Email:</label>
+			       			</th>
+			       			<td>
+			       				<input type="text"  name="contact_email" id="contact_email"  class="do_update_contact" size="50" />
+			       			</td>
+			       		</tr>
+			       	</table>	
 				</p>
 	  		</div>
 	  		<div id="Commission" style="display: <?= ($obj['action_type']=='Commission') ? 'block':'none'?>">

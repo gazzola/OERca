@@ -406,7 +406,85 @@ class Coobject extends Model
 		$table = ($type == 'original') ? 'object_log' : 'object_replacement_log';
 		$this->db->insert($table,$data);
 	}
+	
 
+	/**
+	 * Add the fairuse rationale for the object
+	 */
+	public function add_fairuse_rationale($oid, $uid, $data)
+	{
+		$table = 'claims_fairuse';
+		
+		// whether there is already a record for this object
+		$this->db->select("*")->from($table)->where("object_id=$oid");
+		$q = $this->db->get();
+
+		if ($q->num_rows() > 0) {
+			// there is already a record for this object
+			foreach($q->result_array() as $row) { 
+		        $id = $row['id'];
+		      }
+		    $ndata['rationale'] = $data['rationale'];
+			$ndata['modified_on'] = date('Y-m-d h:i:s');
+        	$this->db->where("id=$id");
+        	$this->db->update($table, $ndata);
+		}
+		else
+		{
+			// no record yet, insert one
+			$data['object_id'] =$oid;
+			$data['user_id'] = $uid;
+			$data['created_on'] = date('Y-m-d h:i:s');
+			$data['modified_on'] = date('Y-m-d h:i:s');
+			$this->db->insert($table, $data);
+		}
+		
+	}
+
+	public function update_contact($oid, $uid, $data)
+	{
+		$table = 'claims_permission';
+		
+		// whether there is already a record for this object
+		$this->db->select("*")->from($table)->where("object_id=$oid");
+		$q = $this->db->get();
+
+		if ($q->num_rows() > 0) {
+			// there is already a record for this object
+			foreach($q->result_array() as $row) { 
+		        $id = $row['id'];
+		      }
+        	$this->db->where("id=$id");
+        	$this->db->update($table, $data);
+		}
+		else
+		{
+			// no record yet, insert one
+			$data['object_id'] =$oid;
+			$data['user_id'] = $uid;
+			$data['created_on'] = date('Y-m-d h:i:s');
+			$data['modified_on'] = date('Y-m-d h:i:s');
+			$this->db->insert($table, $data);
+		}
+		
+	}
+	
+	/**
+	 * get the fairuse rationale for the object
+	 */
+	public function getFairuseRationale($oid)
+	{
+		// get the fairuse retional
+		$this->db->select("*")->from('claims_fairuse')->where("object_id=$oid");
+		$q = $this->db->get();
+		if ($q->num_rows() > 0) {
+			// there is already a record for this object
+			foreach($q->result_array() as $row) { 
+		        $rationale = $row['rationale'];
+		      }
+		}
+		return $rationale;
+	}
 
 	/**
      * Add an object

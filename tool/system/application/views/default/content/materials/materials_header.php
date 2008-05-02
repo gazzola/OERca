@@ -2,10 +2,7 @@
 	<?php if ($openpane == 'uploadmat') { ?>open_uploadmat_pane = <?php echo ($openpane == 'uploadmat') ? 'true;' : 'false;'; } ?>
 	<?php if ($openpane == 'editcourse') { ?>open_editcourse_pane = <?php echo ($openpane == 'editcourse') ? 'true;' : 'false;'; } ?>
 	<?php if ($openpane == 'uploadco') { ?>open_uploadco_pane = <?php echo ($openpane == 'uploadco') ? 'true;' : 'false;'; } ?>
-	<?php if ($openpane == 'editinst') { ?>open_editinst_pane = <?php echo
-	  ($openpane == 'editinst') ? 'true' : 'false;'; } ?>
-	  
-	 <?php if ($openpane == 'coinfo') { ?>open_coinfo_pane = <?php echo ($openpane == 'coinfo') ? 'true;' : 'false;'; } ?>
+	<?php if ($openpane == 'editinst') { ?>open_editinst_pane = <?php echo ($openpane == 'editinst') ? 'true' : 'false;'; } ?>
 </script>
 
 <?php

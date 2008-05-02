@@ -473,15 +473,27 @@ class Materials extends Controller {
 				} elseif ($field=='done') {
 						$lgcm = 'Changed cleared status to '.(($val==1)?'"yes"':'"no"');
 						$this->coobject->add_log($oid, getUserProperty('id'), array('log'=>$lgcm));
-				} else {}
+				} elseif ($field=='fairuse_rationale')
+				{
+					$this->coobject->add_fairuse_rationale($oid, getUserProperty('id'), array('rationale'=>$val));
+				} else {
 				$data = array($field=>$val);
 				$this->coobject->update($oid, $data);
+				}
 		}
 
     $this->ocw_utils->send_response('success');
    	exit;
 	}
 
+	public function update_contact($cid, $mid, $oid, $field, $val='') 
+ 	{
+		$data = array($field=>$val);
+		$this->coobject->update_contact($oid, getUserProperty('id'), $data);
+	
+	    $this->ocw_utils->send_response('success');
+	   	exit;
+	}
 
 	public function update_replacement($cid, $mid, $oid, $field, $val='') 
  	{
@@ -532,6 +544,10 @@ class Materials extends Controller {
 		$repl_objects =  $this->coobject->replacements($mid,$oid); 
 		$objstats =  $this->coobject->object_stats($mid);
 		
+		// get the fairuse retional
+		$fairuse_rationale = $this->coobject->getFairuseRationale($oid);
+		log_message('error', 'dfdad'.$fairuse_rationale);
+		
 		$data = array(
 					  'obj'=>$obj[0],
 					  'cid'=>$cid,
@@ -540,6 +556,7 @@ class Materials extends Controller {
 				  	'subtypes'=>$subtypes,
 						'objstats' => $objstats,
 				  	'repl_obj'=>$repl_objects[0],
+				  	'fairuse_rationale' => $fairuse_rationale,
 				);
 
     	$this->load->view('default/content/materials/edit_co', $data);

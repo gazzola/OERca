@@ -28,7 +28,6 @@ echo script('ocw_tool.js');
 <div class="column span-17 first last" style="text-align: left">
   <h3 style="font-size: 1.5em; color:#666;">OER Content Object: <?=$obj['name']?></h3>
 </div>
-
 <div id="myTabs" class="column span-17 first last">
 	<ul class="mootabs_title">
 		<li title="Original" style="padding-left:10px; margin-left:0;"><h2>Original</h2>
@@ -55,7 +54,6 @@ echo script('ocw_tool.js');
       	<a href="#upload" style="text-align: center" title="upload replacements">Upload replacement &raquo;</a>
     </li>
   </ul>
-
   <!-- original form -->
   <?php $this->load->view(property('app_views_path').'/materials/_edit_co_orig.php', $data); ?>
 

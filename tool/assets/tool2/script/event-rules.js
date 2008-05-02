@@ -229,6 +229,7 @@ var Rules = {
 		element.onclick = element.onchange;
 	},
 	
+
 	'.do_object_action_type' : function(element) {
 		element.onclick = function() {
 			var id = this.id;
@@ -317,6 +318,54 @@ var Rules = {
 				} 
 			   if ($('ask_dscribe2_yes')) { $('ask_dscribe2_yes').style.display = 'none';	}
 			}
+		}
+	},
+	
+	'.do_object_fairuse_rationale' : function(element) {
+		element.onchange = function () {
+				var response;
+				var course_id = $('cid').value;
+				var material_id = $('mid').value; 
+				var object_id = $('oid').value;
+				var field = this.name; 
+				var url = $('server').value+'materials/update_object/'+course_id+'/'+material_id;
+				var val = this.value;
+				url += '/'+object_id+'/'+field+'/'+encodeURIComponent(val);
+			
+      	var fb = $('feedback');
+				new Ajax(url, { method: 'get', update: fb, }).request();
+		}
+	},
+	
+	'.do_update_description' : function(element) {
+		element.onchange = function () {
+				var response;
+				var course_id = $('cid').value;
+				var material_id = $('mid').value; 
+				var object_id = $('oid').value;
+				var field = this.name; 
+				var url = $('server').value+'materials/update_object/'+course_id+'/'+material_id;
+				var val = this.value;
+				url += '/'+object_id+'/'+field+'/'+encodeURIComponent(val);
+			
+      	var fb = $('feedback');
+				new Ajax(url, { method: 'get', update: fb, }).request();
+		}
+	},
+	
+	'.do_update_contact' : function(element) {
+		element.onchange = function () {
+				var response;
+				var course_id = $('cid').value;
+				var material_id = $('mid').value; 
+				var object_id = $('oid').value;
+				var field = this.name; 
+				var url = $('server').value+'materials/update_contact/'+course_id+'/'+material_id;
+				var val = this.value;
+				url += '/'+object_id+'/'+field+'/'+encodeURIComponent(val);
+			
+      	var fb = $('feedback');
+				new Ajax(url, { method: 'get', update: fb, }).request();
 		}
 	},
 
