@@ -295,6 +295,8 @@ class Materials extends Controller {
 																																	 ); }
 		if ($view == 'fairuse') { $data['select_actions'] = $this->coobject->enum2array('claims_fairuse','action'); }
 		if ($view == 'permission') { $data['select_actions'] = $this->coobject->enum2array('claims_permission','action'); }
+		if ($view == 'commission') { $data['select_actions'] = $this->coobject->enum2array('claims_commission','action'); }
+		if ($view == 'retain') { $data['select_actions'] = $this->coobject->enum2array('claims_retain','action'); }
 
 		/* info for queries sent to instructor */
 		if ($questions_to=='instructor' || ($role=='dscribe1' && $questions_to=='') || $role=='') {
@@ -474,6 +476,7 @@ class Materials extends Controller {
 				if ($field == 'rep') {
 						redirect("materials/object_info/$cid/$mid/$oid/$rnd", 'location');
 				} elseif($field=='irep') {
+						if (isset($_POST['view'])) { $rnd = $_POST['view']; }
 						redirect("materials/askforms/$cid/$mid/$rnd", 'location');
 				}
 				exit;
