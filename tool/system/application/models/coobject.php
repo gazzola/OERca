@@ -64,14 +64,14 @@ class Coobject extends Model
 					if ($oid <> '') {
 							if ($oid == $row['id']) {
 									$row['comments'] = $this->comments($row['id'],'user_id,comments,modified_on');
-									$row['questions'] = $this->questions($row['id'],'id,user_id,question,answer,modified_on');
+									$row['questions'] = $this->questions($row['id'],'id,user_id,question,answer,role,status,modified_on');
 									$row['copyright'] = $this->copyright($row['id']);
 									$row['log'] = $this->logs($row['id'],'user_id,log,modified_on');
 									array_push($objects, $row);
 							}
 					} else {
 							$row['comments'] = $this->comments($row['id'],'user_id,comments,modified_on');
-							$row['questions'] = $this->questions($row['id'],'id,user_id,question,answer,modified_on');
+							$row['questions'] = $this->questions($row['id'],'id,user_id,question,answer,role,status,modified_on');
 							$row['copyright'] = $this->copyright($row['id']);
 							$row['log'] = $this->logs($row['id'],'user_id,log,modified_on');
 							array_push($objects, $row);
@@ -115,7 +115,7 @@ class Coobject extends Model
 		if ($q->num_rows() > 0) {
 			foreach($q->result_array() as $row) {
 				$row['comments'] = $this->comments($row['id'],'user_id,comments,modified_on','replacement');
-				$row['questions'] = $this->questions($row['id'],'id,user_id,question,answer,modified_on','replacement');
+				$row['questions'] = $this->questions($row['id'],'id,user_id,question,answer,role,status,modified_on','replacement');
 				$row['copyright'] = $this->copyright($row['id'],'*','replacement');
 				$row['log'] = $this->logs($row['id'],'user_id,log,modified_on','replacement');
 				array_push($objects, $row);
@@ -150,6 +150,137 @@ class Coobject extends Model
 		$q = $this->db->get();
 		$row = $q->result_array();
 		return $row[0]['c'];
+	}
+
+	/** 
+	 * Return information need to fill out dscribe ASK Forms 
+   *
+   * @access  public
+   * @param   int	cid course id 
+   * @param   int mid material id 
+   * @return  array
+	 */
+	public function ask_form_info($cid, $mid)
+	{
+		$info = $general = $fairuse = $permission = $commission = $retain = $done = array();
+		$done['general'] = $done['fairuse'] = $done['permission'] = $done['commission'] = $done['retain'] = array();	
+		$num_general = $num_fairuse = $num_permission = $num_commission = $num_retain = $num_done = 0;
+
+		/* get the original and replacement objects for this material */		
+		$orig_objs = $this->coobjects($mid);
+		$repl_objs = $this->replacements($mid);
+
+		foreach ($orig_objs as $obj) { 
+						/* get general question info for dscribe2 */
+						if (!is_null($obj['questions'])) { 
+								// remove all non dscribe2 questions
+								foreach ($obj['questions'] as $k => $q) { if($q['role']!='dscribe2') { unset($obj['questions'][$k]); }}
+								if (!is_null($obj['questions'])) { 
+										$notalldone = false;
+										$obj['otype'] = 'original';
+										foreach ($obj['questions'] as $q) { if($q['status']<>'done') { $notalldone = true; } }
+										if ($notalldone) { array_push($general, $obj); $num_general++; } 
+										else { array_push($done['general'],$obj); $num_done++; }
+								}
+						} 
+
+						/* get objects with fair use claims */
+						if (($c = $this->claim_exists('fairuse', $obj['id'])) !== FALSE) {
+								 $added = $notalldone = false;
+								 foreach($c as $cl) {
+												 if ($cl['status']=='done') { if(!$added){array_push($done['fairuse'],$obj); $num_done++; $added=true;} } 
+												 else { $notalldone = true; }
+								 }	
+								 if ($notalldone) { $obj['fairuse'] = $c;	array_push($fairuse, $c); $num_fairuse++; }
+						}
+
+						/* get objects with permission claims */
+						if (($c = $this->claim_exists('permission', $obj['id'])) !== FALSE) {
+								 $added = $notalldone = false;
+								 foreach($c as $cl) {
+												 if ($cl['status']=='done') { if(!$added) { array_push($done['permission'],$obj); $num_done++; $added=true;} } 
+												 else { $notalldone = true; }
+								 }	
+								 if ($notalldone) { $obj['permission'] = $c;	array_push($permission, $c); $num_permission++; }
+						}
+
+						/* get objects with commission claims */
+						if (($c = $this->claim_exists('commission', $obj['id'])) !== FALSE) {
+								 $added = $notalldone = false;
+								 foreach($c as $cl) {
+												 if ($cl['status']=='done') { if(!$added) { array_push($done['commission'], $obj); $num_done++; $added=true;} } 
+												 else { $notalldone = true; }
+								 }	
+								 if ($notalldone) { $obj['commission'] = $c;	array_push($commission, $c); $num_commission++; }
+						}
+
+						/* get objects with retain (no copyright) claims */
+						if (($c = $this->claim_exists('retain', $obj['id'])) !== FALSE) {
+								 $added = $notalldone = false;
+								 foreach($c as $cl) {
+												 if ($cl['status']=='done') { if(!$added) { array_push($done['retain'], $obj); $num_done++; $added=true;} } 
+												 else { $notalldone = true; }
+								 }	
+								 if ($notalldone) { $obj['retain'] = $c;	array_push($retain, $c); $num_retain++;}
+						}
+		} 
+
+		/* get general question info for replacements as well */
+		foreach ($repl_objs as $obj) { 
+						if (!is_null($obj['questions'])) { 
+								// remove all non dscribe2 questions
+								foreach ($obj['questions'] as $k => $q) { if($q['role']!='dscribe2') { unset($obj['questions'][$k]); }}
+								if (!is_null($obj['questions'])) { 
+										$obj['otype'] = 'replacement';
+										$notalldone = false;
+										foreach ($obj['questions'] as $q) { if($q['status']<>'done') { $notalldone = true; } }
+										if ($notalldone) { array_push($general, $obj); $num_general++; } 
+										else { array_push($done['general'],$obj); $num_done++; }
+								}
+						} 
+		} 
+	
+		/* add information to return array */	
+		if ($num_done>0) { $done['all']=$num_done; }
+		$info['general'] = ($num_general) ?  $general : null;
+		$info['fairuse'] = ($num_fairuse) ?  $fairuse : null;
+		$info['permission'] = ($num_permission) ?  $permission : null;
+		$info['commission'] = ($num_commission) ?  $commission : null;
+		$info['retain'] = ($num_retain) ?  $retain : null;
+		$info['aitems'] = ($num_done) ?  $done : null;
+
+    $info['num_avail'] = array('general'=>$num_general, 'fairuse'=>$num_fairuse,
+                               'permission'=>$num_permission,'commission'=>$num_commission,
+                               'retain'=>$num_retain, 'aitems'=>$num_done);
+
+ 		$info['need_input'] = ($num_general+$num_fairuse+$num_permission+$num_commission+$num_retain)- $num_done;
+
+		//$this->ocw_utils->dump($info); exit;
+		return $info;
+	}
+
+
+	/** 
+	 * Return claims if any 
+   *
+   * @access  public
+   * @param   string	type claim type (fairuse|commission|permission|retain) 
+   * @param   int			oid object id 
+   * @return  array || boolean FALSE if no claims
+	 */
+	public function claim_exists($type, $oid)
+	{
+		$claims = array();
+		$table = 'claims_'.$type; 
+
+		$this->db->select('*')->from($table)->where('object_id',$oid)->orderby('modified_on DESC');
+		$q = $this->db->get();
+
+		if ($q->num_rows() > 0) {
+			foreach($q->result_array() as $row) { array_push($claims, $row); }
+		} 
+
+		return (sizeof($claims) > 0) ? $claims : false;
 	}
 
 	public function object_stats($mid)
@@ -382,6 +513,23 @@ class Coobject extends Model
 	  $table = ($type == 'original') ? 'object_questions' : 'object_replacement_questions';
 	  $this->db->update($table,$data,"id=$qid AND object_id=$oid");
 	}
+
+	/**
+     * update an object questions status 
+     *
+     * @access  public
+     * @param   int object id
+     * @param   array data 
+     * @param   role  (instructor | dscribe2)
+     * @param   string type either original object or replacement 
+     * @return  void
+     */
+	public function update_questions_status($oid, $data, $role, $type='original')
+	{
+	  $table = ($type == 'original') ? 'object_questions' : 'object_replacement_questions';
+	  $this->db->update($table,$data,"role='$role' AND object_id=$oid");
+	}
+
 
 	/**
      * Add an object copyright
@@ -1103,6 +1251,18 @@ class Coobject extends Model
 		} 
 
 		return (sizeof($types) > 0) ? $types : null;
+	}
+
+	public function get_subtype_name($id) 
+	{
+			$name = '';
+			$sql = "SELECT name FROM ocw_object_subtypes WHERE id=$id";
+			$q = $this->db->query($sql);
+
+			if ($q->num_rows() > 0) {
+					foreach($q->result_array() as $row) { $name = $row['name']; }
+			} 
+			return ($name=='') ? 'Could not find type' : $name;
 	}
 
 	public function prev_next($cid, $mid, $oid)

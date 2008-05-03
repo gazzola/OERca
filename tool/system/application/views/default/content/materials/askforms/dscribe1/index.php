@@ -1,10 +1,9 @@
-<?php $this->load->view(property('app_views_path').'/materials/askforms/askform_header.php', $data); ?> 
+<?php 
+$this->load->view(property('app_views_path').'/materials/askforms/askform_header.php', $data); 
 
-<?php if ($questions_to == 'dscribe') { ?> 
-
-<div class="column span-24 first last">
-	<p class="error"> Under construction </p>
-</div>
-
-
-<?php } ?>
+if ($questions_to == 'instructor') { 
+	  $this->load->view(property('app_views_path').'/materials/askforms/instructor/noneditable_view.php', $data); 
+} else { 	
+		$this->load->view(property('app_views_path').'/materials/askforms/dscribe2/noneditable_view.php', $data); 
+}
+?>

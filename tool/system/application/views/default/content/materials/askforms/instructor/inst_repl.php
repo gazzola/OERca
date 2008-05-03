@@ -6,6 +6,10 @@ $sliders = array();
 foreach($repl_objects as  $obj) {
 
   $questions = $obj['questions'];
+	if (!is_null($questions)) {
+		  foreach($questions as $key => $val) { if ($val['role']<>'instructor') { unset($questions[$key]); } }
+	}
+	$questions = (sizeof($questions)) ? $questions : null;
 
   if ($obj['ask_status'] <> 'done') {
 ?>

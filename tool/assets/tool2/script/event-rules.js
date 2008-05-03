@@ -581,7 +581,7 @@ var Rules = {
 	'.do_add_replacement_question': function(element) {
 		element.onclick = function(e) {
 		  new Event(e).stop();
-			var object_id = $('oid').value; 
+			var object_id = $('rid').value; 
       var url = $('server').value+'materials/add_object_question/'+object_id;
 			var qs = $('repl_question').value;
 			var get_qs = encodeURIComponent($('repl_question').value);
@@ -702,6 +702,54 @@ var Rules = {
               url = $('server').value+'materials/askforms/'+cid+'/'+mid+'/'+view+'/'+val;
              	window.location.replace(url);
 			}
+	},
+	'#response_type' : function (element) {
+			element.onchange = function() {
+							var cid = $('cid').value;
+							var mid = $('mid').value; 
+							var val = this.value;
+              url = $('server').value+'materials/askforms/'+cid+'/'+mid+'/aitems/dscribe2/'+val;
+             	window.location.replace(url);
+			}
+	},
+
+	'.do_d2_question_update' : function(element) {
+			element.onchange = function () {
+            	var fb = $('feedback');
+							var url = $('server').value+'materials/';
+
+							var val = this.value;
+							val = (val.toLowerCase() == 'save for later') ? 'in progress' : val;
+							val = (val.toLowerCase() == 'send to dscribe') ? 'done' : val;
+
+							// update question answer
+							if (val!='done' && val!='in progress') {
+									var question_id = this.name.replace(/\w+_\d+_/g,'');
+									var object_type = this.name.replace(/_\d+_\d+$/g,'');
+									var object_id = this.name.replace(/^(original|replacement)_/g,'');
+									object_id = object_id.replace(/_\d+$/g,'');
+									
+									url = url+'update_object_question/'+object_id+'/'+question_id+'/'+
+												encodeURIComponent(val)+'/'+object_type;
+            			new Ajax(url, {	method: 'get', update: fb}).request();
+							}
+			}
+			element.onclick = function () {
+            	var fb = $('feedback');
+							var url = $('server').value+'materials/';
+
+							var val = this.value;
+							val = (val.toLowerCase() == 'save for later') ? 'in progress' : val;
+							val = (val.toLowerCase() == 'send to dscribe') ? 'done' : val;
+
+							// update status
+							if (val=='done' || val=='in progress') {
+									var object_id = this.name.replace(/^\w+_status_/g,'');
+									var object_type = this.name.replace(/_status_\d+$/g,'');
+									url = url+'update_questions_status/'+object_id+'/'+val+'/dscribe2/'+object_type;
+            			new Ajax(url, {	method: 'get', update: fb}).request();
+							}
+			} 
 	},
 }
 

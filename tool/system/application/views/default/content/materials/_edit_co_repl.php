@@ -13,6 +13,8 @@ $cp_url = ($copy==null) ? '' : $copy['url'];
 <div id="Replacement" class="mootabs_panel">
 
 	<?php if ($this->coobject->replacement_exists($cid, $mid, $obj['id'])) { ?>
+<input type="hidden" id="rid" name="rid" value="<?=$repl_obj['id']?>" />
+
   <!-- INFORMATION -->
   <div class="column span-17 first last">
     <br/><h3>Information</h3>

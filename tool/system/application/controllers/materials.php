@@ -268,13 +268,15 @@ class Materials extends Controller {
 
 
 	// displays ask forms for dscribes, dscribes2, instructors && ip review team
-	public function askforms($cid, $mid='', $view='', $questions_to='')
+	public function askforms($cid, $mid='', $view='', $questions_to='', $responsetype='all')
 	{
 		$role = getUserProperty('role');
 
+	  /* common data for ask forms */
 		$data['cid'] = $cid; 
 		$data['mid'] = $mid; 
 		$data['role'] = $role; 
+		$data['response_type'] = $responsetype; 
 		$data['title'] = 'Manage Content Objects &raquo; Ask Form'; 
 
 		$data['course'] =  $this->course->get_course($cid); 
@@ -284,10 +286,18 @@ class Materials extends Controller {
 		/* data for html elements */
 		$data['select_questions_to'] = array('dscribe2'=>'dScribe2', 'instructor'=>'Instructor');
 		if ($role == 'dscribe2') { $data['select_questions_to']['ipreview'] = 'IP Review Team'; }
+		if ($view == 'aitems') { $data['select_response_types'] = array('all'=>'All',
+																																		'general'=>'General Questions',
+																																	  'fairuse'=>'Fair Use Questions',
+																																	  'permission'=>'Permission Questions',
+																																	  'commission'=>'Commission Questions',
+																																	  'retain'=>'No Copyright Questions',
+																																	 ); }
 
 		/* info for queries sent to instructor */
-		if ($questions_to=='instructor' || ($role=='dscribe1' && $questions_to=='')) {
+		if ($questions_to=='instructor' || ($role=='dscribe1' && $questions_to=='') || $role=='') {
 				$view = (!in_array($view, array('provenance','replacement','done'))) ? 'provenance' : $view;
+
 				$prov_objects =  $this->coobject->coobjects($mid,'','Ask'); // objects with provenace questions
 				$repl_objects =  $this->coobject->replacements($mid,'','','Ask'); // objects with replacement questions
 				$num_obj = $num_repl = $num_prov = $num_done = 0;
@@ -312,6 +322,7 @@ class Materials extends Controller {
 				$data['num_prov'] = $num_prov; 
 				$data['num_repl'] = $num_repl; 
 				$data['numobjects'] = $num_obj;
+				$data['need_input'] = $num_prov + $num_repl;
 				$data['prov_objects'] = $prov_objects; 
 				$data['repl_objects'] = $repl_objects; 
 				$data['num_avail'] = array('provenance'=>$num_prov, 'replacement'=>$num_repl, 'done'=>$num_done);
@@ -319,24 +330,23 @@ class Materials extends Controller {
 
 		} elseif ($questions_to=='dscribe2' || ($role=='dscribe2' && $questions_to=='')) { // dscribes page info
 				$view = ($view=='') ? 'general' : $view;
-				$num_general = $num_fairuse = $num_permission = $num_commission = $num_nocopy = $num_done = 10;
+
+				$info =  $this->coobject->ask_form_info($cid, $mid); 
 
 				$data['view'] = $view; 
-				$data['num_general'] = $num_general; 
-				$data['num_fairuse'] = $num_fairuse; 
-				$data['num_permission'] = $num_permission; 
-				$data['num_commission'] = $num_commission; 
-				$data['num_nocopy'] = $num_nocopy; 
-				$data['num_done'] = $num_done; 
-				$data['num_avail'] = array('general'=>$num_general, 'fairuse'=>$num_fairuse, 
-																	 'permission'=>$num_permission,'commission'=>$num_commission,
-																	 'nocopy'=>$num_nocopy, 'done'=>$num_done);
-				$data['need_input'] = ($data['num_general'] + $data['num_fairuse'] + $data['num_permission'] + 
-															 $data['num_commission'] + $data['num_nocopy']) -  $data['num_done']; 
+				$data['cos'] = $info[$view]; 
+				$data['num_avail'] = $info['num_avail'];
+				$data['need_input'] = $info['need_input'];
+				$data['num_general'] = $info['num_avail']['general']; 
+				$data['num_fairuse'] = $info['num_avail']['fairuse']; 
+				$data['num_permission'] = $info['num_avail']['permission']; 
+				$data['num_commission'] = $info['num_avail']['commission']; 
+				$data['num_retain'] = $info['num_avail']['retain']; 
+				$data['num_done'] = $info['num_avail']['aitems']; 
 
 		} elseif (($questions_to=='ipreview' && in_array($role,array('dscribe2','ipreviewer'))) || 
               ($role=='ipreviewer' && $questions_to=='')) { // ip review page info
-
+				// TODO
 		}
 
 		/* go to the right view */
@@ -535,10 +545,18 @@ class Materials extends Controller {
      exit;
 	}
 
-	public function update_object_question($oid,$qid,$answer,$type='original')
+	public function update_object_question($oid,$qid,$answer,$type='original',$status='')
 	{
 	   $data['answer'] = $answer;
+		 if ($status<>'') { $data['status'] = $status; }
 	   $this->coobject->update_question($oid, $qid, $data,$type);
+     $this->ocw_utils->send_response('success');
+	}
+
+	public function update_questions_status($oid, $status, $role, $type='original')
+	{
+	   $data['status'] = $status;
+	   $this->coobject->update_questions_status($oid, $data, $role, $type);
      $this->ocw_utils->send_response('success');
 	}
 
