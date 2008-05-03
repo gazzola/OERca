@@ -18,7 +18,7 @@ foreach($cos as $obj) {
 
      	<h3>CO Description:</h3>
    		<p style="margin-bottom:15px;border:1px solid #ccc; padding:5px; background-color:#eee">
-					<?= ($obj['description']=='') ? 'No description provided' : $item['description'] ?>
+					<?= ($obj['description']=='') ? 'No description provided' : $obj['description'] ?>
 			</p>
 
      	<h3>Contact Information:</h3>
@@ -45,7 +45,7 @@ foreach($cos as $obj) {
 			</p>
 
 			<!-- permission form sent? -->
-			<div id="info_sufficient_yes_<?=$item['id']?>" style="display: <?= ($item['info_sufficient']=='yes') ? 'block':'none'?>"> 
+			<div style="display: <?= ($item['info_sufficient']=='yes') ? 'block':'none'?>"> 
 				<br/><br/>
 				<p>
 					<strong>Has the form been sent to the copyright holder requesting permission to use this content object?</strong><br/>
@@ -55,7 +55,7 @@ foreach($cos as $obj) {
 				</p>
 			
 				<!-- Any response from copyright holders? -->
-				<div id="letter_sent_yes_<?=$item['id']?>" style="display: <?= ($item['letter_sent']=='yes') ? 'block':'none'?>"> 
+				<div style="display: <?= ($item['letter_sent']=='yes') ? 'block':'none'?>"> 
 					<br/><br/>
 					<p>
 						<strong>Has Open.Michigan received a response from the copyright holder of the content object?</strong><br/> 
@@ -65,7 +65,7 @@ foreach($cos as $obj) {
 					</p>
 
 						<!-- Received a response from copyright holders! -->
-						<div id="response_received_yes_<?=$item['id']?>" style="display: <?= ($item['response_received']=='yes') ? 'block':'none'?>"> 
+						<div style="display: <?= ($item['response_received']=='yes') ? 'block':'none'?>"> 
 							<br/><br/>
 							<p>
 								<strong>Has the copyright holder granted permission to Open.Michigan to use this comtent object under a CC-By or similar license?</strong><br/> 
@@ -75,7 +75,7 @@ foreach($cos as $obj) {
 							</p>
 
 							<!-- negative response :( what should we do now? --> 
-							<div id="approved_no_<?=$item['id']?>" style="display: <?= ($item['approved']=='no') ? 'block':'none'?>"> 
+							<div style="display: <?= ($item['approved']=='no') ? 'block':'none'?>"> 
 								<br/>
 								<p>
 									<strong>Please send comments to the dScribe recommending a new action for this content object:</strong><br/><br/>
@@ -90,7 +90,7 @@ foreach($cos as $obj) {
 			</div>
 
 			<!-- Explain why letter is not being sent -->
-			<div id="info_sufficient_no_<?=$item['id']?>" style="display: <?= ($item['info_sufficient']=='no') ? 'block':'none'?>"> 
+			<div style="display: <?= ($item['info_sufficient']=='no') ? 'block':'none'?>"> 
 				<br/><br/>
 				<p>
 					<strong>Please indicate to the dScribe why you are not sending a permission form to the

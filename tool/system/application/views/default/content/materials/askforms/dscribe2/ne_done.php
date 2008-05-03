@@ -1,7 +1,6 @@
 <?php 
 $count = 1;
 unset($cos['all']);
-//$this->ocw_utils->dump($cos);
 
 foreach($cos as $type => $co) {
 		if ($type <> $response_type && $response_type <> 'all') continue;
@@ -104,6 +103,99 @@ foreach($cos as $type => $co) {
        	<p><hr style="border: 1px solid #eee"/></p>
 			<?php } ?>
 
+	<?php } elseif ($type=='commission') { ?>
+
+			<h2>Here are the responses the dScribe2 provided to the dscribe1's commission claims:</h2>
+			<?php foreach($obj['commission'] as $item) { ?>
+				<fieldset>
+					<label>Commission Claim</label>
+     			<p><h3>dScribe's Rationale:</h3></p>
+    			<p style="margin-bottom:15px;border:1px solid #ccc; padding:5px; background-color:#eee">
+						<?= ($item['rationale']=='') ? 'No rationale provided' : $item['rationale'] ?>
+					</p>
+
+					<p><h3>Actions Taken:</h3>                
+					<?php
+						if ($item['have_replacement']=='yes') {
+								echo '<br>dScribe2 provided the dScribe with a replacement with the following action and comments:<br/>'; 
+								echo '<br/>Action: <b>'.$item['action'].'</b><br/>';
+								if ($item['comments']<>'') {
+											echo 'Comments: <b>'.$item['comments'].'</b>';
+								} else { 
+											echo 'Comments: <b>no comments</b><br/><br/>';
+								}
+								$x = $this->coobject->replacement_exists($cid,$mid,$obj['id']);
+        				if ($x) {
+										echo '<p>Provided Replacement: </p>';
+            				echo $this->ocw_utils->create_corep_img($cid,$mid,$obj['id'],$obj['location'],false,true);
+        				}
+						} elseif ($item['have_replacement']=='no') {
+								echo '<br>dScribe2 could not provide the dScribe with a replacement<br/>'; 
+								if ($item['recommend_commission']=='yes') {
+										echo '<br>dScribe2 recommends commissioning the content object because: '.
+									 (($item['comments']<>'') ? $item['comments'] : 'no rationale given'); 
+								} else { 
+										echo '<br>dScribe2 does not recommend commissioning the content object and suggests the following:<br/>';
+										echo '<br/>Action: <b>'.$item['action'].'</b><br/>';
+										if ($item['comments']<>'') {
+												echo 'Comments: <b>'.$item['comments'].'</b>';
+										} else { 
+												echo 'Comments: <b>no comments</b><br/><br/>';
+										}
+								}
+						}
+
+						if($item['status']=='commission review') { echo '<br><br>The Commission Review team is reviewing this claim.'; }
+					?>
+				</fieldset>
+       	<p><hr style="border: 1px solid #eee"/></p>
+			<?php } ?>	
+
+
+	<?php } elseif ($type=='retain') { ?>
+
+			<h2>Here are the responses the dScribe2 provided to the dscribe1's No copyright claims:</h2>
+			<br/>
+
+			<?php foreach($obj['retain'] as $item) { ?>
+				<fieldset>
+					<label>No Copyright Claim</label>
+     			<p><h3>dScribe's Rationale:</h3></p>
+    			<p style="margin-bottom:15px;border:1px solid #ccc; padding:5px; background-color:#eee">
+						<?= ($item['rationale']=='') ? 'No rationale provided' : $item['rationale'] ?>
+					</p>
+
+					<p><h3>Actions Taken:</h3>                
+					<?php
+						if ($item['accept_rationale']=='yes') {
+								echo '<br>dScribe2 accepted dscribe\'s rationale.';
+						} elseif ($item['accept_rationale']=='no') {
+								echo '<br>dScribe2 did not accept dscribe\'s rationale.';
+											if ($item['action']<>'None') {
+													echo '<br/><br/>dScribe2 recommends the following action:<b>'.$item['action'].'</b>';
+											}
+						} elseif ($item['accept_rationale']=='unsure') {
+								echo '<br>dScribe2 is unsure about the dscribe\'s rationale.';
+								if ($item['status']=='ip review') {
+										echo '<br><br>dScribe2 has sent it to Legal & Policy team for review';
+								}
+						}
+						if ($item['comments']<>'') {
+								echo '<br/><br/>dScribe2 provided the following comments:<br/><br/>';
+								echo '<p style="background-color:#ddd; padding:5px;">'.$item['comments'].'</p><br/><br/>';
+						}
+						if ($item['approved']=='yes') {
+								echo '<br><br>Legal & Policy Review team have approved this claim.';
+						} elseif ($item['approved']=='no') {
+								echo '<br><br>Legal & Policy Review team have not approved this claim.';
+						} elseif($item['status']=='ip review' && $item['approved']=='pending') {
+								echo '<br><br>Legal & Policy Review team is reviewing this claim.';
+					  }
+					?>
+				</fieldset>
+       	<p><hr style="border: 1px solid #eee"/></p>
+			  <?php } ?>	
+
 	<?php } elseif ($type=='permission') { ?>
 
 			<h2>Here are the responses the dScribe2 provided to the dscribe1's Permission claims:</h2>
@@ -166,10 +258,17 @@ foreach($cos as $type => $co) {
 											echo '<p style="background-color:#ddd; padding:5px;">'.$item['comments'].'</p><br/><br/>';
 									}
 				 		} 
+						if ($item['approved']=='yes') {
+								echo '<br><br>Legal & Policy Review team have approved this claim.';
+						} elseif ($item['approved']=='no') {
+								echo '<br><br>Legal & Policy Review team have not approved this claim.';
+						} elseif($item['status']=='ip review' && $item['approved']=='pending') {
+								echo '<br><br>Legal & Policy Review team is reviewing this claim.';
+					  }
 					?>
 
-       	<p><hr style="border: 1px solid #eee"/></p>
 				</fieldset>
+       	<p><hr style="border: 1px solid #eee"/></p>
 			  <?php } ?>	
 
 	<?php } elseif ($type=='fairuse') { ?>
@@ -209,6 +308,13 @@ foreach($cos as $type => $co) {
 					} elseif ($item['warrant_review']=='pending') {
 							echo 'dScribe2 did not specify whether this object warrants a fair use review or not.';
 					}
+						if ($item['approved']=='yes') {
+								echo '<br><br>Legal & Policy Review team have approved this claim.';
+						} elseif ($item['approved']=='no') {
+								echo '<br><br>Legal & Policy Review team not have approved this claim.';
+						} elseif($item['status']=='ip review' && $item['approved']=='pending') {
+								echo '<br><br>Legal & Policy Review team is reviewing this claim.';
+					  }
 				?>	
 				</fieldset>
        	<p><hr style="border: 1px solid #eee"/></p>

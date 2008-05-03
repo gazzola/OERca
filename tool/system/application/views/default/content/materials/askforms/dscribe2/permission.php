@@ -19,7 +19,7 @@ foreach($cos as $obj) {
 
      	<h3>CO Description:</h3>
    		<p style="margin-bottom:15px;border:1px solid #ccc; padding:5px; background-color:#eee">
-					<?= ($obj['description']=='') ? 'No description provided' : $item['description'] ?>
+					<?= ($obj['description']=='') ? 'No description provided' : $obj['description'] ?>
 			</p>
 
      	<h3>Contact Information:</h3>

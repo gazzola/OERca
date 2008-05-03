@@ -18,12 +18,12 @@
 	?>
    <div id="navlist">
 			<ul id="navlist">
-			<li<?=($view=='general')?$att:''?>><?=anchor("/materials/askforms/$cid/$mid/general",$general)?></li>
-			<li<?=($view=='fairuse')?$att:''?>><?=anchor("/materials/askforms/$cid/$mid/fairuse",$fairuse)?></li>
-			<li<?=($view=='permission')?$att:''?>><?=anchor("/materials/askforms/$cid/$mid/permission",$permission)?></li>
-			<li<?=($view=='commission')?$att:''?>><?=anchor("/materials/askforms/$cid/$mid/commission",$commission)?></li>
-			<li<?=($view=='retain')?$att:''?>><?=anchor("/materials/askforms/$cid/$mid/retain",$retain)?></li>
-			<li<?=($view=='aitems')?$att:''?>><?=anchor("/materials/askforms/$cid/$mid/aitems",$aitems)?></li>
+			<li<?=($view=='general')?$att:''?>><?=anchor("/materials/askforms/$cid/$mid/general/dscribe2",$general)?></li>
+			<li<?=($view=='fairuse')?$att:''?>><?=anchor("/materials/askforms/$cid/$mid/fairuse/dscribe2",$fairuse)?></li>
+			<li<?=($view=='permission')?$att:''?>><?=anchor("/materials/askforms/$cid/$mid/permission/dscribe2",$permission)?></li>
+			<li<?=($view=='commission')?$att:''?>><?=anchor("/materials/askforms/$cid/$mid/commission/dscribe2",$commission)?></li>
+			<li<?=($view=='retain')?$att:''?>><?=anchor("/materials/askforms/$cid/$mid/retain/dscribe2",$retain)?></li>
+			<li<?=($view=='aitems')?$att:''?>><?=anchor("/materials/askforms/$cid/$mid/aitems/dscribe2",$aitems)?></li>
 		</ul>
 	 </div>
 </div>
