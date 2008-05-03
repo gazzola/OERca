@@ -28,9 +28,9 @@ foreach($cos as $obj) { $questions = $obj['questions'];
 		<div>
 			<?php 
 				 if ($obj['otype']=='original') { 
-						 $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],false,false);
+						 echo $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],false,false);
 				 } else {
-   					 $this->ocw_utils->create_corep_img($cid,$mid,$obj['id'],$obj['location'],false,false);
+   					 echo $this->ocw_utils->create_corep_img($cid,$mid,$obj['id'],$obj['location'],false,false);
 				 }
 			?>
 			<br/><br/>
@@ -38,6 +38,10 @@ foreach($cos as $obj) { $questions = $obj['questions'];
 				<?php if ($obj['otype']=='original') { ?>
 					<b>Content-Type:</b> <?=$this->coobject->get_subtype_name($obj['subtype_id'])?><br/><br/>
 				<?php } ?>
+
+				<b>Description:</b> 
+				<?php if ($obj['description']=='') { ?><span style="color:red">No description</span>
+				<?php } else { echo $obj['description']; }?><br/><br/>
 
 				<b>Author:</b> 
 				<?php if ($obj['author']=='') { ?><span style="color:red">No author</span>

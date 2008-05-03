@@ -21,6 +21,8 @@ class OCW_utils {
 		log_message('debug', "OCW_utils Class Initialized");
 	}
 
+
+
 	// calculate the difference between two dates.
 	function time_diff_in_words($from_time, $incl_secs=false)
 	{

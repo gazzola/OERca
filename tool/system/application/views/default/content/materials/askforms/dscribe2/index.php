@@ -43,6 +43,7 @@ if ($questions_to == 'instructor') {
 
 			} elseif ($view == 'permission') {
 				$this->load->view(property('app_views_path').'/materials/askforms/dscribe2/permission.php', $data); 
+				#$this->load->view(property('app_views_path').'/materials/askforms/dscribe2/ne_permission.php', $data); 
 
 			} elseif ($view == 'commission') {
 				$this->load->view(property('app_views_path').'/materials/askforms/dscribe2/commission.php', $data); 
@@ -52,6 +53,7 @@ if ($questions_to == 'instructor') {
 
 			} else {
 				$this->load->view(property('app_views_path').'/materials/askforms/dscribe2/done.php', $data); 
+				#$this->load->view(property('app_views_path').'/materials/askforms/dscribe2/ne_done.php', $data); 
 	    }
 		?>
 	</tbody>

@@ -293,6 +293,7 @@ class Materials extends Controller {
 																																	  'commission'=>'Commission Questions',
 																																	  'retain'=>'No Copyright Questions',
 																																	 ); }
+		if ($view == 'fairuse') { $data['select_actions'] = $this->coobject->enum2array('claims_fairuse','action'); }
 
 		/* info for queries sent to instructor */
 		if ($questions_to=='instructor' || ($role=='dscribe1' && $questions_to=='') || $role=='') {
@@ -557,6 +558,13 @@ class Materials extends Controller {
 	{
 	   $data['status'] = $status;
 	   $this->coobject->update_questions_status($oid, $data, $role, $type);
+     $this->ocw_utils->send_response('success');
+	}
+
+	public function update_object_claim($oid, $claimtype, $claimid, $field, $value)
+	{
+		 $data[$field] = $value;
+	   $this->coobject->update_object_claim($oid, $claimid, $claimtype, $data);
      $this->ocw_utils->send_response('success');
 	}
 

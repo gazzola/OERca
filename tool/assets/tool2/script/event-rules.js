@@ -713,6 +713,80 @@ var Rules = {
 			}
 	},
 
+	'.do_d2_claim_update' : function(element) {
+			element.onchange = function () {
+            	var fb = $('feedback');
+							var url = $('server').value+'materials/';
+
+							var field = this.name.replace(/^\d+_\w+_\d+_(\w+)$/,"$1");
+							var clm_id = this.name.replace(/^\d+_\w+_(\d+)_\w+$/,"$1");
+							var clm_type = this.name.replace(/^\d+_(\w+)_\d+_\w+$/,"$1");
+							var object_id = this.name.replace(/^(\d+)_\w+_\d+_\w+$/,"$1");
+							var val = this.value;
+
+							// update question answer
+							if (field != 'status') {
+									url = url+'update_object_claim/'+object_id+'/'+clm_type+'/'+clm_id+
+												'/'+field+'/'+encodeURIComponent(val);
+            			new Ajax(url, {	method: 'get', update: fb}).request();
+							}
+			}
+			element.onclick = function () {
+							var cid = $('cid').value;
+							var mid = $('mid').value; 
+							var view = $('view').value; 
+            	var fb = $('feedback');
+							var url = $('server').value+'materials/';
+
+							var field = this.name.replace(/^\d+_\w+_\d+_(\w+)$/,"$1");
+							var clm_id = this.name.replace(/^\d+_\w+_(\d+)_\w+$/,"$1");
+							var clm_type = this.name.replace(/^\d+_(\w+)_\d+_\w+$/,"$1");
+							var object_id = this.name.replace(/^(\d+)_\w+_\d+_\w+$/,"$1");
+							var val = this.value;
+
+							if (field=='status') {
+									val = (val.toLowerCase() == 'save for later') ? 'in progress' : val;
+									val = (val.toLowerCase() == 'send to dscribe') ? 'done' : val;
+									val = (val.toLowerCase() == 'send to legal & policy review') ? 'ip review' : val;
+									url = url+'update_object_claim/'+object_id+'/'+clm_type+'/'+clm_id+
+												'/'+field+'/'+encodeURIComponent(val);
+            			new Ajax(url, {	method: 'get', update: fb,
+                     							onComplete: function() {
+                        							response = fb.innerHTML;
+                        							if (response=='success') {
+																					if(field=='status') {
+                            								url = $('server').value+'materials/askforms/'+cid+'/'+mid+'/'+view;
+                            								window.location.replace(url);
+																					}
+                        							} else {
+                            							alert(response);
+                        							}
+																} }).request();
+							}
+			}
+	},
+
+	'.do_d2_askform_yesno' : function(element) {
+			element.onclick = function () {
+							var id = this.name.replace(/^\d+_\w+_(\d+)_\w+$/,"$1");
+							var field = this.name.replace(/^\d+_\w+_\d+_(\w+)$/,"$1");
+							var clm_type = this.name.replace(/^\d+_(\w+)_\d+_\w+$/,"$1");
+							var no_div = field+'_no_'+id;
+							var yes_div = field+'_yes_'+id;
+	
+							// show and hide logic for fair use 
+							if (clm_type == 'fairuse') {
+									if (this.value == 'yes') {
+										if ($(no_div)) { $(no_div).style.display = 'none';	} 
+			   						if ($(yes_div)) { $(yes_div).style.display = 'block';}
+									} else {
+			   						if ($(yes_div)) { $(yes_div).style.display = 'none';}
+										if ($(no_div)) { $(no_div).style.display = 'block';	} 
+									}
+						 }
+			}
+	},
+
 	'.do_d2_question_update' : function(element) {
 			element.onchange = function () {
             	var fb = $('feedback');
@@ -735,6 +809,9 @@ var Rules = {
 							}
 			}
 			element.onclick = function () {
+							var cid = $('cid').value;
+							var mid = $('mid').value; 
+							var view = $('view').value; 
             	var fb = $('feedback');
 							var url = $('server').value+'materials/';
 
@@ -747,7 +824,16 @@ var Rules = {
 									var object_id = this.name.replace(/^\w+_status_/g,'');
 									var object_type = this.name.replace(/_status_\d+$/g,'');
 									url = url+'update_questions_status/'+object_id+'/'+val+'/dscribe2/'+object_type;
-            			new Ajax(url, {	method: 'get', update: fb}).request();
+            			new Ajax(url, {	method: 'get', update: fb,
+                     							onComplete: function() {
+                        							response = fb.innerHTML;
+                        							if (response=='success') {
+                            							url = $('server').value+'materials/askforms/'+cid+'/'+mid+'/'+view;
+                            							window.location.replace(url);
+                        							} else {
+                            							alert(response);
+                        							}
+																} }).request();
 							}
 			} 
 	},

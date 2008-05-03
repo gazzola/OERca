@@ -175,53 +175,108 @@ class Coobject extends Model
 						if (!is_null($obj['questions'])) { 
 								// remove all non dscribe2 questions
 								foreach ($obj['questions'] as $k => $q) { if($q['role']!='dscribe2') { unset($obj['questions'][$k]); }}
-								if (!is_null($obj['questions'])) { 
+								if (count($obj['questions'])) { 
 										$notalldone = false;
 										$obj['otype'] = 'original';
-										foreach ($obj['questions'] as $q) { if($q['status']<>'done') { $notalldone = true; } }
+										foreach ($obj['questions'] as $k => $q) { 
+														 if($q['status']<>'done') { 
+																$notalldone = true; 
+												 		 		$q['ta_data'] = array('name'=>$obj['otype'].'_'.$obj['id'].'_'.$q['id'],
+																									   	'value'=>$q['answer'],
+																									   	'class'=>'do_d2_question_update',
+																									   	'rows'=>'10', 'cols'=>'60');
+												 		 		$q['save_data'] = array('name'=>$obj['otype'].'_status_'.$obj['id'],
+																							   	  	  'id'=>'close_'.$obj['id'],
+																								        'value'=>'Save for later',
+																								        'class'=>'do_d2_question_update');
+												 		 		$q['send_data'] = array('name'=>$obj['otype'].'_status_'.$obj['id'],
+																											  'value'=>'Send to dScribe', 'class'=>'do_d2_question_update');
+												 		 		$obj['questions'][$k] = $q;
+														}
+										}
 										if ($notalldone) { array_push($general, $obj); $num_general++; } 
 										else { array_push($done['general'],$obj); $num_done++; }
 								}
 						} 
 
 						/* get objects with fair use claims */
-						if (($c = $this->claim_exists('fairuse', $obj['id'])) !== FALSE) {
+						if (($c = $this->claim_exists($obj['id'],'fairuse')) !== FALSE) {
 								 $added = $notalldone = false;
-								 foreach($c as $cl) {
-												 if ($cl['status']=='done') { if(!$added){array_push($done['fairuse'],$obj); $num_done++; $added=true;} } 
-												 else { $notalldone = true; }
+								 $obj['otype'] = 'original';
+								 foreach($c as $k => $cl) {
+												 $obj['fairuse'] = $c;
+												 if ($cl['status']=='done'||$cl['status']=='ip review') { 
+														 if(!$added){array_push($done['fairuse'],$obj); $num_done++; $added=true;} 
+												 } else { 
+														 $notalldone = true; 
+												 		 $cl['yes_data'] = array('name'=>$obj['id'].'_fairuse_'.$cl['id'].'_warrant_review',
+																								 	 	 'value'=>'yes',
+																								 		 'class'=>'do_d2_askform_yesno do_d2_claim_update',
+																								 		 'checked'=> (($cl['warrant_review']=='yes') ? true : false));
+
+												 		 $cl['no_data'] = array('name'=>$obj['id'].'_fairuse_'.$cl['id'].'_warrant_review',
+																								 		'value'=>'no',
+																								 		'class'=>'do_d2_askform_yesno do_d2_claim_update',
+																								 		'checked'=> (($cl['warrant_review']=='no') ? true : false));
+
+												 		 $cl['additional_ta_data'] = array('name'=>$obj['id'].'_fairuse_'.$cl['id'].'_additional_rationale',
+																								 							 'value'=>$cl['additional_rationale'],
+																								 							 'class'=>'do_d2_claim_update',
+																								 							 'rows'=>'10', 'cols'=>'60');
+												 		 
+												 		 $cl['comments_ta_data'] = array('name'=>$obj['id'].'_fairuse_'.$cl['id'].'_comments',
+																								 						 'value'=>$cl['comments'],
+																								 						 'class'=>'do_d2_claim_update',
+																								 						 'rows'=>'10', 'cols'=>'60');
+
+												 		 $cl['save_data'] = array('name'=>$obj['id'].'_fairuse_'.$cl['id'].'_status',
+																							   	  'id'=>'close_'.$cl['id'],
+																								    'value'=>'Save for later',
+																								    'class'=>'do_d2_claim_update');
+
+												 		 $cl['send_data'] = array('name'=>$obj['id'].'_fairuse_'.$cl['id'].'_status',
+																								  'value'=>'Send to dScribe', 'class'=>'do_d2_claim_update');
+
+												 		 $cl['send_to_ip_data'] = array('name'=>$obj['id'].'_fairuse_'.$cl['id'].'_status',
+																								  'value'=>'Send to Legal & Policy Review', 'class'=>'do_d2_claim_update');
+												 		 $c[$k] = $cl;
+												 		 $obj['fairuse'] = $c;
+												 }
 								 }	
-								 if ($notalldone) { $obj['fairuse'] = $c;	array_push($fairuse, $c); $num_fairuse++; }
+								 if ($notalldone) {	array_push($fairuse, $obj); $num_fairuse++; }
 						}
 
 						/* get objects with permission claims */
-						if (($c = $this->claim_exists('permission', $obj['id'])) !== FALSE) {
+						if (($c = $this->claim_exists($obj['id'], 'permission')) !== FALSE) {
 								 $added = $notalldone = false;
+								 $obj['otype'] = 'original';
 								 foreach($c as $cl) {
 												 if ($cl['status']=='done') { if(!$added) { array_push($done['permission'],$obj); $num_done++; $added=true;} } 
 												 else { $notalldone = true; }
 								 }	
-								 if ($notalldone) { $obj['permission'] = $c;	array_push($permission, $c); $num_permission++; }
+								 if ($notalldone) { $obj['permission'] = $c;	array_push($permission, $obj); $num_permission++; }
 						}
 
 						/* get objects with commission claims */
-						if (($c = $this->claim_exists('commission', $obj['id'])) !== FALSE) {
+						if (($c = $this->claim_exists($obj['id'],'commission')) !== FALSE) {
 								 $added = $notalldone = false;
+								 $obj['otype'] = 'original';
 								 foreach($c as $cl) {
 												 if ($cl['status']=='done') { if(!$added) { array_push($done['commission'], $obj); $num_done++; $added=true;} } 
 												 else { $notalldone = true; }
 								 }	
-								 if ($notalldone) { $obj['commission'] = $c;	array_push($commission, $c); $num_commission++; }
+								 if ($notalldone) { $obj['commission'] = $c;	array_push($commission, $obj); $num_commission++; }
 						}
 
 						/* get objects with retain (no copyright) claims */
-						if (($c = $this->claim_exists('retain', $obj['id'])) !== FALSE) {
+						if (($c = $this->claim_exists($obj['id'], 'retain')) !== FALSE) {
 								 $added = $notalldone = false;
+								 $obj['otype'] = 'original';
 								 foreach($c as $cl) {
 												 if ($cl['status']=='done') { if(!$added) { array_push($done['retain'], $obj); $num_done++; $added=true;} } 
 												 else { $notalldone = true; }
 								 }	
-								 if ($notalldone) { $obj['retain'] = $c;	array_push($retain, $c); $num_retain++;}
+								 if ($notalldone) { $obj['retain'] = $c;	array_push($retain, $obj); $num_retain++;}
 						}
 		} 
 
@@ -230,10 +285,25 @@ class Coobject extends Model
 						if (!is_null($obj['questions'])) { 
 								// remove all non dscribe2 questions
 								foreach ($obj['questions'] as $k => $q) { if($q['role']!='dscribe2') { unset($obj['questions'][$k]); }}
-								if (!is_null($obj['questions'])) { 
+								if (count($obj['questions'])) { 
 										$obj['otype'] = 'replacement';
 										$notalldone = false;
-										foreach ($obj['questions'] as $q) { if($q['status']<>'done') { $notalldone = true; } }
+										foreach ($obj['questions'] as $q) { 
+														 if($q['status']<>'done') { 
+																$notalldone = true; 
+												 		 		$q['ta_data'] = array('name'=>$obj['otype'].'_'.$obj['id'].'_'.$q['id'],
+																									   	'value'=>$q['answer'],
+																									   	'class'=>'do_d2_question_update',
+																									   	'rows'=>'10', 'cols'=>'60');
+												 		 		$q['save_data'] = array('name'=>$obj['otype'].'_status_'.$obj['id'],
+																							   	  	  'id'=>'close_'.$obj['id'],
+																								        'value'=>'Save for later',
+																								        'class'=>'do_d2_question_update');
+												 		 		$q['send_data'] = array('name'=>$obj['otype'].'_status_'.$obj['id'],
+																											  'value'=>'Send to dScribe', 'class'=>'do_d2_question_update');
+												 		 		$obj['questions'][$k] = $q;
+														}
+										}
 										if ($notalldone) { array_push($general, $obj); $num_general++; } 
 										else { array_push($done['general'],$obj); $num_done++; }
 								}
@@ -253,7 +323,7 @@ class Coobject extends Model
                                'permission'=>$num_permission,'commission'=>$num_commission,
                                'retain'=>$num_retain, 'aitems'=>$num_done);
 
- 		$info['need_input'] = ($num_general+$num_fairuse+$num_permission+$num_commission+$num_retain)- $num_done;
+ 		$info['need_input'] = ($num_general+$num_fairuse+$num_permission+$num_commission+$num_retain);
 
 		//$this->ocw_utils->dump($info); exit;
 		return $info;
@@ -264,11 +334,11 @@ class Coobject extends Model
 	 * Return claims if any 
    *
    * @access  public
-   * @param   string	type claim type (fairuse|commission|permission|retain) 
    * @param   int			oid object id 
+   * @param   string	type claim type (fairuse|commission|permission|retain) 
    * @return  array || boolean FALSE if no claims
 	 */
-	public function claim_exists($type, $oid)
+	public function claim_exists($oid, $type)
 	{
 		$claims = array();
 		$table = 'claims_'.$type; 
@@ -282,6 +352,24 @@ class Coobject extends Model
 
 		return (sizeof($claims) > 0) ? $claims : false;
 	}
+     
+
+	/** 
+	 * Update an object claim 
+   *
+   * @access  public
+   * @param   int			oid 		 object id 
+   * @param   int			claim_id claim id 
+   * @param   string	type 		 claim type (fairuse|commission|permission|retain) 
+   * @param   array		data 	   values to update
+   * @return  array || boolean FALSE if no claims
+	 */
+	public function update_object_claim($oid, $claim_id, $type, $data)
+	{
+		$table = 'claims_'.$type; 
+	  $this->db->update($table, $data, "id=$claim_id AND object_id=$oid");
+	}
+
 
 	public function object_stats($mid)
 	{
@@ -1541,5 +1629,13 @@ class Coobject extends Model
 
       return $digest;
   }
+
+	public function enum2array($table, $col)
+	{
+		$q = $this->db->query("SHOW COLUMNS FROM ocw_$table LIKE '$col'");
+		$row = $q->result_array();
+		return (is_array($row[0])) 
+					? explode("','",preg_replace("/(enum|set)\('(.+?)'\)/","\\2",$row[0]['Type'])) : array(0=>'None');
+	}
 }
 ?>
