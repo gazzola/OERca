@@ -775,7 +775,7 @@ var Rules = {
 							var yes_div = field+'_yes_'+id;
 	
 							// show and hide logic for fair use 
-							if (clm_type == 'fairuse') {
+						//if (clm_type == 'fairuse') {
 									if (this.value == 'yes') {
 										if ($(no_div)) { $(no_div).style.display = 'none';	} 
 			   						if ($(yes_div)) { $(yes_div).style.display = 'block';}
@@ -783,7 +783,7 @@ var Rules = {
 			   						if ($(yes_div)) { $(yes_div).style.display = 'none';}
 										if ($(no_div)) { $(no_div).style.display = 'block';	} 
 									}
-						 }
+						 //}
 			}
 	},
 

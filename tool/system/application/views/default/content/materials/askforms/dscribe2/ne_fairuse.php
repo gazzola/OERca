@@ -61,6 +61,10 @@ foreach($cos as $obj) {
 
 				<b>Content-Type:</b> <?=$this->coobject->get_subtype_name($obj['subtype_id'])?><br/><br/>
 
+				<b>Description:</b> 
+				<?php if ($obj['description']=='') { ?><span style="color:red">No description</span>
+				<?php } else { echo $obj['description']; }?><br/><br/>
+
 				<b>Author:</b> 
 				<?php if ($obj['author']=='') { ?><span style="color:red">No author</span>
 				<?php } else { echo $obj['author']; }?><br/><br/>

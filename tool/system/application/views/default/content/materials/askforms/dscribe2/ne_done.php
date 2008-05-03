@@ -104,45 +104,116 @@ foreach($cos as $type => $co) {
        	<p><hr style="border: 1px solid #eee"/></p>
 			<?php } ?>
 
+	<?php } elseif ($type=='permission') { ?>
+
+			<h2>Here are the responses the dScribe2 provided to the dscribe1's Permission claims:</h2>
+			<br/>
+
+			<?php foreach($obj['permission'] as $item) { ?>
+			<fieldset>
+					<label>Permission Claim</label>
+     			<p><h3>Contact Information:</h3></p>
+    			<p style="margin-bottom:15px;border:1px solid #ccc; padding:5px; background-color:#eee">
+					<?= ($item['contact_name']=='') ? '<span style="color:red">No contact name</span>' : $item['contact_name'] ?><br/>
+					<?= ($item['contact_line1']=='') ? '<span style="color:red">No street address</span>' : $item['contact_line1'] ?><br/>
+					<?= ($item['contact_line2']=='') ? '' : $item['contact_line1'].'<br/>'; ?>
+					<?= ($item['contact_city']=='') ? '<span style="color:red">No city</span>' : $item['contact_city'] ?>,&nbsp;
+					<?= ($item['contact_state']=='') ? '<span style="color:red">No state</span>' : $item['contact_state'] ?>&nbsp;&nbsp;
+					<?= ($item['contact_postalcode']=='') ? '' : $item['contact_postalcode'] ?><br/>
+					<?= ($item['contact_country']=='') ? '<span style="color:red">No country</span>' : $item['contact_state'] ?><br/><br/>
+					<?= ($item['contact_fax']=='') ? '' : 'Fax: '.$item['contact_fax'].'<br/>' ?>
+					<?= ($item['contact_phone']=='') ? '' : 'Phone: '.$item['contact_phone'].'<br/>' ?>
+					<?= ($item['contact_email']=='') ? '' : 'Email: '.safe_mailto($item['contact_email'],$item['contact_email']).'<br/>' ?>
+					</p>
+
+					<p><h3>Actions Taken:</h3>                
+					<?php
+						if ($item['info_sufficient']=='yes') {
+								echo 'dScribe2 decided that a permission form can be sent for this content object.';
+							
+								if ($item['letter_sent']=='yes') {
+										echo '<br/><br/>dScribe2 indicated that the permission form has been sent.';
+										if ($item['response_received']=='yes') {
+												echo '<br/><br/>dScribe2 indicated that a response has been received.';
+												if ($item['approved']=='yes') {
+														echo '<br/><br/>dScribe2 indicated that request for permission was approved';
+												} elseif ($item['approved']=='no') {
+														echo '<br/><br/>dScribe2 indicated that request for permission was not approved';
+														if ($item['action']<>'None') {
+																echo '<br/><br/>dScribe2 recommends the following action:<b>'.$item['action'].'</b>';
+														}
+														if ($item['comments']<>'') {
+																echo '<br/><br/>dScribe2 provided the following comments:<br/><br/>';
+																echo '<p style="background-color:#ddd; padding:5px;">'.$item['comments'].'</p><br/><br/>';
+														}
+												} else {
+																echo 'dScribe2 did not specify whether this request was approved or not';
+												}
+										} else {
+												echo '<br/><br/>dScribe2 indicated that a response has not been received.';
+										}
+								} else {
+										echo '<br/><br/>dScribe2 indicated that the permission form has not been sent.';
+								}
+
+						} elseif ($item['info_sufficient']=='no') {
+									echo 'dScribe2 decided that a permission form should not be sent for this content object';
+									if ($item['action']<>'None') {
+											echo '<br/><br/>dScribe2 recommends the following action:<b>'.$item['action'].'</b>';
+									}
+									if ($item['comments']<>'') {
+											echo '<br/><br/>dScribe2 provided the following comments:<br/><br/>';
+											echo '<p style="background-color:#ddd; padding:5px;">'.$item['comments'].'</p><br/><br/>';
+									}
+				 		} 
+					?>
+
+       	<p><hr style="border: 1px solid #eee"/></p>
+				</fieldset>
+			  <?php } ?>	
+
 	<?php } elseif ($type=='fairuse') { ?>
+
 			<h2>Here are the responses the dScribe2 provided to the dscribe1's Fair Use claims:</h2>
 			<br/>
 
 			<?php foreach($obj['fairuse'] as $item) { ?>
 				<fieldset>
 					<label>Fair Use Claim</label>
-     		<p><h3>dScribe's Rationale:</h3></p>
-    		<p style="margin-bottom:15px;border:1px solid #ccc; padding:5px; background-color:#eee">
+     			<p><h3>dScribe's Rationale:</h3></p>
+    			<p style="margin-bottom:15px;border:1px solid #ccc; padding:5px; background-color:#eee">
 						<?= ($item['rationale']=='') ? 'No rationale provided' : $item['rationale'] ?>
-				</p>
-				<p><h3>Actions Taken:</h3>                
-			<?php
-				if ($item['warrant_review']=='yes') {
-						echo 'dScribe2 indicated that this object <i>warrants</i> a legal review for fair use.';
-						if ($item['status']=='ip review') {
-								echo '<br/><br/>dScribe2 has sent this to the Legal & Policy review team';
-						}
-						if ($item['additional_rationale']<>'') {
-								echo '<br/><br/>dScribe2 provided the following additional rationale:<br/><br/>';
-								echo '<p style="background-color:#ddd; padding:5px;">'.$item['additional_rationale'].'</p><br/><br/>';
-						}
+					</p>
 
-				} elseif ($item['warrant_review']=='no') {
-						echo 'dScribe2 indicated that this object <i>does not warrant</i> a legal review for fair use.';
-						if ($item['action']<>'None') {
+					<p><h3>Actions Taken:</h3>                
+					<?php
+					if ($item['warrant_review']=='yes') {
+							echo 'dScribe2 indicated that this object <i>warrants</i> a legal review for fair use.';
+							if ($item['status']=='ip review') {
+								echo '<br/><br/>dScribe2 has sent this to the Legal & Policy review team';
+							}
+							if ($item['additional_rationale']<>'') {
+									echo '<br/><br/>dScribe2 provided the following additional rationale:<br/><br/>';
+									echo '<p style="background-color:#ddd; padding:5px;">'.$item['additional_rationale'].'</p><br/><br/>';
+							}
+
+					} elseif ($item['warrant_review']=='no') {
+							echo 'dScribe2 indicated that this object <i>does not warrant</i> a legal review for fair use.';
+							if ($item['action']<>'None') {
 								echo '<br/><br/>dScribe2 recommends the following action:<b>'.$item['action'].'</b>';
-						}
-						if ($item['comments']<>'') {
+							}
+							if ($item['comments']<>'') {
 								echo '<br/><br/>dScribe2 provided the following comments:<br/><br/>';
 								echo '<p style="background-color:#ddd; padding:5px;">'.$item['comments'].'</p><br/><br/>';
-						}
-				} elseif ($item['warrant_review']=='pending') {
-						echo 'dScribe2 did not specify whether this object warrants a fair use review or not.';
-				}
+							}
+					} elseif ($item['warrant_review']=='pending') {
+							echo 'dScribe2 did not specify whether this object warrants a fair use review or not.';
+					}
 				?>	
 				</fieldset>
        	<p><hr style="border: 1px solid #eee"/></p>
-			<?php } ?>
+				<?php } ?>
+
 	<?php } ?>
 
 </td>

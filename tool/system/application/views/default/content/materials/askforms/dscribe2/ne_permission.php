@@ -1,6 +1,5 @@
 <?php 
 $count = 1;
-$sliders = array();
 
 foreach($cos as $obj) {
   			$items = $obj['permission'];
@@ -15,7 +14,7 @@ foreach($cos as $obj) {
 	<td valign="top" style="vertical-align:top;">
 
 		<!-- new/unseen questions -->
-		<div id="new-col1-<?=$item['id']?>" style="display: <?=($item['status']=='in progress') ? 'none':'block'?>;">
+		<div>
 
      	<h3>CO Description:</h3>
    		<p style="margin-bottom:15px;border:1px solid #ccc; padding:5px; background-color:#eee">
@@ -40,8 +39,9 @@ foreach($cos as $obj) {
 			<p>
 				<br/><br/>
 				<strong>Given this content object and the added information, do you wish to send a permission form to the copyright holder?</strong><br/>
-				<?= form_radio($item['yes_info_data']) ?>	&nbsp; Yes&nbsp;
-				<?= form_radio($item['no_info_data']) ?>	&nbsp; No&nbsp;
+    		<p style="margin-bottom:15px;border:1px solid #ccc; padding:5px; background-color:#eee">
+					<?= ($item['info_sufficient']=='pending') ? 'No answer provided yet' : $item['info_sufficient'] ?>
+				</p>
 			</p>
 
 			<!-- permission form sent? -->
@@ -49,8 +49,9 @@ foreach($cos as $obj) {
 				<br/><br/>
 				<p>
 					<strong>Has the form been sent to the copyright holder requesting permission to use this content object?</strong><br/>
-					<?= form_radio($item['yes_sent_data']) ?>	&nbsp; Yes&nbsp;
-					<?= form_radio($item['no_sent_data']) ?>	&nbsp; No&nbsp;
+    			<p style="margin-bottom:15px;border:1px solid #ccc; padding:5px; background-color:#eee">
+						<?= $item['letter_sent'] ?>
+					</p>
 				</p>
 			
 				<!-- Any response from copyright holders? -->
@@ -58,8 +59,9 @@ foreach($cos as $obj) {
 					<br/><br/>
 					<p>
 						<strong>Has Open.Michigan received a response from the copyright holder of the content object?</strong><br/> 
-						<?= form_radio($item['yes_received_data']) ?>	&nbsp; Yes&nbsp;
-						<?= form_radio($item['no_received_data']) ?>	&nbsp; No&nbsp;
+    				<p style="margin-bottom:15px;border:1px solid #ccc; padding:5px; background-color:#eee">
+							<?= $item['response_received'] ?>
+						</p>
 					</p>
 
 						<!-- Received a response from copyright holders! -->
@@ -67,17 +69,20 @@ foreach($cos as $obj) {
 							<br/><br/>
 							<p>
 								<strong>Has the copyright holder granted permission to Open.Michigan to use this comtent object under a CC-By or similar license?</strong><br/> 
-								<?= form_radio($item['yes_approved_data']) ?>	&nbsp; Yes&nbsp;
-								<?= form_radio($item['no_approved_data']) ?>	&nbsp; No&nbsp;
+    						<p style="margin-bottom:15px;border:1px solid #ccc; padding:5px; background-color:#eee">
+										<?= ($item['approved']=='pending') ? 'No answer provided yet' : $item['approved'] ?>
+								</p>
 							</p>
+
 							<!-- negative response :( what should we do now? --> 
 							<div id="approved_no_<?=$item['id']?>" style="display: <?= ($item['approved']=='no') ? 'block':'none'?>"> 
 								<br/>
 								<p>
 									<strong>Please send comments to the dScribe recommending a new action for this content object:</strong><br/><br/>
-									Action: <?= form_dropdown("{$obj['id']}_permission_{$item['id']}_action",
-																		$select_actions,$item['action'],'class="do_d2_claim_update"'); ?><br/><br/>
-									<?= form_textarea($item['comments_ta_data']); ?>
+    							<p style="margin-bottom:15px;border:1px solid #ccc; padding:5px; background-color:#eee">
+										<b>Action:</b> <?= ($item['action']=='None') ? 'No action specified yet' : $item['action'] ?><br/><br/>
+										<b>Comments:</b> <?= ($item['comments']=='') ? 'No comments provided yet' : $item['comments'] ?>
+									</p>
 								</p>
 							</div>
 					 </div>
@@ -90,29 +95,18 @@ foreach($cos as $obj) {
 				<p>
 					<strong>Please indicate to the dScribe why you are not sending a permission form to the
 					       copyright holder and recommend a new action for this content object:</strong><br/><br/>
-					Action: <?= form_dropdown("{$obj['id']}_permission_{$item['id']}_action",
-																		$select_actions,$item['action'],'class="do_d2_claim_update"'); ?><br/><br/>
-					<?= form_textarea($item['comments_ta_data']); ?>
+    				<p style="margin-bottom:15px;border:1px solid #ccc; padding:5px; background-color:#eee">
+								<b>Action:</b> <?= ($item['action']=='None') ? 'No action specified yet' : $item['action'] ?><br/><br/>
+								<b>Comments:</b> <?= ($item['comments']=='') ? 'No comments provided yet' : $item['comments'] ?>
+						</p>
 				</p>
 			</div>
-
-
-			<!-- save options  -->	
-			<br/><br/>
-			<p><?= form_submit($item['save_data']) ?>&nbsp;&nbsp;<?= form_submit($item['send_data']) ?></p>
-		</div>
-
-		<!-- saved for later -->
-		<div id="inprogress-col1-<?=$item['id']?>" style="display:<?=($item['status']=='in progress')?'block':'none'?>;">
-			<b>Saved for further editing later</b><br/><br/>
-			<input type="button" value="Continue editing" id="open_<?=$item['id']?>" />
 		</div>
 	</td>
 
 	<!-- third column -->
 	<td style="vertical-align:top">
-		<!-- new/unseen questions -->
-		<div id="new-col2-<?=$item['id']?>" style="display: <?=($item['status']=='in progress') ? 'none':'block'?>;">
+		<div> 
 			<?php echo $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],false,false); ?>
 			<br/><br/>
 
@@ -143,44 +137,7 @@ foreach($cos as $obj) {
 				<?php if ($obj['action_taken']=='') { ?><span style="color:red">No action</span>
 				<?php } else { echo $obj['action_taken']; }?><br/><br/>
 		</div>
-
-		<!-- saved for later -->
-		<div id="inprogress-col2-<?=$item['id']?>" style="display:<?=($item['status']=='in progress')?'block':'none'?>;">
-			<?php echo $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],false,true); ?>
-  		<br/>
-		</div>
 	</td>
 </tr>	
 
-<?php
-	// code to show and hide objects when saved for later
-	$sliders[] = "var mySlide_newcol1_{$item['id']} = $('new-col1-{$item['id']}');
-				  var mySlide_newcol2_{$item['id']} = $('new-col2-{$item['id']}');
-				  var mySlide_inpcol1_{$item['id']} = $('inprogress-col1-{$item['id']}');
-				  var mySlide_inpcol2_{$item['id']} = $('inprogress-col2-{$item['id']}');
-
-				  $('open_{$item['id']}').addEvent('click', function(e) {
-						e = new Event(e);
-						mySlide_inpcol1_{$item['id']}.style.display = 'none';
-						mySlide_inpcol2_{$item['id']}.style.display = 'none';
-						mySlide_newcol2_{$item['id']}.style.display = 'block';
-						mySlide_newcol1_{$item['id']}.style.display = 'block';
-						e.stop();
-				  });
-				  $('close_{$item['id']}').addEvent('click', function(e) {
-						e = new Event(e);
-						mySlide_newcol1_{$item['id']}.style.display = 'none';
-						mySlide_newcol2_{$item['id']}.style.display = 'none';
-						mySlide_inpcol1_{$item['id']}.style.display = 'block';
-						mySlide_inpcol2_{$item['id']}.style.display = 'block';
-						e.stop();
-				  });";
- 	$count++; 
-}} 
-?>
-
-<script type="text/javascript">
-window.addEvent('domready', function() {
-    <?php foreach($sliders as $slider) { echo $slider."\n"; } ?>
-});
-</script>
+<?php $count++; }} ?>

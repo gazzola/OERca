@@ -294,6 +294,7 @@ class Materials extends Controller {
 																																	  'retain'=>'No Copyright Questions',
 																																	 ); }
 		if ($view == 'fairuse') { $data['select_actions'] = $this->coobject->enum2array('claims_fairuse','action'); }
+		if ($view == 'permission') { $data['select_actions'] = $this->coobject->enum2array('claims_permission','action'); }
 
 		/* info for queries sent to instructor */
 		if ($questions_to=='instructor' || ($role=='dscribe1' && $questions_to=='') || $role=='') {

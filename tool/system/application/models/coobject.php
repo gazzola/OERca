@@ -250,11 +250,70 @@ class Coobject extends Model
 						if (($c = $this->claim_exists($obj['id'], 'permission')) !== FALSE) {
 								 $added = $notalldone = false;
 								 $obj['otype'] = 'original';
-								 foreach($c as $cl) {
-												 if ($cl['status']=='done') { if(!$added) { array_push($done['permission'],$obj); $num_done++; $added=true;} } 
-												 else { $notalldone = true; }
+								 foreach($c as $k => $cl) {
+												 $obj['permission'] = $c;
+												 if ($cl['status']=='done') { 
+														 if(!$added) { array_push($done['permission'],$obj); $num_done++; $added=true;} 
+												 } else { 
+														 $notalldone = true; 
+												 		 $cl['yes_info_data'] = array('name'=>$obj['id'].'_permission_'.$cl['id'].'_info_sufficient',
+																								 	 	 			'value'=>'yes',
+																								 		 		  'class'=>'do_d2_askform_yesno do_d2_claim_update',
+																								 		 			'checked'=> (($cl['info_sufficient']=='yes') ? true : false));
+
+												 		 $cl['no_info_data'] = array('name'=>$obj['id'].'_permission_'.$cl['id'].'_info_sufficient',
+																								 				 'value'=>'no',
+																								 				 'class'=>'do_d2_askform_yesno do_d2_claim_update',
+																								 				 'checked'=> (($cl['info_sufficient']=='no') ? true : false));
+
+												 		 $cl['yes_sent_data'] = array('name'=>$obj['id'].'_permission_'.$cl['id'].'_letter_sent',
+																								 				  'value'=>'yes',
+																								 				  'class'=>'do_d2_askform_yesno do_d2_claim_update',
+																								 				  'checked'=> (($cl['letter_sent']=='yes') ? true : false));
+
+												 		 $cl['no_sent_data'] = array('name'=>$obj['id'].'_permission_'.$cl['id'].'_letter_sent',
+																								 				 'value'=>'no',
+																								 				 'class'=>'do_d2_askform_yesno do_d2_claim_update',
+																								 				 'checked'=> (($cl['letter_sent']=='no') ? true : false));
+
+												 		 $cl['yes_received_data'] = array('name'=>$obj['id'].'_permission_'.$cl['id'].'_response_received',
+																								 				  'value'=>'yes',
+																								 				  'class'=>'do_d2_askform_yesno do_d2_claim_update',
+																								 				  'checked'=> (($cl['response_received']=='yes') ? true : false));
+
+												 		 $cl['no_received_data'] = array('name'=>$obj['id'].'_permission_'.$cl['id'].'_response_received',
+																								 				 'value'=>'no',
+																								 				 'class'=>'do_d2_askform_yesno do_d2_claim_update',
+																								 				 'checked'=> (($cl['response_received']=='no') ? true : false));
+
+												 		 $cl['yes_approved_data'] = array('name'=>$obj['id'].'_permission_'.$cl['id'].'_approved',
+																								 				  'value'=>'yes',
+																								 				  'class'=>'do_d2_askform_yesno do_d2_claim_update',
+																								 				  'checked'=> (($cl['approved']=='yes') ? true : false));
+
+												 		 $cl['no_approved_data'] = array('name'=>$obj['id'].'_permission_'.$cl['id'].'_approved',
+																								 				 'value'=>'no',
+																								 				 'class'=>'do_d2_askform_yesno do_d2_claim_update',
+																								 				 'checked'=> (($cl['approved']=='no') ? true : false));
+
+												 		 $cl['comments_ta_data'] = array('name'=>$obj['id'].'_permission_'.$cl['id'].'_comments',
+																								 						 'value'=>$cl['comments'],
+																								 						 'class'=>'do_d2_claim_update',
+																								 						 'rows'=>'10', 'cols'=>'60');
+
+												 		 $cl['save_data'] = array('name'=>$obj['id'].'_permission_'.$cl['id'].'_status',
+																							   	  	'id'=>'close_'.$cl['id'],
+																								    	'value'=>'Save for later',
+																								    	'class'=>'do_d2_claim_update');
+
+												 		 $cl['send_data'] = array('name'=>$obj['id'].'_permission_'.$cl['id'].'_status',
+																								  'value'=>'Send to dScribe', 'class'=>'do_d2_claim_update');
+
+												 		 $c[$k] = $cl;
+												 		 $obj['permission'] = $c;
+												 }
 								 }	
-								 if ($notalldone) { $obj['permission'] = $c;	array_push($permission, $obj); $num_permission++; }
+								 if ($notalldone) { array_push($permission, $obj); $num_permission++; }
 						}
 
 						/* get objects with commission claims */
