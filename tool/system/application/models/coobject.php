@@ -320,22 +320,103 @@ class Coobject extends Model
 						if (($c = $this->claim_exists($obj['id'],'commission')) !== FALSE) {
 								 $added = $notalldone = false;
 								 $obj['otype'] = 'original';
-								 foreach($c as $cl) {
-												 if ($cl['status']=='done') { if(!$added) { array_push($done['commission'], $obj); $num_done++; $added=true;} } 
-												 else { $notalldone = true; }
+								 foreach($c as $k => $cl) {
+												 $obj['commission'] = $c;
+												 if ($cl['status']=='done'|| $cl['status']=='commission review') { 
+														 if(!$added) { array_push($done['commission'], $obj); $num_done++; $added=true;} 
+												 } else { 
+														 $notalldone = true; 
+
+												 		 $cl['yes_repl_data'] = array('name'=>$obj['id'].'_commission_'.$cl['id'].'_have_replacement',
+																								 				 'value'=>'yes',
+																								 				 'class'=>'do_d2_askform_yesno do_d2_claim_update',
+																								 				 'checked'=> (($cl['have_replacement']=='yes') ? true : false));
+
+												 		 $cl['no_repl_data'] = array('name'=>$obj['id'].'_commission_'.$cl['id'].'_have_replacement',
+																								 				 'value'=>'no',
+																								 				 'class'=>'do_d2_askform_yesno do_d2_claim_update',
+																								 				 'checked'=> (($cl['have_replacement']=='no') ? true : false));
+
+												 		 $cl['yes_comm_data'] = array('name'=>$obj['id'].'_commission_'.$cl['id'].'_recommend_commission',
+																								 				 'value'=>'yes',
+																								 				 'class'=>'do_d2_askform_yesno do_d2_claim_update',
+																								 				 'checked'=> (($cl['recommend_commission']=='yes') ? true : false));
+
+												 		 $cl['no_comm_data'] = array('name'=>$obj['id'].'_commission_'.$cl['id'].'_recommend_commission',
+																								 				 'value'=>'no',
+																								 				 'class'=>'do_d2_askform_yesno do_d2_claim_update',
+																								 				 'checked'=> (($cl['recommend_commission']=='no') ? true : false));
+
+												 		 $cl['comments_ta_data'] = array('name'=>$obj['id'].'_commission_'.$cl['id'].'_comments',
+																								 						 'value'=>$cl['comments'],
+																								 						 'class'=>'do_d2_claim_update',
+																								 						 'rows'=>'10', 'cols'=>'60');
+
+												 		 $cl['save_data'] = array('name'=>$obj['id'].'_commission_'.$cl['id'].'_status',
+																							   	  	'id'=>'close_'.$cl['id'],
+																								    	'value'=>'Save for later',
+																								    	'class'=>'do_d2_claim_update');
+
+												 		 $cl['send_data'] = array('name'=>$obj['id'].'_commission_'.$cl['id'].'_status',
+																								  'value'=>'Send to dScribe', 'class'=>'do_d2_claim_update');
+
+												 		 $cl['send_to_cr_data'] = array('name'=>$obj['id'].'_commission_'.$cl['id'].'_status',
+																								  'value'=>'Send to Commission Review', 'class'=>'do_d2_claim_update');
+												 		 $c[$k] = $cl;
+												 		 $obj['commission'] = $c;
+												 }
 								 }	
-								 if ($notalldone) { $obj['commission'] = $c;	array_push($commission, $obj); $num_commission++; }
+								 if ($notalldone) { array_push($commission, $obj); $num_commission++; }
 						}
 
 						/* get objects with retain (no copyright) claims */
 						if (($c = $this->claim_exists($obj['id'], 'retain')) !== FALSE) {
 								 $added = $notalldone = false;
 								 $obj['otype'] = 'original';
-								 foreach($c as $cl) {
-												 if ($cl['status']=='done') { if(!$added) { array_push($done['retain'], $obj); $num_done++; $added=true;} } 
-												 else { $notalldone = true; }
+								 foreach($c as $k => $cl) {
+												 $obj['retain'] = $c;
+												 if ($cl['status']=='done'|| $cl['status']=='ip review') { 
+														if(!$added) { array_push($done['retain'], $obj); $num_done++; $added=true;} 
+	
+												} else { 
+														$notalldone = true; 
+
+												 		 $cl['yes_rationale_data'] = array('name'=>$obj['id'].'_retain_'.$cl['id'].'_accept_rationale',
+																								 	 	 			'value'=>'yes',
+																								 		 		  'class'=>'do_d2_askform_yesno do_d2_claim_update',
+																								 		 			'checked'=> (($cl['accept_rationale']=='yes') ? true : false));
+
+												 		 $cl['no_rationale_data'] = array('name'=>$obj['id'].'_retain_'.$cl['id'].'_accept_rationale',
+																								 	 	 			'value'=>'no',
+																								 		 		  'class'=>'do_d2_askform_yesno do_d2_claim_update',
+																								 		 			'checked'=> (($cl['accept_rationale']=='no') ? true : false));
+
+												 		 $cl['unsure_rationale_data'] = array('name'=>$obj['id'].'_retain_'.$cl['id'].'_accept_rationale',
+																								 	 	 			'value'=>'unsure',
+																								 		 		  'class'=>'do_d2_askform_yesno do_d2_claim_update',
+																								 		 			'checked'=> (($cl['accept_rationale']=='unsure') ? true : false));
+
+												 		 $cl['comments_ta_data'] = array('name'=>$obj['id'].'_retain_'.$cl['id'].'_comments',
+																								 						 'value'=>$cl['comments'],
+																								 						 'class'=>'do_d2_claim_update',
+																								 						 'rows'=>'10', 'cols'=>'60');
+
+												 		 $cl['save_data'] = array('name'=>$obj['id'].'_retain_'.$cl['id'].'_status',
+																							   	  	'id'=>'close_'.$cl['id'],
+																								    	'value'=>'Save for later',
+																								    	'class'=>'do_d2_claim_update');
+
+												 		 $cl['send_data'] = array('name'=>$obj['id'].'_retain_'.$cl['id'].'_status',
+																								  'value'=>'Send to dScribe', 'class'=>'do_d2_claim_update');
+
+												 		 $cl['send_to_ip_data'] = array('name'=>$obj['id'].'_retain_'.$cl['id'].'_status',
+																								  'value'=>'Send to Legal & Policy Review', 'class'=>'do_d2_claim_update');
+
+												 		$c[$k] = $cl;
+												 		$obj['retain'] = $c;
+												}
 								 }	
-								 if ($notalldone) { $obj['retain'] = $c;	array_push($retain, $obj); $num_retain++;}
+								 if ($notalldone) { array_push($retain, $obj); $num_retain++;}
 						}
 		} 
 
@@ -1691,10 +1772,15 @@ class Coobject extends Model
 
 	public function enum2array($table, $col)
 	{
+		$array = array();
 		$q = $this->db->query("SHOW COLUMNS FROM ocw_$table LIKE '$col'");
 		$row = $q->result_array();
-		return (is_array($row[0])) 
-					? explode("','",preg_replace("/(enum|set)\('(.+?)'\)/","\\2",$row[0]['Type'])) : array(0=>'None');
+		$enum = (is_array($row[0])) 
+					? explode("','",preg_replace("/(enum|set)\('(.+?)'\)/","\\2",$row[0]['Type'])) : null;
+		if (!is_null($enum)) {
+				foreach($enum as $val) { $array[$val] = $val; }
+		}
+		return $array;
 	}
 }
 ?>
