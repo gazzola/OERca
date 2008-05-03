@@ -748,6 +748,7 @@ var Rules = {
 									val = (val.toLowerCase() == 'save for later') ? 'in progress' : val;
 									val = (val.toLowerCase() == 'send to dscribe') ? 'done' : val;
 									val = (val.toLowerCase() == 'send to legal & policy review') ? 'ip review' : val;
+									val = (val.toLowerCase() == 'send to commission review') ? 'commission review' : val;
 									url = url+'update_object_claim/'+object_id+'/'+clm_type+'/'+clm_id+
 												'/'+field+'/'+encodeURIComponent(val);
             			new Ajax(url, {	method: 'get', update: fb,
@@ -773,17 +774,22 @@ var Rules = {
 							var clm_type = this.name.replace(/^\d+_(\w+)_\d+_\w+$/,"$1");
 							var no_div = field+'_no_'+id;
 							var yes_div = field+'_yes_'+id;
+							var unsure_div = field+'_unsure_'+id;
 	
-							// show and hide logic for fair use 
-						//if (clm_type == 'fairuse') {
-									if (this.value == 'yes') {
+							// show and hide logic for dscribes askforms 
+							if (this.value == 'yes') {
 										if ($(no_div)) { $(no_div).style.display = 'none';	} 
+										if ($(unsure_div)) { $(unsure_div).style.display = 'none';	} 
 			   						if ($(yes_div)) { $(yes_div).style.display = 'block';}
-									} else {
+							} else if (this.value =='no') {
 			   						if ($(yes_div)) { $(yes_div).style.display = 'none';}
+										if ($(unsure_div)) { $(unsure_div).style.display = 'none';	} 
 										if ($(no_div)) { $(no_div).style.display = 'block';	} 
-									}
-						 //}
+							} else {
+			   						if ($(yes_div)) { $(yes_div).style.display = 'none';}
+										if ($(no_div)) { $(no_div).style.display = 'none';	} 
+										if ($(unsure_div)) { $(unsure_div).style.display = 'block';	} 
+							}
 			}
 	},
 
