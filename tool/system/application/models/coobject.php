@@ -170,6 +170,8 @@ class Coobject extends Model
 		$orig_objs = $this->coobjects($mid);
 		$repl_objs = $this->replacements($mid);
 
+		if (!is_null($orig_objs)) {
+
 		foreach ($orig_objs as $obj) { 
 						/* get general question info for dscribe2 */
 						if (!is_null($obj['questions'])) { 
@@ -418,9 +420,10 @@ class Coobject extends Model
 								 }	
 								 if ($notalldone) { array_push($retain, $obj); $num_retain++;}
 						}
-		} 
-
+		}} 
+	
 		/* get general question info for replacements as well */
+		if (!is_null($repl_objs)) {
 		foreach ($repl_objs as $obj) { 
 						if (!is_null($obj['questions'])) { 
 								// remove all non dscribe2 questions
@@ -448,7 +451,7 @@ class Coobject extends Model
 										else { array_push($done['general'],$obj); $num_done++; }
 								}
 						} 
-		} 
+		}} 
 	
 		/* add information to return array */	
 		if ($num_done>0) { $done['all']=$num_done; }
