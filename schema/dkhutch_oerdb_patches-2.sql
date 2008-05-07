@@ -21,3 +21,7 @@ ALTER TABLE `ocw_object_questions` ADD FOREIGN KEY ( `modified_by` ) REFERENCES 
 ALTER TABLE `ocw_object_replacement_questions` ADD `modified_by` INT( 11 ) NULL AFTER `created_on` ;
 ALTER TABLE `ocw_object_replacement_questions` ADD INDEX ( `modified_by` ) ;
 ALTER TABLE `ocw_object_replacement_questions` ADD FOREIGN KEY ( `modified_by` ) REFERENCES `ocw`.`ocw_users` (`id`);
+
+ALTER TABLE `ocw_object_replacements` ADD `modified_by` INT( 11 ) NULL AFTER `unsuitable_reason` ;
+ALTER TABLE `ocw_object_replacements` ADD INDEX ( `modified_by` ) ;
+ALTER TABLE `ocw_object_replacements` ADD FOREIGN KEY ( `modified_by` ) REFERENCES `ocw`.`ocw_users` (`id`);
