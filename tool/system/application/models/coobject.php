@@ -1990,7 +1990,7 @@ class Coobject extends Model
 					return 'This request is still under review by the instructor';
 			}
 
-			$uname = ($item['modified_by']<>'') ? $this->ocw_user->username($item['modified_by']) : 'Instructor';
+			$uname = ($obj['modified_by']<>'') ? $this->ocw_user->username($obj['modified_by']) : 'Instructor';
 			$uname = '<b>'.$uname.'</b>';
 
 			if ($type=='original') {
