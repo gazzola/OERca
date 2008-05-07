@@ -1362,6 +1362,9 @@ class Coobject extends Model
      */
 	public function update($oid, $data)
 	{
+		if(!isset($data['modified_by']) || $data['modified_by']=='') {
+			 $data['modified_by'] = getUserProperty('id');
+		}
 		$this->db->update('objects',$data,"id=$oid");
 	}
 
@@ -1375,6 +1378,9 @@ class Coobject extends Model
      */
 	public function update_replacement($oid, $data)
 	{
+		if(!isset($data['modified_by']) || $data['modified_by']=='') {
+			 $data['modified_by'] = getUserProperty('id');
+		}
 		$this->db->update('object_replacements',$data,"id=$oid");
 	}
 
@@ -2001,7 +2007,7 @@ class Coobject extends Model
 		    	if ($obj['instructor_owns']=='yes') {
 		      		$html .= $uname.' indicated that they <i>hold</i> the copyright to this object.';
 		    	} else {
-		      		$html .= 'Instrutor indicated that they <em>do not hold</em> the copyright to this object.<br/><br/>';
+		      		$html .= $uname.' indicated that they <em>do not hold</em> the copyright to this object.<br/><br/>';
 		
 		      		if ($obj['other_copyholder']=='') {
 		        			$html .= $uname.' indicated that they <em>do not know</em> who holds the copyright.<br/><br/>';
