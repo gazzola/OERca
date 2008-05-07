@@ -11,7 +11,11 @@
 |	http://www.your-site.com/
 |
 */
-$config['base_url']	= "http://{$_SERVER['HTTP_HOST']}/tool/";
+if ($_SERVER['HTTPS']=='on') {
+		$config['base_url']	= "https://{$_SERVER['HTTP_HOST']}/tool/";
+} else {
+		$config['base_url']	= "http://{$_SERVER['HTTP_HOST']}/tool/";
+}
 
 /*
 |--------------------------------------------------------------------------
