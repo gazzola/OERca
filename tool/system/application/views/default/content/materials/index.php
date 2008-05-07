@@ -17,10 +17,14 @@
 	<thead>
 	<tr>
 		<th class="sortable"><strong>Name</strong></th>
+		<th class="sortable"><strong>File Type</strong></th>
+		<th class="sortable"><strong>Resource Type</strong></th>
+		<th class="sortable"><strong>Date Modified</strong></th>
 		<th class="sortable"><strong>Author</strong></th>
 		<th class="sortable"><strong>CO Status</strong></th>
-		<th class="sortable"><strong>Ask Items?</strong></th>
-		<th><strong>&nbsp;</strong></th>
+<!--		<th class="sortable"><strong>Ask Items?</strong></th> -->
+  <? //TODO: Fix the untidy table ending code which uses &nbsp ?>
+    <th><strong>&nbsp;</strong></th>
 	</tr>
 	</thead>
 
@@ -37,11 +41,23 @@
 		<?php if ($material['mimetype'] == 'folder') { ?>
 		<td colspan="6">&nbsp;&nbsp;</td>
 		<?php } else { ?>
-
+    
+    <td>
+      <?= $material['mimename'] ?>
+    </td>
+    
+    <td>
+      <?= $material['tagname'] ?>
+    </td>
+		
 		<td>
-			<?= $material['author'] ?>
-		</td>
-
+		  <?= $material['modified_on'] ?>
+    </td>
+    
+    <td>
+    	<?= $material['author'] ?>
+    </td>
+    
 		<td class="options">
 			<?php if ($material['validated']) { ?>
 				<img src="<?=property('app_img')?>/validated.gif" title="ready" />
@@ -50,12 +66,14 @@
 			<?php } ?>
 		<?php echo ($material['embedded_co']==0) ? '(no CO)' : "&nbsp;({$material['statcount']})"; ?>
 		</td>
-		<td>
+		
+		<!-- <td>
 			<b>
 			 <?php 
 				if ($objstats['ask'] > 0) { echo '<small>Yes&nbsp;(<a href="'.site_url("materials/askforms/$cid/".$material['id']).'">view ASK form</a>)</small>'; } else { echo 'no ask items'; }?> 
 			</b>
-		</td>
+		</td> -->
+		
 		<td>
 				<a href="<?=site_url("materials/remove_material/$cid/{$material['id']}")?>" title="Remove material" class="confirm">Remove</a>
 		</td>

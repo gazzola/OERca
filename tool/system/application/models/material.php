@@ -118,10 +118,12 @@ class Material extends Model
     $materials = array();
     $where = ($mid=='') ? '' : "AND ocw_materials.id='$mid'";
 
-    $sql = "SELECT ocw_materials.*, ocw_mimetypes.mimetype 
+    $sql = "SELECT ocw_materials.*, ocw_mimetypes.mimetype, ocw_mimetypes.name AS mimename, ocw_tags.name AS tagname
       FROM ocw_materials
       LEFT JOIN ocw_mimetypes 
       ON ocw_mimetypes.id = ocw_materials.mimetype_id
+      LEFT JOIN ocw_tags
+      ON ocw_tags.id = ocw_materials.tag_id
       WHERE ocw_materials.course_id = $cid $where
       ORDER BY ocw_materials.order";
     $q = $this->db->query($sql);
