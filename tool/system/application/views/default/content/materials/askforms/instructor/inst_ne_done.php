@@ -35,32 +35,8 @@ if ($prov_objects != null) {
 
 <td style="vertical-align: top">
 	<p><h3>Actions Taken:</h3>                
-	<?php 
-		if ($obj['description']) {
-				echo 'Instructor provided the following description:<br/><br/>';
-				echo '<p style="background-color:#ddd; padding:5px;">'.$obj['description'].'</p><br/><br/>';
-		}
-		if ($obj['instructor_owns']=='yes') { 
-			echo 'Instructor indicated that they <i>hold</i> the copyright to this object.';
-		} else { 
-			echo 'Instructor indicated that they <em>do not hold</em> the copyright to this object.';
-			echo '<br/><br/>'; 
-
-			if ($obj['other_copyholder']=='') {
-				echo 'Instructor indicated that they <em>do not know</em> who holds the copyright.';
-				echo '<br/><br/>';
-				if ($obj['is_unique']=='yes') {
-					echo 'Instructor indicated that the representation of this information <em>is unique</em>';
-				} else {
-					echo 'Instructor indicated that the representation of this information <em>is not unique</em>';
-				}
-		 	} else { 
-				echo 'Instructor indicated that <em>'.$obj['other_copyholder'].'</em> holds the copyright.';
-		 	} 
-		}
-	?>
-    </p>
-
+	<?php echo $this->coobject->ask_instructor_report($cid, $mid, $obj, 'original');	?>
+   </p>
 </td>
 </tr>	
 <?php $count++; }}} 
@@ -94,17 +70,7 @@ if ($repl_objects != null) {
 </td>
 
 <td style="vertical-align:top">
-  <?php if ($obj['suitable']=='yes') { ?>
-    <h3>Replaced With:</h3>                
-		<?=$this->ocw_utils->create_corep_img($cid,$mid,$obj['id'],$obj['location'],false);?>
-  <?php } else { ?>
-    <h3>Rejected Replacement:</h3>                
-		<?=$this->ocw_utils->create_corep_img($cid,$mid,$obj['id'],$obj['location'],false);?>
-    <br/><br/>
-    <h3>Reason:</h3>                
-    <?= ($obj['unsuitable_reason']=='') ? 'No reason provided' : $obj['unsuitable_reason']; ?>
-  <?php } ?>
-
+	<?php echo $this->coobject->ask_instructor_report($cid, $mid, $obj, 'replacement');	?>
 </td>
 </tr>
 

@@ -1785,5 +1785,228 @@ class Coobject extends Model
 		}
 		return $array;
 	}
+
+	/**
+   	 * Print out claim report 
+     *
+     * @access  public
+     * @param   int			course id		
+     * @param   int			material id		
+     * @param   object	object 
+     * @param   string	claim type  (commission | permission | retain | fairuse) 
+     * @return  string
+     */
+  public function claim_report($cid, $mid, $obj, $type)
+	{
+			$html = '';
+
+			if (($item = $this->claim_exists($obj['id'], $type)) !== FALSE) {
+					 $item = $item[0];
+
+					 if ($item['status']=='new' or $item['status']=='in progress') {
+							 return 'This claim request is still under review by the dscribe2';
+					}
+
+					if ($type == 'commission') {
+							if ($item['have_replacement']=='yes') {
+                  $html .= '<br>dScribe2 provided the dScribe with a replacement with the following action '.
+												   'and comments:<br/><br/>Action: <b>'.$item['action'].'</b><br/>';
+                
+									$html .= ($item['comments']<>'') ? 'Comments: <b>'.$item['comments'].'</b>'
+                      														 : 'Comments: <b>no comments</b><br/><br/>';
+                	$x = $this->replacement_exists($cid,$mid,$obj['id']);
+                	if ($x) {
+                    	$html .= '<p>Provided Replacement: </p>'.
+															 $this->ocw_utils->create_corep_img($cid,$mid,$obj['id'],$obj['location'],false,true);
+                }
+            	} elseif ($item['have_replacement']=='no') {
+                	$html .= '<br>dScribe2 could not provide the dScribe with a replacement<br/>';
+                	if ($item['recommend_commission']=='yes') {
+                   	 	$html .= '<br>dScribe2 recommends commissioning the content object because: '.
+                   						 (($item['comments']<>'') ? $item['comments'] : 'no rationale given');
+                	} else {
+                    	$html .= '<br>dScribe2 does not recommend commissioning the content object and '. 
+															 'suggests the following:<br/><br/>Action: <b>'.$item['action'].'</b><br/>';
+											$html .= ($item['comments']<>'') ? 'Comments: <b>'.$item['comments'].'</b>'
+                      														 		 : 'Comments: <b>no comments</b><br/><br/>';
+                	}
+            	}
+
+            	if($item['status']=='commission review') { 
+											$html .= '<br><br>The Commission Review team is reviewing this claim.'; 
+							}
+
+				 } elseif ($type=='retain') {
+	            if ($item['accept_rationale']=='yes') {
+	                $html .= '<br>dScribe2 accepted dscribe\'s rationale.';
+	            } elseif ($item['accept_rationale']=='no') {
+	                $html .= '<br>dScribe2 did not accept dscribe\'s rationale.';
+	                if ($item['action']<>'None') {
+	                    $html .= '<br/><br/>dScribe2 recommends the following action:<b>'.$item['action'].'</b>';
+	                }
+	            } elseif ($item['accept_rationale']=='unsure') {
+	                $html .= '<br>dScribe2 is unsure about the dscribe\'s rationale.';
+	                if ($item['status']=='ip review') {
+	                    $html .= '<br><br>dScribe2 has sent it to Legal & Policy team for review';
+	                }
+	            }
+	            if ($item['comments']<>'') {
+	                $html .= '<br/><br/>dScribe2 provided the following comments:<br/><br/>';
+	                $html .= '<p style="background-color:#ddd;padding:5px;">'.$item['comments'].'</p><br/><br/>';
+	            }
+	            if ($item['approved']=='yes') {
+	                $html .= '<br><br>Legal & Policy Review team have approved this claim.';
+	            } elseif ($item['approved']=='no') {
+	                $html .= '<br><br>Legal & Policy Review team have not approved this claim.';
+	            } elseif($item['status']=='ip review' && $item['approved']=='pending') {
+	                $html .= '<br><br>Legal & Policy Review team is reviewing this claim.';
+	            }
+
+				 } elseif ($type=='permission') {
+	            if ($item['info_sufficient']=='yes') {
+	                $html .= 'dScribe2 decided that a permission form can be sent for this content object.';
+	
+	                if ($item['letter_sent']=='yes') {
+	                    $html .= '<br/><br/>dScribe2 indicated that the permission form has been sent.';
+	                    if ($item['response_received']=='yes') {
+	                        $html .= '<br/><br/>dScribe2 indicated that a response has been received.';
+	                        if ($item['approved']=='yes') {
+	                            $html .= '<br/><br/>dScribe2 indicated that request for permission was approved';
+	                        } elseif ($item['approved']=='no') {
+	                            $html .= '<br/><br/>dScribe2 indicated that request for permission was not approved';
+	                            if ($item['action']<>'None') {
+	                                $html .= '<br/><br/>dScribe2 recommends the following action:<b>'.$item['action'].'</b>';
+	                            }
+	                            if ($item['comments']<>'') {
+	                                $html .= '<br/><br/>dScribe2 provided the following comments:<br/><br/>';
+	                                $html .= '<p style="background-color:#ddd; padding:5px;">'.$item['comments'].'</p><br/><br/>';
+	                            }
+	                        } else {
+	                                $html .= 'dScribe2 did not specify whether this request was approved or not';
+	                        }
+	                    } else {
+	                        $html .= '<br/><br/>dScribe2 indicated that a response has not been received.';
+	                    }
+	                } else {
+	                    $html .= '<br/><br/>dScribe2 indicated that the permission form has not been sent.';
+	                }
+	
+	            } elseif ($item['info_sufficient']=='no') {
+	                  $html .= 'dScribe2 decided that a permission form should not be sent for this content object';
+	                  if ($item['action']<>'None') {
+	                      $html .= '<br/><br/>dScribe2 recommends the following action:<b>'.$item['action'].'</b>';
+	                  }
+	                  if ($item['comments']<>'') {
+	                      $html .= '<br/><br/>dScribe2 provided the following comments:<br/><br/>';
+	                      $html .= '<p style="background-color:#ddd; padding:5px;">'.$item['comments'].'</p><br/><br/>';
+	                  }
+	            }
+	            if ($item['approved']=='yes') {
+	                $html .= '<br><br>Legal & Policy Review team have approved this claim.';
+	            } elseif ($item['approved']=='no') {
+	                $html .= '<br><br>Legal & Policy Review team have not approved this claim.';
+	            } elseif($item['status']=='ip review' && $item['approved']=='pending') {
+	                $html .= '<br><br>Legal & Policy Review team is reviewing this claim.';
+	            }
+
+				 } elseif ($type=='fairuse') {
+
+	          if ($item['warrant_review']=='yes') {
+	              $html .= 'dScribe2 indicated that this object <i>warrants</i> a legal review for fair use.';
+	              if ($item['status']=='ip review') {
+	                	$html .= '<br/><br/>dScribe2 has sent this to the Legal & Policy review team';
+	              }
+	              if ($item['additional_rationale']<>'') {
+	                  $html .= '<br/><br/>dScribe2 provided the following additional rationale:<br/><br/>';
+	                  $html .= '<p style="background-color:#ddd; padding:5px;">'.$item['additional_rationale'].
+														 '</p><br/><br/>';
+	              }
+	
+	          } elseif ($item['warrant_review']=='no') {
+	              			$html .= 'dScribe2 indicated that this object <i>does not warrant</i> a legal review for fair use.';
+	              if ($item['action']<>'None') {
+	                	$html .= '<br/><br/>dScribe2 recommends the following action:<b>'.$item['action'].'</b>';
+	              }
+	              if ($item['comments']<>'') {
+	                	$html .= '<br/><br/>dScribe2 provided the following comments:<br/><br/>';
+	                	$html .= '<p style="background-color:#ddd; padding:5px;">'.$item['comments'].
+														 '</p><br/><br/>';
+	              }
+	          } elseif ($item['warrant_review']=='pending') {
+	              			$html .= 'dScribe2 did not specify whether this object warrants a fair use review or not.';
+	          }
+	            if ($item['approved']=='yes') {
+	                $html .= '<br><br>Legal & Policy Review team have approved this claim.';
+	            } elseif ($item['approved']=='no') {
+	                $html .= '<br><br>Legal & Policy Review team not have approved this claim.';
+	            } elseif($item['status']=='ip review' && $item['approved']=='pending') {
+	                $html .= '<br><br>Legal & Policy Review team is reviewing this claim.';
+	            }
+				 }
+		 } else {
+				$html = 'No '.ucfirst($type).' claim found for this object.';
+		 }
+
+		 return $html;
+	}
+
+	/**
+		 * Report on instructor responses to ask form questions 
+     *
+     * @access  public
+     * @param   int			course id		
+     * @param   int			material id		
+     * @param   object	object 
+     * @param   string	type  (original | replacement) 
+     * @return  string
+     */
+  public function ask_instructor_report($cid, $mid, $obj, $type)
+  {
+			$html = '';
+
+			if ($obj['ask_status'] <> 'done') {
+					return 'This request is still under review by the instructor';
+			}
+
+			if ($type=='original') {
+		    	if ($obj['description']) {
+		        	$html .= 'Intructor provided the following description:<br/><br/>';
+		        	$html .= '<p style="background-color:#ddd; padding:5px;">'.$obj['description'].'</p><br/><br/>';
+		    	}
+		    	if ($obj['instructor_owns']=='yes') {
+		      		$html .= 'Instructor indicated that they <i>hold</i> the copyright to this object.';
+		    	} else {
+		      		$html .= 'Instrutor indicated that they <em>do not hold</em> the copyright to this object.<br/><br/>';
+		
+		      		if ($obj['other_copyholder']=='') {
+		        			$html .= 'Instructor indicated that they <em>do not know</em> who holds the copyright.<br/><br/>';
+		        			if ($obj['is_unique']=='yes') {
+		          				$html .= 'Instructor indicated that the representation of this information <em>is unique</em>';
+		        			} else {
+		          				$html .= 'Instructor indicated that the representation of this information <em>is not unique</em>';
+		        			}
+		      		} else {
+		        		$html .= 'Instructor indicated that <em>'.$obj['other_copyholder'].'</em> holds the copyright.';
+		      	 }
+		     }
+
+		} elseif ($type=='replacement') {
+
+				if ($obj['suitable']=='yes') { 
+    				$html .= '<h3>Replaced With:</h3>'.
+						$this->ocw_utils->create_corep_img($cid,$mid,$obj['id'],$obj['location'],false);
+  			} else {
+    				$html .= '<h3>Rejected Replacement:</h3>'.
+    				$this->ocw_utils->create_corep_img($cid,$mid,$obj['id'],$obj['location'],false);
+    				$html .= '<br/><br/><h3>Reason:</h3>'.
+    				($obj['unsuitable_reason']=='') ? 'No reason provided' : $obj['unsuitable_reason']; 
+  			} 
+		}
+
+		return $html;
+ }
+
+
+
 }
 ?>
