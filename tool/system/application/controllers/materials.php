@@ -487,6 +487,16 @@ class Materials extends Controller {
 						$this->coobject->add_log($oid, getUserProperty('id'), array('log'=>$lgcm));
 						$data = array($field=>$val);
 						$this->coobject->update($oid, $data);
+
+				} elseif ($field=='ask_status') {
+						$data = array($field=>$val);
+						$this->coobject->update($oid, $data);
+
+						/* send email to dscribe from instructor */
+						if ($val == 'done') {
+
+						}
+
 				} elseif ($field=='done') {
 						$lgcm = 'Changed cleared status to '.(($val==1)?'"yes"':'"no"');
 						$this->coobject->add_log($oid, getUserProperty('id'), array('log'=>$lgcm));
@@ -530,6 +540,12 @@ class Materials extends Controller {
  	{
 	   $data = array($field=>$val);
 	   $this->coobject->update_replacement($oid, $data);
+		
+		 /* send email to dscribe from instructor */	
+		 if ($field=='ask_status' and $val=='done') {
+
+		 }
+
      $this->ocw_utils->send_response('success');
      exit;
 	}
@@ -562,6 +578,11 @@ class Materials extends Controller {
 	{
 	   $data['status'] = $status;
 	   $this->coobject->update_questions_status($oid, $data, $role, $type);
+
+		 /* send email to dscribe1 */
+		 if ($status=='done') {
+		 }
+
      $this->ocw_utils->send_response('success');
 	}
 
@@ -569,6 +590,18 @@ class Materials extends Controller {
 	{
 		 $data[$field] = $value;
 	   $this->coobject->update_object_claim($oid, $claimid, $claimtype, $data);
+
+		 /* send email to dscribe1 */
+		 if ($field=='status' && $value=='done') {
+		 
+		 /* send email to ip review team */
+		 } elseif ($field=='status' && $value=='ip review') {
+
+		 /* send email to commission review team */
+		 } elseif ($field=='status' && $value=='commission review') {
+
+		 }
+
      $this->ocw_utils->send_response('success');
 	}
 
