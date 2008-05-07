@@ -17,7 +17,7 @@ foreach($cos as $obj) {
 		<!-- new/unseen questions -->
 		<div id="new-col1-<?=$item['id']?>" style="display: <?=($item['status']=='in progress') ? 'none':'block'?>;">
 
-     	<h3>dScribe Commission Rationale</h3>
+     	<h3><?=$this->ocw_user->username($item['user_id']) ?>'s (dScribe) Rationale:</h3>
    		<p style="margin-bottom:15px;border:1px solid #ccc; padding:5px; background-color:#eee">
 					<?= ($item['rationale']=='') ? 'No rationale provided' : $item['rationale'] ?>
 			</p>
@@ -36,7 +36,10 @@ foreach($cos as $obj) {
 					the content object:</strong><br/><br/>
 					Action: <?= form_dropdown("{$obj['id']}_commission_{$item['id']}_action",
 																		$select_actions,$item['action'],'class="do_d2_claim_update"'); ?><br/><br/>
-					<?= form_textarea($item['comments_ta_data']); ?>
+					<?= form_textarea($item['comments_ta_data']); ?><br/>
+					<?php if ($item['comments']<>'' && $item['modified_by']<>'') { ?>
+							<small>Last modified by: <?=$this->ocw_user->username($item['modified_by'])?></small><br/>
+					<?php } ?>
 				</p>
 				<p><h3>Replacement</h3><p>
 				<form action="<?=site_url("materials/update_object/$cid/$mid/{$obj['id']}/irep")?>" enctype="multipart/form-data" id="add_ip_rep" method = "post">
@@ -63,6 +66,10 @@ foreach($cos as $obj) {
         		}
       	?>
        	<p><hr style="border: 1px solid #eee"/></p>
+
+				<!-- save options  -->	
+				<br/><br/ style="clear:both"><br/><br/>
+				<p><?= form_submit($item['save_data']) ?>&nbsp;&nbsp; <?= form_submit($item['send_data']) ?>&nbsp;&nbsp;</p>
 			</div>
 
 			<!-- Don't have a replacement -->
@@ -76,8 +83,15 @@ foreach($cos as $obj) {
 					<div id="recommend_commission_yes_<?=$item['id']?>" style="display: <?= ($item['recommend_commission']=='yes') ? 'block':'none'?>"> 
 					<p>
 						<strong>Please provide your rationale for this recommendation:</strong><br/><br/>
-						<?= form_textarea($item['comments_ta_data']); ?>
+						<?= form_textarea($item['comments_ta_data']); ?><br/>
+						<?php if ($item['comments']<>'' && $item['modified_by']<>'') { ?>
+							<small>Last modified by: <?=$this->ocw_user->username($item['modified_by'])?></small><br/>
+						<?php } ?>
 					</p>
+
+					<!-- save options  -->	
+					<br/><br/ style="clear:both"><br/><br/>
+					<p><?= form_submit($item['save_data']) ?>&nbsp;&nbsp; <?= form_submit($item['send_to_cr_data']) ?>&nbsp;&nbsp; </p>
 					</div>	
 
 					<div id="recommend_commission_no_<?=$item['id']?>" style="display: <?= ($item['recommend_commission']=='no') ? 'block':'none'?>"> 
@@ -85,17 +99,18 @@ foreach($cos as $obj) {
 						<strong>Please indicate your reasoning and recommend to the dScribe a new action for this content object:</strong><br/><br/>
 						Action: <?= form_dropdown("{$obj['id']}_commission_{$item['id']}_action",
 																		$select_actions,$item['action'],'class="do_d2_claim_update"'); ?><br/><br/>
-					<?= form_textarea($item['comments_ta_data']); ?>
+						 <?= form_textarea($item['comments_ta_data']); ?><br/>
+						<?php if ($item['comments']<>'' && $item['modified_by']<>'') { ?>
+							<small>Last modified by: <?=$this->ocw_user->username($item['modified_by'])?></small><br/>
+						<?php } ?>
 					</p>
+
+					<!-- save options  -->	
+					<br/><br/ style="clear:both"><br/><br/>
+					<p><?= form_submit($item['save_data']) ?>&nbsp;&nbsp; <?= form_submit($item['send_data']) ?>&nbsp;&nbsp;</p>
 					</div>	
 			</div>
 
-			<!-- save options  -->	
-			<br/><br/ style="clear:both"><br/><br/>
-			<p><?= form_submit($item['save_data']) ?>&nbsp;&nbsp;
-				 <?= form_submit($item['send_data']) ?>&nbsp;&nbsp;
-				 <?= form_submit($item['send_to_cr_data']) ?>&nbsp;&nbsp;
-			</p>
 		</div>
 
 		<!-- saved for later -->

@@ -17,7 +17,7 @@ foreach($cos as $obj) {
 		<!-- new/unseen questions -->
 		<div id="new-col1-<?=$item['id']?>" style="display: <?=($item['status']=='in progress') ? 'none':'block'?>;">
 
-     	<h3>dScribe Retain: No Copyright Rationale:</h3>
+     	<h3><?=$this->ocw_user->username($item['user_id']) ?>'s (dScribe) Rationale:</h3>
    		<p style="margin-bottom:15px;border:1px solid #ccc; padding:5px; background-color:#eee">
 					<?= ($item['rationale']=='') ? 'No rationale provided' : $item['rationale'] ?>
 			</p>
@@ -39,8 +39,15 @@ foreach($cos as $obj) {
 				<br/><br/>
 				<p>
 					<strong>Please provide your rationale for why this object has no copyrights:</strong><br/><br/>
-							<?= form_textarea($item['comments_ta_data']); ?>
+							<?= form_textarea($item['comments_ta_data']); ?><br/>
+						<?php if ($item['comments']<>'' && $item['modified_by']<>'') { ?>
+							<small>Last modified by: <?=$this->ocw_user->username($item['modified_by'])?></small><br/>
+						<?php } ?>
 				</p>
+
+				<!-- save options  -->	
+				<br/><br/>
+				<p><?= form_submit($item['save_data']) ?>&nbsp;&nbsp;<?= form_submit($item['send_data']) ?>&nbsp;&nbsp;</p>
 			</div>
 
 			<!-- reject rationale -->
@@ -50,8 +57,15 @@ foreach($cos as $obj) {
 					<strong>Provide your reasoning to the dScribe and recommend a new action for this content object: </strong><br/><br/>
 					Action: <?= form_dropdown("{$obj['id']}_retain_{$item['id']}_action",
 																		$select_actions,$item['action'],'class="do_d2_claim_update"'); ?><br/><br/>
-					<?= form_textarea($item['comments_ta_data']); ?>
+					<?= form_textarea($item['comments_ta_data']); ?><br/>
+					<?php if ($item['comments']<>'' && $item['modified_by']<>'') { ?>
+							<small>Last modified by: <?=$this->ocw_user->username($item['modified_by'])?></small><br/>
+					<?php } ?>
 				</p>
+
+				<!-- save options  -->	
+				<br/><br/>
+				<p><?= form_submit($item['save_data']) ?>&nbsp;&nbsp;<?= form_submit($item['send_data']) ?>&nbsp;&nbsp;</p>
 			</div>
 
 			<!-- reject rationale -->
@@ -59,15 +73,17 @@ foreach($cos as $obj) {
 				<br/><br/>
 				<p>
 					<strong>Please provide additional comments or rationale for the Legal and Policy Review team:</strong><br/><br/>
-					<?= form_textarea($item['comments_ta_data']); ?>
+					<?= form_textarea($item['comments_ta_data']); ?><br/>
+					<?php if ($item['comments']<>'' && $item['modified_by']<>'') { ?>
+							<small>Last modified by: <?=$this->ocw_user->username($item['modified_by'])?></small><br/>
+					<?php } ?>
 				</p>
+
+				<!-- save options  -->	
+				<br/><br/>
+				<p><?= form_submit($item['save_data']) ?>&nbsp;&nbsp;<?= form_submit($item['send_to_ip_data']) ?></p>
 			</div>
 
-			<!-- save options  -->	
-			<br/><br/>
-			<p><?= form_submit($item['save_data']) ?>&nbsp;&nbsp;<?= form_submit($item['send_data']) ?>&nbsp;&nbsp;
-				 <?= form_submit($item['send_to_ip_data']) ?>
-			</p>
 		</div>
 
 		<!-- saved for later -->

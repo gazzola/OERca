@@ -15,7 +15,10 @@ foreach($cos as $obj) { $questions = $obj['questions'];
 			<?php foreach($questions as $question) { ?>
       	<p><strong><?=$question['question']?></strong></p>
     		<p style="margin-bottom:15px;border:1px solid #ccc; padding:5px; background-color:#eee">
-					<?= ($question['answer']=='') ? 'No answer provided yet' : $question['answer'] ?>
+					<?= ($question['answer']=='') ? 'No answer provided yet' : $question['answer'] ?><br/><br/>
+					<?php if ($question['answer']<>'' && $question['modified_by']<>'') { ?>
+								<small>Answered by: <?=$this->ocw_user->username($question['modified_by'])?></small><br/>
+					<?php } ?>
 				</p>
        	<p><hr style="border: 1px solid #eee"/></p>
 			<?php } ?>

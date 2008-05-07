@@ -16,7 +16,7 @@ foreach($cos as $obj) {
 
 		<!-- new/unseen questions -->
 		<div>
-     	<h3>dScribe Rationale:</h3>
+     	<h3><?=$this->ocw_user->username($item['user_id']) ?>'s (dScribe) Rationale:</h3>
    		<p style="margin-bottom:15px;border:1px solid #ccc; padding:5px; background-color:#eee">
 					<?= ($item['rationale']=='') ? 'No rationale provided' : $item['rationale'] ?>
 			</p>
@@ -34,7 +34,10 @@ foreach($cos as $obj) {
 				<p>
 					<strong>Provide additional rationale or comments for Legal and Policy Review team:</strong><br/>
     			<p style="margin-bottom:15px;border:1px solid #ccc; padding:5px; background-color:#eee">
-						<?= ($item['additional_rationale']=='') ? 'No additional reason provided yet' : $item['additional_rationale'] ?>
+						<?= ($item['additional_rationale']=='') ? 'No additional reason provided yet' : $item['additional_rationale'] ?><br/><br/>
+						<?php if ($item['additional_rationale']<>'' && $item['modified_by']<>'') { ?>
+								<small>Provided by: <?=$this->ocw_user->username($item['modified_by'])?></small><br/>
+						<?php } ?>
 					</p>
 				</p>
 			</div>
@@ -46,7 +49,10 @@ foreach($cos as $obj) {
     			<p style="margin-bottom:15px;border:1px solid #ccc; padding:5px; background-color:#eee">
 						<b>Action:</b> <?= ($item['action']=='None') ? 'No action specified yet' : $item['action'] ?><br/><br/>
 	
-						<b>Comments:</b> <?= ($item['comments']=='') ? 'No comments provided yet' : $item['comments'] ?>
+						<b>Comments:</b> <?= ($item['comments']=='') ? 'No comments provided yet' : $item['comments'] ?><br/><br/>
+						<?php if ($item['comments']<>'' && $item['modified_by']<>'') { ?>
+								<small>Provided by: <?=$this->ocw_user->username($item['modified_by'])?></small><br/>
+						<?php } ?>
 					</p>
 				</p>
 			</div>

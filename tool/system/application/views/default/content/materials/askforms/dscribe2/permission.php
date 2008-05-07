@@ -77,7 +77,10 @@ foreach($cos as $obj) {
 									<strong>Please send comments to the dScribe recommending a new action for this content object:</strong><br/><br/>
 									Action: <?= form_dropdown("{$obj['id']}_permission_{$item['id']}_action",
 																		$select_actions,$item['action'],'class="do_d2_claim_update"'); ?><br/><br/>
-									<?= form_textarea($item['comments_ta_data']); ?>
+									<?= form_textarea($item['comments_ta_data']); ?><br/>
+									<?php if ($item['comments']<>'' && $item['modified_by']<>'') { ?>
+											<small>Last modified by: <?=$this->ocw_user->username($item['modified_by'])?></small><br/>
+									<?php } ?>
 								</p>
 							</div>
 					 </div>
@@ -92,7 +95,10 @@ foreach($cos as $obj) {
 					       copyright holder and recommend a new action for this content object:</strong><br/><br/>
 					Action: <?= form_dropdown("{$obj['id']}_permission_{$item['id']}_action",
 																		$select_actions,$item['action'],'class="do_d2_claim_update"'); ?><br/><br/>
-					<?= form_textarea($item['comments_ta_data']); ?>
+					<?= form_textarea($item['comments_ta_data']); ?><br/>
+					<?php if ($item['comments']<>'' && $item['modified_by']<>'') { ?>
+								<small>Last modified by: <?=$this->ocw_user->username($item['modified_by'])?></small><br/>
+					<?php } ?>
 				</p>
 			</div>
 

@@ -95,9 +95,12 @@ foreach($cos as $type => $co) {
 
 			<?php foreach($obj['questions'] as $question) { ?>
 				<fieldset>
-					<label><strong><?=$question['question']?></strong></label>
+					<label><strong><?=$question['question']?></strong></label><br/>
     		<p style="margin-bottom:15px;border:1px solid #ccc; padding:5px; background-color:#eee">
-					<?= ($question['answer']=='') ? 'No answer provided' : $question['answer'] ?>
+					<?= ($question['answer']=='') ? 'No answer provided' : $question['answer'] ?><br/><br/>
+					<?php if ($question['answer']<>'' && $question['modified_by']<>'') { ?>
+								<small>Answered by: <?=$this->ocw_user->username($question['modified_by'])?></small><br/>
+					<?php } ?>
 				</p>
 				</fieldset>
        	<p><hr style="border: 1px solid #eee"/></p>
@@ -110,13 +113,13 @@ foreach($cos as $type => $co) {
 
 				<fieldset>
 					<label>Commission Claim</label>
-     			<p><h3>dScribe's Rationale:</h3></p>
+     			<p><h3><?=$this->ocw_user->username($item['user_id']) ?>'s (dScribe) Rationale:</h3></p>
     			<p style="margin-bottom:15px;border:1px solid #ccc; padding:5px; background-color:#eee">
 						<?= ($item['rationale']=='') ? 'No rationale provided' : $item['rationale'] ?>
 					</p>
 
 					<p><h3>Actions Taken:</h3>                
-					<?php echo $this->coobject->claim_report($cid,$mid,$obj['id'],'commission'); ?>
+					<?php echo $this->coobject->claim_report($cid,$mid,$obj,'commission'); ?>
 				</fieldset>
 
        	<p><hr style="border: 1px solid #eee"/></p>
@@ -133,13 +136,13 @@ foreach($cos as $type => $co) {
 
 				<fieldset>
 					<label>No Copyright Claim</label>
-     			<p><h3>dScribe's Rationale:</h3></p>
+     			<p><h3><?=$this->ocw_user->username($item['user_id']) ?>'s (dScribe) Rationale:</h3></p>
     			<p style="margin-bottom:15px;border:1px solid #ccc; padding:5px; background-color:#eee">
 						<?= ($item['rationale']=='') ? 'No rationale provided' : $item['rationale'] ?>
 					</p>
 
 					<p><h3>Actions Taken:</h3>                
-					<?php echo $this->coobject->claim_report($cid,$mid,$obj['id'],'retain'); ?>
+					<?php echo $this->coobject->claim_report($cid,$mid,$obj,'retain'); ?>
 				</fieldset>
 
        	<p><hr style="border: 1px solid #eee"/></p>
@@ -169,7 +172,7 @@ foreach($cos as $type => $co) {
 					</p>
 
 					<p><h3>Actions Taken:</h3>                
-					<?php echo $this->coobject->claim_report($cid,$mid,$obj['id'],'permission'); ?>
+					<?php echo $this->coobject->claim_report($cid,$mid,$obj,'permission'); ?>
 			</fieldset>
       <p><hr style="border: 1px solid #eee"/></p>
 			<?php } ?>	
@@ -182,13 +185,13 @@ foreach($cos as $type => $co) {
 			<?php foreach($obj['fairuse'] as $item) { ?>
 				<fieldset>
 					<label>Fair Use Claim</label>
-     			<p><h3>dScribe's Rationale:</h3></p>
+     			<p><h3><?=$this->ocw_user->username($item['user_id']) ?>'s (dScribe) Rationale:</h3></p>
     			<p style="margin-bottom:15px;border:1px solid #ccc; padding:5px; background-color:#eee">
 						<?= ($item['rationale']=='') ? 'No rationale provided' : $item['rationale'] ?>
 					</p>
 
 					<p><h3>Actions Taken:</h3>                
-					<?php echo $this->coobject->claim_report($cid,$mid,$obj['id'],'fairuse'); ?>
+					<?php echo $this->coobject->claim_report($cid,$mid,$obj,'fairuse'); ?>
 				</fieldset>
        	<p><hr style="border: 1px solid #eee"/></p>
 				<?php } ?>

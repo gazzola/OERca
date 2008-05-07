@@ -17,7 +17,7 @@ foreach($cos as $obj) {
 		<!-- new/unseen questions -->
 		<div id="new-col1-<?=$item['id']?>" style="display: <?=($item['status']=='in progress') ? 'none':'block'?>;">
 
-     	<h3>dScribe Rationale:</h3>
+     	<h3><?=$this->ocw_user->username($item['user_id']) ?>'s (dScribe) Rationale:</h3>
    		<p style="margin-bottom:15px;border:1px solid #ccc; padding:5px; background-color:#eee">
 					<?= ($item['rationale']=='') ? 'No rationale provided' : $item['rationale'] ?>
 			</p>
@@ -33,8 +33,15 @@ foreach($cos as $obj) {
 			<div id="warrant_review_yes_<?=$item['id']?>" style="display: <?= ($item['warrant_review']=='yes') ? 'block':'none'?>"> 
 				<p>
 					<strong>Provide additional rationale or comments for Legal and Policy Review team:</strong><br/>
-					<?= form_textarea($item['additional_ta_data']); ?>
+					<?= form_textarea($item['additional_ta_data']); ?><br/>
+					<?php if ($item['additional_rationale']<>'' && $item['modified_by']<>'') { ?>
+							<small>Last modified by: <?=$this->ocw_user->username($item['modified_by'])?></small><br/>
+					<?php } ?>
 				</p>
+				
+				<!-- save options  -->	
+				<br/><br/>
+				<p><?= form_submit($item['save_data']) ?>&nbsp;&nbsp; <?= form_submit($item['send_to_ip_data']) ?>&nbsp;&nbsp;</p>
 			</div>
 
 			<!-- Comments rationale -->
@@ -43,16 +50,17 @@ foreach($cos as $obj) {
 					<strong>Provide a comment and action recommendation for the dScribe:</strong><br/><br/>
 					Action: <?= form_dropdown("{$obj['id']}_fairuse_{$item['id']}_action",
 																		$select_actions,$item['action'],'class="do_d2_claim_update"'); ?><br/><br/>
-					<?= form_textarea($item['comments_ta_data']); ?>
+					<?= form_textarea($item['comments_ta_data']); ?><br/>
+					<?php if ($item['comments']<>'' && $item['modified_by']<>'') { ?>
+							<small>Last modified by: <?=$this->ocw_user->username($item['modified_by'])?></small><br/>
+					<?php } ?>
+				
+					<!-- save options  -->	
+					<br/><br/>
+					<p><?= form_submit($item['save_data']) ?>&nbsp;&nbsp;<?= form_submit($item['send_data']) ?>&nbsp;&nbsp;</p>
 				</p>
 			</div>
 
-			<!-- save options  -->	
-			<br/><br/>
-			<p><?= form_submit($item['save_data']) ?>&nbsp;&nbsp;
-				 <?= form_submit($item['send_data']) ?>&nbsp;&nbsp;
-				 <?= form_submit($item['send_to_ip_data']) ?>&nbsp;&nbsp;
-			</p>
 		</div>
 
 		<!-- saved for later -->

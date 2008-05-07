@@ -20,7 +20,10 @@ foreach($cos as $obj) {
       	<p><strong><?=$question['question']?></strong></p>
        	<p>
 					<small>Please provide an answer or comments to the above question:</small><br/>
-					<?= form_textarea($question['ta_data']); ?>
+					<?= form_textarea($question['ta_data']); ?><br/>
+					<?php if ($question['status']<>'new' && $question['modified_by']<>'') { ?>
+								<small>Last modified by: <?=$this->ocw_user->username($question['modified_by'])?></small><br/>
+					<?php } ?>
        	</p>
        	<p><hr style="border: 1px solid #eee"/></p>
 			<?php } ?>

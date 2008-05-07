@@ -11,6 +11,7 @@ class Coobject extends Model
 	public function __construct()
 	{
 		parent::Model();
+		$this->load->model('ocw_user');
 	}
 
 	/**
@@ -64,14 +65,14 @@ class Coobject extends Model
 					if ($oid <> '') {
 							if ($oid == $row['id']) {
 									$row['comments'] = $this->comments($row['id'],'user_id,comments,modified_on');
-									$row['questions'] = $this->questions($row['id'],'id,user_id,question,answer,role,status,modified_on');
+									$row['questions'] = $this->questions($row['id'],'id,user_id,question,answer,role,status,modified_by,modified_on');
 									$row['copyright'] = $this->copyright($row['id']);
 									$row['log'] = $this->logs($row['id'],'user_id,log,modified_on');
 									array_push($objects, $row);
 							}
 					} else {
 							$row['comments'] = $this->comments($row['id'],'user_id,comments,modified_on');
-							$row['questions'] = $this->questions($row['id'],'id,user_id,question,answer,role,status,modified_on');
+							$row['questions'] = $this->questions($row['id'],'id,user_id,question,answer,role,status,modified_by,modified_on');
 							$row['copyright'] = $this->copyright($row['id']);
 							$row['log'] = $this->logs($row['id'],'user_id,log,modified_on');
 							array_push($objects, $row);
@@ -115,7 +116,7 @@ class Coobject extends Model
 		if ($q->num_rows() > 0) {
 			foreach($q->result_array() as $row) {
 				$row['comments'] = $this->comments($row['id'],'user_id,comments,modified_on','replacement');
-				$row['questions'] = $this->questions($row['id'],'id,user_id,question,answer,role,status,modified_on','replacement');
+				$row['questions'] = $this->questions($row['id'],'id,user_id,question,answer,role,status,modified_by,modified_on','replacement');
 				$row['copyright'] = $this->copyright($row['id'],'*','replacement');
 				$row['log'] = $this->logs($row['id'],'user_id,log,modified_on','replacement');
 				array_push($objects, $row);
@@ -510,7 +511,15 @@ class Coobject extends Model
 	public function update_object_claim($oid, $claim_id, $type, $data)
 	{
 		$table = 'claims_'.$type; 
+		
+		$data['modified_by'] = getUserProperty('id');
+		
 	  $this->db->update($table, $data, "id=$claim_id AND object_id=$oid");
+
+		if (isset($data['status']) and $data['status']=='done') {
+				$d = array('ask_dscribe2_status'=>'done', 'modified_by'=>getUserProperty('id'));
+	  		$this->update($oid, $d);
+		}
 	}
 
 
@@ -742,6 +751,7 @@ class Coobject extends Model
 	public function update_question($oid, $qid, $data, $type='original')
 	{
 	  $table = ($type == 'original') ? 'object_questions' : 'object_replacement_questions';
+		$data['modified_by'] = getUserProperty('id');
 	  $this->db->update($table,$data,"id=$qid AND object_id=$oid");
 	}
 
@@ -758,6 +768,7 @@ class Coobject extends Model
 	public function update_questions_status($oid, $data, $role, $type='original')
 	{
 	  $table = ($type == 'original') ? 'object_questions' : 'object_replacement_questions';
+		$data['modified_by'] = getUserProperty('id');
 	  $this->db->update($table,$data,"role='$role' AND object_id=$oid");
 	}
 
@@ -846,6 +857,7 @@ class Coobject extends Model
 		        $id = $row['id'];
 		      }
 		    $ndata['rationale'] = $data['rationale'];
+				$ndata['modified_by'] = getUserProperty('id');
 			$ndata['modified_on'] = date('Y-m-d h:i:s');
         	$this->db->where("id=$id");
         	$this->db->update($table, $ndata);
@@ -856,6 +868,7 @@ class Coobject extends Model
 			$data['object_id'] =$oid;
 			$data['user_id'] = $uid;
 			$data['created_on'] = date('Y-m-d h:i:s');
+			$data['modified_by'] = getUserProperty('id');
 			$data['modified_on'] = date('Y-m-d h:i:s');
 			$this->db->insert($table, $data);
 		}
@@ -878,6 +891,7 @@ class Coobject extends Model
 		        $id = $row['id'];
 		      }
 		    $ndata['rationale'] = $data['rationale'];
+				$ndata['modified_by'] = getUserProperty('id');
 			$ndata['modified_on'] = date('Y-m-d h:i:s');
         	$this->db->where("id=$id");
         	$this->db->update($table, $ndata);
@@ -888,6 +902,7 @@ class Coobject extends Model
 			$data['object_id'] =$oid;
 			$data['user_id'] = $uid;
 			$data['created_on'] = date('Y-m-d h:i:s');
+			$data['modified_by'] = getUserProperty('id');
 			$data['modified_on'] = date('Y-m-d h:i:s');
 			$this->db->insert($table, $data);
 		}
@@ -910,6 +925,7 @@ class Coobject extends Model
 		        $id = $row['id'];
 		      }
 		    $ndata['rationale'] = $data['rationale'];
+				$ndata['modified_by'] = getUserProperty('id');
 			$ndata['modified_on'] = date('Y-m-d h:i:s');
         	$this->db->where("id=$id");
         	$this->db->update($table, $ndata);
@@ -920,6 +936,7 @@ class Coobject extends Model
 			$data['object_id'] =$oid;
 			$data['user_id'] = $uid;
 			$data['created_on'] = date('Y-m-d h:i:s');
+			$data['modified_by'] = getUserProperty('id');
 			$data['modified_on'] = date('Y-m-d h:i:s');
 			$this->db->insert($table, $data);
 		}
@@ -938,6 +955,7 @@ class Coobject extends Model
 			foreach($q->result_array() as $row) { 
 		        $id = $row['id'];
 		      }
+					$data['modified_by'] = getUserProperty('id');
         	$this->db->where("id=$id");
         	$this->db->update($table, $data);
 		}
@@ -947,6 +965,7 @@ class Coobject extends Model
 			$data['object_id'] =$oid;
 			$data['user_id'] = $uid;
 			$data['created_on'] = date('Y-m-d h:i:s');
+			$data['modified_by'] = getUserProperty('id');
 			$data['modified_on'] = date('Y-m-d h:i:s');
 			$this->db->insert($table, $data);
 		}
@@ -1807,9 +1826,12 @@ class Coobject extends Model
 							 return 'This claim request is still under review by the dscribe2';
 					}
 
+					$uname = ($item['modified_by']<>'') ? $this->ocw_user->username($item['modified_by']) : 'dScribe2';
+					$uname = '<b>'.$uname.'</b>';
+
 					if ($type == 'commission') {
 							if ($item['have_replacement']=='yes') {
-                  $html .= '<br>dScribe2 provided the dScribe with a replacement with the following action '.
+                  $html .= '<br>'.$uname.' provided the dScribe with a replacement with the following action '.
 												   'and comments:<br/><br/>Action: <b>'.$item['action'].'</b><br/>';
                 
 									$html .= ($item['comments']<>'') ? 'Comments: <b>'.$item['comments'].'</b>'
@@ -1820,12 +1842,12 @@ class Coobject extends Model
 															 $this->ocw_utils->create_corep_img($cid,$mid,$obj['id'],$obj['location'],false,true);
                 }
             	} elseif ($item['have_replacement']=='no') {
-                	$html .= '<br>dScribe2 could not provide the dScribe with a replacement<br/>';
+                	$html .= '<br>'.$uname.' could not provide the dScribe with a replacement<br/>';
                 	if ($item['recommend_commission']=='yes') {
-                   	 	$html .= '<br>dScribe2 recommends commissioning the content object because: '.
+                   	 	$html .= '<br>'.$uname.' recommends commissioning the content object because: '.
                    						 (($item['comments']<>'') ? $item['comments'] : 'no rationale given');
                 	} else {
-                    	$html .= '<br>dScribe2 does not recommend commissioning the content object and '. 
+                    	$html .= '<br>'.$uname.' does not recommend commissioning the content object and '. 
 															 'suggests the following:<br/><br/>Action: <b>'.$item['action'].'</b><br/>';
 											$html .= ($item['comments']<>'') ? 'Comments: <b>'.$item['comments'].'</b>'
                       														 		 : 'Comments: <b>no comments</b><br/><br/>';
@@ -1838,20 +1860,20 @@ class Coobject extends Model
 
 				 } elseif ($type=='retain') {
 	            if ($item['accept_rationale']=='yes') {
-	                $html .= '<br>dScribe2 accepted dscribe\'s rationale.';
+	                $html .= '<br>'.$uname.' accepted dscribe\'s rationale.';
 	            } elseif ($item['accept_rationale']=='no') {
-	                $html .= '<br>dScribe2 did not accept dscribe\'s rationale.';
+	                $html .= '<br>'.$uname.' did not accept dscribe\'s rationale.';
 	                if ($item['action']<>'None') {
-	                    $html .= '<br/><br/>dScribe2 recommends the following action:<b>'.$item['action'].'</b>';
+	                    $html .= '<br/><br/>'.$uname.' recommends the following action:<b>'.$item['action'].'</b>';
 	                }
 	            } elseif ($item['accept_rationale']=='unsure') {
-	                $html .= '<br>dScribe2 is unsure about the dscribe\'s rationale.';
+	                $html .= '<br>'.$uname.' is unsure about the dscribe\'s rationale.';
 	                if ($item['status']=='ip review') {
-	                    $html .= '<br><br>dScribe2 has sent it to Legal & Policy team for review';
+	                    $html .= '<br><br>'.$uname.' has sent it to Legal & Policy team for review';
 	                }
 	            }
 	            if ($item['comments']<>'') {
-	                $html .= '<br/><br/>dScribe2 provided the following comments:<br/><br/>';
+	                $html .= '<br/><br/>'.$uname.' provided the following comments:<br/><br/>';
 	                $html .= '<p style="background-color:#ddd;padding:5px;">'.$item['comments'].'</p><br/><br/>';
 	            }
 	            if ($item['approved']=='yes') {
@@ -1864,40 +1886,40 @@ class Coobject extends Model
 
 				 } elseif ($type=='permission') {
 	            if ($item['info_sufficient']=='yes') {
-	                $html .= 'dScribe2 decided that a permission form can be sent for this content object.';
+	                $html .= $uname.' decided that a permission form can be sent for this content object.';
 	
 	                if ($item['letter_sent']=='yes') {
-	                    $html .= '<br/><br/>dScribe2 indicated that the permission form has been sent.';
+	                    $html .= '<br/><br/>'.$uname.' indicated that the permission form has been sent.';
 	                    if ($item['response_received']=='yes') {
-	                        $html .= '<br/><br/>dScribe2 indicated that a response has been received.';
+	                        $html .= '<br/><br/>'.$uname.' indicated that a response has been received.';
 	                        if ($item['approved']=='yes') {
-	                            $html .= '<br/><br/>dScribe2 indicated that request for permission was approved';
+	                            $html .= '<br/><br/>'.$uname.' indicated that request for permission was approved';
 	                        } elseif ($item['approved']=='no') {
-	                            $html .= '<br/><br/>dScribe2 indicated that request for permission was not approved';
+	                            $html .= '<br/><br/>'.$uname.' indicated that request for permission was not approved';
 	                            if ($item['action']<>'None') {
-	                                $html .= '<br/><br/>dScribe2 recommends the following action:<b>'.$item['action'].'</b>';
+	                                $html .= '<br/><br/>'.$uname.' recommends the following action:<b>'.$item['action'].'</b>';
 	                            }
 	                            if ($item['comments']<>'') {
-	                                $html .= '<br/><br/>dScribe2 provided the following comments:<br/><br/>';
+	                                $html .= '<br/><br/>'.$uname.' provided the following comments:<br/><br/>';
 	                                $html .= '<p style="background-color:#ddd; padding:5px;">'.$item['comments'].'</p><br/><br/>';
 	                            }
 	                        } else {
-	                                $html .= 'dScribe2 did not specify whether this request was approved or not';
+	                                $html .= $uname.' did not specify whether this request was approved or not';
 	                        }
 	                    } else {
-	                        $html .= '<br/><br/>dScribe2 indicated that a response has not been received.';
+	                        $html .= '<br/><br/>'.$uname.' indicated that a response has not been received.';
 	                    }
 	                } else {
-	                    $html .= '<br/><br/>dScribe2 indicated that the permission form has not been sent.';
+	                    $html .= '<br/><br/>'.$uname.' indicated that the permission form has not been sent.';
 	                }
 	
 	            } elseif ($item['info_sufficient']=='no') {
-	                  $html .= 'dScribe2 decided that a permission form should not be sent for this content object';
+	                  $html .= $uname.' decided that a permission form should not be sent for this content object';
 	                  if ($item['action']<>'None') {
-	                      $html .= '<br/><br/>dScribe2 recommends the following action:<b>'.$item['action'].'</b>';
+	                      $html .= '<br/><br/>'.$uname.' recommends the following action:<b>'.$item['action'].'</b>';
 	                  }
 	                  if ($item['comments']<>'') {
-	                      $html .= '<br/><br/>dScribe2 provided the following comments:<br/><br/>';
+	                      $html .= '<br/><br/>'.$uname.' provided the following comments:<br/><br/>';
 	                      $html .= '<p style="background-color:#ddd; padding:5px;">'.$item['comments'].'</p><br/><br/>';
 	                  }
 	            }
@@ -1912,28 +1934,28 @@ class Coobject extends Model
 				 } elseif ($type=='fairuse') {
 
 	          if ($item['warrant_review']=='yes') {
-	              $html .= 'dScribe2 indicated that this object <i>warrants</i> a legal review for fair use.';
+	              $html .= $uname.' indicated that this object <i>warrants</i> a legal review for fair use.';
 	              if ($item['status']=='ip review') {
-	                	$html .= '<br/><br/>dScribe2 has sent this to the Legal & Policy review team';
+	                	$html .= '<br/><br/>'.$uname.' has sent this to the Legal & Policy review team';
 	              }
 	              if ($item['additional_rationale']<>'') {
-	                  $html .= '<br/><br/>dScribe2 provided the following additional rationale:<br/><br/>';
+	                  $html .= '<br/><br/>'.$uname.' provided the following additional rationale:<br/><br/>';
 	                  $html .= '<p style="background-color:#ddd; padding:5px;">'.$item['additional_rationale'].
 														 '</p><br/><br/>';
 	              }
 	
 	          } elseif ($item['warrant_review']=='no') {
-	              			$html .= 'dScribe2 indicated that this object <i>does not warrant</i> a legal review for fair use.';
+	              			$html .= $uname.' indicated that this object <i>does not warrant</i> a legal review for fair use.';
 	              if ($item['action']<>'None') {
-	                	$html .= '<br/><br/>dScribe2 recommends the following action:<b>'.$item['action'].'</b>';
+	                	$html .= '<br/><br/>'.$uname.' recommends the following action:<b>'.$item['action'].'</b>';
 	              }
 	              if ($item['comments']<>'') {
-	                	$html .= '<br/><br/>dScribe2 provided the following comments:<br/><br/>';
+	                	$html .= '<br/><br/>'.$uname.' provided the following comments:<br/><br/>';
 	                	$html .= '<p style="background-color:#ddd; padding:5px;">'.$item['comments'].
 														 '</p><br/><br/>';
 	              }
 	          } elseif ($item['warrant_review']=='pending') {
-	              			$html .= 'dScribe2 did not specify whether this object warrants a fair use review or not.';
+	              			$html .= $uname.' did not specify whether this object warrants a fair use review or not.';
 	          }
 	            if ($item['approved']=='yes') {
 	                $html .= '<br><br>Legal & Policy Review team have approved this claim.';
@@ -1944,7 +1966,7 @@ class Coobject extends Model
 	            }
 				 }
 		 } else {
-				$html = 'No '.ucfirst($type).' claim found for this object.';
+				$html = 'No "'.ucfirst($type).'" claim found for this object.';
 		 }
 
 		 return $html;
@@ -1968,35 +1990,38 @@ class Coobject extends Model
 					return 'This request is still under review by the instructor';
 			}
 
+			$uname = ($item['modified_by']<>'') ? $this->ocw_user->username($item['modified_by']) : 'Instructor';
+			$uname = '<b>'.$uname.'</b>';
+
 			if ($type=='original') {
 		    	if ($obj['description']) {
-		        	$html .= 'Intructor provided the following description:<br/><br/>';
+		        	$html .= $uname.' provided the following description:<br/><br/>';
 		        	$html .= '<p style="background-color:#ddd; padding:5px;">'.$obj['description'].'</p><br/><br/>';
 		    	}
 		    	if ($obj['instructor_owns']=='yes') {
-		      		$html .= 'Instructor indicated that they <i>hold</i> the copyright to this object.';
+		      		$html .= $uname.' indicated that they <i>hold</i> the copyright to this object.';
 		    	} else {
 		      		$html .= 'Instrutor indicated that they <em>do not hold</em> the copyright to this object.<br/><br/>';
 		
 		      		if ($obj['other_copyholder']=='') {
-		        			$html .= 'Instructor indicated that they <em>do not know</em> who holds the copyright.<br/><br/>';
+		        			$html .= $uname.' indicated that they <em>do not know</em> who holds the copyright.<br/><br/>';
 		        			if ($obj['is_unique']=='yes') {
-		          				$html .= 'Instructor indicated that the representation of this information <em>is unique</em>';
+		          				$html .= $uname.' indicated that the representation of this information <em>is unique</em>';
 		        			} else {
-		          				$html .= 'Instructor indicated that the representation of this information <em>is not unique</em>';
+		          				$html .= $uname.' indicated that the representation of this information <em>is not unique</em>';
 		        			}
 		      		} else {
-		        		$html .= 'Instructor indicated that <em>'.$obj['other_copyholder'].'</em> holds the copyright.';
+		        		$html .= $uname.' indicated that <em>'.$obj['other_copyholder'].'</em> holds the copyright.';
 		      	 }
 		     }
 
 		} elseif ($type=='replacement') {
 
 				if ($obj['suitable']=='yes') { 
-    				$html .= '<h3>Replaced With:</h3>'.
+    				$html .= '<h3>'.$uname.' approved this replacement:</h3>'.
 						$this->ocw_utils->create_corep_img($cid,$mid,$obj['id'],$obj['location'],false);
   			} else {
-    				$html .= '<h3>Rejected Replacement:</h3>'.
+    				$html .= '<h3>'.$uname.' rejected replacement:</h3>'.
     				$this->ocw_utils->create_corep_img($cid,$mid,$obj['id'],$obj['location'],false);
     				$html .= '<br/><br/><h3>Reason:</h3>'.
     				($obj['unsuitable_reason']=='') ? 'No reason provided' : $obj['unsuitable_reason']; 
