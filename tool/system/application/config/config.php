@@ -11,7 +11,7 @@
 |	http://www.your-site.com/
 |
 */
-if ($_SERVER['HTTPS']=='on') {
+if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']=='on') {
 		$config['base_url']	= "https://{$_SERVER['HTTP_HOST']}/tool/";
 } else {
 		$config['base_url']	= "http://{$_SERVER['HTTP_HOST']}/tool/";
