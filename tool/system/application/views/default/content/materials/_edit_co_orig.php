@@ -174,7 +174,7 @@ $log = $obj['log'];
 		</td>
       </tr>
       <tr>
-			<th colspan="4">Ask instructor about orign of CO?</th>
+			<th colspan="4">Ask instructor about origin of CO?</th>
 	  </tr>
 	  <tr>
 			<td colspan="4">
