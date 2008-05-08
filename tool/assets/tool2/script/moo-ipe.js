@@ -35,7 +35,6 @@ var InPlaceEditor = new Class({
 					var url = $('server').value+iurl+escape(val);
 					if (urlextra) { url += '/'+urlextra; } 
 
-					alert(url);
          	var fb = $('feedback');
          	new Ajax(url, { method: 'get', update: fb, }).request();
 
