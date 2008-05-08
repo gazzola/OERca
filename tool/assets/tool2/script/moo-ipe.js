@@ -1,5 +1,5 @@
 var InPlaceEditor = new Class({
-		initialize: function(el, container, iurl, empty_text) {
+		initialize: function(el, container, iurl, empty_text, urlextra) {
 			var content = $(el).innerHTML;
 			$(el).addEvent('click', function() {
 				$(el).style.display = 'none';
@@ -33,9 +33,11 @@ var InPlaceEditor = new Class({
 				save.addEvent('click', function() {
 					var val = textarea.value;
 					var url = $('server').value+iurl+escape(val);
+					if (urlextra) { url += '/'+urlextra; } 
 
-            		var fb = $('feedback');
-            		new Ajax(url, { method: 'get', update: fb, }).request();
+					alert(url);
+         	var fb = $('feedback');
+         	new Ajax(url, { method: 'get', update: fb, }).request();
 
 					$(el).style.display = 'block';
 					$(el).innerHTML = (val=='') ? empty_text : val; 

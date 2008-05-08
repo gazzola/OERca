@@ -751,6 +751,10 @@ var Rules = {
 									val = (val.toLowerCase() == 'send to commission review') ? 'commission review' : val;
 									url = url+'update_object_claim/'+object_id+'/'+clm_type+'/'+clm_id+
 												'/'+field+'/'+encodeURIComponent(val);
+	
+									var check = this.validate(object_id, clm_id, clm_type, field, val);
+									if (check != 'success') { alert(check); return false; }
+
             			new Ajax(url, {	method: 'get', update: fb,
                      							onComplete: function() {
                         							response = fb.innerHTML;
@@ -764,6 +768,28 @@ var Rules = {
                         							}
 																} }).request();
 							}
+			}
+			element.validate = function(oid, clm_id, clm_type, field, val) {
+									var check = 'success';
+									if (clm_type == 'fairuse' && field=='status') {
+											var ta = document.getElementsByName(oid+'_fairuse_'+clm_id+'_additional_rationale')[0]; 
+								  		if (ta.value=='' && val=='ip review') {
+													check = 'You must provide additional rationale in order to send the CO to the LPR team';
+											}
+									}
+									if (clm_type == 'retain' && field=='status') {
+											var ta = document.getElementsByName(oid+'_retain_'+clm_id+'_comments')[2]; 
+								  		if (ta.value=='' && val=='ip review') {
+													check = 'You must provide additional rationale or comments in order to send the CO to the LPR team';
+											}
+									}
+									if (clm_type == 'commission' && field=='status') {
+											var ta = document.getElementsByName(oid+'_commission_'+clm_id+'_comments')[1]; 
+								  		if (ta.value=='' && val=='commission review') {
+													check = 'You must provide additional rationale in order to send the CO to the Commission review team';
+											}
+									}
+									return check;
 			}
 	},
 
