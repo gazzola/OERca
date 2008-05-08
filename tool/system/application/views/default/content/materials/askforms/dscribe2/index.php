@@ -27,9 +27,14 @@ if ($questions_to == 'instructor') {
     <thead>
     <tr>
        	<th>&nbsp;</th>
-				<?php if ($view == 'aitems') { ?><th class="sortable">Response Type</th><?php }  ?>
+				<?php if ($view == 'aitems') { ?>
+				<th class="sortable">Response Type</th>
+        <th>Content Object</th>
+				<th>Information</th>
+				<?php } else {  ?>
 				<th>Questions</th>
         <th>Content Object Information</th>
+				<?php } ?>
     </tr>
     </thead>
 

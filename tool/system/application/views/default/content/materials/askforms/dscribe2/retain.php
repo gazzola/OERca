@@ -31,14 +31,14 @@ foreach($cos as $obj) {
 				</strong><br/>
 				<?= form_radio($item['yes_rationale_data']) ?>	&nbsp; Yes&nbsp;
 				<?= form_radio($item['no_rationale_data']) ?>	&nbsp; No&nbsp;
-				<?= form_radio($item['unsure_rationale_data']) ?>	&nbsp; Unsure&nbsp;
+				<?= form_radio($item['unsure_rationale_data']) ?>	&nbsp; Unsure - send to Legal and Policy Review&nbsp;
 			</p>
 
 			<!-- accept rationale -->
 			<div id="accept_rationale_yes_<?=$item['id']?>" style="display: <?= ($item['accept_rationale']=='yes') ? 'block':'none'?>"> 
 				<br/><br/>
 				<p>
-					<strong>Please provide your rationale for why this object has no copyrights:</strong><br/><br/>
+					<strong>Please provide additional rationale for why this object has no copyright:</strong><br/><br/>
 							<?= form_textarea($item['comments_ta_data']); ?><br/>
 						<?php if ($item['comments']<>'' && $item['modified_by']<>'') { ?>
 							<small>Last modified by: <?=$this->ocw_user->username($item['modified_by'])?></small><br/>
@@ -68,7 +68,7 @@ foreach($cos as $obj) {
 				<p><?= form_submit($item['save_data']) ?>&nbsp;&nbsp;<?= form_submit($item['send_data']) ?>&nbsp;&nbsp;</p>
 			</div>
 
-			<!-- reject rationale -->
+			<!-- unsure about rationale -->
 			<div id="accept_rationale_unsure_<?=$item['id']?>" style="display: <?= ($item['accept_rationale']=='unsure') ? 'block':'none'?>"> 
 				<br/><br/>
 				<p>
@@ -97,40 +97,18 @@ foreach($cos as $obj) {
 	<td style="vertical-align:top">
 		<!-- new/unseen questions -->
 		<div id="new-col2-<?=$item['id']?>" style="display: <?=($item['status']=='in progress') ? 'none':'block'?>;">
-			<?php echo $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],false,false); ?>
+			<?php echo $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],false,false,true,true); ?>
 			<br/><br/>
 
-				<b>Content-Type:</b> <?=$this->coobject->get_subtype_name($obj['subtype_id'])?><br/><br/>
-
-				<b>Author:</b> 
-				<?php if ($obj['author']=='') { ?><span style="color:red">No author</span>
-				<?php } else { echo $obj['author']; }?><br/><br/>
-
-				<b>Contributor:</b> 
-				<?php if ($obj['contributor']=='') { ?><span style="color:red">No contributor</span>
-				<?php } else { echo $obj['contributor']; }?><br/><br/>
-
-				<b>Citation:</b> 
-				<?php if ($obj['citation']=='') { ?><span style="color:red">No citation</span>
-				<?php } else { echo $obj['citation']; }?><br/><br/>
-
-				<?php if (is_array($obj['copyright'])) { $c = $obj['copyright'];?>
-						<b>Copyright Status:</b> <?=$c['status']?><br/>
-						<b>Copyright Holder:</b> <?=$c['holder']?><br/>
-						<b>Copyright Info URL:</b> <?=$c['url']?><br/>
-						<b>Copyright Notice:</b> <?=$c['notice']?><br/>
-				<?php } else { ?>
-						<b>Copyright:</b> <span style="color:red">No copyright information</span>
-				<?php } ?><br/><br/>
-
-				<b>Action Taken:</b> 
-				<?php if ($obj['action_taken']=='') { ?><span style="color:red">No action</span>
-				<?php } else { echo $obj['action_taken']; }?><br/><br/>
+			<?php 
+				$data['obj'] = $obj;
+				$this->load->view(property('app_views_path').'/materials/askforms/dscribe2/thirdcol.php', $data); 
+			?> 
 		</div>
 
 		<!-- saved for later -->
 		<div id="inprogress-col2-<?=$item['id']?>" style="display:<?=($item['status']=='in progress')?'block':'none'?>;">
-			<?php echo $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],false,true); ?>
+			<?php echo $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],false,true,true,true); ?>
   		<br/>
 		</div>
 	</td>
@@ -166,5 +144,6 @@ foreach($cos as $obj) {
 <script type="text/javascript">
 window.addEvent('domready', function() {
     <?php foreach($sliders as $slider) { echo $slider."\n"; } ?>
+    var myTips = new MooTips($$('.ine_tip'), { maxTitleChars: 50 });
 });
 </script>

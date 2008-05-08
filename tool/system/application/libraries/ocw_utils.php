@@ -184,7 +184,7 @@ class OCW_utils {
 		return $list;
 	}
 	
-	function create_co_img($cid, $mid, $oid, $loc, $linkable=true, $shrink=true, $show_ctx=true) 
+	function create_co_img($cid, $mid, $oid, $loc, $linkable=true, $shrink=true, $show_ctx=true, $show_edit=false) 
 	{
 		 	$name = $this->object->coobject->object_filename($oid);
 		 	$path = $this->object->coobject->object_path($cid, $mid,$oid);
@@ -211,13 +211,14 @@ class OCW_utils {
 			$size = ($shrink) ? 'width="85" height="85"':'width="300" height="300"';
 			$title = 'title="Content Object :: Location: Page '.$loc.'<br>Click image to edit"';
 			$slide = ($show_ctx) ? $this->create_slide($cid, $mid, $loc) : '';
+		  $slide .= ($show_edit) ? '&nbsp;&nbsp;|&nbsp;&nbsp;'.anchor(site_url("/materials/edit/$cid/$mid"),'edit content object &raquo;'):'';
 
 	   	return ($linkable) 
 					? $aurl.'<img id="object-'.$oid.'" class="carousel-image tooltip" '.$title.' src="'.$imgUrl.'" '. $size .'"/></a>'.$slide
 					: '<img id="object-'.$oid.'" class="carousel-image tooltip" '.$title.' src="'.$imgUrl.'" '.$size.' />'.$slide;
 	}
 
-	function create_corep_img($cid, $mid, $oid, $loc, $linkable=true, $shrink=true) 
+	function create_corep_img($cid, $mid, $oid, $loc, $linkable=true, $shrink=true, $show_edit=false) 
 	{
 		 	$name = $this->object->coobject->object_filename($oid);
 		 	$path = $this->object->coobject->object_path($cid, $mid,$oid);
@@ -247,7 +248,8 @@ class OCW_utils {
 
 	   	return ($linkable) 
 					? $aurl.'<img id="object-'.$oid.'" class="carousel-image tooltip" '.$title.' src="'.$imgUrl.'" '.$size.'/></a>'.
-						$this->create_slide($cid, $mid, $loc)
+						$this->create_slide($cid, $mid, $loc).
+		        (($show_edit) ? '&nbsp;&nbsp;|&nbsp;&nbsp;'.anchor(site_url("/materials/edit/$cid/$mid"),'edit content object &raquo;'):'')
 					: '<img id="object-'.$oid.'" class="carousel-image" '.$title.' src="'.$imgUrl.'" '.$size.'/>';
 	}
 

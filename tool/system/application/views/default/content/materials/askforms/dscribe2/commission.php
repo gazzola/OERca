@@ -1,6 +1,9 @@
 <?php 
 $count = 1;
 $sliders = array();
+$lim_select = $select_actions;
+
+foreach($lim_select as $k => $v) {if ($v<>'None' &&$v<>'Search' && $v<>'Re-Create') {unset($lim_select[$k]);}}
 
 foreach($cos as $obj) {
   			$items = $obj['commission'];
@@ -32,16 +35,8 @@ foreach($cos as $obj) {
 			<!-- I do have a replacement or know where to get it  -->
 			<div id="have_replacement_yes_<?=$item['id']?>" style="display: <?= ($item['have_replacement']=='yes') ? 'block':'none'?>"> 
 				<p>
-					<strong>Please upload a replacement (if you can). Please provide the dScribe with any comments or suggestions for replacing
-					the content object:</strong><br/><br/>
-					Action: <?= form_dropdown("{$obj['id']}_commission_{$item['id']}_action",
-																		$select_actions,$item['action'],'class="do_d2_claim_update"'); ?><br/><br/>
-					<?= form_textarea($item['comments_ta_data']); ?><br/>
-					<?php if ($item['comments']<>'' && $item['modified_by']<>'') { ?>
-							<small>Last modified by: <?=$this->ocw_user->username($item['modified_by'])?></small><br/>
-					<?php } ?>
+					<h3>Please upload a replacement, OR, if you do not have a replacement to upload, please provide the dScribe with any comments or suggestions for replacing the content object:</h3>
 				</p>
-				<p><h3>Replacement</h3><p>
 				<form action="<?=site_url("materials/update_object/$cid/$mid/{$obj['id']}/irep")?>" enctype="multipart/form-data" id="add_ip_rep" method = "post">
 				<b>Upload Replacement Image:</b>
 					<div class="formField" style="margin-right: 200px;">
@@ -60,12 +55,20 @@ foreach($cos as $obj) {
 				<?php	
 						$x = $this->coobject->replacement_exists($cid,$mid,$obj['id']);
         		if ($x) {
-            		echo $this->ocw_utils->create_corep_img($cid,$mid,$obj['id'],$obj['location'],false,true);
+            		echo $this->ocw_utils->create_corep_img($cid,$mid,$obj['id'],$obj['location'],false,true,true,true);
         		} else {
             		echo '<img src="'.property('app_img').'/norep.png" width="85" height="85" />';
         		}
       	?>
        	<p><hr style="border: 1px solid #eee"/></p>
+				<p>
+					Action: <?= form_dropdown("{$obj['id']}_commission_{$item['id']}_action",
+																		$lim_select,$item['action'],'class="do_d2_claim_update"'); ?><br/><br/>
+					<?= form_textarea($item['comments_ta_data']); ?><br/>
+					<?php if ($item['comments']<>'' && $item['modified_by']<>'') { ?>
+							<small>Last modified by: <?=$this->ocw_user->username($item['modified_by'])?></small><br/>
+					<?php } ?>
+				</p>
 
 				<!-- save options  -->	
 				<br/><br/ style="clear:both"><br/><br/>
@@ -124,44 +127,17 @@ foreach($cos as $obj) {
 	<td style="vertical-align:top">
 		<!-- new/unseen questions -->
 		<div id="new-col2-<?=$item['id']?>" style="display: <?=($item['status']=='in progress') ? 'none':'block'?>;">
-			<?php echo $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],false,false); ?>
+			<?php echo $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],false,false,true,true); ?>
 			<br/><br/>
-
-				<b>Content-Type:</b> <?=$this->coobject->get_subtype_name($obj['subtype_id'])?><br/><br/>
-
-				<b>Description:</b> 
-				<?php if ($obj['description']=='') { ?><span style="color:red">No description</span>
-				<?php } else { echo $obj['description']; }?><br/><br/>
-
-				<b>Author:</b> 
-				<?php if ($obj['author']=='') { ?><span style="color:red">No author</span>
-				<?php } else { echo $obj['author']; }?><br/><br/>
-
-				<b>Contributor:</b> 
-				<?php if ($obj['contributor']=='') { ?><span style="color:red">No contributor</span>
-				<?php } else { echo $obj['contributor']; }?><br/><br/>
-
-				<b>Citation:</b> 
-				<?php if ($obj['citation']=='') { ?><span style="color:red">No citation</span>
-				<?php } else { echo $obj['citation']; }?><br/><br/>
-
-				<?php if (is_array($obj['copyright'])) { $c = $obj['copyright'];?>
-						<b>Copyright Status:</b> <?=$c['status']?><br/>
-						<b>Copyright Holder:</b> <?=$c['holder']?><br/>
-						<b>Copyright Info URL:</b> <?=$c['url']?><br/>
-						<b>Copyright Notice:</b> <?=$c['notice']?><br/>
-				<?php } else { ?>
-						<b>Copyright:</b> <span style="color:red">No copyright information</span>
-				<?php } ?><br/><br/>
-
-				<b>Action Taken:</b> 
-				<?php if ($obj['action_taken']=='') { ?><span style="color:red">No action</span>
-				<?php } else { echo $obj['action_taken']; }?><br/><br/>
+			<?php 
+				$data['obj'] = $obj;
+				$this->load->view(property('app_views_path').'/materials/askforms/dscribe2/thirdcol.php', $data); 
+			?> 
 		</div>
 
 		<!-- saved for later -->
 		<div id="inprogress-col2-<?=$item['id']?>" style="display:<?=($item['status']=='in progress')?'block':'none'?>;">
-			<?php echo $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],false,true); ?>
+			<?php echo $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],false,true,true,true); ?>
   		<br/>
 		</div>
 	</td>
@@ -197,5 +173,6 @@ foreach($cos as $obj) {
 <script type="text/javascript">
 window.addEvent('domready', function() {
     <?php foreach($sliders as $slider) { echo $slider."\n"; } ?>
+    var myTips = new MooTips($$('.ine_tip'), { maxTitleChars: 50 });
 });
 </script>

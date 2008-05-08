@@ -18,73 +18,59 @@ foreach($cos as $type => $co) {
   <p>
 			<?php 
 				 if ($obj['otype']=='original') { 
-						 echo $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],false,true);
+						 echo $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],false,true,true,true);
 				 } else {
-   					 echo $this->ocw_utils->create_corep_img($cid,$mid,$obj['id'],$obj['location'],false,true);
+   					 echo $this->ocw_utils->create_corep_img($cid,$mid,$obj['id'],$obj['location'],false,true,true,true);
 				 }
 			?>
   </p>
 
 	<!-- copyright -->
-	<br/><br/>
-	<p style="clear:both"><h3>Copyright:</h3> 
-		<div><span>
+	<p style="clear:both">
+		<br/><br/><b>Copyright:</b> 
+		<span>
 				<?php if (is_array($obj['copyright'])) { $c = $obj['copyright'];?>
-						<b>Copyright Status:</b> <?=$c['status']?><br/>
+						<br/><b>Copyright Status:</b> <?=$c['status']?><br/>
 						<b>Copyright Holder:</b> <?=$c['holder']?><br/>
 						<b>Copyright Info URL:</b> <?=$c['url']?><br/>
 						<b>Copyright Notice:</b> <?=$c['notice']?><br/>
 				<?php } else { ?>
 						No copyright information
 				<?php } ?>
-		 </span></div>
+		 </span>
 	</p>
 
 	<!-- subtype -->
 	<?php if ($obj['otype']=='original') { ?>
-	<br/><br/>
-	<p style="clear:both"><h3>Content Type:</h3> 
-		 <div><span><?=$this->coobject->get_subtype_name($obj['subtype_id'])?></span></div>
+	<p style="clear:both"><b>Content Type:</b> 
+		 <span><?=$this->coobject->get_subtype_name($obj['subtype_id'])?></span>
 	</p>
 	<?php } ?>
 
 	<!-- description -->
-	<br/><br/>
-	<p style="clear:both"><h3>Description:</h3> 
-		<div><span><?php echo ($obj['description']<>'') ? $obj['description']:' No description'?></span></div>
+	<p style="clear:both"><b>Description:</b> 
+		<span><?php echo ($obj['description']<>'') ? $obj['description']:' No description'?></span>
 	</p>
 
 	<!-- author -->
-	<br/><br/>
-	<p style="clear:both"><h3>Author:</h3> 
-		<div><span><?php echo ($obj['author']<>'') ? $obj['author']:' No author'?></span></div>
+	<p style="clear:both"><b>Author:</b> 
+		<span><?php echo ($obj['author']<>'') ? $obj['author']:' No author'?></span>
 	</p>
 
 	<!-- contributor -->
-	<br/><br/>
-	<p style="clear:both"><h3>Contributor:</h3> 
-		<div><span><?php echo ($obj['contributor']<>'') ? $obj['contributor']:' No contributor'?></span></div>
+	<p style="clear:both"><b>Contributor:</b> 
+		<span><?php echo ($obj['contributor']<>'') ? $obj['contributor']:' No contributor'?></span>
 	</p>
 
 	<!-- citation -->
-	<br/><br/>
-	<p style="clear:both"><h3>Citation:</h3> 
-		<div><span><?php echo ($obj['citation']<>'') ? $obj['citation']:' No citation'?></span></div>
+	<p style="clear:both"><b>Citation:</b> 
+		<span><?php echo ($obj['citation']<>'') ? $obj['citation']:' No citation'?></span>
 	</p>
 
 	<!-- keywords -->
-	<br/><br/>
-	<p style="clear:both"><h3>Keywords:</h3> 
-		<div><span><?php echo ($obj['tags']<>'') ? $obj['tags']:' No keywords'?></span></div>
+	<p style="clear:both"><b>Keywords:</b> 
+		<span><?php echo ($obj['tags']<>'') ? $obj['tags']:' No keywords'?></span>
 	</p>
-
-	<!-- action taken -->
-	<?php if ($obj['otype']=='original') { ?>
-	<br/><br/>
-	<p style="clear:both"><h3>Action Taken:</h3> 
-		<div><span><?php echo ($obj['action_taken']<>'') ? $obj['action_taken']:' No action'?></span></div>
-	</p>
-	<?php } ?>
 
 </td>
 

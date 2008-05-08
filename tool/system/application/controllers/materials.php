@@ -284,7 +284,9 @@ class Materials extends Controller {
 		$data['material'] = $material[0]; 
 
 		/* data for html elements */
+		$data['select_subtypes'] =  $this->coobject->object_subtypes();
 		$data['select_questions_to'] = array('dscribe2'=>'dScribe2', 'instructor'=>'Instructor');
+		$data['select_copystatus'] = $this->coobject->enum2array('object_copyright','status'); 
 		if ($role == 'dscribe2') { $data['select_questions_to']['ipreview'] = 'IP Review Team'; }
 		if ($view == 'aitems') { $data['select_response_types'] = array('all'=>'All',
 																																		'general'=>'General Questions',

@@ -17,7 +17,7 @@ foreach($cos as $obj) {
 		<div id="new-col1-<?=$obj['id']?>" style="display: <?=($fq['status']=='in progress') ? 'none':'block'?>;">
 
 			<?php foreach($questions as $question) { ?>
-      	<p><strong><?=$question['question']?></strong></p>
+      	<p><strong>"<?=$question['question']?>"</strong></p>
        	<p>
 					<small>Please provide an answer or comments to the above question:</small><br/>
 					<?= form_textarea($question['ta_data']); ?><br/>
@@ -46,55 +46,26 @@ foreach($cos as $obj) {
 		<div id="new-col2-<?=$obj['id']?>" style="display: <?=($fq['status']=='in progress') ? 'none':'block'?>;">
 			<?php 
 				 if ($obj['otype']=='original') { 
-						 echo $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],false,false);
+						 echo $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],false,false,true,true);
 				 } else {
-   					 echo $this->ocw_utils->create_corep_img($cid,$mid,$obj['id'],$obj['location'],false,false);
+   					 echo $this->ocw_utils->create_corep_img($cid,$mid,$obj['id'],$obj['location'],false,false,true,true);
 				 }
 			?>
 			<br/><br/>
 
-				<?php if ($obj['otype']=='original') { ?>
-					<b>Content-Type:</b> <?=$this->coobject->get_subtype_name($obj['subtype_id'])?><br/><br/>
-				<?php } ?>
-
-				<b>Description:</b> 
-				<?php if ($obj['description']=='') { ?><span style="color:red">No description</span>
-				<?php } else { echo $obj['description']; }?><br/><br/>
-
-				<b>Author:</b> 
-				<?php if ($obj['author']=='') { ?><span style="color:red">No author</span>
-				<?php } else { echo $obj['author']; }?><br/><br/>
-
-				<b>Contributor:</b> 
-				<?php if ($obj['contributor']=='') { ?><span style="color:red">No contributor</span>
-				<?php } else { echo $obj['contributor']; }?><br/><br/>
-
-				<b>Citation:</b> 
-				<?php if ($obj['citation']=='') { ?><span style="color:red">No citation</span>
-				<?php } else { echo $obj['citation']; }?><br/><br/>
-
-				<?php if (is_array($obj['copyright'])) { $c = $obj['copyright'];?>
-						<b>Copyright Status:</b> <?=$c['status']?><br/>
-						<b>Copyright Holder:</b> <?=$c['holder']?><br/>
-						<b>Copyright Info URL:</b> <?=$c['url']?><br/>
-						<b>Copyright Notice:</b> <?=$c['notice']?><br/>
-				<?php } else { ?>
-						<b>Copyright:</b> <span style="color:red">No copyright information</span>
-				<?php } ?><br/><br/>
-
-				<?php if ($obj['otype']=='original') { ?>
-						<b>Action Taken:</b> 
-						<?php if ($obj['action_taken']=='') { ?><span style="color:red">No action</span>
-						<?php } else { echo $obj['action_taken']; }}?><br/><br/>
+			<?php 
+				$data['obj'] = $obj;
+				$this->load->view(property('app_views_path').'/materials/askforms/dscribe2/thirdcol.php', $data); 
+			?> 
 		</div>
 
 		<!-- saved for later -->
 		<div id="inprogress-col2-<?=$obj['id']?>" style="display: <?=($fq['status']=='in progress')?'block':'none'?>;">
 			<?php 
 				 if ($obj['otype']=='original') { 
-						 echo $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],false,true);
+						 echo $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],false,true,true,true);
 				 } else {
-   					 echo $this->ocw_utils->create_corep_img($cid,$mid,$obj['id'],$obj['location'],false,true);
+   					 echo $this->ocw_utils->create_corep_img($cid,$mid,$obj['id'],$obj['location'],false,true,true,true);
 				 }
 			?>
   		<br/>
@@ -132,5 +103,6 @@ foreach($cos as $obj) {
 <script type="text/javascript">
 window.addEvent('domready', function() {
     <?php foreach($sliders as $slider) { echo $slider."\n"; } ?>
+    var myTips = new MooTips($$('.ine_tip'), { maxTitleChars: 50 });
 });
 </script>

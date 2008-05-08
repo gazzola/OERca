@@ -297,7 +297,7 @@ class Coobject extends Model
 												 		 $cl['no_approved_data'] = array('name'=>$obj['id'].'_permission_'.$cl['id'].'_approved',
 																								 				 'value'=>'no',
 																								 				 'class'=>'do_d2_askform_yesno do_d2_claim_update',
-																								 				 'checked'=> (($cl['approved']=='no') ? true : false));
+																								 				 'checked'=> (($cl['approved']=='no'||$cl['approved']=='pending') ? true : false));
 
 												 		 $cl['comments_ta_data'] = array('name'=>$obj['id'].'_permission_'.$cl['id'].'_comments',
 																								 						 'value'=>$cl['comments'],

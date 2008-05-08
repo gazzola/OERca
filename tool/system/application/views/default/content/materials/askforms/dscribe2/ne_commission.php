@@ -45,7 +45,7 @@ foreach($cos as $obj) {
 				<?php	
 						$x = $this->coobject->replacement_exists($cid,$mid,$obj['id']);
         		if ($x) {
-            		echo $this->ocw_utils->create_corep_img($cid,$mid,$obj['id'],$obj['location'],false,true);
+            		echo $this->ocw_utils->create_corep_img($cid,$mid,$obj['id'],$obj['location'],false,true,true,true);
         		} else {
             		echo '<img src="'.property('app_img').'/norep.png" width="85" height="85" />';
         		}
@@ -96,7 +96,7 @@ foreach($cos as $obj) {
 	<!-- third column -->
 	<td style="vertical-align:top">
 		<div style="display: <?=($item['status']=='in progress') ? 'none':'block'?>;">
-			<?php echo $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],false,false); ?>
+			<?php echo $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],false,false,true,true); ?>
 			<br/><br/>
 
 				<b>Content-Type:</b> <?=$this->coobject->get_subtype_name($obj['subtype_id'])?><br/><br/>
