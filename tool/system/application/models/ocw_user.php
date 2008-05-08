@@ -282,5 +282,35 @@ class OCW_user extends Model
     }
     return((sizeof($courses) > 0) ? $courses : NULL);
   }
+  
+  
+  /**
+    * Get the dscribe2 for a particular dscribe1
+    *
+    * @access   public
+    * @param    int uid dscribe1 user id
+    * @return   array containing the row id, the dscribe2_id and 
+    *           the dscribe1_id
+    */
+  public function get_dscribe_rel($uid)
+  {
+    $user_rels = array();
+    
+    // only use part of the table name because 'ocw_' is defined as a 
+    // prefix in database.php
+    $this->db->where('ocw_dscribe2_dscribe1.dscribe1_id', $uid);
+    $q = $this->db->get('dscribe2_dscribe1');
+    if ($q->num_rows() > 0) {
+      foreach ($q->result() as $row) {
+        $user_rels[] = array(
+          'id' => $row->id,
+          'dscribe2_id' => $row->dscribe2_id,
+          'dscribe1_id' => $row->dscribe1_id
+          );
+      }
+    }
+    // only return the array if we get results, else return NULL
+    return((sizeof($user_rels) > 0) ? $user_rels : NULL);
+  }
 }
 ?>

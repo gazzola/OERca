@@ -16,6 +16,7 @@
 <table class="sortable-onload-1 rowstyle-alt no-arrow">
 	<thead>
 	<tr>
+	  <th><strong>&nbsp</strong></th>
 		<th class="sortable"><strong>Name</strong></th>
 		<th class="sortable"><strong>File Type</strong></th>
 		<th class="sortable"><strong>Resource Type</strong></th>
@@ -24,7 +25,6 @@
 		<th class="sortable"><strong>CO Status</strong></th>
 <!--		<th class="sortable"><strong>Ask Items?</strong></th> -->
   <? //TODO: Fix the untidy table ending code which uses &nbsp ?>
-    <th><strong>&nbsp;</strong></th>
 	</tr>
 	</thead>
 
@@ -34,6 +34,10 @@
 
 ?>
 	<tr>
+	  <td>
+				<a href="<?=site_url("materials/remove_material/$cid/{$material['id']}")?>" title="Remove material" class="confirm">Remove</a>
+		</td>
+		
 		<td>
 			<a href="<?php echo site_url()."materials/edit/$cid/".$material['id'].'/'.$caller?>"><?= $material['name']?>&nbsp;&nbsp;</a>
 		</td>
@@ -73,10 +77,6 @@
 				if ($objstats['ask'] > 0) { echo '<small>Yes&nbsp;(<a href="'.site_url("materials/askforms/$cid/".$material['id']).'">view ASK form</a>)</small>'; } else { echo 'no ask items'; }?> 
 			</b>
 		</td> -->
-		
-		<td>
-				<a href="<?=site_url("materials/remove_material/$cid/{$material['id']}")?>" title="Remove material" class="confirm">Remove</a>
-		</td>
 		<?php } ?>
 	</tr>
 	<?php 
