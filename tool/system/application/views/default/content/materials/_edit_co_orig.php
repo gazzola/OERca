@@ -192,7 +192,7 @@ $log = $obj['log'];
 			?>
 			<div id="ask_yes" style="display: <?= ($obj['ask']=='yes') ? 'block':'none'?>"> 
 				<p>
-					<b><?php echo '<a target="_top" href="'.site_url("materials/viewform/ask/$cid/$mid").'">view ASK form</a>'; ?> to see the default questions.</b><br/>
+					<b><?php echo '<a target="_top" href="'.site_url("materials/askforms/$cid/$mid/provenance/instructor").'">view ASK form</a>'; ?> to see the default questions.</b><br/>
 					<b>Please add any additional questions for the instructor in the space below</b><br/>
 			       	<textarea name="question" id="question" rows="10" cols="50" class="do_object_update"><?=$question?></textarea>
 				</p>
