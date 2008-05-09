@@ -1,7 +1,13 @@
 <?php	
-$action_types = array('Fair Use'=>'Fair Use', 'Search'=>'Search',
-						          'Commission'=>'Commission', 'Permission'=>'Permission',
-						          'Retain'=>'Retain', 'Remove'=>'Remove');
+$action_types = array('Permission'=>'Permission',
+						'Search'=>'Search',
+						'Fair Use'=>'Fair Use',
+						'Re-Create'=>'Re-Create', 
+						'Retain: Instructor Created'=>'Retain: Instructor Created',
+						'Retain: Public Domain' =>'Retain: Public Domain',
+						'Retain: No Copyright' =>'Retain: No Copyright',
+						'Commission'=>'Commission', 
+						'Remove & Annotate'=>'Remove & Annotate');
 
 $ask_status = array('new'=>'Instructor has not looked at this object yet.',
 									  'in progress'=>'Instructor is working on this',
@@ -165,7 +171,7 @@ $log = $obj['log'];
 			       	<textarea name="description" id="description" rows="10" cols="50" class="do_update_description"><?=$obj['description']?></textarea>
 				</p>
 	  		</div>
-	  		<div id="Retain" style="display: <?= ($obj['action_type']=='Retain') ? 'block':'none'?>">
+	  		<div id="Retain" style="display: <?= (substr($obj['action_type'], 0, 6)=='Retain') ? 'block':'none'?>">
   				<p>
 					<b>Please provide the dScribe2 with your rationale for retaining this content object in the space below.</b><br/>
 			       	<textarea name="retain_rationale" id="retain_rationale" rows="10" cols="50" class="do_object_rationale"><?=$retain_rationale?></textarea>

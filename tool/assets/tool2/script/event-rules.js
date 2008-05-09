@@ -261,7 +261,7 @@ var Rules = {
 					$('Commission').style.display = 'block';}
 				if ($('Retain')) {
 					$('Retain').style.display = 'none';}
-			} else if (this.value == 'Retain') {
+			} else if (this.value.substring(0, 6) == 'Retain') {
 				if ($('Fair Use')) {
 					$('Fair Use').style.display = 'none';	}
 				if ($('Permission')) {
