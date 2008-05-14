@@ -51,8 +51,7 @@
   ?>
   	<tr>
   	  <td>
-  	      <input type="checkbox" name="select_material" id="<?=$cid ?>/<?=$material['id'] ?>" value="<?=$cid ?>/<?=$material['id'] ?>" 
-  	      class="checkbox">
+  	      <input type="checkbox" name="select_material" id="<?=$cid ?>/<?=$material['id'] ?>" value="<?=$cid ?>/<?=$material['id'] ?>" >
   				<!-- <a href="<?=site_url("materials/remove_material/$cid/{$material['id']}")?>" title="Remove material" class="confirm">Remove</a> -->
   		</td>
 		
