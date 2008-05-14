@@ -13,81 +13,106 @@
  foreach($materials as $category => $cmaterial) { 
 ?> 
 <h2><?=$category?></h2>
-<table class="sortable-onload-1 rowstyle-alt no-arrow">
-	<thead>
-	<tr>
-	  <th><strong>&nbsp</strong></th>
-		<th class="sortable"><strong>Name</strong></th>
-		<th class="sortable"><strong>File Type</strong></th>
-		<th class="sortable"><strong>Resource Type</strong></th>
-		<th class="sortable"><strong>Date Modified</strong></th>
-		<th class="sortable"><strong>Author</strong></th>
-		<th class="sortable"><strong>CO Status</strong></th>
-<!--		<th class="sortable"><strong>Ask Items?</strong></th> -->
-  <? //TODO: Fix the untidy table ending code which uses &nbsp ?>
-	</tr>
-	</thead>
+<?php echo form_open('materials/manipulate/$cid') ?>
+  <div class="column span-7 firstlast" style="padding-bottom: 20px;">
+    <div class="column span-3 first">
+      <input type="button" id="selectall" value="Select All" /> <br />
+      <input type="reset" id="clearselected" value="Unselect All" />
+    </div>
+    
+    <div class="column span-3 last">
+      <input type="submit" id="remove" value="Remove Items" /> <br />
+      <input type="submit" id="download" value="Download Items" />
+    </div>
+  </div>
+      
+  <table class="sortable-onload-1 rowstyle-alt no-arrow">
+  	<thead>
+  	<tr>
+  	  <th><strong>Select</strong></th>
+  		<th class="sortable"><strong>Name</strong></th>
+  		<th class="sortable"><strong>File Type</strong></th>
+  		<th class="sortable"><strong>Resource Type</strong></th>
+  		<th class="sortable"><strong>Date Modified</strong></th>
+  		<th class="sortable"><strong>Author</strong></th>
+  		<th class="sortable"><strong>CO Status</strong></th>
+  <!--		<th class="sortable"><strong>Ask Items?</strong></th> -->
+  	</tr>
+  	</thead>
 
-	<tbody>
-<?php foreach($cmaterial as $material) { 
-	$objstats =  $this->coobject->object_stats($material['id']);
+  	<tbody>
+  <?php foreach($cmaterial as $material) { 
+  	$objstats =  $this->coobject->object_stats($material['id']);
 
-?>
-	<tr>
-	  <td>
-				<a href="<?=site_url("materials/remove_material/$cid/{$material['id']}")?>" title="Remove material" class="confirm">Remove</a>
-		</td>
+  ?>
+  	<tr>
+  	  <td>
+  	      <input type="checkbox" name="select_material" id="<?=$cid ?>/<?=$material['id'] ?>" value="<?=$cid ?>/<?=$material['id'] ?>" />
+  				<!-- <a href="<?=site_url("materials/remove_material/$cid/{$material['id']}")?>" title="Remove material" class="confirm">Remove</a> -->
+  		</td>
 		
-		<td>
-			<a href="<?php echo site_url()."materials/edit/$cid/".$material['id'].'/'.$caller?>"><?= $material['name']?>&nbsp;&nbsp;</a>
-		</td>
+  		<td>
+  			<a href="<?php echo site_url()."materials/edit/$cid/".$material['id'].'/'.$caller?>"><?= $material['name']?>&nbsp;&nbsp;</a>
+  		</td>
 
-		<?php if ($material['mimetype'] == 'folder') { ?>
-		<td colspan="6">&nbsp;&nbsp;</td>
-		<?php } else { ?>
+  		<?php if ($material['mimetype'] == 'folder') { ?>
+  		<td colspan="6">&nbsp;&nbsp;</td>
+  		<?php } else { ?>
     
-    <td>
-      <?= $material['mimename'] ?>
-    </td>
+      <td>
+        <?= $material['mimename'] ?>
+      </td>
     
-    <td>
-      <?= $material['tagname'] ?>
-    </td>
+      <td>
+        <?= $material['tagname'] ?>
+      </td>
 		
-		<td>
-		  <?= $material['modified_on'] ?>
-    </td>
+  		<td>
+  		  <?= $material['modified_on'] ?>
+      </td>
     
-    <td>
-    	<?= $material['author'] ?>
-    </td>
+      <td>
+      	<?= $material['author'] ?>
+      </td>
     
-		<td class="options">
-			<?php if ($material['validated']) { ?>
-				<img src="<?=property('app_img')?>/validated.gif" title="ready" />
-			<?php } else { ?>
-				<img src="<?=property('app_img')?>/required.gif" title="not ready" />
-			<?php } ?>
-		<?php echo ($material['embedded_co']==0) ? '(no CO)' : "&nbsp;({$material['statcount']})"; ?>
-		</td>
+  		<td class="options">
+  			<?php if ($material['validated']) { ?>
+  				<img src="<?=property('app_img')?>/validated.gif" title="ready" />
+  			<?php } else { ?>
+  				<img src="<?=property('app_img')?>/required.gif" title="not ready" />
+  			<?php } ?>
+  		<?php echo ($material['embedded_co']==0) ? '(no CO)' : "&nbsp;({$material['statcount']})"; ?>
+  		</td>
 		
-		<!-- <td>
-			<b>
-			 <?php 
-				if ($objstats['ask'] > 0) { echo '<small>Yes&nbsp;(<a href="'.site_url("materials/askforms/$cid/".$material['id']).'">view ASK form</a>)</small>'; } else { echo 'no ask items'; }?> 
-			</b>
-		</td> -->
-		<?php } ?>
-	</tr>
-	<?php 
-		if (@is_array($material['childitems'])) { 
-			$childitems = $material['childitems'];
-			$depth = 1;
-			include property('app_views_abspath').'/materials/_childitems.php';
-	    } 
-	 ?>
-<?php }?>
-	</tbody>
-</table>
+  		<!-- <td>
+  			<b>
+  			 <?php 
+  				if ($objstats['ask'] > 0) { echo '<small>Yes&nbsp;(<a href="'.site_url("materials/askforms/$cid/".$material['id']).'">view ASK form</a>)</small>'; } else { echo 'no ask items'; }?> 
+  			</b>
+  		</td> -->
+  		<?php } ?>
+  	</tr>
+  	<?php 
+  		if (@is_array($material['childitems'])) { 
+  			$childitems = $material['childitems'];
+  			$depth = 1;
+  			include property('app_views_abspath').'/materials/_childitems.php';
+  	    } 
+  	 ?>
+  <?php }?>
+  	</tbody>
+  </table>
+  <div class="column span-7 firstlast">
+    <div class="column span-3 first">
+      <input type="button" id="selectall" value="Select All" /> <br />
+      <input type="reset" id="clearselected" value="Unselect All" />
+    </div>
+    
+    <div class="column span-3 last">
+      <input type="submit" id="remove" value="Remove Items" /> <br />
+      <input type="submit" id="download" value="Download Items" />
+    </div>
+  </div>
+</form>
 <?php }}  ?>
 <?php $this->load->view(property('app_views_path').'/materials/materials_footer.php', $data); ?>
