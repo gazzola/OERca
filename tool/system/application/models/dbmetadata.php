@@ -21,7 +21,6 @@ class DBMetadata extends Model
   }
   
   
-  // TODO: See if this can be made database agnostic?
   // TODO: Use a less braindead regexp to make this work.
   /**
    * Get enum values from an enum field in the mysql database
@@ -31,10 +30,11 @@ class DBMetadata extends Model
    * @param   string name of the field
    * @return  array of values in the enum field type
    */
-  public function get_enum_vals($dbname, $table, $field)
+  public function get_enum_vals($table, $field)
   {
     $rawqueryresult = NULL;
     $matchedvals= NULL;
+    $dbname = $this->db->database;
         
     $sql = "SELECT COLUMNS.DATA_TYPE, COLUMNS.COLUMN_TYPE
     FROM information_schema.COLUMNS

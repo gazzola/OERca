@@ -58,21 +58,21 @@ class Materials extends Controller {
     // get the enum values for the pulldowns
     $courselevel = NULL;
     $clevelsindb = $this->dbmetadata->
-      get_enum_vals('ocw', 'ocw_courses', 'level');
+      get_enum_vals('ocw_courses', 'level');
     foreach ($clevelsindb as $levelval) {
       $courselevel[$levelval] = $levelval;
     }
 
     $courselength = NULL;
     $clengthindb = $this->dbmetadata->
-      get_enum_vals('ocw', 'ocw_courses', 'length');
+      get_enum_vals('ocw_courses', 'length');
     foreach ($clengthindb as $lengthval) {
       $courselength[$lengthval] = $lengthval;
     }
 
     $term = NULL;
     $termnamesindb = $this->dbmetadata->
-      get_enum_vals('ocw', 'ocw_courses', 'term');
+      get_enum_vals('ocw_courses', 'term');
     foreach ($termnamesindb as $termname) {
       $term[$termname] = $termname;
     }
