@@ -225,6 +225,22 @@ var Rules = {
 				url += '/'+object_id+'/'+field+'/'+encodeURIComponent(val);
       	var fb = $('feedback');
 				new Ajax(url, { method: 'get', update: fb, }).request();
+				
+				// if the selected action is other than "Search" and "Remove", the ask dscribe2 should be checked
+				if (field=='action_type' && this.value != 'Search' && this.value != 'Remove & Annotate')
+				{
+					var ask_dscrib2 = document.getElementsByName('ask_dscribe2');
+					for ( var i = 0 ; i < ask_dscrib2.length ; i++ )
+					{
+						if (ask_dscrib2[i].value == 'yes')
+						{
+							ask_dscrib2[i].checked = 'checked';
+						}
+					}
+					url += '/'+object_id+'/ask_dscribe2/'+encodeURIComponent('yes');
+      	var fb1 = $('feedback');
+				new Ajax(url, { method: 'get', update: fb1, }).request();
+				}
 		}
 		element.onclick = element.onchange;
 	},
