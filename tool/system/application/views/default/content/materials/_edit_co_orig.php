@@ -35,7 +35,6 @@ $questions = $obj['questions'];
 $comments = $obj['comments'];
 $log = $obj['log'];
 ?>
-
 <!--<a id="do_open_coinfo_pane" onClick='"class=do_open_coinfo_pane" '>Edit Content Object info</a>-->
 <div id="Original" class="mootabs_panel">
   <!-- STATUS -->
@@ -86,7 +85,7 @@ $log = $obj['log'];
 			       				<label for="contact_name">Name:</label>
 			       			</th>
 			       			<td>
-			       				<input type="text"  name="contact_name" id="contact_name"  class="do_update_contact" size="50" value="<?=$contact_name?>" />
+			       				<input type="text"  name="contact_name" id="contact_name"  class="do_update_contact" size="50" value="<?=isset($contact_name)?$contact_name:''?>" />
 			       			</td>
 			       		</tr>
 			       		<tr>
@@ -94,14 +93,14 @@ $log = $obj['log'];
 			       				<label for="contact_address_1">Address:</label>
 			       			</th>
 			       			<td>
-			       				<input type="text"  name="contact_line1" id="contact_line1" class="do_update_contact" size="50" value="<?=$contact_line1?>"/>
+			       				<input type="text"  name="contact_line1" id="contact_line1" class="do_update_contact" size="50" value="<?=isset($contact_line1)?$contact_line1:''?>"/>
 			       			</td>
 			       		</tr>
 			       		<tr>
 			       			<th>
 			       			</th>
 			       			<td>
-			       				<input type="text"  name="contact_line2" id="contact_line2"  class="do_update_contact" size="50" value="<?=$contact_line2?>"/>
+			       				<input type="text"  name="contact_line2" id="contact_line2"  class="do_update_contact" size="50" value="<?=isset($contact_line2)?$contact_line2:''?>"/>
 			       			</td>
 			       		</tr>
 			       		<tr>
@@ -109,7 +108,7 @@ $log = $obj['log'];
 			       				<label for="contact_city">City:</label>
 			       			</th>
 			       			<td>
-			       				<input type="text"  name="contact_city" id="contact_city"  class="do_update_contact" size="50" value="<?=$contact_city?>"/>
+			       				<input type="text"  name="contact_city" id="contact_city"  class="do_update_contact" size="50" value="<?=isset($contact_city)?$contact_city:''?>"/>
 			       			</td>
 			       		</tr>
 			       		<tr>
@@ -117,7 +116,7 @@ $log = $obj['log'];
 			       				<label for="contact_state">State:</label>
 			       			</th>
 			       			<td>
-			       				<input type="text"  name="contact_state" id="contact_state"  class="do_update_contact" size="50" value="<?=$contact_state?>"/>
+			       				<input type="text"  name="contact_state" id="contact_state"  class="do_update_contact" size="50" value="<?=isset($contact_state)?$contact_state:''?>"/>
 			       			</td>
 			       		</tr>
 			       		<tr>
@@ -125,7 +124,7 @@ $log = $obj['log'];
 			       				<label for="contact_country">Country:</label>
 			       			</th>
 			       			<td>
-			       				<input type="text"  name="contact_country" id="contact_country"  class="do_update_contact" size="50" value="<?=$contact_country?>"/>
+			       				<input type="text"  name="contact_country" id="contact_country"  class="do_update_contact" size="50" value="<?=isset($contact_country)?$contact_country:''?>"/>
 			       			</td>
 			       		</tr>
 			       		<tr>
@@ -133,7 +132,7 @@ $log = $obj['log'];
 			       				<label for="contact_postalcode">Postal Code:</label>
 			       			</th>
 			       			<td>
-			       				<input type="text"  name="contact_postalcode" id="contact_postalcode"  class="do_update_contact" size="50" value="<?=$contact_postalcode?>"/>
+			       				<input type="text"  name="contact_postalcode" id="contact_postalcode"  class="do_update_contact" size="50" value="<?=isset($contact_postalcode)?$contact_postalcode:''?>"/>
 			       			</td>
 			       		</tr>
 			       		<tr>
@@ -141,7 +140,7 @@ $log = $obj['log'];
 			       				<label for="contact_phone">Phone:</label>
 			       			</th>
 			       			<td>
-			       				<input type="text"  name="contact_phone" id="contact_phone"  class="do_update_contact" size="50" value="<?=$contact_phone?>"/>
+			       				<input type="text"  name="contact_phone" id="contact_phone"  class="do_update_contact" size="50" value="<?=isset($contact_phone)?$contact_phone:''?>"/>
 			       			</td>
 			       		</tr>
 			       		<tr>
@@ -149,7 +148,7 @@ $log = $obj['log'];
 			       				<label for="contact_fax">Fax:</label>
 			       			</th>
 			       			<td>
-			       				<input type="text"  name="contact_fax" id="contact_fax"  class="do_update_contact" size="50" value="<?=$contact_fax?>"/>
+			       				<input type="text"  name="contact_fax" id="contact_fax"  class="do_update_contact" size="50" value="<?=isset($contact_fax)?$contact_fax:''?>"/>
 			       			</td>
 			       		</tr>
 			       		<tr>
@@ -157,7 +156,7 @@ $log = $obj['log'];
 			       				<label for="contact_email">Email:</label>
 			       			</th>
 			       			<td>
-			       				<input type="text"  name="contact_email" id="contact_email"  class="do_update_contact" size="50" value="<?=$contact_email?>"/>
+			       				<input type="text"  name="contact_email" id="contact_email"  class="do_update_contact" size="50" value="<?=isset($contact_email)?$contact_email:''?>"/>
 			       			</td>
 			       		</tr>
 			       	</table>	
