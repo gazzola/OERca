@@ -2,7 +2,8 @@
 $this->load->view(property('app_views_path').'/materials/askforms/askform_header.php', $data); 
 $this->load->view(property('app_views_path').'/materials/askforms/instructor/inst_header.php', $data); 
 $sigs = array('high'=>'Very important', 'normal'=>'Important', 'low'=>'Not important'); 
-
+if (!isset($num_avail))
+		$num_avail=0;
 if ($num_avail[$view] == 0) {
 ?>
 
