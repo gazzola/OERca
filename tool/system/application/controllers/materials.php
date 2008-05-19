@@ -301,7 +301,7 @@ class Materials extends Controller {
 		if ($view == 'retain') { $data['select_actions'] = $this->coobject->enum2array('claims_retain','action'); }
 
 		/* info for queries sent to instructor */
-		if ($questions_to=='instructor' || ($role=='dscribe1' && $questions_to=='') || $role=='') {
+		if ($questions_to=='instructor' || (($role=='dscribe1' || $role == 'instructor') && $questions_to=='') || $role=='') {
 				$view = (!in_array($view, array('provenance','replacement','done'))) ? 'provenance' : $view;
 
 				$prov_objects =  $this->coobject->coobjects($mid,'','Ask'); // objects with provenace questions
