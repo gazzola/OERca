@@ -677,9 +677,28 @@ class Materials extends Controller {
 	  * @access   public
 	  * @return   void
 	  */
-	  public function manipulate()
+	  public function manipulate($cid)
 	  {
-	    echo $this->ocw_utils->dump($_POST);
+	    $err_msg = "";
+	    $conf_msg = "";
+	    // TODO: Really think about form validation from the materials table
+	    if (!array_key_exists('select_material', $_POST)) {
+	      $err_msg = "No items were selected. Please select at least one item.";
+	      flashMsg($err_msg);
+	      redirect("materials/home/$cid", "location");
+	    }
+	    if (array_key_exists('delete', $_POST)) {
+	      foreach ($_POST['select_material'] as $material_id) {
+	        $this->material->remove_material($cid, $material_id);
+        }
+        $conf_msg = "Removed selected materials.";
+        flashmsg($conf_msg);
+        redirect("materials/home/$cid", 'location');
+	    } elseif (array_key_exists('download', $_POST)) {
+	      echo "Wow, ship 'er out boys.";
+	    } else {
+	      echo "We really shouldn't see this at all!";
+	    }
 	  }
 }
 ?>

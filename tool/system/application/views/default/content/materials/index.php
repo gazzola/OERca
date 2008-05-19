@@ -25,8 +25,8 @@
     </div>
     
     <div class="column span-3 last">
-      <input type="submit" name="remove" id="remove" value="Remove Items"> <br />
-      <input type="submit" name="download" id="download" value="Download Items">
+      <input type="submit" name="delete" id="delete" value="Delete Items" class="confirm"> <br />
+      <!-- ><input type="submit" name="download" id="download" value="Download Items"> -->
     </div>
   </div>
       
@@ -51,7 +51,7 @@
   ?>
   	<tr>
   	  <td>
-  	      <input type="checkbox" name="select_material[]" id="<?=$cid ?>/<?=$material['id'] ?>" value="<?=$cid ?>/<?=$material['id'] ?>" >
+  	      <input type="checkbox" name="select_material[]" id="<?=$material['id'] ?>" value="<?=$material['id'] ?>" >
   				<!-- <a href="<?=site_url("materials/remove_material/$cid/{$material['id']}")?>" title="Remove material" class="confirm">Remove</a> -->
   		</td>
 		
@@ -113,8 +113,8 @@
     </div>
     
     <div class="column span-3 last">
-      <input type="submit" id="remove" value="Remove Items" /> <br />
-      <input type="submit" id="download" value="Download Items" />
+      <input type="submit" name="delete" id="delete" value="Delete Items"> <br />
+      <!-- ><input type="submit" name="download" id="download" value="Download Items"> -->
     </div>
   </div>
 </form>
