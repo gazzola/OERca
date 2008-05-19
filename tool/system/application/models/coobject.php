@@ -706,11 +706,11 @@ class Coobject extends Model
      */
 	public function add_additional_question($oid, $uid, $data)
 	{
-		$table = "object_questions";
+		$table = 'object_questions';
 		// whether there is already a question without an answer
 		$this->db->where("object_id", $oid);
 		$role = $data['role'];
-		$this->db->where("role", "$role");
+		$this->db->where('role', '$role');
 		$q = $this->db->get($table);
 
 		if ($q->num_rows() > 0) 
@@ -1113,6 +1113,46 @@ class Coobject extends Model
 		return $oid;
 	}
 
+	/**
+	 * add replacement question
+	 */
+	public function add_replacement_question($id, $oid, $uid, $data)
+	{
+		$table = "object_replacement_questions";
+		// whether there is already a question without an answer
+		$this->db->where('id', $id);
+		$role = $data['role'];
+		$this->db->where("role", "$role");
+		$q = $this->db->get($table);
+
+		if ($q->num_rows() > 0) 
+		{
+			// there is already a record for this object
+			foreach($q->result_array() as $row) { 
+		        $id = $row['id'];
+		      }
+			// answered, log it and refresh to new question
+			$ndata['question'] = $data['question'];
+			$data['user_id'] = $uid;
+			$ndata['modified_on'] = date('Y-m-d h:i:s');
+			$ndata['modified_by'] = $uid;
+        	$this->db->where("id=$id");
+        	$this->db->update($table, $ndata);
+		}
+		else
+		{
+			log_message('error', 'not exist oid='.$oid);
+			$data['id'] = $id;
+			$data['object_id'] = $oid;
+			$data['user_id'] = $uid;
+			$data['created_on'] = date('Y-m-d h:i:s');
+			$data['modified_by'] = $uid;
+			$data['modified_on'] = date('Y-m-d h:i:s');
+			$table = 'object_replacement_questions';
+			$this->db->insert($table,$data);
+		}
+	}
+	
 	/**
      * Add a replacement object
      *

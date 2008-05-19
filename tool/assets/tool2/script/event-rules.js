@@ -320,6 +320,24 @@ var Rules = {
 		}
 	},
 	
+	'.do_replacement_ask_yesno' : function(element) {
+		element.onclick = function() {
+			var id = this.id;
+			id = id.replace(/\w+_/g,'');
+			if (this.value == 'yes') {
+				if ($('repl_ask_yes')) {
+					$('repl_ask_yes').style.display = 'block';	
+				} 
+			   if ($('repl_ask_yes')) { $('repl_ask_no').style.display = 'none';}
+			} else {
+				if ($('repl_ask_no')) {
+					$('repl_ask_no').style.display = 'block';	
+				} 
+			   if ($('repl_ask_yes')) {$('repl_ask_yes').style.display = 'none';	}
+			}
+		}
+	},
+	
 	'.do_object_ask_dscribe2_yesno' : function(element) {
 		element.onclick = function() {
 			var id = this.id;
@@ -528,7 +546,9 @@ var Rules = {
 			var response;
 			var course_id = $('cid').value;
 			var material_id = $('mid').value; 
-			var object_id = this.name; 
+			var object_id = $('oid').value;
+			var id = $('rid').value;
+			var field = this.name;  
 		  object_id = object_id.replace(/^\w+_/g,'');
 			var field = this.name; 
 		  field = field.replace(/_\d+/g,'');
@@ -544,7 +564,7 @@ var Rules = {
 				object_id = object_id.replace(/c_/g,'');
 				field = 'unsuitable_reason';
 			}
-			var url = $('server').value+'materials/update_replacement/'+course_id+'/'+material_id;
+			var url = $('server').value+'materials/update_replacement/'+ id +'/'+course_id+'/'+material_id;
 			url += '/'+object_id+'/'+field+'/'+encodeURIComponent(val);
      	var fb = $('feedback');
      	new Ajax(url, { method: 'get', update: fb, }).request();

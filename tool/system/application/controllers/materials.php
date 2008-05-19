@@ -538,11 +538,17 @@ class Materials extends Controller {
 	   	exit;
 	}
 
-	public function update_replacement($cid, $mid, $oid, $field, $val='') 
+	public function update_replacement($id, $cid, $mid, $oid, $field, $val='') 
  	{
-	   $data = array($field=>$val);
-	   $this->coobject->update_replacement($oid, $data);
-		
+ 		if ($field=='replacement_question')
+		{
+			$this->coobject->add_replacement_question($id, $oid, getUserProperty('id'), array('question'=>$val,'role'=>'instructor'));
+		}
+		else
+		{
+	   		$data = array($field=>$val, 'id'=>$id);
+	   		$this->coobject->update_replacement($id, $data);
+		}
 		 /* send email to dscribe from instructor */	
 		 if ($field=='ask_status' and $val=='done') {
 

@@ -14,7 +14,63 @@ $cp_url = ($copy==null) ? '' : $copy['url'];
 
 	<?php if ($this->coobject->replacement_exists($cid, $mid, $obj['id'])) { ?>
 <input type="hidden" id="rid" name="rid" value="<?=$repl_obj['id']?>" />
-
+  
+  <!-- Status -->
+  <div class="column span-17 first last">
+    <br/><h3>Status</h3>
+		<table width="100%">
+			<tr>
+				<th  colspan='2' style="vertical-align: top">Ask Instructor if replacement is suitable:</th>
+			</tr>
+ 	    <tr>
+			<td colspan="2">
+			  <?php 
+				  $yes = ($repl_obj['ask']=='yes') ? TRUE : FALSE;
+				  $no = ($repl_obj['ask']=='yes') ? FALSE : TRUE;
+				  $data = array(
+            			  	'name'        => 'ask',
+              				'id'          => 'ask',
+              				'value'       => 'yes',
+              				'checked'     => $yes,
+              				'class'       => 'do_replacement_update do_replacement_ask_yesno',
+            		);
+				  echo form_radio($data).'&nbsp;Yes&nbsp;';
+				  $data = array(
+            			  	'name'        => 'ask',
+              				'id'          => 'ask',
+              				'value'       => 'no',
+              				'checked'     => $no,
+              				'class'       => 'do_replacement_update do_replacement_ask_yesno',
+            		);
+				  echo form_radio($data).'&nbsp;No&nbsp;&nbsp;';
+			?>
+			<div id="repl_ask_yes" style="display: <?= ($repl_obj['ask']=='yes') ? 'block':'none'?>"> 
+				<p>
+					<b><?php echo '<a target="_top" href="'.site_url("materials/askforms/$cid/$mid/replacement/instructor").'">view ASK form</a>'; ?> to see the default questions.</b><br/>
+					<b>Please add any additional questions for the instructor in the space below</b><br/>
+			       	<textarea name="replacement_question" id="replacement_question" rows="10" cols="50" class="do_replacement_update"><?=isset($replacement_questions)?$replacement_question:''?></textarea>
+				</p>
+			</div>
+ 	    </td>
+		</tr>
+			<tr>
+	    	<th style="vertical-align: top" colspan='2'>Instructor approves<br/> of image?</th>
+	    	</tr>
+	    	<tr>
+				<td colspan='2'>
+					  <?php 
+						  if ($repl_obj['suitable']=='yes') { 
+		              echo 'Yes'; 
+		          } elseif ($repl_obj['suitable']=='no') {
+				        echo 'No<br/><br/>Reason:<br/><p>'.$repl_obj['unsuitable_reason'].'</p>';
+		          } else {
+		           	echo 'Waiting on response';
+		          }
+		         ?>
+		      </td>
+			</tr>
+	 </table>
+</div>
   <!-- INFORMATION -->
   <div class="column span-17 first last">
     <br/><h3>Information</h3>
@@ -88,43 +144,6 @@ $cp_url = ($copy==null) ? '' : $copy['url'];
           </td>
         </tr>
     </table>
-</div>
-
-
-  <!-- Status -->
-  <div class="column span-17 first last">
-    <br/><h3>Status</h3>
-		<table width="100%">
-			<tr>
-				<th style="vertical-align: top">Ask Instructor if replacement is suitable:</th>
-				<td>
-			  	<?php 
-				  	$yes = ($repl_obj['ask']=='yes') ? true : false;
-				  	$no = ($repl_obj['ask']=='yes') ? false : true;
-				  	echo form_radio('ask_'.$repl_obj['id'], 'yes', $yes, 'class="do_replacement_update"').'&nbsp;Yes&nbsp;'; 
-				  	echo form_radio('ask_'.$repl_obj['id'], 'no', $no, 'class="do_replacement_update"').'&nbsp;No';
-						if ($yes) {
-								echo '<br/><br/>&nbsp;&nbsp;<b>Status:&nbsp;'.$ask_status[$repl_obj['ask_status']].'</b>';
-								echo '&nbsp;&nbsp;<small>(<a target="_top" href="'.site_url("materials/askforms/$cid/$mid/replacement").'">view ASK form</a>)</small>';
-					  }
-			  	?>
-				</td>
- 	    </tr>
-			<tr>
-	    	<th style="vertical-align: top">Instructor approves<br/> of image?</th>
-				<td>
-			  <?php 
-				  if ($repl_obj['suitable']=='yes') { 
-              echo 'Yes'; 
-          } elseif ($repl_obj['suitable']=='no') {
-		        echo 'No<br/><br/>Reason:<br/><p>'.$repl_obj['unsuitable_reason'].'</p>';
-          } else {
-           	echo 'Waiting on response';
-          }
-         ?>
-      </td>
-			</tr>
-	 </table>
 </div>
 
 <!-- Questions -->
