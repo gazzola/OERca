@@ -18,7 +18,7 @@
   'name' => 'mat_form'
   ); ?>
 <?php echo form_open("materials/manipulate/$cid", $mat_form_attr) ?>
-  <div class="column span-7 firstlast" style="padding-bottom: 20px;">
+  <div class="column span-7 firstlast">
     <div class="column span-3 first">
       <input type="button" id="selectall" value="Select All" onClick="SetAllCheckBoxes('mat_form', 'select_material[]', true);" > <br />
       <input type="reset" id="clearselected" value="Unselect All" onClick="SetAllCheckBoxes('mat_form', 'select_material[]', false);" >
@@ -29,7 +29,8 @@
       <!-- ><input type="submit" name="download" id="download" value="Download Items"> -->
     </div>
   </div>
-      
+  <br /><br /><br /><br /><!-- put in to fix odd layout behavior in safari and ff2 -->
+
   <table class="sortable-onload-1 rowstyle-alt no-arrow">
   	<thead>
   	<tr>
