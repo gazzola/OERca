@@ -667,5 +667,19 @@ class Materials extends Controller {
 
     	$this->load->view('default/content/materials/edit_co', $data);
 	}
+	
+	
+	
+	/**
+	  * Manipulate the materials for a course. This method gets form input and
+	  * calls other functions to do the real work
+	  * 
+	  * @access   public
+	  * @return   void
+	  */
+	  public function manipulate()
+	  {
+	    echo $this->ocw_utils->dump($_POST);
+	  }
 }
 ?>

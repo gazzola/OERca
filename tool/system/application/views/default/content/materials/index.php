@@ -17,16 +17,16 @@
   'id' => 'mat_form',
   'name' => 'mat_form'
   ); ?>
-<?php echo form_open('materials/manipulate/$cid', $mat_form_attr) ?>
+<?php echo form_open("materials/manipulate/$cid", $mat_form_attr) ?>
   <div class="column span-7 firstlast" style="padding-bottom: 20px;">
     <div class="column span-3 first">
-      <input type="button" id="selectall" value="Select All" onClick="SetAllCheckBoxes('mat_form', 'select_material', true);" > <br />
-      <input type="reset" id="clearselected" value="Unselect All" onClick="SetAllCheckBoxes('mat_form', 'select_material', false);" >
+      <input type="button" id="selectall" value="Select All" onClick="SetAllCheckBoxes('mat_form', 'select_material[]', true);" > <br />
+      <input type="reset" id="clearselected" value="Unselect All" onClick="SetAllCheckBoxes('mat_form', 'select_material[]', false);" >
     </div>
     
     <div class="column span-3 last">
-      <input type="submit" id="remove" value="Remove Items"> <br />
-      <input type="submit" id="download" value="Download Items">
+      <input type="submit" name="remove" id="remove" value="Remove Items"> <br />
+      <input type="submit" name="download" id="download" value="Download Items">
     </div>
   </div>
       
@@ -51,7 +51,7 @@
   ?>
   	<tr>
   	  <td>
-  	      <input type="checkbox" name="select_material" id="<?=$cid ?>/<?=$material['id'] ?>" value="<?=$cid ?>/<?=$material['id'] ?>" >
+  	      <input type="checkbox" name="select_material[]" id="<?=$cid ?>/<?=$material['id'] ?>" value="<?=$cid ?>/<?=$material['id'] ?>" >
   				<!-- <a href="<?=site_url("materials/remove_material/$cid/{$material['id']}")?>" title="Remove material" class="confirm">Remove</a> -->
   		</td>
 		
@@ -108,8 +108,8 @@
   </table>
   <div class="column span-7 firstlast">
     <div class="column span-3 first">
-      <input type="button" id="selectall" value="Select All" onClick="SetAllCheckBoxes('mat_form', 'select_material', true);" > <br />
-      <input type="reset" id="clearselected" value="Unselect All" onClick="SetAllCheckBoxes('mat_form', 'select_material', false);" >
+      <input type="button" id="selectall" value="Select All" onClick="SetAllCheckBoxes('mat_form', 'select_material[]', true);" > <br />
+      <input type="reset" id="clearselected" value="Unselect All" onClick="SetAllCheckBoxes('mat_form', 'select_material[]', false);" >
     </div>
     
     <div class="column span-3 last">

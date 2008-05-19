@@ -20,7 +20,7 @@ class Instructors extends Model
   
   
   /**
-   * get the current instructor/creator values for a specified instcructor id
+   * get the current instructor/creator values for a specified instructor id
    *
    * @access  public
    * @param   int instructor id
