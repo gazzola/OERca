@@ -1,16 +1,16 @@
 -- phpMyAdmin SQL Dump
--- version 2.10.3deb1ubuntu0.2
+-- version 2.10.2
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: May 08, 2008 at 06:02 PM
--- Server version: 5.0.45
--- PHP Version: 5.2.3-1ubuntu6.3
+-- Generation Time: May 19, 2008 at 08:35 AM
+-- Server version: 5.0.41
+-- PHP Version: 5.2.5
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
 -- 
--- Database: `oerdev`
+-- Database: `oerdb`
 -- 
 
 -- --------------------------------------------------------
@@ -69,7 +69,7 @@ CREATE TABLE `ocw_claims_commission` (
   KEY `object_id` (`object_id`),
   KEY `user_id` (`user_id`),
   KEY `modified_by` (`modified_by`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -96,7 +96,7 @@ CREATE TABLE `ocw_claims_fairuse` (
   KEY `object_id` (`object_id`),
   KEY `user_id` (`user_id`),
   KEY `modified_by` (`modified_by`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -133,7 +133,7 @@ CREATE TABLE `ocw_claims_permission` (
   KEY `object_id` (`object_id`),
   KEY `user_id` (`user_id`),
   KEY `modified_by` (`modified_by`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -159,7 +159,7 @@ CREATE TABLE `ocw_claims_retain` (
   KEY `object_id` (`object_id`),
   KEY `user_id` (`user_id`),
   KEY `modified_by` (`modified_by`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -241,7 +241,7 @@ CREATE TABLE `ocw_courses` (
   KEY `copyright_holder_id` (`copyright_holder_id`),
   KEY `school_id` (`school_id`),
   KEY `subject_id` (`subject_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -259,7 +259,7 @@ CREATE TABLE `ocw_course_files` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `filename` (`filename`),
   KEY `course_id` (`course_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -277,7 +277,7 @@ CREATE TABLE `ocw_curriculums` (
   UNIQUE KEY `id` (`id`),
   UNIQUE KEY `name` (`name`),
   KEY `school_id` (`school_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -310,7 +310,7 @@ CREATE TABLE `ocw_instructors` (
   `uri` varchar(255) collate utf8_unicode_ci default NULL,
   `imagefile` varchar(255) collate utf8_unicode_ci NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -341,7 +341,7 @@ CREATE TABLE `ocw_materials` (
   KEY `course_id` (`course_id`),
   KEY `mimetype_id` (`mimetype_id`),
   KEY `tag_id` (`tag_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -370,7 +370,7 @@ CREATE TABLE `ocw_material_categories` (
   `id` int(11) NOT NULL auto_increment,
   `name` varchar(30) collate utf8_unicode_ci NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -389,7 +389,7 @@ CREATE TABLE `ocw_material_comments` (
   PRIMARY KEY  (`id`),
   KEY `material_id` (`material_id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -410,7 +410,7 @@ CREATE TABLE `ocw_material_files` (
   UNIQUE KEY `filename` (`filename`),
   KEY `material_id` (`material_id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -424,7 +424,7 @@ CREATE TABLE `ocw_mimetypes` (
   `name` varchar(20) character set utf8 collate utf8_unicode_ci NOT NULL,
   `mimetype` varchar(70) character set utf8 collate utf8_unicode_ci NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -462,7 +462,7 @@ CREATE TABLE `ocw_objects` (
   KEY `material_id` (`material_id`),
   KEY `subtype_id` (`subtype_id`),
   KEY `modified_by` (`modified_by`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -499,7 +499,7 @@ CREATE TABLE `ocw_object_copyright` (
   `url` text collate utf8_unicode_ci NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `object_id` (`object_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -517,7 +517,7 @@ CREATE TABLE `ocw_object_files` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `fname` (`object_id`,`filename`),
   KEY `object_id` (`object_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -536,7 +536,7 @@ CREATE TABLE `ocw_object_log` (
   PRIMARY KEY  (`id`),
   KEY `object_id` (`object_id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -561,7 +561,7 @@ CREATE TABLE `ocw_object_questions` (
   KEY `object_id` (`object_id`),
   KEY `user_id` (`user_id`),
   KEY `modified_by` (`modified_by`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -591,7 +591,7 @@ CREATE TABLE `ocw_object_replacements` (
   KEY `material_id` (`material_id`),
   KEY `object_id` (`object_id`),
   KEY `modified_by` (`modified_by`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -610,7 +610,7 @@ CREATE TABLE `ocw_object_replacement_comments` (
   PRIMARY KEY  (`id`),
   KEY `object_id` (`object_id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -628,7 +628,7 @@ CREATE TABLE `ocw_object_replacement_copyright` (
   `url` text collate utf8_unicode_ci NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `object_id` (`object_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -672,7 +672,7 @@ CREATE TABLE `ocw_object_replacement_questions` (
   KEY `object_id` (`object_id`),
   KEY `user_id` (`user_id`),
   KEY `modified_by` (`modified_by`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -688,7 +688,7 @@ CREATE TABLE `ocw_object_subtypes` (
   `description` text collate utf8_unicode_ci NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `type_id` (`type_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -702,7 +702,7 @@ CREATE TABLE `ocw_object_types` (
   `type` varchar(255) character set utf8 collate utf8_unicode_ci NOT NULL,
   `description` text character set utf8 collate utf8_unicode_ci,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -716,7 +716,7 @@ CREATE TABLE `ocw_schools` (
   `name` varchar(255) character set utf8 collate utf8_unicode_ci NOT NULL,
   `description` text character set utf8 collate utf8_unicode_ci NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -732,7 +732,7 @@ CREATE TABLE `ocw_subjects` (
   `school_id` int(10) unsigned NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `school_id` (`school_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -746,7 +746,7 @@ CREATE TABLE `ocw_tags` (
   `name` varchar(255) character set utf8 collate utf8_unicode_ci NOT NULL,
   `Description` varchar(255) character set utf8 collate utf8_unicode_ci NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -768,7 +768,7 @@ CREATE TABLE `ocw_users` (
   `created` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   `modified` timestamp NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- 
 -- Constraints for dumped tables
@@ -778,40 +778,36 @@ CREATE TABLE `ocw_users` (
 -- Constraints for table `ocw_acl`
 -- 
 ALTER TABLE `ocw_acl`
-  ADD CONSTRAINT `ocw_acl_ibfk_2` FOREIGN KEY (`course_id`) REFERENCES `ocw_courses` (`id`),
-  ADD CONSTRAINT `ocw_acl_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `ocw_users` (`id`);
+  ADD CONSTRAINT `ocw_acl_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `ocw_users` (`id`),
+  ADD CONSTRAINT `ocw_acl_ibfk_2` FOREIGN KEY (`course_id`) REFERENCES `ocw_courses` (`id`);
 
 -- 
 -- Constraints for table `ocw_claims_commission`
 -- 
 ALTER TABLE `ocw_claims_commission`
-  ADD CONSTRAINT `ocw_claims_commission_ibfk_3` FOREIGN KEY (`modified_by`) REFERENCES `ocw`.`ocw_users` (`id`),
-  ADD CONSTRAINT `ocw_claims_commission_ibfk_1` FOREIGN KEY (`object_id`) REFERENCES `ocw_objects` (`id`),
-  ADD CONSTRAINT `ocw_claims_commission_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `ocw_users` (`id`);
+  ADD CONSTRAINT `ocw_claims_commission_ibfk_5` FOREIGN KEY (`user_id`) REFERENCES `ocw_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `ocw_claims_commission_ibfk_4` FOREIGN KEY (`object_id`) REFERENCES `ocw_objects` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- 
 -- Constraints for table `ocw_claims_fairuse`
 -- 
 ALTER TABLE `ocw_claims_fairuse`
-  ADD CONSTRAINT `ocw_claims_fairuse_ibfk_3` FOREIGN KEY (`modified_by`) REFERENCES `ocw`.`ocw_users` (`id`),
-  ADD CONSTRAINT `ocw_claims_fairuse_ibfk_1` FOREIGN KEY (`object_id`) REFERENCES `ocw_objects` (`id`),
-  ADD CONSTRAINT `ocw_claims_fairuse_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `ocw_users` (`id`);
+  ADD CONSTRAINT `ocw_claims_fairuse_ibfk_4` FOREIGN KEY (`object_id`) REFERENCES `ocw_objects` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `ocw_claims_fairuse_ibfk_5` FOREIGN KEY (`user_id`) REFERENCES `ocw_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- 
 -- Constraints for table `ocw_claims_permission`
 -- 
 ALTER TABLE `ocw_claims_permission`
-  ADD CONSTRAINT `ocw_claims_permission_ibfk_3` FOREIGN KEY (`modified_by`) REFERENCES `ocw`.`ocw_users` (`id`),
-  ADD CONSTRAINT `ocw_claims_permission_ibfk_1` FOREIGN KEY (`object_id`) REFERENCES `ocw_objects` (`id`),
-  ADD CONSTRAINT `ocw_claims_permission_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `ocw_users` (`id`);
+  ADD CONSTRAINT `ocw_claims_permission_ibfk_4` FOREIGN KEY (`object_id`) REFERENCES `ocw_objects` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `ocw_claims_permission_ibfk_5` FOREIGN KEY (`user_id`) REFERENCES `ocw_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- 
 -- Constraints for table `ocw_claims_retain`
 -- 
 ALTER TABLE `ocw_claims_retain`
-  ADD CONSTRAINT `ocw_claims_retain_ibfk_3` FOREIGN KEY (`modified_by`) REFERENCES `ocw`.`ocw_users` (`id`),
-  ADD CONSTRAINT `ocw_claims_retain_ibfk_1` FOREIGN KEY (`object_id`) REFERENCES `ocw_objects` (`id`),
-  ADD CONSTRAINT `ocw_claims_retain_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `ocw_users` (`id`);
+  ADD CONSTRAINT `ocw_claims_retain_ibfk_4` FOREIGN KEY (`object_id`) REFERENCES `ocw_objects` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `ocw_claims_retain_ibfk_5` FOREIGN KEY (`user_id`) REFERENCES `ocw_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- 
 -- Constraints for table `ocw_copyright_contactinfo`
@@ -845,37 +841,37 @@ ALTER TABLE `ocw_curriculums`
 -- Constraints for table `ocw_dscribe2_dscribe1`
 -- 
 ALTER TABLE `ocw_dscribe2_dscribe1`
-  ADD CONSTRAINT `ocw_dscribe2_dscribe1_ibfk_2` FOREIGN KEY (`dscribe1_id`) REFERENCES `ocw_users` (`id`),
-  ADD CONSTRAINT `ocw_dscribe2_dscribe1_ibfk_1` FOREIGN KEY (`dscribe2_id`) REFERENCES `ocw_users` (`id`);
+  ADD CONSTRAINT `ocw_dscribe2_dscribe1_ibfk_1` FOREIGN KEY (`dscribe2_id`) REFERENCES `ocw_users` (`id`),
+  ADD CONSTRAINT `ocw_dscribe2_dscribe1_ibfk_2` FOREIGN KEY (`dscribe1_id`) REFERENCES `ocw_users` (`id`);
 
 -- 
 -- Constraints for table `ocw_materials`
 -- 
 ALTER TABLE `ocw_materials`
-  ADD CONSTRAINT `ocw_materials_ibfk_19` FOREIGN KEY (`mimetype_id`) REFERENCES `ocw_mimetypes` (`id`) ON UPDATE CASCADE,
   ADD CONSTRAINT `ocw_materials_ibfk_16` FOREIGN KEY (`course_id`) REFERENCES `ocw_courses` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `ocw_materials_ibfk_18` FOREIGN KEY (`tag_id`) REFERENCES `ocw_tags` (`id`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `ocw_materials_ibfk_18` FOREIGN KEY (`tag_id`) REFERENCES `ocw_tags` (`id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `ocw_materials_ibfk_19` FOREIGN KEY (`mimetype_id`) REFERENCES `ocw_mimetypes` (`id`) ON UPDATE CASCADE;
 
 -- 
 -- Constraints for table `ocw_materials_corecomp`
 -- 
 ALTER TABLE `ocw_materials_corecomp`
-  ADD CONSTRAINT `ocw_materials_corecomp_ibfk_2` FOREIGN KEY (`corecomp_id`) REFERENCES `ocw_corecomp` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `ocw_materials_corecomp_ibfk_1` FOREIGN KEY (`material_id`) REFERENCES `ocw_materials` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `ocw_materials_corecomp_ibfk_1` FOREIGN KEY (`material_id`) REFERENCES `ocw_materials` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `ocw_materials_corecomp_ibfk_2` FOREIGN KEY (`corecomp_id`) REFERENCES `ocw_corecomp` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- 
 -- Constraints for table `ocw_material_comments`
 -- 
 ALTER TABLE `ocw_material_comments`
-  ADD CONSTRAINT `ocw_material_comments_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `ocw_users` (`id`),
-  ADD CONSTRAINT `ocw_material_comments_ibfk_1` FOREIGN KEY (`material_id`) REFERENCES `ocw_materials` (`id`);
+  ADD CONSTRAINT `ocw_material_comments_ibfk_1` FOREIGN KEY (`material_id`) REFERENCES `ocw_materials` (`id`),
+  ADD CONSTRAINT `ocw_material_comments_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `ocw_users` (`id`);
 
 -- 
 -- Constraints for table `ocw_material_files`
 -- 
 ALTER TABLE `ocw_material_files`
-  ADD CONSTRAINT `ocw_material_files_ibfk_1` FOREIGN KEY (`material_id`) REFERENCES `ocw_materials` (`id`),
-  ADD CONSTRAINT `ocw_material_files_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `ocw_users` (`id`);
+  ADD CONSTRAINT `ocw_material_files_ibfk_4` FOREIGN KEY (`user_id`) REFERENCES `ocw_users` (`id`),
+  ADD CONSTRAINT `ocw_material_files_ibfk_3` FOREIGN KEY (`material_id`) REFERENCES `ocw_materials` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- 
 -- Constraints for table `ocw_objects`
@@ -889,8 +885,8 @@ ALTER TABLE `ocw_objects`
 -- Constraints for table `ocw_object_comments`
 -- 
 ALTER TABLE `ocw_object_comments`
-  ADD CONSTRAINT `ocw_object_comments_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `ocw_users` (`id`),
-  ADD CONSTRAINT `ocw_object_comments_ibfk_1` FOREIGN KEY (`object_id`) REFERENCES `ocw_objects` (`id`);
+  ADD CONSTRAINT `ocw_object_comments_ibfk_1` FOREIGN KEY (`object_id`) REFERENCES `ocw_objects` (`id`),
+  ADD CONSTRAINT `ocw_object_comments_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `ocw_users` (`id`);
 
 -- 
 -- Constraints for table `ocw_object_copyright`
@@ -902,37 +898,37 @@ ALTER TABLE `ocw_object_copyright`
 -- Constraints for table `ocw_object_files`
 -- 
 ALTER TABLE `ocw_object_files`
-  ADD CONSTRAINT `ocw_object_files_ibfk_1` FOREIGN KEY (`object_id`) REFERENCES `ocw_objects` (`id`);
+  ADD CONSTRAINT `ocw_object_files_ibfk_1` FOREIGN KEY (`object_id`) REFERENCES `ocw_objects` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- 
 -- Constraints for table `ocw_object_log`
 -- 
 ALTER TABLE `ocw_object_log`
-  ADD CONSTRAINT `ocw_object_log_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `ocw_users` (`id`),
-  ADD CONSTRAINT `ocw_object_log_ibfk_1` FOREIGN KEY (`object_id`) REFERENCES `ocw_objects` (`id`);
+  ADD CONSTRAINT `ocw_object_log_ibfk_1` FOREIGN KEY (`object_id`) REFERENCES `ocw_objects` (`id`),
+  ADD CONSTRAINT `ocw_object_log_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `ocw_users` (`id`);
 
 -- 
 -- Constraints for table `ocw_object_questions`
 -- 
 ALTER TABLE `ocw_object_questions`
-  ADD CONSTRAINT `ocw_object_questions_ibfk_3` FOREIGN KEY (`modified_by`) REFERENCES `ocw`.`ocw_users` (`id`),
-  ADD CONSTRAINT `ocw_object_questions_ibfk_1` FOREIGN KEY (`object_id`) REFERENCES `ocw_objects` (`id`),
-  ADD CONSTRAINT `ocw_object_questions_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `ocw_users` (`id`);
+  ADD CONSTRAINT `ocw_object_questions_ibfk_6` FOREIGN KEY (`modified_by`) REFERENCES `ocw_users` (`id`),
+  ADD CONSTRAINT `ocw_object_questions_ibfk_4` FOREIGN KEY (`object_id`) REFERENCES `ocw_objects` (`id`),
+  ADD CONSTRAINT `ocw_object_questions_ibfk_5` FOREIGN KEY (`user_id`) REFERENCES `ocw_users` (`id`);
 
 -- 
 -- Constraints for table `ocw_object_replacements`
 -- 
 ALTER TABLE `ocw_object_replacements`
-  ADD CONSTRAINT `ocw_object_replacements_ibfk_3` FOREIGN KEY (`modified_by`) REFERENCES `ocw`.`ocw_users` (`id`),
-  ADD CONSTRAINT `ocw_object_replacements_ibfk_1` FOREIGN KEY (`material_id`) REFERENCES `ocw_materials` (`id`),
-  ADD CONSTRAINT `ocw_object_replacements_ibfk_2` FOREIGN KEY (`object_id`) REFERENCES `ocw_objects` (`id`);
+  ADD CONSTRAINT `ocw_object_replacements_ibfk_8` FOREIGN KEY (`modified_by`) REFERENCES `ocw_users` (`id`),
+  ADD CONSTRAINT `ocw_object_replacements_ibfk_4` FOREIGN KEY (`material_id`) REFERENCES `ocw_materials` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `ocw_object_replacements_ibfk_7` FOREIGN KEY (`object_id`) REFERENCES `ocw_objects` (`id`);
 
 -- 
 -- Constraints for table `ocw_object_replacement_comments`
 -- 
 ALTER TABLE `ocw_object_replacement_comments`
-  ADD CONSTRAINT `ocw_object_replacement_comments_ibfk_4` FOREIGN KEY (`user_id`) REFERENCES `ocw_users` (`id`),
-  ADD CONSTRAINT `ocw_object_replacement_comments_ibfk_3` FOREIGN KEY (`object_id`) REFERENCES `ocw_object_replacements` (`id`);
+  ADD CONSTRAINT `ocw_object_replacement_comments_ibfk_3` FOREIGN KEY (`object_id`) REFERENCES `ocw_object_replacements` (`id`),
+  ADD CONSTRAINT `ocw_object_replacement_comments_ibfk_4` FOREIGN KEY (`user_id`) REFERENCES `ocw_users` (`id`);
 
 -- 
 -- Constraints for table `ocw_object_replacement_copyright`
@@ -944,16 +940,16 @@ ALTER TABLE `ocw_object_replacement_copyright`
 -- Constraints for table `ocw_object_replacement_log`
 -- 
 ALTER TABLE `ocw_object_replacement_log`
-  ADD CONSTRAINT `ocw_object_replacement_log_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `ocw_users` (`id`),
-  ADD CONSTRAINT `ocw_object_replacement_log_ibfk_1` FOREIGN KEY (`object_id`) REFERENCES `ocw_object_replacements` (`id`);
+  ADD CONSTRAINT `ocw_object_replacement_log_ibfk_1` FOREIGN KEY (`object_id`) REFERENCES `ocw_object_replacements` (`id`),
+  ADD CONSTRAINT `ocw_object_replacement_log_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `ocw_users` (`id`);
 
 -- 
 -- Constraints for table `ocw_object_replacement_questions`
 -- 
 ALTER TABLE `ocw_object_replacement_questions`
-  ADD CONSTRAINT `ocw_object_replacement_questions_ibfk_3` FOREIGN KEY (`modified_by`) REFERENCES `ocw`.`ocw_users` (`id`),
-  ADD CONSTRAINT `ocw_object_replacement_questions_ibfk_1` FOREIGN KEY (`object_id`) REFERENCES `ocw_object_replacements` (`id`),
-  ADD CONSTRAINT `ocw_object_replacement_questions_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `ocw_users` (`id`);
+  ADD CONSTRAINT `ocw_object_replacement_questions_ibfk_6` FOREIGN KEY (`modified_by`) REFERENCES `ocw_users` (`id`),
+  ADD CONSTRAINT `ocw_object_replacement_questions_ibfk_4` FOREIGN KEY (`object_id`) REFERENCES `ocw_object_replacements` (`id`),
+  ADD CONSTRAINT `ocw_object_replacement_questions_ibfk_5` FOREIGN KEY (`user_id`) REFERENCES `ocw_users` (`id`);
 
 -- 
 -- Constraints for table `ocw_object_subtypes`
