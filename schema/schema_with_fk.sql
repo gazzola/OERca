@@ -1,16 +1,18 @@
 -- phpMyAdmin SQL Dump
--- version 2.10.2
+-- version 2.10.3deb1ubuntu0.2
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: May 19, 2008 at 08:35 AM
--- Server version: 5.0.41
--- PHP Version: 5.2.5
+-- Generation Time: May 19, 2008 at 05:53 PM
+-- Server version: 5.0.45
+-- PHP Version: 5.2.3-1ubuntu6.3
+
+SET FOREIGN_KEY_CHECKS=0;
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
 -- 
--- Database: `oerdb`
+-- Database: `oerdev`
 -- 
 
 -- --------------------------------------------------------
@@ -69,7 +71,7 @@ CREATE TABLE `ocw_claims_commission` (
   KEY `object_id` (`object_id`),
   KEY `user_id` (`user_id`),
   KEY `modified_by` (`modified_by`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -96,7 +98,7 @@ CREATE TABLE `ocw_claims_fairuse` (
   KEY `object_id` (`object_id`),
   KEY `user_id` (`user_id`),
   KEY `modified_by` (`modified_by`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -133,7 +135,7 @@ CREATE TABLE `ocw_claims_permission` (
   KEY `object_id` (`object_id`),
   KEY `user_id` (`user_id`),
   KEY `modified_by` (`modified_by`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -159,7 +161,7 @@ CREATE TABLE `ocw_claims_retain` (
   KEY `object_id` (`object_id`),
   KEY `user_id` (`user_id`),
   KEY `modified_by` (`modified_by`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -241,7 +243,7 @@ CREATE TABLE `ocw_courses` (
   KEY `copyright_holder_id` (`copyright_holder_id`),
   KEY `school_id` (`school_id`),
   KEY `subject_id` (`subject_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -259,7 +261,7 @@ CREATE TABLE `ocw_course_files` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `filename` (`filename`),
   KEY `course_id` (`course_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -277,7 +279,7 @@ CREATE TABLE `ocw_curriculums` (
   UNIQUE KEY `id` (`id`),
   UNIQUE KEY `name` (`name`),
   KEY `school_id` (`school_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -310,7 +312,7 @@ CREATE TABLE `ocw_instructors` (
   `uri` varchar(255) collate utf8_unicode_ci default NULL,
   `imagefile` varchar(255) collate utf8_unicode_ci NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -341,7 +343,7 @@ CREATE TABLE `ocw_materials` (
   KEY `course_id` (`course_id`),
   KEY `mimetype_id` (`mimetype_id`),
   KEY `tag_id` (`tag_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -370,7 +372,7 @@ CREATE TABLE `ocw_material_categories` (
   `id` int(11) NOT NULL auto_increment,
   `name` varchar(30) collate utf8_unicode_ci NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -389,7 +391,7 @@ CREATE TABLE `ocw_material_comments` (
   PRIMARY KEY  (`id`),
   KEY `material_id` (`material_id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -410,7 +412,7 @@ CREATE TABLE `ocw_material_files` (
   UNIQUE KEY `filename` (`filename`),
   KEY `material_id` (`material_id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -424,7 +426,7 @@ CREATE TABLE `ocw_mimetypes` (
   `name` varchar(20) character set utf8 collate utf8_unicode_ci NOT NULL,
   `mimetype` varchar(70) character set utf8 collate utf8_unicode_ci NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -451,7 +453,7 @@ CREATE TABLE `ocw_objects` (
   `ask_status` enum('new','in progress','done') character set utf8 collate utf8_unicode_ci NOT NULL default 'new',
   `ask_dscribe2` enum('yes','no') character set utf8 collate utf8_unicode_ci NOT NULL default 'no',
   `ask_dscribe2_status` enum('new','in progress','done') character set utf8 collate utf8_unicode_ci NOT NULL default 'new',
-  `action_type` enum('Fair Use','Search','Commission','Permission','Retain','Remove') character set utf8 collate utf8_unicode_ci NOT NULL,
+  `action_type` enum('Permission','Search','Fair Use','Re-Create','Retain: Instructor Created','Retain: Public Domain','Retain: No Copyright','Commission','Remove & Annotate') character set utf8 collate utf8_unicode_ci NOT NULL default 'Search',
   `action_taken` varchar(255) character set utf8 collate utf8_unicode_ci NOT NULL,
   `status` varchar(255) character set utf8 collate utf8_unicode_ci NOT NULL,
   `done` enum('1','0') character set utf8 collate utf8_unicode_ci NOT NULL default '0',
@@ -462,7 +464,7 @@ CREATE TABLE `ocw_objects` (
   KEY `material_id` (`material_id`),
   KEY `subtype_id` (`subtype_id`),
   KEY `modified_by` (`modified_by`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -499,7 +501,7 @@ CREATE TABLE `ocw_object_copyright` (
   `url` text collate utf8_unicode_ci NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `object_id` (`object_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -517,7 +519,7 @@ CREATE TABLE `ocw_object_files` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `fname` (`object_id`,`filename`),
   KEY `object_id` (`object_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -536,7 +538,7 @@ CREATE TABLE `ocw_object_log` (
   PRIMARY KEY  (`id`),
   KEY `object_id` (`object_id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -561,7 +563,7 @@ CREATE TABLE `ocw_object_questions` (
   KEY `object_id` (`object_id`),
   KEY `user_id` (`user_id`),
   KEY `modified_by` (`modified_by`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -591,7 +593,7 @@ CREATE TABLE `ocw_object_replacements` (
   KEY `material_id` (`material_id`),
   KEY `object_id` (`object_id`),
   KEY `modified_by` (`modified_by`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -610,7 +612,7 @@ CREATE TABLE `ocw_object_replacement_comments` (
   PRIMARY KEY  (`id`),
   KEY `object_id` (`object_id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -628,7 +630,7 @@ CREATE TABLE `ocw_object_replacement_copyright` (
   `url` text collate utf8_unicode_ci NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `object_id` (`object_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -672,7 +674,7 @@ CREATE TABLE `ocw_object_replacement_questions` (
   KEY `object_id` (`object_id`),
   KEY `user_id` (`user_id`),
   KEY `modified_by` (`modified_by`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -688,7 +690,7 @@ CREATE TABLE `ocw_object_subtypes` (
   `description` text collate utf8_unicode_ci NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `type_id` (`type_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -702,7 +704,7 @@ CREATE TABLE `ocw_object_types` (
   `type` varchar(255) character set utf8 collate utf8_unicode_ci NOT NULL,
   `description` text character set utf8 collate utf8_unicode_ci,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -716,7 +718,7 @@ CREATE TABLE `ocw_schools` (
   `name` varchar(255) character set utf8 collate utf8_unicode_ci NOT NULL,
   `description` text character set utf8 collate utf8_unicode_ci NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -732,7 +734,7 @@ CREATE TABLE `ocw_subjects` (
   `school_id` int(10) unsigned NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `school_id` (`school_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -746,7 +748,7 @@ CREATE TABLE `ocw_tags` (
   `name` varchar(255) character set utf8 collate utf8_unicode_ci NOT NULL,
   `Description` varchar(255) character set utf8 collate utf8_unicode_ci NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -768,7 +770,7 @@ CREATE TABLE `ocw_users` (
   `created` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   `modified` timestamp NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 -- 
 -- Constraints for dumped tables
@@ -947,9 +949,10 @@ ALTER TABLE `ocw_object_replacement_log`
 -- Constraints for table `ocw_object_replacement_questions`
 -- 
 ALTER TABLE `ocw_object_replacement_questions`
-  ADD CONSTRAINT `ocw_object_replacement_questions_ibfk_6` FOREIGN KEY (`modified_by`) REFERENCES `ocw_users` (`id`),
+  ADD CONSTRAINT `ocw_object_replacement_questions_ibfk_7` FOREIGN KEY (`object_id`) REFERENCES `ocw_object_replacements` (`object_id`),
   ADD CONSTRAINT `ocw_object_replacement_questions_ibfk_4` FOREIGN KEY (`object_id`) REFERENCES `ocw_object_replacements` (`id`),
-  ADD CONSTRAINT `ocw_object_replacement_questions_ibfk_5` FOREIGN KEY (`user_id`) REFERENCES `ocw_users` (`id`);
+  ADD CONSTRAINT `ocw_object_replacement_questions_ibfk_5` FOREIGN KEY (`user_id`) REFERENCES `ocw_users` (`id`),
+  ADD CONSTRAINT `ocw_object_replacement_questions_ibfk_6` FOREIGN KEY (`modified_by`) REFERENCES `ocw_users` (`id`);
 
 -- 
 -- Constraints for table `ocw_object_subtypes`
@@ -962,3 +965,5 @@ ALTER TABLE `ocw_object_subtypes`
 -- 
 ALTER TABLE `ocw_subjects`
   ADD CONSTRAINT `ocw_subjects_ibfk_1` FOREIGN KEY (`school_id`) REFERENCES `ocw_schools` (`id`);
+
+SET FOREIGN_KEY_CHECKS=1;
