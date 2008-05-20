@@ -312,5 +312,27 @@ class OCW_user extends Model
     // only return the array if we get results, else return NULL
     return((sizeof($user_rels) > 0) ? $user_rels : NULL);
   }
+
+  public function get_dscribe2_rel($uid)
+  {
+    $user_rels = array();
+
+    // only use part of the table name because 'ocw_' is defined as a 
+    // prefix in database.php
+    $this->db->where('ocw_dscribe2_dscribe1.dscribe2_id', $uid);
+    $q = $this->db->get('dscribe2_dscribe1');
+    if ($q->num_rows() > 0) {
+      foreach ($q->result() as $row) {
+        $user_rels[] = array(
+          'id' => $row->id,
+          'dscribe2_id' => $row->dscribe2_id,
+          'dscribe1_id' => $row->dscribe1_id
+          );
+      }
+    }
+    // only return the array if we get results, else return NULL
+    return((sizeof($user_rels) > 0) ? $user_rels : NULL);
+  }
+
 }
 ?>
