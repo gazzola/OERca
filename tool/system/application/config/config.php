@@ -12,9 +12,9 @@
 |
 */
 if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']=='on') {
-		$config['base_url']	= "https://{$_SERVER['HTTP_HOST']}/tool/";
+		$config['base_url']	= "https://{$_SERVER['HTTP_HOST']}/oerbob/";
 } else {
-		$config['base_url']	= "http://{$_SERVER['HTTP_HOST']}/tool/";
+		$config['base_url']	= "http://{$_SERVER['HTTP_HOST']}/oerbob/";
 }
 
 /*
@@ -36,7 +36,7 @@ $config['logout_url']     = "http://www.umich.edu/";
 | access to the weblogin.umich.edu for authentication
 | ***** NOTE:  for UM production system you MUSt comment this out *******
 */
-$config['remote_user']     = "dkhutch"; 
+/*   $config['remote_user']     = "dkhutch";    */
 /*
 |--------------------------------------------------------------------------
 | Index File
@@ -335,4 +335,17 @@ $config['allowed_types'] = 'gif|jpg|png';
 $config['max_size'] = '100';
 $config['max_width'] = '1024';
 $config['max_height'] = '768';
+
+/*
+|--------------------------------------------------------------------------
+| Testing username
+|--------------------------------------------------------------------------
+|
+| only use this if you are doing development and don't have/want
+| access to the weblogin.umich.edu for authentication
+| ***** NOTE:  for UM production system you MUSt comment this out *******
+*/
+//   $config['remote_user']     = "jsmith";
+
+
 ?>
