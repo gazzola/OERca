@@ -92,7 +92,7 @@ class School extends Model
      * @param   string name	
      * @return  boolean
      */
-	public function exsits($name)
+	public function exists($name)
 	{
 		$this->db->where('LOWER(name)="'.strtolower($name).'"');
 		$query = $this->db->get('schools'); 
