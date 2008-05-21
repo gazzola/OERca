@@ -94,7 +94,7 @@ class Curriculum extends Model
      * @param   string name	
      * @return  boolean
      */
-	public function exsits($sid, $name)
+	public function exists($sid, $name)
 	{
 		$this->db->where('school_id="'.$sid.'" AND LOWER(name)="'.strtolower($name).'"');
 		$query = $this->db->get('curriculum'); 
