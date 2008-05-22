@@ -634,7 +634,9 @@ class Material extends Model
 	    ocw_course_files.filename AS course_dir,
 	    ocw_material_files.material_id,
 	    ocw_materials.name AS material_name,
-	    ocw_material_files.filename AS material_dir
+	    ocw_material_files.filename AS material_dir,
+	    ocw_material_files.created_on AS material_creation_date,
+	    ocw_material_files.modified_on AS material_mod_date
 	    FROM
 	    ocw_course_files,
 	    ocw_material_files,
@@ -670,7 +672,9 @@ class Material extends Model
 	        'course_dir' => $row->course_dir,
 	        'material_id' => $row->material_id,
 	        'material_name' => $row->material_name,
-	        'material_dir' => $row->material_dir
+	        'material_dir' => $row->material_dir,
+	        'material_creation_date' => $row->material_creation_date,
+	        'material_mod_date' => $row->material_mod_date
 	        );
 	    }
 	  }

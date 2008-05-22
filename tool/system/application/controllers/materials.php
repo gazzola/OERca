@@ -8,6 +8,9 @@
 
 class Materials extends Controller {
 
+  // format for constructing filename timestamps as YYYY-MM-DD-HHMMSS
+  private $date_format = "Y-m-d-His";
+  
   public function __construct()
   {
     parent::Controller();	
@@ -812,6 +815,19 @@ class Materials extends Controller {
 	          $file_names[] = $rel_path;
 	        }
 	      }
+	      
+	      /* set the $mat_date, if the material is not modified, it is the
+	       * creation date. otherwise it is the modification date */
+	      $unix_fmt_creation_time = mysql_to_unix(
+	        $material_info['material_creation_date']);
+	      $unix_fmt_mod_time = mysql_to_unix(
+	        $material_info['material_mod_date']);
+	      if ($unix_fmt_mod_time > $unix_fmt_creation_time) {
+	        $mat_date = date($this->date_format, $unix_fmt_mod_time);
+	      } else {
+	        $mat_date = date($this->date_format, $unix_fmt_creation_time);
+	      }
+	      
 	      /* TODO: Figure out what fields we need from the DB to allow
          * sensible organization of the zip archives created for multiple
          * material downloads */
@@ -821,6 +837,7 @@ class Materials extends Controller {
           'course_number' => $material_info['course_number'],
           'course_title' => $material_info['course_title'],
           'material_name' => $material_info['material_name'],
+          'material_date' => $mat_date,
           'file_names' => $file_names,
           );
 	    }
@@ -847,8 +864,7 @@ class Materials extends Controller {
 	      $this->load->library('zip');
 	      
 	      // get a timestamp formatted as YYYY-MM-DD-HHMMSS
-	      $date_format = "Y-m-d-His";
-	      $timestamp = date($date_format);
+	      $timestamp = date($this->date_format);
 	      
 	      /* add a top level folder in zip files so files aren't sprayed all 
 	       * over the filesystem. Use "oer_materials-$timestamp" defined above
@@ -866,33 +882,26 @@ class Materials extends Controller {
 	        $data = file_get_contents($file_name);
 	        $name = $this->_get_export_file_name($file_name, 0, $file_list[0]);
 	        force_download($name, $data);
-	      } elseif (($num_files > 1) && ($num_files <= $max_in_single_folder)) {
-	        /* for between 2 and $max_in_single_folder files 
-	         * put everything in 1 folder */
+	      } else {
 	        foreach ($file_list as $mat_files) {
 	          foreach ($mat_files['file_names'] as $file_num => $file_name) {
 	            $data = file_get_contents($file_name);
 	            $name = $this->
 	              _get_export_file_name($file_name, $file_num, $mat_files);
-	            $name = "$parent_folder/$name";
+	            /* for between 2 and $max_in_single_folder files 
+    	         * put everything in 1 folder */  
+	            if (($num_files > 1) && ($num_files <= $max_in_single_folder)) {
+	              $name = "$parent_folder/$name";
+	            } 
+	            /* for more than $max_in_single_folder files
+    	         * create subfolders for materials */
+	            elseif ($num_files > $max_in_single_folder) {
+	              $name = "$parent_folder/{$mat_files['material_name']}_{$mat_files['material_date']}/$name";
+	            }
 	            $this->zip->add_data($name, $data);
-	          }  
+	          }
 	        }
 	        $this->zip->download("$parent_folder.zip");
-  	      $this->zip->clear_data(); // clear cached data
-	      } elseif ($num_files > $max_in_single_folder) {
-	        /* for more than $max_in_single_folder files
-	         * create subfolders for materials */
-	         foreach ($file_list as $mat_files) {
- 	          foreach ($mat_files['file_names'] as $file_num => $file_name) {
- 	            $data = file_get_contents($file_name);
- 	            $name = $this->
- 	              _get_export_file_name($file_name, $file_num, $mat_files);
- 	            $name = "$parent_folder/{$mat_files['material_name']}/$name";
- 	            $this->zip->add_data($name, $data);
- 	          }  
- 	        }
- 	        $this->zip->download("$parent_folder.zip");
    	      $this->zip->clear_data(); // clear cached data
 	      }
 	    }
@@ -924,6 +933,7 @@ class Materials extends Controller {
         if ($mat_file_list['material_name']) {
           $name .= $mat_file_list['material_name'] . "_";
         }
+        $name .= $mat_file_list['material_date'] . "_";
         $name .= ($file_num + 1);
         $name .= "." . pathinfo($orig_file_name, PATHINFO_EXTENSION);
         
