@@ -26,7 +26,7 @@
     
     <div class="column span-3 last">
       <input type="submit" name="delete" id="delete" value="Delete Items" class="confirm"> <br />
-      <!-- ><input type="submit" name="download" id="download" value="Download Items"> -->
+      <input type="submit" name="download" id="download" value="Download Items">
     </div>
   </div>
   <br /><br /><br /><br /><!-- put in to fix odd layout behavior in safari and ff2 -->
@@ -115,7 +115,7 @@
     
     <div class="column span-3 last">
       <input type="submit" name="delete" id="delete" value="Delete Items"> <br />
-      <!-- ><input type="submit" name="download" id="download" value="Download Items"> -->
+      <input type="submit" name="download" id="download" value="Download Items">
     </div>
   </div>
 </form>

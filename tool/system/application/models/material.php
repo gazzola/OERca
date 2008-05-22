@@ -612,5 +612,69 @@ class Material extends Model
 
 			return $digest;
 	}
+	
+	
+	/**
+	  * Get the file path to a provided list of materials
+	  *
+	  * @param    int/string course id
+	  * @param    array of material ids
+	  * @return   array of paths to materials
+	  */
+	public function get_material_paths($cid, $material_ids)
+	{
+	  $materials = array();
+	  $last_mat_id = $material_ids[(count($material_ids) - 1)];
+	  // TODO: Change this SQL to active record queries
+	  $sql = "SELECT 
+	    ocw_course_files.course_id,
+	    ocw_schools.name AS school_name,
+	    ocw_courses.number AS course_number,
+	    ocw_courses.title AS course_title, 
+	    ocw_course_files.filename AS course_dir,
+	    ocw_material_files.material_id,
+	    ocw_materials.name AS material_name,
+	    ocw_material_files.filename AS material_dir
+	    FROM
+	    ocw_course_files,
+	    ocw_material_files,
+	    ocw_courses,
+	    ocw_materials,
+	    ocw_schools
+	    WHERE
+	    ocw_courses.id = ocw_course_files.course_id
+	    AND
+	    ocw_materials.id = ocw_material_files.material_id
+	    AND
+	    ocw_materials.course_id = ocw_courses.id
+	    AND
+	    ocw_schools.id = ocw_courses.school_id
+	    AND
+	    ocw_courses.id = $cid AND ( ";
+	    
+	    for ($i=0; $i < (count($material_ids) - 1); $i++) { 
+	      $sql .= "ocw_materials.id = $material_ids[$i] OR ";
+	    }
+	    
+	  $sql .= "ocw_materials.id = $last_mat_id )";
+	    
+	  $q = $this->db->query($sql);
+	    
+	  if ($q->num_rows() > 0) {
+	    foreach ($q->result() as $row) {
+	      $materials[] = array(
+	        'course_id' => $row->course_id,
+	        'school_name' => $row->school_name,
+	        'course_number' => $row->course_number,
+	        'course_title' => $row->course_title,
+	        'course_dir' => $row->course_dir,
+	        'material_id' => $row->material_id,
+	        'material_name' => $row->material_name,
+	        'material_dir' => $row->material_dir
+	        );
+	    }
+	  }
+	  return((count($materials) > 0) ? $materials : NULL);
+	}
 }
 ?>

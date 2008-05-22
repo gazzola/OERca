@@ -769,10 +769,165 @@ class Materials extends Controller {
         flashmsg($conf_msg);
         redirect("materials/home/$cid", 'location');
 	    } elseif (array_key_exists('download', $_POST)) {
-	      echo "Wow, ship 'er out boys.";
+	      $material_list = $this->material->
+	        get_material_paths($cid, $_POST['select_material']);
+	      $file_list = $this->_get_material_files($material_list);
+	      // $this->ocw_utils->dump($file_list);
+	      $this->_download_material($file_list);
 	    } else {
 	      echo "We really shouldn't see this at all!";
 	    }
 	  }
+	  
+	  
+	  /**
+	    * Locate the files for the specified materials
+	    * 
+	    * @access   private
+	    * @param    array the list of materials
+	    * @return   mixed array listing the files for the material along with
+	    *           the material_id, course number, course title, 
+	    *           material name
+	    */
+	  private function _get_material_files($material_list)
+	  {
+	    $material_files = array();
+	    foreach ($material_list as $material_info)
+	    {
+	      $file_names = array();
+	      /* TODO: change the way materials are named so full names are
+	       * retained in the DB
+	       * construct the path to the materials dir */
+	      $mat_path = $this->config->item('upload_path');
+	      $mat_path .= "cdir_" . $material_info['course_dir'];
+	      $mat_path .= "/mdir_" . $material_info['material_dir'];
+	      /* find all items in the $mat_path directory and add to the
+	       * $material_files array if they are files instead of directories */
+	      $all_dir_items = (scandir($mat_path));
+	      // $this->ocw_utils->dump($material_info);
+	      foreach ($all_dir_items as $file_name) {
+	        $rel_path = "$mat_path/$file_name";
+	        if (is_file($rel_path))
+	        {
+	          $file_names[] = $rel_path;
+	        }
+	      }
+	      /* TODO: Figure out what fields we need from the DB to allow
+         * sensible organization of the zip archives created for multiple
+         * material downloads */
+	      $material_files[] = array(
+          'material_id' => $material_info['material_id'],
+          'school_name' => $material_info['school_name'],
+          'course_number' => $material_info['course_number'],
+          'course_title' => $material_info['course_title'],
+          'material_name' => $material_info['material_name'],
+          'file_names' => $file_names,
+          );
+	    }
+	    return($material_files);
+	  }
+	  
+	  
+	  /**
+	    * Download the files for a selected set of materials. A zip
+	    * file is created if there is more than one file. The organization
+	    * of the zip file is based on total number of files in the
+	    * archive. There is a configurable threshold, after which
+	    * the files are separated out into subfolders.
+	    *
+	    * @access   private
+	    * @param    array a list of files
+	    * @param    int (optional) the max number of files that will be
+	    *           put in a zip composed of a single folder
+	    * @return   void
+	    */
+	    private function _download_material($file_list, $max_in_single_folder = 10)
+	    {
+	      $this->load->helper('download');
+	      $this->load->library('zip');
+	      
+	      // get a timestamp formatted as YYYY-MM-DD-HHMMSS
+	      $date_format = "Y-m-d-His";
+	      $timestamp = date($date_format);
+	      
+	      /* add a top level folder in zip files so files aren't sprayed all 
+	       * over the filesystem. Use "oer_materials-$timestamp" defined above
+	       * as a folder name */
+	      $parent_folder = "oer_materials-$timestamp";
+	      
+	      $num_files = 0;
+	      // calculate the total number of files in the requested materials
+	      foreach ($file_list as $mat_files) {
+	        $num_files += count($mat_files['file_names']);
+	      }
+	      // directly download the file for a single file
+	      if ($num_files == 1) {
+	        $file_name = $file_list[0]['file_names'][0];
+	        $data = file_get_contents($file_name);
+	        $name = $this->_get_export_file_name($file_name, 0, $file_list[0]);
+	        force_download($name, $data);
+	      } elseif (($num_files > 1) && ($num_files <= $max_in_single_folder)) {
+	        /* for between 2 and $max_in_single_folder files 
+	         * put everything in 1 folder */
+	        foreach ($file_list as $mat_files) {
+	          foreach ($mat_files['file_names'] as $file_num => $file_name) {
+	            $data = file_get_contents($file_name);
+	            $name = $this->
+	              _get_export_file_name($file_name, $file_num, $mat_files);
+	            $name = "$parent_folder/$name";
+	            $this->zip->add_data($name, $data);
+	          }  
+	        }
+	        $this->zip->download("$parent_folder.zip");
+  	      $this->zip->clear_data(); // clear cached data
+	      } elseif ($num_files > $max_in_single_folder) {
+	        /* for more than $max_in_single_folder files
+	         * create subfolders for materials */
+	         foreach ($file_list as $mat_files) {
+ 	          foreach ($mat_files['file_names'] as $file_num => $file_name) {
+ 	            $data = file_get_contents($file_name);
+ 	            $name = $this->
+ 	              _get_export_file_name($file_name, $file_num, $mat_files);
+ 	            $name = "$parent_folder/{$mat_files['material_name']}/$name";
+ 	            $this->zip->add_data($name, $data);
+ 	          }  
+ 	        }
+ 	        $this->zip->download("$parent_folder.zip");
+   	      $this->zip->clear_data(); // clear cached data
+	      }
+	    }
+	    
+	    
+	    /**
+	      * Determine the name for the material files from the metadata
+	      * this is function attempts to do the best it can.
+	      * 
+	      * @access   private
+	      * @param    string the original name of the file
+	      * @param    int the array index value corresponding to the current filename
+	      * @param    array mixed array containing the list of files for a material
+	      *           and related metadata
+	      * @return   string the more sensible, human readable file name
+	      */
+	    private function _get_export_file_name($orig_file_name, $file_num, $mat_file_list)
+	    {
+	      $name = "";
+	      if ($mat_file_list['school_name']) {
+          $name .= $mat_file_list['school_name'] . "_";
+        }
+        if ($mat_file_list['course_number']) {
+          $name .= $mat_file_list['course_number'] . "_";
+        }
+        if ($mat_file_list['course_title']) {
+          $name .= $mat_file_list['course_title'] . "_";
+        }
+        if ($mat_file_list['material_name']) {
+          $name .= $mat_file_list['material_name'] . "_";
+        }
+        $name .= ($file_num + 1);
+        $name .= "." . pathinfo($orig_file_name, PATHINFO_EXTENSION);
+        
+        return $name;
+	    }
 }
 ?>
