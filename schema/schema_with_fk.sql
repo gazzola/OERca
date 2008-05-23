@@ -966,4 +966,18 @@ ALTER TABLE `ocw_object_subtypes`
 ALTER TABLE `ocw_subjects`
   ADD CONSTRAINT `ocw_subjects_ibfk_1` FOREIGN KEY (`school_id`) REFERENCES `ocw_schools` (`id`);
 
+-- update action options for object claims
+ALTER TABLE `ocw_claims_commission` CHANGE `action` `action` ENUM( 'None', 'Permission', 'Search', 'Fair Use', 'Re-Create', 'Retain: Instructor Created', 'Retain: Public Domain', 'Retain: No Copyright', 'Remove & Annotate' ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'None';
+
+ ALTER TABLE `ocw_claims_fairuse` CHANGE `action` `action` ENUM( 'None', 'Permission', 'Search', 'Re-Create', 'Retain: Instructor Created', 'Retain: Public Domain', 'Retain: No Copyright', 'Commission', 'Remove & Annotate' ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'None';
+
+ ALTER TABLE `ocw_claims_permission` CHANGE `action` `action` ENUM( 'None', 'Search', 'Fair Use', 'Re-Create', 'Retain: Instructor Created', 'Retain: Public Domain', 'Retain: No Copyright', 'Commission', 'Remove & Annotate' ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'None';
+
+ ALTER TABLE `ocw_claims_retain` CHANGE `action` `action` ENUM( 'None', 'Permission', 'Search', 'Fair Use', 'Re-Create', 'Retain: Instructor Created', 'Retain: Public Domain', 'Commission', 'Remove & Annotate' ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'None';
+
+-- Foreign key constraints for modified by field in claims table
+ALTER TABLE `ocw_claims_commission` ADD FOREIGN KEY ( `modified_by` ) REFERENCES `ocw`.`ocw_users` (`id`);
+ALTER TABLE `ocw_claims_permission` ADD FOREIGN KEY ( `modified_by` ) REFERENCES `ocw`.`ocw_users` (`id`);ALTER TABLE `ocw_claims_fairuse` ADD FOREIGN KEY ( `modified_by` ) REFERENCES `ocw`.`ocw_users` (`id`);ALTER TABLE `ocw_claims_retain` ADD FOREIGN KEY ( `modified_by` ) REFERENCES `ocw`.`ocw_users` (`id`);ALTER TABLE `ocw_object_questions` ADD FOREIGN KEY ( `modified_by` ) REFERENCES `ocw`.`ocw_users` (`id`);ALTER TABLE `ocw_object_replacement_questions` ADD FOREIGN KEY ( `modified_by` ) REFERENCES `ocw`.`ocw_users` (`id`);
+ALTER TABLE `ocw_object_replacements` ADD FOREIGN KEY ( `modified_by` ) REFERENCES `ocw`.`ocw_users` (`id`);
+
 SET FOREIGN_KEY_CHECKS=1;
