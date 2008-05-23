@@ -60,17 +60,17 @@ $config['app_keywords']    = "OCW Tool, opencourseware, oer";
 $config['app_description'] = "OCW Tool to support dScribe model for OER content publishing";
 $config['app_copyright']   = "";
 $config['app_views_path']  = "default/content";
-$config['app_views_abspath']  = $_SERVER['DOCUMENT_ROOT']."/tool/system/application/views/default/content";
+$config['app_views_abspath']  = $_SERVER['DOCUMENT_ROOT']."/system/application/views/default/content";
 $config['app_common_path']  = "default/common";
 $config['app_css']  = site_url().$config['assets_folder'].'/'.$config['assets_design'].'/'.$config['assets_styles'];
 $config['app_js']  = site_url().$config['assets_folder'].'/'.$config['assets_design'].'/'.$config['assets_script'];
 $config['app_img']  = site_url().$config['assets_folder'].'/'.$config['assets_design'].'/'.$config['assets_images'];
 $config['app_shared_img']  = site_url().$config['assets_folder'].'/'.$config['assets_shared'].'/'.$config['assets_images'];
-$config['app_fonts']  = $_SERVER['DOCUMENT_ROOT'].'/tool/'.$config['assets_folder'].'/'.$config['assets_design'].'/fonts/';
+$config['app_fonts']  = $_SERVER['DOCUMENT_ROOT'].'/'.$config['assets_folder'].'/'.$config['assets_design'].'/fonts/';
 $config['app_uploads_url']  = site_url().'uploads/';
-$config['app_uploads_path']  = $_SERVER['DOCUMENT_ROOT'].'/tool/uploads/';
+$config['app_uploads_path']  = $_SERVER['DOCUMENT_ROOT'].'/uploads/';
 $config['app_site_url']  = site_url();
-$config['app_co_upload_path'] = $_SERVER['DOCUMENT_ROOT'].'/tool/tmp/couploads/';
-$config['app_mat_upload_path'] = $_SERVER['DOCUMENT_ROOT'].'/tool/tmp/matuploads/';
+$config['app_co_upload_path'] = $_SERVER['DOCUMENT_ROOT'].'/tmp/couploads/';
+$config['app_mat_upload_path'] = $_SERVER['DOCUMENT_ROOT'].'/tmp/matuploads/';
 
 ?>
