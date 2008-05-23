@@ -11,7 +11,11 @@
 |	http://www.your-site.com/
 |
 */
-$config['base_url']	= "https://{$_SERVER['HTTP_HOST']}/";
+if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']=='on') {
+		$config['base_url']	= "https://{$_SERVER['HTTP_HOST']}/tool/";
+} else {
+		$config['base_url']	= "http://{$_SERVER['HTTP_HOST']}/tool/";
+}
 
 /*
 |--------------------------------------------------------------------------
@@ -32,7 +36,7 @@ $config['logout_url']     = "http://www.umich.edu/";
 | access to the weblogin.umich.edu for authentication
 | ***** NOTE:  for UM production system you MUSt comment this out *******
 */
-/***** $config['remote_user']     = "lotia"; *****/
+$config['remote_user']     = "dkhutch"; 
 /*
 |--------------------------------------------------------------------------
 | Index File
@@ -327,7 +331,7 @@ $config['time_reference'] = 'local';
 */
 $config['rewrite_short_tags'] = TRUE;
 $config['upload_path'] = './uploads/';
-$config['allowed_types'] = 'gif|jpg|png|jpeg';
+$config['allowed_types'] = 'gif|jpg|png';
 $config['max_size'] = '100';
 $config['max_width'] = '1024';
 $config['max_height'] = '768';
