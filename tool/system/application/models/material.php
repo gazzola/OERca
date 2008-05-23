@@ -129,7 +129,9 @@ class Material extends Model
     $q = $this->db->query($sql);
 
     if ($q->num_rows() > 0) {
-      foreach($q->result_array() as $row) { 
+      foreach($q->result_array() as $row) {
+        $row['display_date'] = $this->ocw_utils->calc_later_date(
+          $row['created_on'], $row['modified_on']); // define the display date
         $row['comments'] = $this->comments($row['id'],'user_id,comments,modified_on');
         $row['files'] = $this->material_files($cid, $row['id']);
         if ($in_ocw) {
@@ -623,6 +625,8 @@ class Material extends Model
 	  */
 	public function get_material_paths($cid, $material_ids)
 	{
+	  // format for constructing filename timestamps as YYYY-MM-DD-HHMMSS
+    $download_date_format = "Y-m-d-His";
 	  $materials = array();
 	  $last_mat_id = $material_ids[(count($material_ids) - 1)];
 	  // TODO: Change this SQL to active record queries
@@ -673,8 +677,10 @@ class Material extends Model
 	        'material_id' => $row->material_id,
 	        'material_name' => $row->material_name,
 	        'material_dir' => $row->material_dir,
-	        'material_creation_date' => $row->material_creation_date,
-	        'material_mod_date' => $row->material_mod_date
+	        'material_date' => $this->ocw_utils->calc_later_date(
+	          $row->material_creation_date, 
+	          $row->material_mod_date, 
+	          $download_date_format),
 	        );
 	    }
 	  }

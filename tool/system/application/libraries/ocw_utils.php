@@ -424,5 +424,31 @@ class OCW_utils {
       }
     }
   }
+  
+  
+  // TODO: consider making this a database agnostic time comparison
+  /**
+    * Calculate and return the later mysql timestamp as a human readable 
+    * time value with the option to specify the format of the returned 
+    * string
+    *
+    * @param    string mysql_time_1 the first mysql timestamp
+    * @param    string mysql_time_2 the second mysql timestamp
+    * @param    string date_format (optional) the format for the time using
+    *           the php "date" function formatting parameters
+    * @return   string human readable date string
+    */
+  public function calc_later_date($mysql_time_1, $mysql_time_2, 
+    $date_format='m-d-Y H:i:s')
+  {
+    $unix_fmt_time_1 = mysql_to_unix($mysql_time_1);
+    $unix_fmt_time_2 = mysql_to_unix($mysql_time_2);
+    if ($unix_fmt_time_2 > $unix_fmt_time_1) {
+      $mat_date = date($date_format, $unix_fmt_time_2);
+    } else {
+      $mat_date = date($date_format, $unix_fmt_time_1);
+    }
+    return $mat_date;
+  }
 }
 ?>

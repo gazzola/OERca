@@ -816,18 +816,6 @@ class Materials extends Controller {
 	        }
 	      }
 	      
-	      /* set the $mat_date, if the material is not modified, it is the
-	       * creation date. otherwise it is the modification date */
-	      $unix_fmt_creation_time = mysql_to_unix(
-	        $material_info['material_creation_date']);
-	      $unix_fmt_mod_time = mysql_to_unix(
-	        $material_info['material_mod_date']);
-	      if ($unix_fmt_mod_time > $unix_fmt_creation_time) {
-	        $mat_date = date($this->date_format, $unix_fmt_mod_time);
-	      } else {
-	        $mat_date = date($this->date_format, $unix_fmt_creation_time);
-	      }
-	      
 	      /* TODO: Figure out what fields we need from the DB to allow
          * sensible organization of the zip archives created for multiple
          * material downloads */
@@ -837,7 +825,7 @@ class Materials extends Controller {
           'course_number' => $material_info['course_number'],
           'course_title' => $material_info['course_title'],
           'material_name' => $material_info['material_name'],
-          'material_date' => $mat_date,
+          'material_date' => $material_info['material_date'],
           'file_names' => $file_names,
           );
 	    }

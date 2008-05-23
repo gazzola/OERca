@@ -73,7 +73,7 @@
       </td>
 		
   		<td>
-  		  <?= $material['modified_on'] ?>
+  		  <?= $material['display_date'] ?>
       </td>
     
       <td>
@@ -108,6 +108,9 @@
   	</tbody>
   </table>
   <div class="column span-7 firstlast">
+    <!-- TODO: Replace the onClick based javascript call with a style
+                assignment and then do a getElementBy in the javascript
+    -->
     <div class="column span-3 first">
       <input type="button" id="selectall" value="Select All" onClick="SetAllCheckBoxes('mat_form', 'select_material[]', true);" > <br />
       <input type="reset" id="clearselected" value="Unselect All" onClick="SetAllCheckBoxes('mat_form', 'select_material[]', false);" >
