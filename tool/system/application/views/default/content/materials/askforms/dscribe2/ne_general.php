@@ -66,6 +66,13 @@ foreach($cos as $obj) { $questions = $obj['questions'];
 				<?php } else { ?>
 						<b>Copyright:</b> <span style="color:red">No copyright information</span>
 				<?php } ?>
+
+				<br/><br/>
+
+				<b>dScribe Recommended Action:</b>
+						<?php echo ($obj['action_taken']=='') ? '<span style="color:red">No action recommended</span>':$obj['action_taken']; ?>
+				<br/><br/>	
+
 		</div>
 	</td>
 </tr>	

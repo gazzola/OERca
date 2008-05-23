@@ -135,6 +135,12 @@
 				</p>
 				<br/>
 
+				<?php if ($view == 'general') { ?>
+				<p style="clear:both"><h3>dScribe Recommended Action:</small></h3> 
+						<?php echo ($obj['action_taken']=='') ? 'No action recommended':$obj['action_taken']; ?>
+				</p>
+				<br/>	
+				<?php } ?>
 
 		<script type="text/javascript">
 			window.addEvent('domready', function() {
