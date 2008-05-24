@@ -25,7 +25,7 @@ foreach($prov_objects as  $obj) {
 	<!-- copyright questions -->
 	<p>
 		<b class="ine_tip" title="<?=$ttip?>">What does the content object show?</b>
-		<img src="<?=property('app_img')?>/info.gif" style="float:left; display:inline; margin:-16px 190px" class="ine_tip" title="<?=$ttip?>" /><br/>
+		<img src="<?=property('app_img')?>/info.gif" style="float:right; display:inline; margin:-16px 210px" class="ine_tip" title="<?=$ttip?>" /><br/>
     <p style="margin-bottom:15px;border:1px solid #ccc; padding:5px; background-color:#eee">
 			<?= ($obj['description']=='') ? 'No answer provided yet' : $obj['description'] ?>
 		</p>
@@ -33,7 +33,7 @@ foreach($prov_objects as  $obj) {
 
 	<p>
 		<b>Do you hold the copyright to this object?</b>
-		<img src="<?=property('app_img')?>/info.gif" style="float:left; display:inline; margin:-15px 210px" class="ine_tip" title="<?=$ttip2?>" /><br/>
+		<img src="<?=property('app_img')?>/info.gif" style="float:right; display:inline; margin:-15px 210px" class="ine_tip" title="<?=$ttip2?>" /><br/>
     <p style="margin-bottom:15px;border:1px solid #ccc; padding:5px; background-color:#eee">
 			<?= ($obj['instructor_owns']=='pending') ? 'No answer provided yet' : $obj['instructor_owns'] ?>
 		</p>

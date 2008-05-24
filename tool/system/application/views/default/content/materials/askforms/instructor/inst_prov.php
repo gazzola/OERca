@@ -27,7 +27,7 @@ foreach($prov_objects as  $obj) {
 	<!-- copyright questions -->
 	<p>
 		<b class="ine_tip" title="<?=$ttip?>">What does the content object show?</b>
-		<img src="<?=property('app_img')?>/info.gif" style="float:left; display:inline; margin:-16px 190px" class="ine_tip" title="<?=$ttip?>" /><br/>
+		<img src="<?=property('app_img')?>/info.gif" style="float:right; display:inline; margin:-15px 210px" class="ine_tip" title="<?=$ttip?>" /><br/>
 
        	<textarea name="description_<?=$obj['id']?>" id="desc_<?=$obj['id']?>" rows="10" cols="50" 
 				  class="do_ask_object_update"><?=$obj['description']?></textarea>
@@ -35,7 +35,7 @@ foreach($prov_objects as  $obj) {
 
 	<p>
 		<b>Do you hold the copyright to this object?</b>
-		<img src="<?=property('app_img')?>/info.gif" style="float:left; display:inline; margin:-15px 210px" class="ine_tip" title="<?=$ttip2?>" /><br/>
+		<img src="<?=property('app_img')?>/info.gif" style="float:right; display:inline; margin:-15px 210px" class="ine_tip" title="<?=$ttip2?>" /><br/>
 		<input type="radio" name="instructor_owns_<?=$obj['id']?>" id="own_<?=$obj['id']?>" 
 			   value="yes" class="do_askform_yesno do_ask_object_update" 
 				<?=($obj['instructor_owns']=='yes')  ? 'checked="checked"' : ''?>/>&nbsp; Yes&nbsp;
