@@ -8,6 +8,7 @@ $action_types = array('Permission'=>'Permission',
 						'Retain: No Copyright' =>'Retain: No Copyright',
 						'Commission'=>'Commission', 
 						'Remove & Annotate'=>'Remove & Annotate');
+$action_taken_types=array_merge(array('no action assigned'=>'no action assigned'), $action_types);
 
 $ask_status = array('new'=>'Instructor has not looked at this object yet.',
 									  'in progress'=>'Instructor is working on this',
@@ -63,7 +64,7 @@ $log = $obj['log'];
 				<th>Final Action Taken:</th>
 				<td>
 				<?php echo form_dropdown('action_taken', 
-				  				$action_types, $obj['action_taken'] ,'id="action_taken" class="do_object_update"'); ?>
+				  				$action_taken_types, $obj['action_taken'] ,'id="action_taken" class="do_object_update"'); ?>
 				</td>
       </tr>
 	  <tr>
