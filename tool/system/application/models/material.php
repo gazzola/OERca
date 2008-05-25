@@ -408,10 +408,22 @@ class Material extends Model
   }
 
 
-  /** these functions possibly duplicate functionality to get counts of 
+  /** 
+    * Get the number of content objects in a particular state e.g.
+    * cleared, ask or new
+    * @param    int cid the course id
+    * @param    string isAsk should be "NULL", "yes" or "no"
+    * @param    string isDone (optional) oddly, this is a string
+    *           even though it is "0" or "1", perhaps it can be an int
+    * @return   int count of the content objects
+    *
+    * these functions possibly duplicate functionality to get counts of 
     * content objects 
-    * TODO: possibly get rid of the functions if there is a better way
+    * TODO: get rid of the functions if there is a better way
     * to do this
+    * TODO: check to see if the parameter types can be changed?
+    * TODO: alter this function to accept multiple courses so a single
+    *       DB query can be performed
     */
   public function get_co_count($cid, $isAsk = NULL, $isDone = '0')
   {
@@ -438,9 +450,21 @@ class Material extends Model
     
     //return the number of results
     return($q->num_rows());
-
   }
 
+  
+  /**
+    * The next three functions simply call "get_co_count()" above
+    * for each content object state. They are merely for convenience
+    * to avoid having to pass all the params to "get_co_count()" from
+    * the calling controller.
+    *
+    * @param    int cid the course id
+    * @return   int the number of content objects
+    * 
+    * TODO: see if "get_co_count()" can categorize each content object
+    *       state instead of making 3 DB calls
+    */
   public function get_done_count($cid)
   {
     return($this->get_co_count($cid, NULL, '1'));
@@ -658,9 +682,14 @@ class Material extends Model
 	    AND
 	    ocw_courses.id = $cid AND ( ";
 	    
-	    for ($i=0; $i < (count($material_ids) - 1); $i++) { 
-	      $sql .= "ocw_materials.id = $material_ids[$i] OR ";
-	    }
+	  /* construct the last 'WHERE' clause in the query
+     * from the list of passed material_ids
+     * the loop add all but the last material id and
+     * the line after the loop does the rest
+     */
+    for ($i=0; $i < (count($material_ids) - 1); $i++) { 
+      $sql .= "ocw_materials.id = $material_ids[$i] OR ";
+    }
 	    
 	  $sql .= "ocw_materials.id = $last_mat_id )";
 	    

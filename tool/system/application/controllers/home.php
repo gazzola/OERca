@@ -9,6 +9,9 @@
  */
 class Home extends Controller {
 
+ /**
+  * The default constructor.
+  */
   public function __construct()
   {
     parent::Controller();
@@ -19,7 +22,18 @@ class Home extends Controller {
     $this->load->library('navtab');
     $this->load->library('oer_manage_nav');
   }
-
+  
+  
+  /**
+    * Users with roles other than dscribe1 are redirected to the 
+    * default home pages for their role types. Users with dscribe1
+    * roles are presented with visual summaries of the current
+    * state of the content clearing process.
+    * Progress bars showing how many content objects have been 
+    * cleared; are in progress; and have not yet been 
+    * started are displayed for each of the dscribe1's assigned
+    * courses.
+    */
   public function index()
   {
     $this->freakauth_light->check();
@@ -55,6 +69,18 @@ class Home extends Controller {
     }
   }
 
+  
+  /**
+    * Generates a bar chart showing the state of the IP
+    * clearance of the content objects in a course.
+    *
+    * @param    int total number of content objects
+    * @param    int number of cleared content objects
+    * @param    int number of content objects that have associated 
+    *            questions
+    * @param    int number of content objects that need to be checked
+    * @return   void
+    */  
   public function make_bar($total,$done,$ask,$rem)
   {
     $this->oer_progbar->build_prog_bar($total,$done,$ask,$rem);

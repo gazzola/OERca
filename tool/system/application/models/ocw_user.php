@@ -254,10 +254,25 @@ class OCW_user extends Model
     return ($query->num_rows() > 0) ? true : false;
   }
   
-  /** again possibly duplicated functionality to get a very simple list of
+  /** 
+    * Get a the courses for a user identified by their user_id (uid).
+    * A simplified version of get_courses() above, which returns fewer
+    * values.
+    *
+    * @param    int uid the numerical user id for a user
+    * @return   mixed array with each element containing
+    *           an array with keys:
+    *           'id' = course id
+    *           'number' = course number
+    *           'title' = title of the course
+    * 
+    * again possibly duplicated functionality to get a very simple list of
     * a user's courses
     * TODO: get rid of this function if it is more efficient to use the
     * get_courses function 
+    * TODO: get school name and subject code, figure out sql to provide
+    * results for school name and subject code as NULL if the values are
+    * not defined in the DB tables
     */
   public function get_courses_simple($uid)
   {
@@ -266,7 +281,7 @@ class OCW_user extends Model
     $this->db->from('courses');
     $this->db->
       join('acl', 'acl.course_id = courses.id', 'inner')->
-      join('users', 'users.id = acl.user_id');
+      join('users', 'users.id = acl.user_id', 'inner');
     $this->db->where('ocw_users.id', $uid);
     $this->db->select('ocw_courses.id, ocw_courses.number, 
       ocw_courses.title');
@@ -313,6 +328,15 @@ class OCW_user extends Model
     return((sizeof($user_rels) > 0) ? $user_rels : NULL);
   }
 
+  
+  /**
+    * Get the dscribe1 for a particular dscribe2
+    *
+    * @access   public
+    * @param    int uid dscribe2 user id
+    * @return   array containing the row id, the dscribe2_id and 
+    *           the dscribe1_id
+    */
   public function get_dscribe2_rel($uid)
   {
     $user_rels = array();
