@@ -309,12 +309,8 @@ var Rules = {
 			if (this.value == 'yes') {
 				if ($('ask_yes')) {
 					$('ask_yes').style.display = 'block';	
-				} 
-			   if ($('ask_yes')) { $('ask_no').style.display = 'none';}
+				}
 			} else {
-				if ($('ask_no')) {
-					$('ask_no').style.display = 'block';	
-				} 
 			   if ($('ask_yes')) { $('ask_yes').style.display = 'none';	}
 			}
 		}
@@ -327,12 +323,8 @@ var Rules = {
 			if (this.value == 'yes') {
 				if ($('repl_ask_yes')) {
 					$('repl_ask_yes').style.display = 'block';	
-				} 
-			   if ($('repl_ask_yes')) { $('repl_ask_no').style.display = 'none';}
+				}
 			} else {
-				if ($('repl_ask_no')) {
-					$('repl_ask_no').style.display = 'block';	
-				} 
 			   if ($('repl_ask_yes')) {$('repl_ask_yes').style.display = 'none';	}
 			}
 		}
@@ -345,12 +337,8 @@ var Rules = {
 			if (this.value == 'yes') {
 				if ($('ask_dscribe2_yes')) {
 					$('ask_dscribe2_yes').style.display = 'block';	
-				} 
-			   if ($('ask_dscribe2_yes')) { $('ask_dscribe2_no').style.display = 'none';}
+				}
 			} else {
-				if ($('ask_dscribe2_no')) {
-					$('ask_dscribe2_no').style.display = 'block';	
-				} 
 			   if ($('ask_dscribe2_yes')) { $('ask_dscribe2_yes').style.display = 'none';	}
 			}
 		}
