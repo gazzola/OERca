@@ -5,10 +5,7 @@
 	padding: 0px;
 }
 
-.mootabs_title h2 {
-  color: black;
-  text-align: center;
-}
+.mootabs_title h2 { color: black; text-align: center; }
 
 .mootabs_title li {
 	float: left;
@@ -21,7 +18,6 @@
 	background-color: #fff;
 	border: 1px dotted #bbb;
 }
-
 
 .mootabs_title a {
   color: blue;
@@ -59,10 +55,25 @@
 	color: #fff;
 }
 
-#Original h3, #Replacement h3 {
+/* styles for different content object panes */
+#Original h3 {
 	display: block;
 	font-size: 1.5em;
 	color: #666;
 	text-align: left;
 	border-bottom: 1px solid #ddd;
+}
+#Replacement h3 {
+	display: block;
+	font-size: 1.5em;
+	color: #fff;
+	text-align: left;
+	border-bottom: 1px solid #ddd;
+}
+
+#Replacement.mootabs_panel.active { background-color: green; }
+.mootabs_title li[title="Replacement"].active,
+.mootabs_title li[title="Replacement"].active h2 {
+	background-color: green;
+	color: #fff;
 }
