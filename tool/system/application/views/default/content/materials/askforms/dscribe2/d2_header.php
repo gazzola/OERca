@@ -31,10 +31,11 @@
 <br/><br/>
 
 <?php if ($num_avail[$view] == 0) { ?>
-
+	<!--
 	<div class="column span-24 first last"> 
 			<p class="error">Presently, none of the content objects in this material fall in this category.</p>
 	</div>
+	-->
 
 <?php } elseif ($view=='aitems') { 	?>
 
