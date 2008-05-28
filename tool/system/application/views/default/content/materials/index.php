@@ -37,10 +37,10 @@
   	  <th><strong>Select</strong></th>
   		<th class="sortable"><strong>Name</strong></th>
   		<th class="sortable"><strong>File Type</strong></th>
-  		<th class="sortable"><strong>Resource Type</strong></th>
-  		<th class="sortable"><strong>Date Modified</strong></th>
+  		<th class="sortable"><strong>Material Type</strong></th>
+  		<th class="sortable-sortEnglishDateTime"><strong>Date Modified</strong></th>
   		<th class="sortable"><strong>Author</strong></th>
-  		<th class="sortable"><strong>CO Status</strong></th>
+  		<th class="sortable-sortImage, sortable-sortAlphaNumeric"><strong>CO Status</strong></th>
   <!--		<th class="sortable"><strong>Ask Items?</strong></th> -->
   	</tr>
   	</thead>
@@ -73,7 +73,7 @@
       </td>
 		
   		<td>
-  		  <?= $material['display_date'] ?>
+  		  <?= $material['display_date'] ?><br/>
       </td>
     
       <td>

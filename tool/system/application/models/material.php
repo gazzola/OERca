@@ -131,7 +131,7 @@ class Material extends Model
     if ($q->num_rows() > 0) {
       foreach($q->result_array() as $row) {
         $row['display_date'] = $this->ocw_utils->calc_later_date(
-          $row['created_on'], $row['modified_on']); // define the display date
+          $row['created_on'], $row['modified_on'],'d M, Y H:i:s'); // define the display date
         $row['comments'] = $this->comments($row['id'],'user_id,comments,modified_on');
         $row['files'] = $this->material_files($cid, $row['id']);
         if ($in_ocw) {
