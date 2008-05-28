@@ -12,7 +12,7 @@
 
  foreach($materials as $category => $cmaterial) { 
 ?> 
-<h2><?=$category?></h2>
+<h2 style="clear:both"><?=$category?></h2>
 <?php $mat_form_attr = array(
   'id' => 'mat_form',
   'name' => 'mat_form'
@@ -104,7 +104,7 @@
   <?php }?>
   	</tbody>
   </table>
-  <div class="column span-7 firstlast">
+  <div class="column span-7 firstlast" style="margin-bottom:30px;">
     <span>
       Select:
       &nbsp;
@@ -116,6 +116,5 @@
     <input type="submit" name="download" id="download" value="Download">
   </div>
 </form>
-<br />
 <?php }}  ?>
 <?php $this->load->view(property('app_views_path').'/materials/materials_footer.php', $data); ?>
