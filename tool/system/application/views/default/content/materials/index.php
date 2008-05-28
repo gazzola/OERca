@@ -31,7 +31,7 @@
   </div>
   <br /><br /><br /><br /><!-- put in to fix odd layout behavior in safari and ff2 -->
 
-  <table class="sortable-onload-1 rowstyle-alt no-arrow">
+  <table class="sortable-onload-7 rowstyle-alt no-arrow">
   	<thead>
   	<tr>
   	  <th><strong>Select</strong></th>
@@ -41,7 +41,6 @@
   		<th class="sortable-sortEnglishDateTime"><strong>Date Modified</strong></th>
   		<th class="sortable"><strong>Author</strong></th>
   		<th class="sortable-sortImage, sortable-sortAlphaNumeric"><strong>CO Status</strong></th>
-  <!--		<th class="sortable"><strong>Ask Items?</strong></th> -->
   	</tr>
   	</thead>
 
@@ -53,7 +52,6 @@
   	<tr>
   	  <td>
   	      <input type="checkbox" name="select_material[]" id="<?=$material['id'] ?>" value="<?=$material['id'] ?>" >
-  				<!-- <a href="<?=site_url("materials/remove_material/$cid/{$material['id']}")?>" title="Remove material" class="confirm">Remove</a> -->
   		</td>
 		
   		<td>
