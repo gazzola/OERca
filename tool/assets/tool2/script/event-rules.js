@@ -217,7 +217,7 @@ var Rules = {
 				var url = $('server').value+'materials/update_object/'+course_id+'/'+material_id;
 				var val = this.value;
 				if (field=='done' && val == 1) {
-						var ask = document.getElementsByName('ask');
+						var ask = document.getElementsByName('ask_inst');
 						if (ask[0].value=='yes' && ask[0].checked && $('ask_status').value=='false') {
 							 alert('You cannot mark the object as cleared. It is still under review by the Instructor.');
 							 return false;

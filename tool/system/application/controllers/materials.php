@@ -589,13 +589,17 @@ class Materials extends Controller {
 				} elseif ($field=='retain_rationale')
 				{
 					$this->coobject->add_retain_rationale($oid, getUserProperty('id'), array('rationale'=>$val));
-				} elseif ($field=='question')
+				} elseif ($field=='inst_question')
 				{
 					$this->coobject->add_additional_question($oid, getUserProperty('id'), array('question'=>$val,'role'=>'instructor'));
 				} elseif ($field=='dscribe2_question')
 				{
 					$this->coobject->add_additional_question($oid, getUserProperty('id'), array('question'=>$val,'role'=>'dscribe2'));
 				} else {
+					
+					// change 'ask_inst' to 'ask'
+					if ($field == 'ask_inst')
+						$field = 'ask';
 					$data = array($field=>$val);
 					$this->coobject->update($oid, $data);
 				}

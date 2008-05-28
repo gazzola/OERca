@@ -185,30 +185,16 @@ $log = $obj['log'];
 	  <tr>
 			<td colspan="4">
 			  <?php 
-				  $yes = ($obj['ask']=='yes') ? TRUE : FALSE;
-				  $no = ($obj['ask']=='yes') ? FALSE : TRUE;
-				  $data = array(
-            			  	'name'        => 'ask',
-              				'id'          => 'ask',
-              				'value'       => 'yes',
-              				'checked'     => $yes,
-              				'class'       => 'do_object_update do_object_ask_yesno',
-            		);
-				  echo form_radio($data).'&nbsp;Yes&nbsp;';
-				  $data = array(
-            			  	'name'        => 'ask',
-              				'id'          => 'ask',
-              				'value'       => 'no',
-              				'checked'     => $no,
-              				'class'       => 'do_object_update do_object_ask_yesno',
-            		);
-				  echo form_radio($data).'&nbsp;No&nbsp;&nbsp;';
+				  $yes = ($obj['ask']=='yes') ? true : false;
+				  $no = ($obj['ask']=='yes') ? false : true;
+            	  echo form_radio('ask_inst', 'yes', $yes, 'class="do_object_update do_object_ask_yesno"').'&nbsp;Yes&nbsp;';
+            	  echo form_radio('ask_inst', 'no', $no, 'class="do_object_update do_object_ask_yesno"').'&nbsp;No&nbsp;';
 			?>
 			<div id="ask_yes" style="display: <?= ($obj['ask']=='yes') ? 'block':'none'?>"> 
 				<p>
 					<b><?php echo '<a target="_new" href="'.site_url("materials/askforms/$cid/$mid/provenance/instructor").'">view ASK form</a>'; ?> to see the default questions.</b><br/>
 					<b>Please add any additional questions for the instructor in the space below</b><br/>
-			       	<textarea name="question" id="question" rows="10" cols="50" class="do_object_update"><?=$question?></textarea>
+			       	<textarea name="inst_question" id="inst_question" rows="10" cols="50" class="do_object_update"><?=$question?></textarea>
 				</p>
 			</div>
  	    </td>

@@ -704,11 +704,9 @@ class Coobject extends Model
 	{
 		$table = 'object_questions';
 		// whether there is already a question without an answer
-		$this->db->where("object_id", $oid);
 		$role = $data['role'];
-		$this->db->where('role', '$role');
+		$this->db->where('object_id="'.$oid.'" and role="'.$role.'"');
 		$q = $this->db->get($table);
-
 		if ($q->num_rows() > 0) 
 		{
 			
