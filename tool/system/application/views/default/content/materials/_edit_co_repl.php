@@ -46,7 +46,7 @@ $cp_url = ($copy==null) ? '' : $copy['url'];
 			?>
 			<div id="repl_ask_yes" style="display: <?= ($repl_obj['ask']=='yes') ? 'block':'none'?>"> 
 				<p>
-					<b><?php echo '<a target="_top" href="'.site_url("materials/askforms/$cid/$mid/replacement/instructor").'">view ASK form</a>'; ?> to see the default questions.</b><br/>
+					<b><?php echo '<a target="_new" href="'.site_url("materials/askforms/$cid/$mid/replacement/instructor").'">view ASK form</a>'; ?> to see the default questions.</b><br/>
 					<b>Please add any additional questions for the instructor in the space below</b><br/>
 			       	<textarea name="replacement_question" id="replacement_question" rows="10" cols="50" class="do_replacement_update"><?=isset($replacement_questions)?$replacement_question:''?></textarea>
 				</p>
