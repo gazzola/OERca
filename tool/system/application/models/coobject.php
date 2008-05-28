@@ -1254,7 +1254,7 @@ class Coobject extends Model
         if ($files !== false && is_array($files)) {
             foreach($files as $newfile) {
 		
-									if (preg_match('/Slide\d+|\-pres\.\d+/',$newfile)) { // find slides
+									if (preg_match('/Slide\d+|\-pres\.\d+/is',$newfile)) { // find slides
 
 											$this->add_slide($cid,$mid,$newfile,$newfile);
 											array_push($fileadded, 1);

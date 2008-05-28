@@ -8,10 +8,6 @@ foreach($subtypes as $type => $subtype) {
 		$types .= '</optgroup>';
 } 
 $types .= '</select>';
-
-$action_types = array('Fair Use'=>'Fair Use', 'Search'=>'Search',
-						          'Commission'=>'Commission', 'Permission'=>'Permission',
-						          'Retain'=>'Retain: No Copyright', 'Remove'=>'Remove');
 ?>
 
 <div id="pane_uploadco" class="editpane">
@@ -34,11 +30,6 @@ $action_types = array('Fair Use'=>'Fair Use', 'Search'=>'Search',
 		  	<input type="radio" name="ask" value="no" checked="checked"/>&nbsp;No
 			</div>
 			
-			<div class="formLabel">Action:</div>
-			<div class="formField">
-			<?php echo form_dropdown('action_type', $action_types, ''); ?>
-			</div>		
-
 			<div class="formLabel">Content Type:</div>
     	<div class="formField"><?=$types?></div>
 		
