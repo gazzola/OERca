@@ -187,8 +187,8 @@ $log = $obj['log'];
 			  <?php 
 				  $yes = ($obj['ask']=='yes') ? true : false;
 				  $no = ($obj['ask']=='yes') ? false : true;
-            	  echo form_radio('ask_inst', 'yes', $yes, 'class="do_object_update do_object_ask_yesno"').'&nbsp;Yes&nbsp;';
-            	  echo form_radio('ask_inst', 'no', $no, 'class="do_object_update do_object_ask_yesno"').'&nbsp;No&nbsp;';
+            	  echo form_radio('ask_inst', 'yes', $yes, 'class="do_object_update"').'&nbsp;Yes&nbsp;';
+            	  echo form_radio('ask_inst', 'no', $no, 'class="do_object_update"').'&nbsp;No&nbsp;';
 			?>
 			<div id="ask_yes" style="display: <?= ($obj['ask']=='yes') ? 'block':'none'?>"> 
 				<p>

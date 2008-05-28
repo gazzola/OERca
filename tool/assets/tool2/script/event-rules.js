@@ -216,16 +216,56 @@ var Rules = {
 				var field = this.name; 
 				var url = $('server').value+'materials/update_object/'+course_id+'/'+material_id;
 				var val = this.value;
-				if (field=='done' && val == 1) {
+				var proceed = true;
+				if (field=='done') {
+					if (val == 1)
+					{
 						var ask = document.getElementsByName('ask_inst');
 						if (ask[0].value=='yes' && ask[0].checked && $('ask_status').value=='false') {
 							 alert('You cannot mark the object as cleared. It is still under review by the Instructor.');
+							 proceed=false;
 							 return false;
 						}
+					}
+					url += '/'+object_id+'/'+field+'/'+encodeURIComponent(val);
+	      			var fb = $('feedback');
+					new Ajax(url, { method: 'get', update: fb, }).request();
 				}
-				url += '/'+object_id+'/'+field+'/'+encodeURIComponent(val);
-      	var fb = $('feedback');
-				new Ajax(url, { method: 'get', update: fb, }).request();
+				else if (field=='ask_inst')
+				{
+					if(val == 'yes')
+					{
+						// if going to ask instructor and the CO is already marked as cleared, generate a message to remind user to unclear the CO first
+						var done = document.getElementsByName('done');
+						if (done[0].value==1 && done[0].checked)
+						{
+							alert('The CO is currently marked as "Cleared". Please reset the CLEARED status first.');
+							proceed=false;
+							return false;
+						}
+					}
+					url += '/'+object_id+'/'+field+'/'+encodeURIComponent(val);
+	      			var fb = $('feedback');
+					new Ajax(url, { method: 'get', update: fb, }).request();
+					
+					// show the div
+					var id = this.id;
+					id = id.replace(/\w+_/g,'');
+					if (this.value == 'yes') {
+						if ($('ask_yes')) {
+							$('ask_yes').style.display = 'block';	
+						}
+					} else {
+					   if ($('ask_yes')) { $('ask_yes').style.display = 'none';	}
+					}
+					
+				}
+				else
+				{
+					url += '/'+object_id+'/'+field+'/'+encodeURIComponent(val);
+	      			var fb = $('feedback');
+					new Ajax(url, { method: 'get', update: fb, }).request();
+				}	
 				
 				// if the selected action is other than "Search" and "Remove", the ask dscribe2 should be checked
 				if (field=='action_type' && this.value != 'Search' && this.value != 'Remove & Annotate' && this.value != 'Retain: Instructor Created')
@@ -239,8 +279,8 @@ var Rules = {
 						}
 					}
 					url += '/'+object_id+'/ask_dscribe2/'+encodeURIComponent('yes');
-      	var fb1 = $('feedback');
-				new Ajax(url, { method: 'get', update: fb1, }).request();
+      				var fb1 = $('feedback');
+					new Ajax(url, { method: 'get', update: fb1, }).request();
 				}
 		}
 		element.onclick = element.onchange;
@@ -298,20 +338,6 @@ var Rules = {
 					$('Commission').style.display = 'none';}
 				if ($('Retain')) {
 					$('Retain').style.display = 'none';}
-			}
-		}
-	},
-	
-	'.do_object_ask_yesno' : function(element) {
-		element.onclick = function() {
-			var id = this.id;
-			id = id.replace(/\w+_/g,'');
-			if (this.value == 'yes') {
-				if ($('ask_yes')) {
-					$('ask_yes').style.display = 'block';	
-				}
-			} else {
-			   if ($('ask_yes')) { $('ask_yes').style.display = 'none';	}
 			}
 		}
 	},
