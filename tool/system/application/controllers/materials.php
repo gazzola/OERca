@@ -533,9 +533,9 @@ class Materials extends Controller {
 				$role = getUserProperty('role');
 				redirect("materials/edit/$cid/$mid/$role/Any/true", 'location');
 		}	else {
-				$this->coobject->add_zip($cid, $mid,getUserProperty('id'),$_FILES);
+				$res = $this->coobject->add_zip($cid, $mid,getUserProperty('id'),$_FILES);
 				$this->update($cid,$mid,'embedded_co','1',false);
-				flashMsg('Content objects added');
+				flashMsg($res);
 				redirect("materials/edit/$cid/$mid/", 'location');
 		}
 	}

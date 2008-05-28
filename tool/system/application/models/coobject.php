@@ -1244,6 +1244,8 @@ class Coobject extends Model
   // add content objects with data embedded in the file metadata
   public function add_zip($cid, $mid, $uid, $files)
   {
+		$fileadded = array(); // 1: file added; 2: file omitted 
+
     if (is_array($files['userfile']) and $files['userfile']['error']==0) {
         $zipfile = $files['userfile']['tmp_name'];
         $files = $this->ocw_utils->unzip($zipfile, property('app_co_upload_path')); 
@@ -1255,8 +1257,9 @@ class Coobject extends Model
 									if (preg_match('/Slide\d+|\-pres\.\d+/',$newfile)) { // find slides
 
 											$this->add_slide($cid,$mid,$newfile,$newfile);
+											array_push($fileadded, 1);
 
-									} else {
+									} elseif (preg_match('/^(\d+)R?_(.*?)$/',basename($newfile))) {
 											$objecttype = (preg_match('/^(\d+)R_(.*?)/',basename($newfile))) ? 'RCO' : 'CO';				
 	                    $filedata = array('userfile_0'=>array());
 	                    $filedata['userfile_0']['name'] = basename($newfile);
@@ -1310,16 +1313,27 @@ class Coobject extends Model
 														}
 												}		
 	                   }
+										 array_push($fileadded, 1);
+
+									} else {
+										 array_push($fileadded, 2); 
 									}
 						}		
 				} else {
-				     // zip file did not contain any jpg files
+				     // zip file did not contain any files
 				}
        
     } else {
 			exit('Cannot upload file: an error occurred while uploading file. Please contact administrator.');
     }
-  }
+
+		$msg = '';
+		if (empty($fileadded)) { $msg = 'No files added: Uploaded file did not contain any files.'; }
+  	elseif(in_array(1,$fileadded)) { $msg = 'Content Objects added.'; }
+  	elseif(in_array(2,$fileadded)) { $msg = 'No files added: files did not match expected filename format.'; }
+		
+		return $msg;
+ }
 
   /**
     * remove material based on information given
