@@ -19,19 +19,18 @@
   ); ?>
 <?php echo form_open("materials/manipulate/$cid", $mat_form_attr) ?>
   <div class="column span-7 firstlast">
-    <div class="column span-3 first">
-      <input type="button" id="selectall" value="Select All" onClick="SetAllCheckBoxes('mat_form', 'select_material[]', true);" > <br />
-      <input type="reset" id="clearselected" value="Unselect All" onClick="SetAllCheckBoxes('mat_form', 'select_material[]', false);" >
-    </div>
-    
-    <div class="column span-3 last">
-      <input type="submit" name="delete" id="delete" value="Delete Items" class="confirm"> <br />
-      <input type="submit" name="download" id="download" value="Download Items">
-    </div>
+    <input type="submit" name="delete" id="delete" value="Delete" class="confirm">
+    <input type="submit" name="download" id="download" value="Download"> <br />
+    <span>
+      Select:
+      &nbsp;
+      <a href="javascript:void(0);" onClick="SetAllCheckBoxes('mat_form', 'select_material[]', true);" >All,</a>
+      &nbsp;
+      <a href="javascript:void(0);" onClick="SetAllCheckBoxes('mat_form', 'select_material[]', false);" >None</a>
+    </span>
   </div>
-  <br /><br /><br /><br /><!-- put in to fix odd layout behavior in safari and ff2 -->
 
-  <table class="sortable-onload-7 rowstyle-alt no-arrow">
+  <table class="sortable-onload-7 rowstyle-alt no-arrow" style="clear: both; margin-bottom: 0px;">
   	<thead>
   	<tr>
   	  <th><strong>Select</strong></th>
@@ -106,18 +105,15 @@
   	</tbody>
   </table>
   <div class="column span-7 firstlast">
-    <!-- TODO: Replace the onClick based javascript call with a style
-                assignment and then do a getElementBy in the javascript
-    -->
-    <div class="column span-3 first">
-      <input type="button" id="selectall" value="Select All" onClick="SetAllCheckBoxes('mat_form', 'select_material[]', true);" > <br />
-      <input type="reset" id="clearselected" value="Unselect All" onClick="SetAllCheckBoxes('mat_form', 'select_material[]', false);" >
-    </div>
-    
-    <div class="column span-3 last">
-      <input type="submit" name="delete" id="delete" value="Delete Items"> <br />
-      <input type="submit" name="download" id="download" value="Download Items">
-    </div>
+    <span>
+      Select:
+      &nbsp;
+      <a href="javascript:void(0);" onClick="SetAllCheckBoxes('mat_form', 'select_material[]', true);" >All,</a>
+      &nbsp;
+      <a href="javascript:void(0);" onClick="SetAllCheckBoxes('mat_form', 'select_material[]', false);" >None</a>
+    </span> <br />
+    <input type="submit" name="delete" id="delete" value="Delete" class="confirm">
+    <input type="submit" name="download" id="download" value="Download">
   </div>
 </form>
 <?php }}  ?>
