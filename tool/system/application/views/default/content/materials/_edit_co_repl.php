@@ -167,7 +167,7 @@ $cp_url = ($copy==null) ? '' : $copy['url'];
 				
 				  <div id="replqs">
   					<?php if ($repl_obj['questions'] == null) { ?>
-				 			<p id="noquestions">No questions posted</p>
+				 			<p id="noreplquestions">No questions posted</p>
 						<?php } else { foreach($repl_obj['questions'] as $question) { ?>
      					<p><b><?=$question['question']?><b></p>
 							<?php if ($question['answer']<>'') { ?>
@@ -206,7 +206,7 @@ $cp_url = ($copy==null) ? '' : $copy['url'];
 
   <div id="replcomments">
   <?php if ($repl_obj['comments'] == null) { ?>
-     <p id="nocomments">No comments posted</p>
+     <p id="noreplcomments">No comments posted</p>
   <?php } else { foreach($repl_obj['comments'] as $comment) { ?>
      <p><?=$comment['comments']?></p>
      <p>

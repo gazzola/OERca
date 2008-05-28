@@ -153,6 +153,7 @@ var Rules = {
 														new_time.injectTop( $('objectcomments') );
 														new_cm.injectTop( $('objectcomments') );
 														$('comments').value = '';
+														if ($('nocomments')) { $('nocomments').innerHTML = ''; }
                         } else {
                             alert(response);
                        	}
@@ -197,6 +198,7 @@ var Rules = {
 														new_time.injectTop( $('objectqs') );
 														new_cm.injectTop( $('objectqs') );
 														$('question').value = '';
+														if ($('noquestions')) { $('noquestions').innerHTML = ''; }
                         } else {
                             alert(response);
                        	}
@@ -619,6 +621,7 @@ var Rules = {
 														new_time.injectTop( $('replcomments') );
 														new_cm.injectTop( $('replcomments') );
 														$('repl_comments').value = '';
+														if ($('noreplcomments')) { $('noreplcomments').innerHTML = ''; }
                         } else {
                             alert(response);
                        	}
@@ -663,6 +666,7 @@ var Rules = {
 														new_time.injectTop( $('replqs') );
 														new_cm.injectTop( $('replqs') );
 														$('repl_question').value = '';
+														if($('noreplquestions')) { $('noreplquestions').innerHTML = ''; }
                         } else {
                             alert(response);
                        	}
