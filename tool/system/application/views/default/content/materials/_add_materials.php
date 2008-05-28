@@ -62,6 +62,7 @@
 		<input type="hidden" name="nodetype" value="parent" />
 		<input type="hidden" name="ctools_url" value="" />
 		<input type="hidden" name="mimetype_id" value="6" />
+		<input type="hidden" name="tag_id" value="15" />
 		
 		
 		<div class="formLabel">Author:</div>
