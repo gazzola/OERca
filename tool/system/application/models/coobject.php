@@ -12,6 +12,7 @@ class Coobject extends Model
 	{
 		parent::Model();
 		$this->load->model('ocw_user');
+		$this->load->model('misc_util');
 	}
 
 	/**
@@ -1026,7 +1027,6 @@ class Coobject extends Model
      */
 	public function add($cid, $mid, $uid, $data, $files)
 	{
-		$this->load->model('misc_util');
 		
 		// check for slides and get any data embedded in the file
 		if (is_array($files['userfile_0'])) {
@@ -1044,7 +1044,7 @@ class Coobject extends Model
 		
 		// set a default subtype_id if none is specified
 		if(!array_key_exists('subtype_id', $data)) {
-		  $data['subtype_id'] = $this->misc_util('ocw_object_subtypes',
+		  $data['subtype_id'] = $this->misc_util->get_id_for_value('ocw_object_subtypes',
 		    "name", "None");
 		}
 
@@ -1249,7 +1249,7 @@ class Coobject extends Model
         $files = $this->ocw_utils->unzip($zipfile, property('app_co_upload_path')); 
 				$replace_info = $orig_info = array();
 
-        if ($files !== false) {
+        if ($files !== false && is_array($files)) {
             foreach($files as $newfile) {
 		
 									if (preg_match('/Slide\d+|\-pres\.\d+/',$newfile)) { // find slides
