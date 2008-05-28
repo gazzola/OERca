@@ -137,7 +137,7 @@
 
 				<?php if ($view == 'general') { ?>
 				<p style="clear:both"><h3>dScribe Recommended Action:</small></h3> 
-						<?php echo ($obj['action_taken']=='') ? 'No action recommended':$obj['action_taken']; ?>
+						<?php echo ($obj['action_type']=='') ? 'No action recommended':$obj['action_type']; ?>
 				</p>
 				<br/>	
 				<?php } ?>

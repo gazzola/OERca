@@ -142,8 +142,8 @@ var Rules = {
                     onComplete:function() {
                        response = fb.innerHTML;
 											if (once) {						
-												orig_com_ap.toggle();
                        	if (response=='success') {
+														orig_com_ap.toggle();
 														var msg = "<small>by&nbsp;"+$('user').value+"&nbsp;today</small>";
 														var line = '<hr style="border: 1px solid #336699"/>';
 														var new_line = new Element('p').setHTML(line);
@@ -186,8 +186,8 @@ var Rules = {
                     onComplete:function() {
                        response = fb.innerHTML;
 											if (once) {						
-												orig_q_ap.toggle();
                        	if (response=='success') {
+														orig_q_ap.toggle();
 														var msg = "<small>by&nbsp;"+$('user').value+"&nbsp;today</small>";
 														var line = '<hr style="border: 1px solid #336699"/>';
 														var new_line = new Element('p').setHTML(line);
@@ -582,8 +582,8 @@ var Rules = {
                     onComplete:function() {
                        response = fb.innerHTML;
 											if (once) {						
-												repl_com_ap.toggle();
                        	if (response=='success') {
+														repl_com_ap.toggle();
 														var msg = "<small>by&nbsp;"+$('user').value+"&nbsp;today</small>";
 														var line = '<hr style="border: 1px solid #336699"/>';
 														var new_line = new Element('p').setHTML(line);
@@ -626,8 +626,8 @@ var Rules = {
                     onComplete:function() {
                        response = fb.innerHTML;
 											if (once) {						
-												repl_q_ap.toggle();
                        	if (response=='success') {
+														repl_q_ap.toggle();
 														var msg = "<small>by&nbsp;"+$('user').value+"&nbsp;today</small>";
 														var line = '<hr style="border: 1px solid #336699"/>';
 														var new_line = new Element('p').setHTML(line);

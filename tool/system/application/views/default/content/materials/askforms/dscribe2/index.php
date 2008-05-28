@@ -12,7 +12,7 @@ if ($questions_to == 'instructor') {
 
 		if ($num_avail[$view] !=0) {
  
-		if ($view=='aitems' && empty($cos[$response_type])  && $response_type <> 'all') { 
+			if ($view=='aitems' && empty($cos[$response_type])  && $response_type <> 'all') { 
 ?>
 
 	
@@ -63,4 +63,13 @@ if ($questions_to == 'instructor') {
 </table>
 </div>
 
-<?php }}} ?>
+<?php }
+
+} else {
+?>
+
+	<div class="column span-24 first last"> 
+			<p class="error">Presently, none of the content objects in this material fall in this category.</p>
+	</div>
+
+<?php }} ?>

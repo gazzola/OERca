@@ -182,8 +182,7 @@ class Coobject extends Model
 										$notalldone = false;
 										$obj['otype'] = 'original';
 										foreach ($obj['questions'] as $k => $q) { 
-														 if($q['status']<>'done') { 
-																$notalldone = true; 
+														 		if($q['status']<>'done') { $notalldone = true; }
 												 		 		$q['ta_data'] = array('name'=>$obj['otype'].'_'.$obj['id'].'_'.$q['id'],
 																									   	'value'=>$q['answer'],
 																									   	'class'=>'do_d2_question_update',
@@ -194,8 +193,7 @@ class Coobject extends Model
 																								        'class'=>'do_d2_question_update');
 												 		 		$q['send_data'] = array('name'=>$obj['otype'].'_status_'.$obj['id'],
 																											  'value'=>'Send to dScribe', 'class'=>'do_d2_question_update');
-												 		 		$obj['questions'][$k] = $q;
-														}
+											 		 			$obj['questions'][$k] = $q;
 										}
 										if ($notalldone) { array_push($general, $obj); $num_general++; } 
 										else { array_push($done['general'],$obj); $num_done++; }
@@ -433,8 +431,7 @@ class Coobject extends Model
 										$obj['otype'] = 'replacement';
 										$notalldone = false;
 										foreach ($obj['questions'] as $q) { 
-														 if($q['status']<>'done') { 
-																$notalldone = true; 
+														 		if($q['status']<>'done') { $notalldone = true; } 
 												 		 		$q['ta_data'] = array('name'=>$obj['otype'].'_'.$obj['id'].'_'.$q['id'],
 																									   	'value'=>$q['answer'],
 																									   	'class'=>'do_d2_question_update',
@@ -446,7 +443,6 @@ class Coobject extends Model
 												 		 		$q['send_data'] = array('name'=>$obj['otype'].'_status_'.$obj['id'],
 																											  'value'=>'Send to dScribe', 'class'=>'do_d2_question_update');
 												 		 		$obj['questions'][$k] = $q;
-														}
 										}
 										if ($notalldone) { array_push($general, $obj); $num_general++; } 
 										else { array_push($done['general'],$obj); $num_done++; }
@@ -1260,7 +1256,7 @@ class Coobject extends Model
 		
 									if (preg_match('/Slide\d+|\-pres\.\d+/',$newfile)) { // find slides
 
-											$this->add_slide($cid,$mid,$newfile);
+											$this->add_slide($cid,$mid,$newfile,$newfile);
 
 									} else {
 											$objecttype = (preg_match('/^(\d+)R_(.*?)/',basename($newfile))) ? 'RCO' : 'CO';				
@@ -1283,7 +1279,7 @@ class Coobject extends Model
                       $filedata['userfile_0']['type'] = $type;
                       $filedata['userfile_0']['tmp_name'] = $newfile;
 
-											if (!preg_match('/^\./',basename($newfile))) {
+											if (preg_match('/^(\d+)R?_(.*?)$/',basename($newfile))) {
                    				if ($objecttype=='CO') {
 		                     		$oid = $this->add($cid, $mid, $uid, array(), $filedata);
 														$repfile = preg_replace('/^(\d+)_/',"$1R_",basename($newfile));
@@ -1619,7 +1615,7 @@ class Coobject extends Model
 	public function prep_data($cid,$mid,$data,$filename,$pathtofile)
 	{
 			if (preg_match('/Slide\d+|\-pres\.\d+/i',$filename)) { // find slides
-					$this->add_slide($cid,$mid,$pathtofile);
+					$this->add_slide($cid,$mid,$filename,$pathtofile);
 					return 'slide';
 			} else {
 					$filedata = $this->get_xmp_data($pathtofile);
@@ -1635,7 +1631,7 @@ class Coobject extends Model
 	}
 
 	// add a slide
-	public function add_slide($cid, $mid, $slidefile)
+	public function add_slide($cid, $mid, $slidefile,$pathtofile)
 	{
 			preg_match('/\.(\w+)$/', $slidefile, $matches);
 			$ext = $matches[1];
@@ -1655,9 +1651,9 @@ class Coobject extends Model
 			if (!is_null($path)) {
 					$newpath = $this->prep_path($path, true); 
 					$newpath = $newpath."/{$this->material_filename($mid)}_slide_$loc.$ext";
-					@copy($slidefile, $newpath); 
+					@copy($pathtofile, $newpath); 
 					@chmod($newpath,'0777');
-					@unlink($slidefile);
+					@unlink($pathtofile);
 			} else {
 					exit('Could not find path to add slide.');
 			}
