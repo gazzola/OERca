@@ -3,11 +3,9 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: May 19, 2008 at 05:53 PM
+-- Generation Time: May 28, 2008 at 03:59 PM
 -- Server version: 5.0.45
 -- PHP Version: 5.2.3-1ubuntu6.3
-
-SET FOREIGN_KEY_CHECKS=0;
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
@@ -63,7 +61,7 @@ CREATE TABLE `ocw_claims_commission` (
   `have_replacement` enum('yes','no','pending') collate utf8_unicode_ci NOT NULL default 'pending',
   `recommend_commission` enum('yes','no') collate utf8_unicode_ci NOT NULL default 'no',
   `status` enum('new','in progress','done') collate utf8_unicode_ci NOT NULL default 'new',
-  `action` enum('None','Find it','Recreate it','Remove it','Claim fair use','Get Permission','Claim no copyright') collate utf8_unicode_ci NOT NULL default 'None',
+  `action` enum('None','Permission','Search','Fair Use','Re-Create','Retain: Instructor Created','Retain: Public Domain','Retain: No Copyright','Remove & Annotate') collate utf8_unicode_ci NOT NULL default 'None',
   `created_on` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   `modified_by` int(11) default NULL,
   `modified_on` timestamp NOT NULL default '0000-00-00 00:00:00',
@@ -88,7 +86,7 @@ CREATE TABLE `ocw_claims_fairuse` (
   `additional_rationale` text collate utf8_unicode_ci,
   `comments` text collate utf8_unicode_ci NOT NULL,
   `warrant_review` enum('yes','no','pending') collate utf8_unicode_ci NOT NULL default 'pending',
-  `action` enum('None','Get permission','Commission','Claim no copyright') collate utf8_unicode_ci NOT NULL default 'None',
+  `action` enum('None','Permission','Search','Re-Create','Retain: Instructor Created','Retain: Public Domain','Retain: No Copyright','Commission','Remove & Annotate') collate utf8_unicode_ci NOT NULL default 'None',
   `status` enum('new','in progress','ip review','done') collate utf8_unicode_ci NOT NULL default 'new',
   `approved` enum('yes','no','pending') collate utf8_unicode_ci NOT NULL default 'pending',
   `created_on` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
@@ -124,7 +122,7 @@ CREATE TABLE `ocw_claims_permission` (
   `comments` text collate utf8_unicode_ci,
   `status` enum('new','in progress','done') collate utf8_unicode_ci NOT NULL default 'new',
   `info_sufficient` enum('yes','no','pending') collate utf8_unicode_ci NOT NULL default 'pending',
-  `action` enum('None','Claim fair use','Commission','Claim no copyright') collate utf8_unicode_ci NOT NULL default 'None',
+  `action` enum('None','Search','Fair Use','Re-Create','Retain: Instructor Created','Retain: Public Domain','Retain: No Copyright','Commission','Remove & Annotate') collate utf8_unicode_ci NOT NULL default 'None',
   `letter_sent` enum('yes','no') collate utf8_unicode_ci NOT NULL default 'no',
   `response_received` enum('yes','no') collate utf8_unicode_ci NOT NULL default 'no',
   `approved` enum('yes','no','pending') collate utf8_unicode_ci NOT NULL default 'pending',
@@ -152,7 +150,7 @@ CREATE TABLE `ocw_claims_retain` (
   `comments` text collate utf8_unicode_ci NOT NULL,
   `accept_rationale` enum('yes','no','unsure','pending') collate utf8_unicode_ci NOT NULL default 'pending',
   `status` enum('new','in progress','ip review','done') collate utf8_unicode_ci NOT NULL default 'new',
-  `action` enum('None','Claim fair use','Get permission','Commission') collate utf8_unicode_ci NOT NULL default 'None',
+  `action` enum('None','Permission','Search','Fair Use','Re-Create','Retain: Instructor Created','Retain: Public Domain','Commission','Remove & Annotate') collate utf8_unicode_ci NOT NULL default 'None',
   `approved` enum('yes','no') collate utf8_unicode_ci NOT NULL default 'no',
   `created_on` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   `modified_by` int(11) default NULL,
@@ -223,7 +221,7 @@ CREATE TABLE `ocw_courses` (
   `creator` varchar(255) character set utf8 collate utf8_unicode_ci NOT NULL,
   `instructor_id` int(10) unsigned default NULL,
   `collaborators` text character set utf8 collate utf8_unicode_ci NOT NULL,
-  `level` enum('Undegraduate','Masters','PhD','M1','M2','M3','M4') character set utf8 collate utf8_unicode_ci NOT NULL,
+  `level` enum('Undergraduate','Masters','PhD','M1','M2','M3','M4') character set utf8 collate utf8_unicode_ci NOT NULL,
   `length` enum('1 week','2 weeks','3 weeks','4 weeks','5 weeks','6 weeks','7 weeks','8 weeks','9 weeks','10 weeks','11 weeks','12 weeks','13 weeks','14 weeks') character set utf8 collate utf8_unicode_ci NOT NULL,
   `term` enum('Fall','Winter','Spring','Summer') character set utf8 collate utf8_unicode_ci NOT NULL,
   `year` year(4) NOT NULL,
@@ -324,7 +322,7 @@ DROP TABLE IF EXISTS `ocw_materials`;
 CREATE TABLE `ocw_materials` (
   `id` bigint(20) NOT NULL auto_increment,
   `course_id` bigint(20) NOT NULL,
-  `category` varchar(255) collate utf8_unicode_ci NOT NULL default 'Resource Items',
+  `category` varchar(255) collate utf8_unicode_ci NOT NULL default 'Materials',
   `name` varchar(255) collate utf8_unicode_ci NOT NULL,
   `ctools_url` varchar(255) collate utf8_unicode_ci NOT NULL,
   `author` varchar(255) collate utf8_unicode_ci default NULL,
@@ -483,7 +481,7 @@ CREATE TABLE `ocw_object_comments` (
   PRIMARY KEY  (`id`),
   KEY `user_id` (`user_id`),
   KEY `object_id` (`object_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -787,8 +785,8 @@ ALTER TABLE `ocw_acl`
 -- Constraints for table `ocw_claims_commission`
 -- 
 ALTER TABLE `ocw_claims_commission`
-  ADD CONSTRAINT `ocw_claims_commission_ibfk_5` FOREIGN KEY (`user_id`) REFERENCES `ocw_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `ocw_claims_commission_ibfk_4` FOREIGN KEY (`object_id`) REFERENCES `ocw_objects` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `ocw_claims_commission_ibfk_4` FOREIGN KEY (`object_id`) REFERENCES `ocw_objects` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `ocw_claims_commission_ibfk_5` FOREIGN KEY (`user_id`) REFERENCES `ocw_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- 
 -- Constraints for table `ocw_claims_fairuse`
@@ -965,19 +963,3 @@ ALTER TABLE `ocw_object_subtypes`
 -- 
 ALTER TABLE `ocw_subjects`
   ADD CONSTRAINT `ocw_subjects_ibfk_1` FOREIGN KEY (`school_id`) REFERENCES `ocw_schools` (`id`);
-
--- update action options for object claims
-ALTER TABLE `ocw_claims_commission` CHANGE `action` `action` ENUM( 'None', 'Permission', 'Search', 'Fair Use', 'Re-Create', 'Retain: Instructor Created', 'Retain: Public Domain', 'Retain: No Copyright', 'Remove & Annotate' ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'None';
-
- ALTER TABLE `ocw_claims_fairuse` CHANGE `action` `action` ENUM( 'None', 'Permission', 'Search', 'Re-Create', 'Retain: Instructor Created', 'Retain: Public Domain', 'Retain: No Copyright', 'Commission', 'Remove & Annotate' ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'None';
-
- ALTER TABLE `ocw_claims_permission` CHANGE `action` `action` ENUM( 'None', 'Search', 'Fair Use', 'Re-Create', 'Retain: Instructor Created', 'Retain: Public Domain', 'Retain: No Copyright', 'Commission', 'Remove & Annotate' ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'None';
-
- ALTER TABLE `ocw_claims_retain` CHANGE `action` `action` ENUM( 'None', 'Permission', 'Search', 'Fair Use', 'Re-Create', 'Retain: Instructor Created', 'Retain: Public Domain', 'Commission', 'Remove & Annotate' ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'None';
-
--- Foreign key constraints for modified by field in claims table
-ALTER TABLE `ocw_claims_commission` ADD FOREIGN KEY ( `modified_by` ) REFERENCES `ocw`.`ocw_users` (`id`);
-ALTER TABLE `ocw_claims_permission` ADD FOREIGN KEY ( `modified_by` ) REFERENCES `ocw`.`ocw_users` (`id`);ALTER TABLE `ocw_claims_fairuse` ADD FOREIGN KEY ( `modified_by` ) REFERENCES `ocw`.`ocw_users` (`id`);ALTER TABLE `ocw_claims_retain` ADD FOREIGN KEY ( `modified_by` ) REFERENCES `ocw`.`ocw_users` (`id`);ALTER TABLE `ocw_object_questions` ADD FOREIGN KEY ( `modified_by` ) REFERENCES `ocw`.`ocw_users` (`id`);ALTER TABLE `ocw_object_replacement_questions` ADD FOREIGN KEY ( `modified_by` ) REFERENCES `ocw`.`ocw_users` (`id`);
-ALTER TABLE `ocw_object_replacements` ADD FOREIGN KEY ( `modified_by` ) REFERENCES `ocw`.`ocw_users` (`id`);
-
-SET FOREIGN_KEY_CHECKS=1;
