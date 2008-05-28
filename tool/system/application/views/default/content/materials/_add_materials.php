@@ -6,7 +6,7 @@
 	<div class="column span-8 first colborder">
 		<h2>Single File Upload</h2>
 		<form action="<?=site_url("materials/add_material/$cid/single")?>" enctype="multipart/form-data" method="post"  id="add_new_material_single">
-			<input type="hidden" name="category" value="Resource Items" />
+			<input type="hidden" name="category" value="Materials" />
 			<input type="hidden" name="in_ocw" value="1" />
 			<input type="hidden" name="nodetype" value="parent" />
 
@@ -57,7 +57,7 @@
 <div class="column span-8 last">
 	<h2>Bulk Upload</h2>
 	<form action="<?=site_url("materials/add_material/$cid/bulk")?>" enctype="multipart/form-data" method="post" id="add_new_material_bulk">
-		<input type="hidden" name="category" value="Resource Items" />
+		<input type="hidden" name="category" value="Materials" />
 		<input type="hidden" name="in_ocw" value="1" />
 		<input type="hidden" name="nodetype" value="parent" />
 		<input type="hidden" name="ctools_url" value="" />

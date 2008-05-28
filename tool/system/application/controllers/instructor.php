@@ -243,7 +243,7 @@ class Instructor extends Controller {
 					
 					$details = array(
 									'course_id' => $cid,
-									'category' => "Resource Items",// the category name for resources
+									'category' => "Materials",// the category name for resources
 									'name' => $entityName,
 									'ctools_url' => $entityUrl,
 									'author' => $entityCreator,

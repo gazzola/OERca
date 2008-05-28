@@ -116,5 +116,6 @@
     <input type="submit" name="download" id="download" value="Download">
   </div>
 </form>
+<br />
 <?php }}  ?>
 <?php $this->load->view(property('app_views_path').'/materials/materials_footer.php', $data); ?>
