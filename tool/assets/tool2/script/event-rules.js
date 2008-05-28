@@ -228,7 +228,7 @@ var Rules = {
 				new Ajax(url, { method: 'get', update: fb, }).request();
 				
 				// if the selected action is other than "Search" and "Remove", the ask dscribe2 should be checked
-				if (field=='action_type' && this.value != 'Search' && this.value != 'Remove & Annotate')
+				if (field=='action_type' && this.value != 'Search' && this.value != 'Remove & Annotate' && this.value != 'Retain: Instructor Created')
 				{
 					var ask_dscrib2 = document.getElementsByName('ask_dscribe2');
 					for ( var i = 0 ; i < ask_dscrib2.length ; i++ )
