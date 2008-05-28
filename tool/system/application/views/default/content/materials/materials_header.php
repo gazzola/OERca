@@ -34,7 +34,7 @@
 			    	<?php if ($objstats['ask']>0) { ?>
 					<li class="normal"><a href="<?=site_url("materials/askforms/$cid/$mid")?>" target="_new">ASK Forms</a></li>
 					<?php		} ?>
-			    <li class="normal"><a href="<?=$material['ctools_url']?>">Download all RCOs</a></li>
+			    <li class="normal"><a href="<?=site_url("materials/download_all_rcos/$cid/$mid/")?>">Download all RCOs</a></li>
       </ul>
     </div>
 

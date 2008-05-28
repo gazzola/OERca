@@ -24,6 +24,7 @@ class Materials extends Controller {
     $this->load->model('subject');
     $this->load->model('dbmetadata');
     $this->load->model('instructors');
+    $this->load->library('zip');
   }
 
   public function index($cid, $caller="") { $this->home($cid, $caller); }
@@ -930,5 +931,35 @@ class Materials extends Controller {
         
         return $name;
 	    }
+	    
+	    /**
+	     * 
+	     */
+	    public function	download_all_rcos($cid, $mid)
+		{
+			$name = $this->material->getMaterialName($mid);
+			
+			$rcos = $this->coobject->replacements($mid);
+			if ($rcos != null) {
+			    foreach($rcos as $rco) {
+					$object_id=$rco['object_id'];
+					// object file path and name
+					$object_filepath = $this->coobject->object_path($cid, $mid, $object_id);
+					$object_filename = $this->coobject->object_filename($object_id);
+					// the replacement file extension
+					$rep_name = $rco['name'];
+					$rep_name_parts=explode(".", $rep_name);
+					$rep_extension = ".".$rep_name_parts[1];
+					// the file path to the replacement data
+					$rep_filepath=$object_filepath."/".$object_filename."_rep".$rep_extension;
+					$this->zip->read_file(getcwd().'/uploads/'.$rep_filepath);
+				}
+			}
+		
+			// Download the file to your desktop. Name it "SITENAME_IMSCP.zip"
+			$this->zip->download($name.'_RCOs.zip');
+			
+   	      	$this->zip->clear_data(); // clear cached data
+		}
 }
 ?>
