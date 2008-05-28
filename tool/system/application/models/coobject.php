@@ -1032,6 +1032,8 @@ class Coobject extends Model
      */
 	public function add($cid, $mid, $uid, $data, $files)
 	{
+		$this->load->model('misc_util');
+		
 		// check for slides and get any data embedded in the file
 		if (is_array($files['userfile_0'])) {
 				$filename = $files['userfile_0']['name'];
@@ -1045,6 +1047,12 @@ class Coobject extends Model
 		$data['material_id'] = $mid;
 		$data['modified_by'] = $uid;
 		$data['status'] = 'in progress';
+		
+		// set a default subtype_id if none is specified
+		if(!array_key_exists('subtype_id', $data)) {
+		  $data['subtype_id'] = $this->misc_util('ocw_object_subtypes',
+		    "name", "None");
+		}
 
 		$comment = $data['comment'];
 		$question = $data['question'];

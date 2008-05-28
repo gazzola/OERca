@@ -490,8 +490,7 @@ class Materials extends Controller {
 
 		if (!isset($_FILES['userfile_0']['name']) || $_FILES['userfile_0']['name']=='') {
 				$errmsg = 'Please specify a file to upload';
-				$valid = false;
-				
+				$valid = false;			
 		} 
 
 		if ($_POST['location']=='') {
