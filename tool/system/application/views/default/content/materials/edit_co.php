@@ -48,9 +48,13 @@ echo script('ocw_tool.js');
 			<?php if ($x) { 
 								$r = $this->coobject->replacements($mid,$obj['id']);
 			?>
-				<a href="<?=site_url("materials/remove_object/$cid/$mid/{$obj['id']}/replacement/{$r[0]['id']}")?>" style="text-align: center" title="delete replacement objects" class="confirm" target="_top">Delete replacement &raquo;</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+				<a href="<?=site_url("materials/remove_object/$cid/$mid/{$obj['id']}/replacement/{$r[0]['id']}")?>" style="text-align: center" title="delete replacement objects" class="confirm" target="_top">Delete &raquo;</a>&nbsp;&nbsp;|&nbsp;&nbsp;
 			<?php } ?>
-      	<a href="#upload" style="text-align: center" title="upload replacements">Upload replacement &raquo;</a>
+      		<a href="#upload" style="text-align: center" title="upload replacements">Upload &raquo;</a>&nbsp;&nbsp;
+      		<?php if ($x) { 
+			?>
+				|&nbsp;&nbsp;<a href="<?=site_url("materials/download_rco/$cid/$mid/{$obj['id']}/{$r[0]['id']}")?>" style="text-align: center" title="download replacement object" >Download &raquo;</a>&nbsp;&nbsp;
+			<?php } ?>
     </li>
   </ul>
   <!-- original form -->

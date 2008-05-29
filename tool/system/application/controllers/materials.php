@@ -933,7 +933,7 @@ class Materials extends Controller {
 	    }
 	    
 	    /**
-	     * 
+	     * Download all replacement for content objects for this material
 	     */
 	    public function	download_all_rcos($cid, $mid)
 		{
@@ -961,5 +961,36 @@ class Materials extends Controller {
 			
    	      	$this->zip->clear_data(); // clear cached data
 		}
+		
+		
+		/**
+	     * Download the replacement content object
+	     */
+	    public function	download_rco($cid, $mid, $oid, $rid)
+		{
+			$name = $this->material->getMaterialName($mid);
+			
+			$rcos = $this->coobject->replacements($mid, $oid, $rid);
+			if ($rcos != null) {
+				// should be just one object
+			    $rco=$rcos[0];
+				$object_id=$rco['object_id'];
+				// object file path and name
+				$object_filepath = $this->coobject->object_path($cid, $mid, $object_id);
+				$object_filename = $this->coobject->object_filename($object_id);
+				// the replacement file extension
+				$rep_name = $rco['name'];
+				$rep_name_parts=explode(".", $rep_name);
+				$rep_extension = ".".$rep_name_parts[1];
+				// the file path to the replacement data
+				$rep_filepath=$object_filepath."/".$object_filename."_rep".$rep_extension;
+				
+				// get the replacement file name and data and download
+				$name = $rco['name'];
+				$data = file_get_contents(getcwd().'/uploads/'.$rep_filepath); // Read the file's contents
+				force_download($name, $data);	
+			}
+		}
+		
 }
 ?>
