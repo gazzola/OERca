@@ -201,6 +201,8 @@ class Fal_front
             $query = $this->CI->UserModel->getUserByCosignname($username_login);
             if (($query != null) && ($query->num_rows() == 0)) {
                 // bdr -- should show error page - no such user, contact system admin
+                $message = $this->CI->lang->line('FAL_banned_user_message');
+                $validation_response = FALSE;
             }
             else
                 {
