@@ -343,7 +343,7 @@ $log = $obj['log'];
 						<?php } else { foreach($questions as $question) { ?>
      					<p><b><?=$question['question']?></b></p>
 							<?php if ($question['answer']<>'') { ?>
-							<p style="margin-left: 5px; border: 1px dotted #eee; background-color:white"><?=$question['answer']?></p>
+							<p style="margin-left: 5px; border: 1px dotted #eee; background-color:white; color:black;"><?=$question['answer']?></p>
      					<?php } ?>
 							<p>
         				<small>by&nbsp;<?=$this->ocw_user->username($question['user_id'])?>&nbsp;
