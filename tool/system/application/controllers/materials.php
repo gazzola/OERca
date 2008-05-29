@@ -208,7 +208,7 @@ class Materials extends Controller {
                 $passUid = getUserProperty('id');
 		$user_rels = $this->ocw_user->get_dscribe2_rel($passUid);
                 if ($user_rels[0] == NULL) {
-		    echo '**** controller/material.php error - user_rels == NULL ****';
+		    log_message("error", '**** controller/material.php error - user_rels == NULL ****');
 		} else {
                     $dScribe1_uid = $user_rels[0]['dscribe1_id'];
 		    $emsg  = getUserPropertyFromId($dScribe1_uid, 'name');
@@ -224,7 +224,7 @@ class Materials extends Controller {
         private function instructor_dscribe1_email($cid) {
                 $user_rels = $this->ocw_user->dscribes($cid);
                 if ($user_rels[0] == NULL) {
-                    echo '**** controller/material.php error - user_rels == NULL ****';
+                    log_message("error", '**** controller/material.php error - user_rels == NULL ****');
                 } else {
                     // echo '#### user_rels NOT NULL ####';
 		    $j = sizeof($user_rels);
