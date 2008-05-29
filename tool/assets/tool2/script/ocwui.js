@@ -49,6 +49,7 @@ var Site = {
     if($('imagebar')) Site.carousel();
     if($('filter-type')) Site.filtertype();
     if($('myTabs')) Site.setuptabs();
+		if($('orig-accordion')||$('repl-accordion')) Site.setupcollapsibles();
 
     if ($('do_open_courseinfo_pane')) Site.course_page_setup();
 
@@ -277,6 +278,65 @@ var Site = {
       window.location.replace(url);
     });
   },
+
+	setupcollapsibles: function() {
+				var list = $$('li div.collapse');
+				var headings = $$('li h3');
+				var collapsibles = new Array();
+				
+				headings.each( function(heading, i) {
+
+					var collapsible = new Fx.Slide(list[i], { 
+						duration: 500, 
+						transition: Fx.Transitions.linear,
+						onComplete: function(request){ 
+							//var open = request.getStyle('margin-top').toInt();
+							//if(open >= 0) new Fx.Scroll(window).toElement(headings[i]);
+						}
+					});
+					
+					collapsibles[i] = collapsible;
+					
+					heading.onclick = function(){
+						var span = $E('span', heading);
+
+						if(span){
+							var newHTML = span.innerHTML == '+' ? '-' : '+';
+							span.setHTML(newHTML);
+						}
+						
+						collapsible.toggle();
+						return false;
+					}
+					
+					var span = $E('span', heading);
+					if(span){
+						if (span.innerHTML == '+') collapsible.hide();
+				  }
+						
+					
+				});
+			
+				/*	
+				$('collapse-all').onclick = function(){
+					headings.each( function(heading, i) {
+						collapsibles[i].hide();
+						var span = $E('span', heading);
+						if(span) span.setHTML('+');
+					});
+					return false;
+				}
+				
+				$('expand-all').onclick = function(){
+					headings.each( function(heading, i) {
+						collapsibles[i].show();
+						var span = $E('span', heading);
+						if(span) span.setHTML('-');
+					});
+					return false;
+				}
+				*/
+	},
 
   carousel: function () {
     var myScrollFx = new Fx.Scroll('imagebar', {

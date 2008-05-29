@@ -12,12 +12,18 @@ $cp_url = ($copy==null) ? '' : $copy['url'];
 ?>
 <div id="Replacement" class="mootabs_panel">
 
-	<?php if ($this->coobject->replacement_exists($cid, $mid, $obj['id'])) { ?>
+<br/>
+
+<?php if ($this->coobject->replacement_exists($cid, $mid, $obj['id'])) { ?>
 <input type="hidden" id="rid" name="rid" value="<?=$repl_obj['id']?>" />
-  
-  <!-- Status -->
-  <div class="column span-17 first last">
-    <br/><h3>Status</h3>
+
+<ul id="repl-accordion">  
+
+  <!-- STATUS -->
+	<li>
+   	<h3><a name="rstatus" href="#rstatus">Status</a><span>-</span></h3>
+  <div class="column span-17 first last collapse">
+		<div class="collapse-container">
 		<table width="100%">
 			<tr>
 				<th  colspan='2' style="vertical-align: top">Ask Instructor if replacement is suitable:</th>
@@ -70,10 +76,15 @@ $cp_url = ($copy==null) ? '' : $copy['url'];
 		      </td>
 			</tr>
 	 </table>
-</div>
+	</div>
+	</div>
+	</li>
+
   <!-- INFORMATION -->
-  <div class="column span-17 first last">
-    <br/><h3>Information</h3>
+	<li>
+   <h3><a name="rinformation" href="#rinformation">Information</a><span>+</span></h3>
+  <div class="column span-17 first last collapse">
+		<div class="collapse-container">
 		<table style="border:none" width="100%">
         <tr>
             <th>Location:</th>
@@ -112,11 +123,15 @@ $cp_url = ($copy==null) ? '' : $copy['url'];
           </td>
         </tr>
       </table>
+		</div>
 	</div>	
+	</li>
 
 <!-- COPYRIGHT -->
-<div class="column span-17 first last">
- 	<br/><h3>Copyright</h3>
+<li>
+ 	<h3><a name="rcopyright" href="#rcopyright">Copyright</a><span>+</span></h3>
+<div class="column span-17 first last collapse">
+	<div class="collapse-container">
     <table width="100%">
         <tr>
           <th style="vertical-align: top">Copyright Status:</th>
@@ -145,10 +160,14 @@ $cp_url = ($copy==null) ? '' : $copy['url'];
         </tr>
     </table>
 </div>
+</div>
+</li>
 
 <!-- Questions -->
-<div class="column span-17 first last">
-  	<br/><h3>Questions</h3>
+<li>
+<h3><a name="rquestions" href="#rquestions">Questions</a><span>+</span></h3>
+<div class="column span-17 first last collapse">
+	<div class="collapse-container">
 					<small>
 						<a href="javascript:void(0);" onclick="repl_q_ap.toggle()">Add questions</a>
   					<br/>
@@ -182,11 +201,14 @@ $cp_url = ($copy==null) ? '' : $copy['url'];
    					<?php  }  } ?>
 					</div>
 </div>
+</div>
+</li>
 
 <!-- COMMENTS -->
-<div class="column span-17 first last">
-  <br/><h3>Comments</h3>
-
+<li>
+  <h3><a name="rcomments" href="#rcomments">Comments</a><span>+</span></h3>
+<div class="column span-17 first last collapse">
+	<div class="collapse-container">
 	<small>
 		<a href="javascript:void(0);" onclick="repl_com_ap.toggle();">Add Comment</a>
 	</small>
@@ -218,12 +240,15 @@ $cp_url = ($copy==null) ? '' : $copy['url'];
    <?php  }  } ?>
    </div>
 </div>
+	</div>
+</li>
 
 
 <!-- LOGS -->
-<div class="column span-17 first last">
-  <br/><h3>Log</h3>
-
+<li>
+  <h3><a name="rlog" href="#rlog">Log</a><span>+</span></h3>
+<div class="column span-17 first last collapse">
+	<div class="collapse-container">
  	<div id="replacementlog">
 	<br/>
     <?php if ($repl_obj['log'] == null) { ?>
@@ -239,6 +264,10 @@ $cp_url = ($copy==null) ? '' : $copy['url'];
     <?php  }  } ?>
  	</div>
 </div>
+</div>
+</li>
+
+</ul>
 <?php } ?>
 
 <!-- Uploads -->
@@ -255,7 +284,7 @@ $cp_url = ($copy==null) ? '' : $copy['url'];
 						<input type="hidden" name="copynotice" value="" />
 						<input type="hidden" name="copyholder" value="" />
 						<input type="hidden" name="copystatus" value="" />		       
-		 				<small style="color:red">NB: any existing replacement image will be overwritten</small>	
+		 				<small>NB: any existing replacement image will be overwritten</small>	
       </div>
 			<div class="formField">
       			<input type="submit" name="submit" id="submit" value="Upload" />

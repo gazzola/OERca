@@ -15,7 +15,6 @@ echo script('event-selectors.js');
 echo script('event-rules.js');
 echo script('ocwui.js');
 echo script('ocw_tool.js');
-//echo script('multiupload.js'); 
 ?>
 
 <div id="mainPage" class="container" style="margin:0; padding:0; width: 600px;">
