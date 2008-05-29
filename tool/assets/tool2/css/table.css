@@ -72,7 +72,9 @@ th.sortable-sortIPAddress,
 th.sortable-sortEnglishLonghandDateFormat,
 th.sortable-sortScientificNotation,
 th.sortable-sortImage,
-th.sortable-sortFileSize
+th.sortable-sortFileSize,
+th.sortable-sortNumeric,
+th.sortable-sortEnglishDateTime
 {
         cursor:pointer;
         background: #CAE8EA url(../images/bg_header_sortable.jpg) no-repeat;
