@@ -9,7 +9,7 @@
 $config['protocol']  = 'sendmail';
 $config['mailpath']  = '/usr/sbin/sendmail';
 $config['charset']   = 'iso-8859-1';
-$config['smtp_host'] = 'mail-relay.itd.umich.edu';
+$config['smtp_host'] = 'some.mail.server.you.ca.use.com';
 $config['useragent'] = 'CodeIgniter';
 $config['useragent'] = 'OER-Notification';
 $config['mailtype']  = 'text';

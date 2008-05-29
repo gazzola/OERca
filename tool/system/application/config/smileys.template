@@ -12,6 +12,7 @@
 |
 */
 
+
 $smileys = array(
 
 //	smiley			image name						width	height	alt

@@ -36,7 +36,7 @@ $config['logout_url']     = "http://www.umich.edu/";
 | access to the weblogin.umich.edu for authentication
 | ***** NOTE:  for UM production system you MUSt comment this out *******
 */
-/*   $config['remote_user']     = "dkhutch";    */
+/*   $config['remote_user']     = "some_registerd_user";    */
 /*
 |--------------------------------------------------------------------------
 | Index File
@@ -255,11 +255,11 @@ $config['encryption_key'] = "";
 */
 $config['sess_cookie_name']		= 'FreakAuth';
 $config['sess_expiration']		= 7200;
-$config['sess_encrypt_cookie']	= TRUE;
-$config['sess_use_database']	= TRUE;
+$config['sess_encrypt_cookie']		= TRUE;
+$config['sess_use_database']		= TRUE;
 $config['sess_table_name']		= 'ci_sessions';
 $config['sess_match_ip']		= FALSE;
-$config['sess_match_useragent']	= FALSE;
+$config['sess_match_useragent']		= FALSE;
 
 /*
 |--------------------------------------------------------------------------
@@ -329,12 +329,12 @@ $config['time_reference'] = 'local';
 | in your view files.  Options are TRUE or FALSE (boolean)
 |
 */
-$config['rewrite_short_tags'] = TRUE;
-$config['upload_path'] = './uploads/';
-$config['allowed_types'] = 'gif|jpg|png';
-$config['max_size'] = '100';
-$config['max_width'] = '1024';
-$config['max_height'] = '768';
+$config['rewrite_short_tags']   = TRUE;
+$config['upload_path'] 		= './uploads/';
+$config['allowed_types']        = 'gif|jpg|png';
+$config['max_size']             = '100';
+$config['max_width']            = '1024';
+$config['max_height']           = '768';
 
 /*
 |--------------------------------------------------------------------------
@@ -345,7 +345,7 @@ $config['max_height'] = '768';
 | access to the weblogin.umich.edu for authentication
 | ***** NOTE:  for UM production system you MUSt comment this out *******
 */
-//   $config['remote_user']     = "jsmith";
+//   $config['remote_user']     = "some_registered_user";
 
 
 ?>

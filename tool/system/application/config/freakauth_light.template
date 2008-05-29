@@ -559,7 +559,6 @@ $config['FAL_user_profile_fields_names'] =
 |-------------------------------------------------------------------------------
 | RULES FOR YOUR CUSTOM USER_PROFILE FIELDS
 |-------------------------------------------------------------------------------
-|
 | if you need callback validation functions,
 | remember to include them in your controllers
 |
