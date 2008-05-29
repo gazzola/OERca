@@ -1664,7 +1664,7 @@ class Coobject extends Model
 					$newpath = $this->prep_path($path, true); 
 					$newpath = $newpath."/{$this->material_filename($mid)}_slide_$loc.$ext";
 					@copy($pathtofile, $newpath); 
-					@chmod($newpath,'0777');
+					@chmod($newpath,0777);
 					@unlink($pathtofile);
 			} else {
 					exit('Could not find path to add slide.');
