@@ -1043,7 +1043,7 @@ class Coobject extends Model
 		$data['status'] = 'in progress';
 		
 		// set a default subtype_id if none is specified
-		if(!array_key_exists('subtype_id', $data)) {
+		if(!array_key_exists('subtype_id', $data) || !$data['subtype_id']) {
 		  $data['subtype_id'] = $this->misc_util->get_id_for_value('ocw_object_subtypes',
 		    "name", "None");
 		}
