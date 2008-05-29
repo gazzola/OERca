@@ -1,0 +1,5 @@
+In order to use svn without overwriting the config/*.php files every time a "svn update" or "svn co" is performed, the config/*.php file have been renamed to config/*.template.
+
+When the initial "svn co" is performed, the config/*.template files will need to be renamed to "config/*.php" and then these configuration files will need to be altered to fit your system configuration.
+
+More to come related to configuration.
