@@ -166,7 +166,10 @@ class Usermodel extends Model
 	function getUserByUsername($username)
 	{	
 		$this->db->where('user_name', $username);
-        $this->db->get($this->_table);
+	// the following line seems like a bug to me:
+        //    $this->db->get($this->_table);
+	// so I'm going to change this to this:
+	return $this->db->get($this->_table);
 	}
 		
 	// ------------------------------------------------------------------------
