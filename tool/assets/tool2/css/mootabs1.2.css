@@ -71,9 +71,9 @@
 	border-bottom: 1px solid #ddd;
 }
 
-#Replacement.mootabs_panel.active { background-color: green; }
+#Replacement.mootabs_panel.active { background-color: darkgray; }
 .mootabs_title li[title="Replacement"].active,
 .mootabs_title li[title="Replacement"].active h2 {
-	background-color: green;
+	background-color: darkgray;
 	color: #fff;
 }
