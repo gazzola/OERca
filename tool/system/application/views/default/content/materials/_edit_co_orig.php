@@ -214,13 +214,13 @@ $log = $obj['log'];
 												foreach($instructor_questions as $question) 
 												{ ?>
 					     							<small>
-					     								Question Asked by&nbsp;<?=$this->ocw_user->username($question['user_id'])?>&nbsp;<?=strtolower($this->ocw_utils->time_diff_in_words($question['modified_on']))?>
+					     								Question Asked by&nbsp;<?=$this->ocw_user->username($question['user_id'])?>&nbsp;<?=strtolower($this->ocw_utils->time_diff_in_words($question['created_on']))?>:
 					        					  	</small>
 					        						<p><b><?=$question['question']?></b></p>
 													<?php if ($question['answer']<>'') 
 														{ ?>
 															<small>
-							     								Answered by&nbsp;<?=$this->ocw_user->username($question['modified_by'])?>&nbsp;<?=strtolower($this->ocw_utils->time_diff_in_words($question['modified_on']))?>
+							     								Answered by&nbsp;<?=$this->ocw_user->username($question['modified_by'])?>&nbsp;<?=strtolower($this->ocw_utils->time_diff_in_words($question['modified_on']))?>:
 							        					  	</small>
 															<p style="margin-left: 5px; border: 1px dotted #eee; background-color:white;color:black"><?=$question['answer']?></p>
 								     				<?php } ?>
@@ -272,13 +272,13 @@ $log = $obj['log'];
 												foreach($dscribe2_questions as $question) 
 												{ ?>
 					     							<small>
-					     								Question Asked by&nbsp;<?=$this->ocw_user->username($question['user_id'])?>&nbsp;<?=strtolower($this->ocw_utils->time_diff_in_words($question['modified_on']))?>
+					     								Question Asked by&nbsp;<?=$this->ocw_user->username($question['user_id'])?>&nbsp;<?=strtolower($this->ocw_utils->time_diff_in_words($question['created_on']))?>:
 					        					  	</small>
 					        						<p><b><?=$question['question']?></b></p>
 													<?php if ($question['answer']<>'') 
 														{ ?>
 															<small>
-							     								Answered by&nbsp;<?=$this->ocw_user->username($question['modified_by'])?>&nbsp;<?=strtolower($this->ocw_utils->time_diff_in_words($question['modified_on']))?>
+							     								Answered by&nbsp;<?=$this->ocw_user->username($question['modified_by'])?>&nbsp;<?=strtolower($this->ocw_utils->time_diff_in_words($question['modified_on']))?>:
 							        					  	</small>
 															<p style="margin-left: 5px; border: 1px dotted #eee; background-color:white;color:black"><?=$question['answer']?></p>
 								     				<?php } ?>

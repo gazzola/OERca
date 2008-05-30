@@ -66,18 +66,18 @@ class Coobject extends Model
 					if ($oid <> '') {
 							if ($oid == $row['id']) {
 									$row['comments'] = $this->comments($row['id'],'user_id,comments,modified_on');
-									$row['questions'] = $this->questions($row['id'],'id,user_id,question,answer,role,status,modified_by,modified_on');
-									$row['instructor_questions'] = $this->questions($row['id'],'id,user_id,question,answer,role,status,modified_by,modified_on', "original", "instructor");
-									$row['dscribe2_questions'] = $this->questions($row['id'],'id,user_id,question,answer,role,status,modified_by,modified_on', "original", "dscribe2");
+									$row['questions'] = $this->questions($row['id'],'id,user_id,question,answer,role,status,created_on,modified_by,modified_on');
+									$row['instructor_questions'] = $this->questions($row['id'],'id,user_id,question,answer,role,status,created_on,modified_by,modified_on', "original", "instructor");
+									$row['dscribe2_questions'] = $this->questions($row['id'],'id,user_id,question,answer,role,status,created_on,modified_by,modified_on', "original", "dscribe2");
 									$row['copyright'] = $this->copyright($row['id']);
 									$row['log'] = $this->logs($row['id'],'user_id,log,modified_on');
 									array_push($objects, $row);
 							}
 					} else {
 							$row['comments'] = $this->comments($row['id'],'user_id,comments,modified_on');
-							$row['questions'] = $this->questions($row['id'],'id,user_id,question,answer,role,status,modified_by,modified_on');
-							$row['instructor_questions'] = $this->questions($row['id'],'id,user_id,question,answer,role,status,modified_by,modified_on', "original", "instructor");
-							$row['dscribe2_questions'] = $this->questions($row['id'],'id,user_id,question,answer,role,status,modified_by,modified_on', "original", "dscribe2");
+							$row['questions'] = $this->questions($row['id'],'id,user_id,question,answer,role,status,created_on,modified_by,modified_on');
+							$row['instructor_questions'] = $this->questions($row['id'],'id,user_id,question,answer,role,status,created_on,modified_by,modified_on', "original", "instructor");
+							$row['dscribe2_questions'] = $this->questions($row['id'],'id,user_id,question,answer,role,status,created_on,modified_by,modified_on', "original", "dscribe2");
 							$row['copyright'] = $this->copyright($row['id']);
 							$row['log'] = $this->logs($row['id'],'user_id,log,modified_on');
 							array_push($objects, $row);
