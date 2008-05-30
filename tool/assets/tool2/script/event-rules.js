@@ -324,6 +324,8 @@ var Rules = {
 							ask_dscrib2[i].checked = 'checked';
 						}
 					}
+					// reset url
+					url = $('server').value+'materials/update_object/'+course_id+'/'+material_id;
 					url += '/'+object_id+'/ask_dscribe2/'+encodeURIComponent('yes');
       				var fb1 = $('feedback');
 					new Ajax(url, { method: 'get', update: fb1, }).request();
