@@ -50,31 +50,18 @@ $log = $obj['log'];
   	<h3><a name="ostatus" href="#ostatus">Status</a><span>-</span></h3>
 		<div class="column span-17 first last collapse">
 		<div class="collapse-container">	
-					<table width="100%">
-						<tr>
-						<th>Cleared:</th>
-						<td colspan="3">
-						  <?php 
-							  $yes = ($obj['done']=='1') ? true : false;
-							  $no = ($obj['done']=='1') ? false : true;
-							  echo form_radio('done', '1', $yes, 'class="do_object_update"').'&nbsp;Yes&nbsp;'; 
-							  echo form_radio('done', '0', $no, 'class="do_object_update"').'&nbsp;No';
-						  ?>
-								<input type="hidden" name="ask_status" id="ask_status"
-											 value="<?= (($obj['ask']=='yes') ? (($obj['ask_status']=='done') ? 'true':'false'): 'true') ?>">
-			 	    </td>
-						</tr>
-						<tr>
-							<th>Recommended Action:</th>
-							<td>
-						  <?php echo form_dropdown('action_type', 
-							  				$action_types, $obj['action_type'] ,'id="action_type" class="do_object_update do_object_action_type"'); ?>
-							</td>
-							<th>Final Action Taken:</th>
-							<td>
-							<?php echo form_dropdown('action_taken', 
-							  				$action_taken_types, $obj['action_taken'] ,'id="action_taken" class="do_object_update"'); ?>
-							</td>
+			<table width="100%">
+				<tr>
+					<th>Recommended Action:</th>
+					<td>
+				  <?php echo form_dropdown('action_type', 
+					  				$action_types, $obj['action_type'] ,'id="action_type" class="do_object_update do_object_action_type"'); ?>
+					</td>
+					<th>Final Action Taken:</th>
+					<td>
+					<?php echo form_dropdown('action_taken', 
+					  				$action_taken_types, $obj['action_taken'] ,'id="action_taken" class="do_object_update"'); ?>
+					</td>
 			      </tr>
 				  <tr>
 			  		<td colspan='4'>
@@ -303,8 +290,21 @@ $log = $obj['log'];
 							</p>
 						</div>
 			 	    </td>
-						</tr>
-					</table>
+				</tr>
+				<tr>
+					<th>Cleared:</th>
+					<td colspan="3">
+					  <?php 
+						  $yes = ($obj['done']=='1') ? true : false;
+						  $no = ($obj['done']=='1') ? false : true;
+						  echo form_radio('done', '1', $yes, 'class="do_object_update"').'&nbsp;Yes&nbsp;'; 
+						  echo form_radio('done', '0', $no, 'class="do_object_update"').'&nbsp;No';
+					  ?>
+							<input type="hidden" name="ask_status" id="ask_status"
+										 value="<?= (($obj['ask']=='yes') ? (($obj['ask_status']=='done') ? 'true':'false'): 'true') ?>">
+		 	    	</td>
+				</tr>
+			</table>
 		</div>
 	  </div>
 	</li>
