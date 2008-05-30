@@ -1,6 +1,11 @@
 <h2>Content Objects in need of dscribe2 input (<?=$need_input?> items)</h2>
-
-<?php if ($role=='dscribe2') { ?>
+<?php 
+	if (isset($alert_missing_dscribe))
+	{
+		echo '<p class="error">'.$alert_missing_dscribe.'</p>';
+	}
+ 	
+ 	if ($role=='dscribe2') { ?>
 <div class="column span-24 first last" style="padding:0px;margin: 20px 0 20px 0">
 	<b>Please respond to the following dScribe questions or action recommendations.  Thanks for your cooperation!</b>
 </div>

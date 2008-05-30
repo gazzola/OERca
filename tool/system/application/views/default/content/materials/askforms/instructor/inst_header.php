@@ -7,6 +7,11 @@ Thanks for your cooperation!
 </div>
 
 <?php 
+	if (isset($alert_missing_dscribe))
+	{
+		echo '<p class="error">'.$alert_missing_dscribe.'</p>';
+	}
+	
 	if (!isset($numobjects))
 		$numobjects=0;
 	if (!isset($num_repl))

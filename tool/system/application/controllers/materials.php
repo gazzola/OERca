@@ -441,9 +441,16 @@ class Materials extends Controller {
     		$this->layout->buildPage('materials/askforms/dscribe1/index', $data);
 
 		} elseif ($role == 'dscribe2') {
-				$q2 = ($questions_to == '') ? 'dscribe2' : $questions_to;
-				$data['questions_to'] = $q2; 
-
+			$q2 = ($questions_to == '') ? 'dscribe2' : $questions_to;
+			$data['questions_to'] = $q2; 
+			
+			// check matchup of dscribe2 and dscribe
+			$passUid = getUserProperty('id');
+			$user_rels = $this->ocw_user->get_dscribe2_rel($passUid);
+	        if ($user_rels[0] == NULL) {
+	        	$data['alert_missing_dscribe']="Alert: Could not find corresponding dscribes for dscribe2 id=".$passUid;
+	        }
+	        
     		$this->layout->buildPage('materials/askforms/dscribe2/index', $data);
 
 		} elseif ($role == 'ipreviewer') {
@@ -453,6 +460,10 @@ class Materials extends Controller {
     		$this->layout->buildPage('materials/askforms/ipreviewer/index', $data);
 
 		} else {	// default: instructor view (no one really needs to login for this view)
+    			$user_rels = $this->ocw_user->dscribes($cid);
+                if ($user_rels[0] == NULL) {
+                	$data['alert_missing_dscribe']="Alert: Could not find any dscribe for course id=".$cid;    
+                }
     		$this->layout->buildPage('materials/askforms/instructor/index', $data);
 		}
 	}
