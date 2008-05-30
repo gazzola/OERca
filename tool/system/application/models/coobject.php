@@ -67,6 +67,8 @@ class Coobject extends Model
 							if ($oid == $row['id']) {
 									$row['comments'] = $this->comments($row['id'],'user_id,comments,modified_on');
 									$row['questions'] = $this->questions($row['id'],'id,user_id,question,answer,role,status,modified_by,modified_on');
+									$row['instructor_questions'] = $this->questions($row['id'],'id,user_id,question,answer,role,status,modified_by,modified_on', "original", "instructor");
+									$row['dscribe2_questions'] = $this->questions($row['id'],'id,user_id,question,answer,role,status,modified_by,modified_on', "original", "dscribe2");
 									$row['copyright'] = $this->copyright($row['id']);
 									$row['log'] = $this->logs($row['id'],'user_id,log,modified_on');
 									array_push($objects, $row);
@@ -74,6 +76,8 @@ class Coobject extends Model
 					} else {
 							$row['comments'] = $this->comments($row['id'],'user_id,comments,modified_on');
 							$row['questions'] = $this->questions($row['id'],'id,user_id,question,answer,role,status,modified_by,modified_on');
+							$row['instructor_questions'] = $this->questions($row['id'],'id,user_id,question,answer,role,status,modified_by,modified_on', "original", "instructor");
+							$row['dscribe2_questions'] = $this->questions($row['id'],'id,user_id,question,answer,role,status,modified_by,modified_on', "original", "dscribe2");
 							$row['copyright'] = $this->copyright($row['id']);
 							$row['log'] = $this->logs($row['id'],'user_id,log,modified_on');
 							array_push($objects, $row);
@@ -173,12 +177,15 @@ class Coobject extends Model
 		$repl_objs = $this->replacements($mid);
 
 		if (!is_null($orig_objs)) {
-
 		foreach ($orig_objs as $obj) { 
 						/* get general question info for dscribe2 */
 						if (!is_null($obj['questions'])) { 
-								// remove all non dscribe2 questions
-								foreach ($obj['questions'] as $k => $q) { if($q['role']!='dscribe2') { unset($obj['questions'][$k]); }}
+							
+								
+							// remove all non dscribe2 questions
+								foreach ($obj['questions'] as $k => $q) { 
+									
+								if($q['role']!='dscribe2') { unset($obj['questions'][$k]); }}
 								if (count($obj['questions'])) { 
 										$notalldone = false;
 										$obj['otype'] = 'original';
@@ -585,11 +592,17 @@ class Coobject extends Model
      * @param   string type either original object or replacement 
      * @return  array
      */
-	public function questions($oid, $details='*', $type='original')
+	public function questions($oid, $details='*', $type='original', $role='')
 	{
 		$questions = array();
 		$table = ($type == 'original') ? 'object_questions' : 'object_replacement_questions';
-		$this->db->select($details)->from($table)->where('object_id',$oid)->orderby('modified_on DESC');
+		if ($role<>'')
+		{
+			$where = 'object_id="'.$oid.'" and role="'.$role.'"';	
+		}else{
+			$where = 'object_id="'.$oid.'"';	
+		}
+		$this->db->select($details)->from($table)->where($where)->orderby('created_on DESC');
 		$q = $this->db->get();
 
 		if ($q->num_rows() > 0) {
@@ -1143,7 +1156,6 @@ class Coobject extends Model
 		}
 		else
 		{
-			log_message('error', 'not exist oid='.$oid);
 			$data['id'] = $id;
 			$data['object_id'] = $oid;
 			$data['user_id'] = $uid;

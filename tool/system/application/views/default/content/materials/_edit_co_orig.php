@@ -33,6 +33,8 @@ $cp_holder = ($copy==null) ? '' : $copy['holder'];
 $cp_notice = ($copy==null) ? '' : $copy['notice'];
 $cp_url = ($copy==null) ? '' : $copy['url'];
 $questions = $obj['questions'];
+$instructor_questions=$obj['instructor_questions'];
+$dscribe2_questions = $obj['dscribe2_questions'];
 $comments = $obj['comments'];
 $log = $obj['log'];
 ?>
@@ -201,7 +203,45 @@ $log = $obj['log'];
 							<p>
 								<b><?php echo '<a target="_new" href="'.site_url("materials/askforms/$cid/$mid/provenance/instructor").'">view ASK form</a>'; ?> to see the default questions.</b><br/>
 								<b>Please add any additional questions for the instructor in the space below</b><br/>
-						       	<textarea name="inst_question" id="inst_question" rows="10" cols="50" class="do_object_update"><?=$question?></textarea>
+						       	<small>
+									<a href="javascript:void(0);" onclick="orig_q_ap.toggle()">Add questions</a><br/>
+								</small>
+								
+								<div id="orig_q_addpanel">
+				   					<textarea name="question" id="question" cols="50"></textarea>
+				   					<p>
+				     						<input type="button" value="Save" class="do_add_instructor_object_question" />
+						     				<input type="button" value="Cancel" onclick="orig_q_ap.hide()" />
+						     				<br/><hr style="border: 1px dotted #555"/><br/>
+				   					</p>
+				  				</div>
+							
+								<div class="clear"><br/></div>
+							
+							  	<div id="objectqs">
+			  						<?php 	if ($instructor_questions == null) { ?>
+							 			<p id="noquestions">No questions posted</p>
+									<?php	} 
+											else 
+											{ 
+												foreach($instructor_questions as $question) 
+												{ ?>
+					     							<small>
+					     								Question Asked by&nbsp;<?=$this->ocw_user->username($question['user_id'])?>&nbsp;<?=strtolower($this->ocw_utils->time_diff_in_words($question['modified_on']))?>
+					        					  	</small>
+					        						<p><b><?=$question['question']?></b></p>
+													<?php if ($question['answer']<>'') 
+														{ ?>
+															<small>
+							     								Answered by&nbsp;<?=$this->ocw_user->username($question['modified_by'])?>&nbsp;<?=strtolower($this->ocw_utils->time_diff_in_words($question['modified_on']))?>
+							        					  	</small>
+															<p style="margin-left: 5px; border: 1px dotted #eee; background-color:white;color:black"><?=$question['answer']?></p>
+								     				<?php } ?>
+													<p></p>
+			     									<p><hr style="border: 1px dashed #eee"/></p>
+			   								<?php  }  
+											} ?>
+								</div>
 							</p>
 						</div>
 			 	    </td>
@@ -219,8 +259,47 @@ $log = $obj['log'];
 						?>
 						<div id="ask_dscribe2_yes" style="display: <?= ($obj['ask_dscribe2']=='yes') ? 'block':'none'?>"> 
 							<p>
+								<b><?php echo '<a target="_new" href="'.site_url("materials/askforms/$cid/$mid/provenance/instructor").'">view ASK form</a>'; ?> </b><br/>
 								<b>Please add any questions for the dScribe2 in the space below.</b><br/>
-						       	<textarea name="dscribe2_question" id="dscribe2_question" rows="10" cols="50" class="do_object_update"><?=$dscribe2_question?></textarea>
+						       	<small>
+									<a href="javascript:void(0);" onclick="orig_q_dscribe2_ap.toggle()">Add questions</a><br/>
+								</small>
+								
+								<div id="orig_q_dscribe2_addpanel">
+				   					<textarea name="dscribe2_question" id="dscribe2_question" cols="50"></textarea>
+				   					<p>
+				     						<input type="button" value="Save" class="do_add_dscribe2_object_question" />
+						     				<input type="button" value="Cancel" onclick="orig_q_dscribe2_ap.hide()" />
+						     				<br/><hr style="border: 1px dotted #555"/><br/>
+				   					</p>
+				  				</div>
+							
+								<div class="clear"><br/></div>
+							
+							  	<div id="objectqs">
+			  						<?php 	if ($dscribe2_questions == null) { ?>
+							 			<p id="nodscribe2questions">No questions posted</p>
+									<?php	} 
+											else 
+											{ 
+												foreach($dscribe2_questions as $question) 
+												{ ?>
+					     							<small>
+					     								Question Asked by&nbsp;<?=$this->ocw_user->username($question['user_id'])?>&nbsp;<?=strtolower($this->ocw_utils->time_diff_in_words($question['modified_on']))?>
+					        					  	</small>
+					        						<p><b><?=$question['question']?></b></p>
+													<?php if ($question['answer']<>'') 
+														{ ?>
+															<small>
+							     								Answered by&nbsp;<?=$this->ocw_user->username($question['modified_by'])?>&nbsp;<?=strtolower($this->ocw_utils->time_diff_in_words($question['modified_on']))?>
+							        					  	</small>
+															<p style="margin-left: 5px; border: 1px dotted #eee; background-color:white;color:black"><?=$question['answer']?></p>
+								     				<?php } ?>
+													<p></p>
+			     									<p><hr style="border: 1px dashed #eee"/></p>
+			   								<?php  }  
+											} ?>
+								</div>
 							</p>
 						</div>
 			 	    </td>
@@ -316,47 +395,7 @@ $log = $obj['log'];
     </div>
 		</div>
 	</li>
-
-  <!-- QUESTIONS -->
-	<li>
- 		<h3><a name="oquestions" href="#oquestions">Questions</a><span>+</span></h3>
-  	<div class="column span-17 first last collapse">
-			<div class="collapse-container">
-					<small>
-						<a href="javascript:void(0);" onclick="orig_q_ap.toggle()">Add questions</a><br/>
-					</small>
-					
-					<div id="orig_q_addpanel">
-   					<textarea name="question" id="question" cols="50"></textarea>
-   					<p>
-     						<input type="button" value="Save" class="do_add_object_question" />
-		     				<input type="button" value="Cancel" onclick="orig_q_ap.hide()" />
-		     				<br/><hr style="border: 1px dotted #555"/><br/>
-   					</p>
-  				</div>
-				
-					<div class="clear"><br/></div>
-				
-				  <div id="objectqs">
-  					<?php if ($questions == null) { ?>
-				 			<p id="noquestions">No questions posted</p>
-						<?php } else { foreach($questions as $question) { ?>
-     					<p><b><?=$question['question']?></b></p>
-							<?php if ($question['answer']<>'') { ?>
-							<p style="margin-left: 5px; border: 1px dotted #eee; background-color:white; color:black;"><?=$question['answer']?></p>
-     					<?php } ?>
-							<p>
-        				<small>by&nbsp;<?=$this->ocw_user->username($question['user_id'])?>&nbsp;
-        					<?=strtolower($this->ocw_utils->time_diff_in_words($question['modified_on']))?>
-        				</small>
-     					</p>
-     					<p><hr style="border: 1px dashed #eee"/></p>
-   					<?php  }  } ?>
-					</div>
-    </div>
-		</div>
-	</li>
-
+	
   <!-- COMMENTS -->
  	<li>
 		<h3><a name="ocomments" href="#ocomments">Comments</a><span>+</span></h3>

@@ -3,8 +3,17 @@ $count = 1;
 $sliders = array();
 
 foreach($cos as $obj) {
-  			$questions = $obj['questions'];
-				$fq = $obj['questions'][0]; // get first question
+	$questions = $obj['questions'];
+	// some array value might been unset, so need to loop in order to find the first set one
+	$found = false;
+	for ($i = 0; $i < sizeof($questions) && !$found; $i++)
+	{
+		if (isset($questions[$i]))
+		{
+			$fq = $questions[$i];
+			$found = true;
+		}
+	}
 ?>
 <tr>
 	<!-- first column -->

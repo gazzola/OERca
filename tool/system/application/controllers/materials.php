@@ -647,9 +647,19 @@ class Materials extends Controller {
      exit;
 	}
 
-	public function add_object_question($oid,$question,$type='original')
+	public function add_instructor_object_question($oid,$question,$type='original')
 	{
 	   $data['question'] = $question;
+	   $data['role'] = 'instructor';
+	   $this->coobject->add_question($oid, getUserProperty('id'), $data, $type);
+     $this->ocw_utils->send_response('success');
+     exit;
+	}
+	
+	public function add_dscribe2_object_question($oid,$question,$type='original')
+	{
+	   $data['question'] = $question;
+	   $data['role'] ='dscribe2';
 	   $this->coobject->add_question($oid, getUserProperty('id'), $data, $type);
      $this->ocw_utils->send_response('success');
      exit;

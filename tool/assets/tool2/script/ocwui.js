@@ -1,4 +1,4 @@
-var orig_com_ap, orig_q_ap, repl_com_ap, repl_q_ap; // references for add panel divs
+var orig_com_ap, orig_q_ap, orig_q_dscribe2_ap,repl_com_ap, repl_q_ap; // references for add panel divs
 // boolean values to determine if to open add pane - used in case of errors
 var open_uploadmat_pane, open_editcourse_pane, open_uploadco_pane, open_editinst_pane;
 // boolean value for edit co page
@@ -65,6 +65,11 @@ var Site = {
     if ($('orig_q_addpanel')) {
       orig_q_ap = new Fx.Slide($('orig_q_addpanel'), {duration: 500, transition: Fx.Transitions.linear });
       orig_q_ap.hide();
+    }
+    
+    if ($('orig_q_dscribe2_addpanel')) {
+      orig_q_dscribe2_ap = new Fx.Slide($('orig_q_dscribe2_addpanel'), {duration: 500, transition: Fx.Transitions.linear });
+      orig_q_dscribe2_ap.hide();
     }
 
     if ($('repl_com_addpanel')) {

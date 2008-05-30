@@ -54,7 +54,45 @@ $cp_url = ($copy==null) ? '' : $copy['url'];
 				<p>
 					<b><?php echo '<a target="_new" href="'.site_url("materials/askforms/$cid/$mid/replacement/instructor").'">view ASK form</a>'; ?> to see the default questions.</b><br/>
 					<b>Please add any additional questions for the instructor in the space below</b><br/>
-			       	<textarea name="replacement_question" id="replacement_question" rows="10" cols="50" class="do_replacement_update"><?=isset($replacement_questions)?$replacement_question:''?></textarea>
+			       	<small>
+						<a href="javascript:void(0);" onclick="repl_q_ap.toggle()">Add questions</a>
+  					<br/>
+					</small>
+					
+					<div id="repl_q_addpanel">
+   					<textarea name="repl_question" id="repl_question" cols="50"></textarea>
+   					<p>
+     				<input type="button" value="Save" class="do_add_replacement_question" />
+     				<input type="button" value="Cancel" onclick="repl_q_ap.hide()" />
+     				<br/><hr style="border: 1px dotted #555"/><br/>
+   					</p>
+  				</div>
+				
+					<div class="clear"><br/></div>
+				
+				  <div id="replqs">
+  					<?php if ($repl_obj['questions'] == null) { ?>
+				 			<p id="noreplquestions">No questions posted</p>
+						<?php 	} 
+								else 
+								{ 
+									foreach($repl_obj['questions'] as $question) 
+									{ ?>
+										<small>
+		     								Question Asked by&nbsp;<?=$this->ocw_user->username($question['user_id'])?>&nbsp;<?=strtolower($this->ocw_utils->time_diff_in_words($question['modified_on']))?>
+		        					  	</small>
+	     								<p><b><?=$question['question']?><b></p>
+										<?php if ($question['answer']<>'') 
+											{ ?>
+												<small>
+				     								Answered by&nbsp;<?=$this->ocw_user->username($question['modified_by'])?>&nbsp;<?=strtolower($this->ocw_utils->time_diff_in_words($question['modified_on']))?>
+				        					  	</small>
+													<p style="margin-left: 5px; border: 1px dotted #eee; background-color:white"><?=$question['answer']?></p>
+				     					<?php } ?>
+     									<p><hr style="border: 1px dashed #eee"/></p>
+   							<?php  }  
+								} ?>
+					</div>
 				</p>
 			</div>
  	    </td>
@@ -159,47 +197,6 @@ $cp_url = ($copy==null) ? '' : $copy['url'];
           </td>
         </tr>
     </table>
-</div>
-</div>
-</li>
-
-<!-- Questions -->
-<li>
-<h3><a name="rquestions" href="#rquestions">Questions</a><span>+</span></h3>
-<div class="column span-17 first last collapse">
-	<div class="collapse-container">
-					<small>
-						<a href="javascript:void(0);" onclick="repl_q_ap.toggle()">Add questions</a>
-  					<br/>
-					</small>
-					
-					<div id="repl_q_addpanel">
-   					<textarea name="repl_question" id="repl_question" cols="50"></textarea>
-   					<p>
-     				<input type="button" value="Save" class="do_add_replacement_question" />
-     				<input type="button" value="Cancel" onclick="repl_q_ap.hide()" />
-     				<br/><hr style="border: 1px dotted #555"/><br/>
-   					</p>
-  				</div>
-				
-					<div class="clear"><br/></div>
-				
-				  <div id="replqs">
-  					<?php if ($repl_obj['questions'] == null) { ?>
-				 			<p id="noreplquestions">No questions posted</p>
-						<?php } else { foreach($repl_obj['questions'] as $question) { ?>
-     					<p><b><?=$question['question']?><b></p>
-							<?php if ($question['answer']<>'') { ?>
-							<p style="margin-left: 5px; border: 1px dotted #eee; background-color:white"><?=$question['answer']?></p>
-     					<?php } ?>
-							<p>
-        				<small>by&nbsp;<?=$this->ocw_user->username($question['user_id'])?>&nbsp;
-        					<?=strtolower($this->ocw_utils->time_diff_in_words($question['modified_on']))?>
-        				</small>
-     					</p>
-     					<p><hr style="border: 1px dashed #eee"/></p>
-   					<?php  }  } ?>
-					</div>
 </div>
 </div>
 </li>

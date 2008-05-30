@@ -164,11 +164,11 @@ var Rules = {
 		}
 	},
 	
-	'.do_add_object_question': function(element) {
+	'.do_add_instructor_object_question': function(element) {
 		element.onclick = function(e) {
 		  new Event(e).stop();
 			var object_id = $('oid').value; 
-      var url = $('server').value+'materials/add_object_question/'+object_id;
+      var url = $('server').value+'materials/add_instructor_object_question/'+object_id;
 			var qs = $('question').value;
 			var get_qs = encodeURIComponent($('question').value);
 				
@@ -209,6 +209,50 @@ var Rules = {
 		}
 	},
 
+	'.do_add_dscribe2_object_question': function(element) {
+		element.onclick = function(e) {
+		  new Event(e).stop();
+			var object_id = $('oid').value; 
+      var url = $('server').value+'materials/add_dscribe2_object_question/'+object_id;
+			var qs = $('dscribe2_question').value;
+			var get_qs = encodeURIComponent($('dscribe2_question').value);
+				
+			if (qs == '') {
+          alert('Please enter a question');
+			} else {
+          var fb = $('feedback');
+          var response;
+					var once = true;
+					url += '/'+get_qs; 
+			
+          new Ajax(url,
+                  {
+					 					method: 'get', 
+									 	update: fb,
+                    onComplete:function() {
+                       response = fb.innerHTML;
+											if (once) {						
+                       	if (response=='success') {
+														orig_q_dscribe2_ap.toggle();
+														var msg = "<small>by&nbsp;"+$('user').value+"&nbsp;today</small>";
+														var line = '<hr style="border: 1px solid #336699"/>';
+														var new_line = new Element('p').setHTML(line);
+														var new_time = new Element('p').setHTML(msg);
+														var new_cm = new Element('p').setHTML(qs);
+														new_line.injectTop( $('objectqs') );
+														new_time.injectTop( $('objectqs') );
+														new_cm.injectTop( $('objectqs') );
+														$('dscribe2_question').value = '';
+														if ($('nodscribe2questions')) { $('nodscribe2questions').innerHTML = ''; }
+                        } else {
+                            alert(response);
+                       	}
+												once = false;
+					  					}
+           }}).request();
+			  }
+		}
+	},
 	'.do_object_update' : function(element) {
 		element.onchange = function () {
 				var response;
@@ -636,7 +680,7 @@ var Rules = {
 		element.onclick = function(e) {
 		  new Event(e).stop();
 			var object_id = $('rid').value; 
-      var url = $('server').value+'materials/add_object_question/'+object_id;
+      var url = $('server').value+'materials/add_instructor_object_question/'+object_id;
 			var qs = $('repl_question').value;
 			var get_qs = encodeURIComponent($('repl_question').value);
 				
