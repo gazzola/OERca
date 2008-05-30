@@ -1577,33 +1577,88 @@ class Coobject extends Model
 			return ($name=='') ? 'Could not find type' : $name;
 	}
 
-	public function prev_next($cid, $mid, $oid)
-	{
-		$next = '';
-		$prev = '';
-
-		$this->db->select('id, name')->from('objects')->where('material_id',$mid)->orderby('id');
-		$q = $this->db->get();
-		$num = $q->num_rows();
-		$thisnum = $count = 0;
+	//public function prev_next($cid, $mid, $oid)
+	//{
+	//	$next = '';
+	//	$prev = '';
+  //
+	//	$this->db->select('id, name')->from('objects')->where('material_id',$mid)->orderby('id');
+	//	$q = $this->db->get();
+	//	$num = $q->num_rows();
+	//	$thisnum = $count = 0;
+	//
+	//	if ($num > 0) {
+	//		foreach($q->result_array() as $row) {
+	//			$count++;
+	//			if ($row['id'] == ($oid - 1)) {
+	//				$prev = '<a href="'.site_url("materials/object_info/$cid/$mid/{$row['id']}").'">&laquo;&nbsp;Previous</a>';
+	//			}
+	//			if ($row['id'] == ($oid + 1)) {
+	//				$next = '<a href="'.site_url("materials/object_info/$cid/$mid/{$row['id']}").'">Next&nbsp;&raquo;</a>';
+	//			}
+	//			if ($row['id'] == $oid) { $thisnum = $count; }
+	//		}
+	//	}
+	//	
+	//	$prev = ($prev=='') ? '&laquo;&nbsp;Previous' : $prev;
+	//	$next = ($next=='') ? 'Next&nbsp;&raquo;' : $next;
+	//	$mid = ($num > 1) ? "$thisnum of $num" : '';
+	//	return $prev.'&nbsp;&nbsp;-&nbsp;'.$mid.'&nbsp;-&nbsp;&nbsp;'.$next; 
+	//}
 	
-		if ($num > 0) {
-			foreach($q->result_array() as $row) {
-				$count++;
-				if ($row['id'] == ($oid - 1)) {
-					$prev = '<a href="'.site_url("materials/object_info/$cid/$mid/{$row['id']}").'">&laquo;&nbsp;Previous</a>';
-				}
-				if ($row['id'] == ($oid + 1)) {
-					$next = '<a href="'.site_url("materials/object_info/$cid/$mid/{$row['id']}").'">Next&nbsp;&raquo;</a>';
-				}
-				if ($row['id'] == $oid) { $thisnum = $count; }
-			}
-		}
+	/**
+    * Generate the previous, next navigation arrows at the bottom of
+    * the CO display pages. Arrows are only clickable if in fact that
+    * material has previous or next content objects. Otherwise they 
+    * are displayed as unclickable text. The relevant results are
+    * returned as generated html.
+    *
+    * @param    int the course id
+    * @param    int the material id
+    * @param    int the content object id
+    *
+    * @return   string the html source for the navigation links
+    */
+  public function prev_next($cid, $mid, $oid)
+	{
+		$prev_obj = NULL;
+		$curr_num = NULL;
+		$next_obj = NULL;
 		
-		$prev = ($prev=='') ? '&laquo;&nbsp;Previous' : $prev;
-		$next = ($next=='') ? 'Next&nbsp;&raquo;' : $next;
-		$mid = ($num > 1) ? "$thisnum of $num" : '';
-		return $prev.'&nbsp;&nbsp;-&nbsp;'.$mid.'&nbsp;-&nbsp;&nbsp;'.$next; 
+		$this->db->select('id, name')->
+		  from('objects')->where('material_id',$mid)->orderby('id');
+		$q = $this->db->get();
+		$total_num = $q->num_rows();
+	
+		/* content object ID's for previous and next items if any and get
+		 * the number of the current content object $oid for the current
+		 * material $mid nothing happens if no content objects are found */
+		if ($total_num > 0) {
+		  $q_results = $q->result_array();
+		   for ($i = 0; $i < $total_num; $i++) {
+		     // $this->ocw_utils->dump($q_results[$i]);
+		     if ($q_results[$i]['id'] == $oid) {
+		       $curr_num = ($i + 1);
+		       if ($i > 0) {
+		         $prev_obj = $q_results[$i - 1]['id'];
+		       }
+		       if ($i < ($total_num - 1)) {
+		         $next_obj = $q_results[$i + 1]['id'];
+		       }
+		     }
+		   }
+		 } 
+		
+		/* make buttons active if the respective values are defined,
+		 * plain text otherwise */
+		$prev_nav = ($prev_obj) ? '<a href="'.site_url("materials/object_info/$cid/$mid/$prev_obj").'">&laquo;&nbsp;Previous</a>' : 
+		  '&laquo;&nbsp;Previous';
+		$curr_nav = ($curr_num) ? "$curr_num of $total_num" : "";
+		$next_nav = ($next_obj) ? '<a href="'.site_url("materials/object_info/$cid/$mid/$next_obj").'">Next&nbsp;&raquo;</a>' :
+		  'Next&nbsp;&raquo;';
+		
+		return $prev_nav.'&nbsp;&nbsp;-&nbsp;'.
+		  $curr_nav.'&nbsp;-&nbsp;&nbsp;'.$next_nav;	
 	}
 
 	public function prep_path($name, $slide=false)
