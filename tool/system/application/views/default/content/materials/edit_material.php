@@ -82,7 +82,9 @@
 
 <?php } else { ?>
   <div class="column span-24 first last">
-		<p class="error">No content objects recorded for this material.</p>
+		<p class="error">No content objects recorded for this material.
+		      <button id="snapper_button">Use Snapper tool to capture Content Objects</button>
+		</p>
 	</div>
 <?php } ?>
 

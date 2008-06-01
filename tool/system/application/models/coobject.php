@@ -15,6 +15,86 @@ class Coobject extends Model
 		$this->load->model('misc_util');
 	}
 
+	/** 
+   * Check to see if a string is base64 endcoded 
+   */
+	public function is_base64_encoded($data)
+  {
+       return (preg_match('%^[a-zA-Z0-9/+]*={0,2}$%', $data)) ? true : false;
+  }
+
+	/** 
+   * Add images captured with the snapper tool 
+   */
+  public function add_snapper_image($cid,$mid,$uid,$data)
+  {
+      /* validate values */
+      if (!isset($data['image']) || !$this->is_base64_encoded($data['image'])) {
+          return 'Error adding image: image file is corrupt';
+      } elseif (!isset($data['type']) || $data['type']=='') {
+          return 'Error adding image: please specify whether it is a slide or object.';
+      } elseif ($data['type'] == 'object' && (!isset($data['subtype_id']) || $data['subtype_id']=='22')) {
+          return 'Error adding image: please specify image content type.';
+      } elseif (!isset($data['location']) || $data['location']=='') {
+          return 'Error adding image: please specify the slide or page number of the image.';
+      }
+
+      $loc = $data['location'];
+
+      if ($data['type'] == 'slide') { // add new slide
+          $path = $this->material_path($cid, $mid);
+          if (!is_null($path)) {
+              $newpath = $this->prep_path($path, true);
+              $newpath = $newpath."/{$this->material_filename($mid)}_slide_$loc.jpg";
+              if (!$fh = @fopen($newpath,'wb')) { return "Error adding file: cannot create slide filename."; }
+              if (@fwrite($fh, base64_decode($data['image']))===FALSE) {
+                  return 'Error adding file: cannot write image to file';
+              }
+              @fclose($fh);
+              @chmod($newpath,0777);
+          } else  {
+              return 'Error adding image: could not find material path to add slide.';
+          }
+      } elseif ($data['type'] == 'object') { // add new object
+          do { // generate a random name for the file
+              $name = $this->oer_filename->random_name($data['image']);
+          } while ($this->object_name_exists($name));
+
+          $indata = array();
+          $indata['done'] = '0';
+          $indata['ask'] = 'no';
+          $indata['name'] = $name;
+          $indata['location'] = $loc;
+          $indata['material_id'] = $mid;
+          $indata['modified_by'] = $uid;
+          $indata['status'] = 'in progress';
+          $indata['subtype_id'] = $data['subtype_id'];
+          $indata['description'] = $indata['citation'] = $indata['tags'] = '';
+
+          # add object to db
+          $this->db->insert('objects',$indata);
+          $oid = $this->db->insert_id();
+
+          # add object filename to db and file system
+          $path = $this->prep_path($this->material_path($cid, $mid).'/odir_'.$name).'/'.$name.'_grab.jpg';
+          if (!$fh = @fopen($path,'wb')) { return "Error adding file: cannot create object filename."; }
+          if (@fwrite($fh, base64_decode($data['image']))===FALSE) {
+                  return 'Error adding file: cannot write image to file';
+          }
+          @fclose($fh); @chmod($path,0777);
+
+          $this->db->insert('object_files', array('object_id'=>$oid,
+                                                  'filename'=>$name,
+                                                  'modified_on'=>date('Y-m-d h:i:s'),
+                                                  'created_on'=>date('Y-m-d h:i:s')));
+
+      } else {
+          return 'Error adding image: please specify whether it is a slide or object.';
+      }
+
+      return true;
+  }
+
 	/**
      * Get objects for a given material 
      *

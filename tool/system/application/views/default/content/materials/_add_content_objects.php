@@ -11,7 +11,13 @@ $types .= '</select>';
 ?>
 
 <div id="pane_uploadco" class="editpane">
-	<div class="column span-8 first colborder">
+
+  <div class="column span-10 first colborder">
+     <h2>Snapper Upload</h2>
+    <iframe id="snapper-frame" name="snapper-frame" src="<?=site_url("materials/snapper/$cid/$mid")?>" scrolling="no" marginwidth="0" marginheight="0" frameborder="0" vspace="0" hspace="0" style="overflow:visible; width:100%; height: 470px;"></iframe>
+  </div>
+
+  <div class="column span-8">
 		<h2>Single File Upload</h2>
 		
 		<form action="<?=site_url("materials/add_object/$cid/$mid")?>" enctype="multipart/form-data" id="add_co_single" method="post">
@@ -48,9 +54,9 @@ $types .= '</select>';
 						<input type="submit" value="Add" />
 			</div>
 		</form>
-	</div>
+
+    <br style="clear:both"/><br/><br/>
 	
-	<div class="column span-8 last">
 		<h2>Bulk Upload</h2>
 	
 		<div class="formField">
@@ -60,10 +66,12 @@ $types .= '</select>';
 	       <br/><br/>
 	     	<input type="submit" name="submit" id="submit" value="Add" />
 			</form>
-	   </div>
-	</div>
+	  </div>
 
-	<div class="column span-16 first last" style="margin-top:50px; text-align: left;">
+    <br style="clear:both"/><br/><br/>
+
+	  <div  style="margin-top:5px; text-align:right;">
 		<input type="button" value="Close" id="do_close_uploadco_pane"/>
+	</div>
 	</div>
 </div>

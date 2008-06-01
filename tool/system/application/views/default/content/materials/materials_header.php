@@ -61,8 +61,7 @@
       } else {
           $this->load->view(property('app_views_path').'/materials/_edit_course_info.php', $data); 
           $this->load->view(property('app_views_path').'/materials/_add_materials.php', $data); 
-          
-$this->load->view(property('app_views_path').'/materials/_edit_instructor_info.php', $data);
+          $this->load->view(property('app_views_path').'/materials/_edit_instructor_info.php', $data);
       } 
    ?>
 <br/>
