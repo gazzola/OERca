@@ -67,8 +67,6 @@ class Coobject extends Model
 							if ($oid == $row['id']) {
 									$row['comments'] = $this->comments($row['id'],'user_id,comments,modified_on');
 									$row['questions'] = $this->questions($row['id'],'id,user_id,question,answer,role,status,created_on,modified_by,modified_on');
-									$row['instructor_questions'] = $this->questions($row['id'],'id,user_id,question,answer,role,status,created_on,modified_by,modified_on', "original", "instructor");
-									$row['dscribe2_questions'] = $this->questions($row['id'],'id,user_id,question,answer,role,status,created_on,modified_by,modified_on', "original", "dscribe2");
 									$row['copyright'] = $this->copyright($row['id']);
 									$row['log'] = $this->logs($row['id'],'user_id,log,modified_on');
 									array_push($objects, $row);
@@ -76,8 +74,6 @@ class Coobject extends Model
 					} else {
 							$row['comments'] = $this->comments($row['id'],'user_id,comments,modified_on');
 							$row['questions'] = $this->questions($row['id'],'id,user_id,question,answer,role,status,created_on,modified_by,modified_on');
-							$row['instructor_questions'] = $this->questions($row['id'],'id,user_id,question,answer,role,status,created_on,modified_by,modified_on', "original", "instructor");
-							$row['dscribe2_questions'] = $this->questions($row['id'],'id,user_id,question,answer,role,status,created_on,modified_by,modified_on', "original", "dscribe2");
 							$row['copyright'] = $this->copyright($row['id']);
 							$row['log'] = $this->logs($row['id'],'user_id,log,modified_on');
 							array_push($objects, $row);
@@ -121,7 +117,7 @@ class Coobject extends Model
 		if ($q->num_rows() > 0) {
 			foreach($q->result_array() as $row) {
 				$row['comments'] = $this->comments($row['id'],'user_id,comments,modified_on','replacement');
-				$row['questions'] = $this->questions($row['id'],'id,user_id,question,answer,role,status,modified_by,modified_on','replacement');
+				$row['questions'] = $this->questions($row['id'],'id,user_id,question,answer,role,status,modified_by,created_on,modified_on','replacement');
 				$row['copyright'] = $this->copyright($row['id'],'*','replacement');
 				$row['log'] = $this->logs($row['id'],'user_id,log,modified_on','replacement');
 				array_push($objects, $row);
@@ -180,16 +176,13 @@ class Coobject extends Model
 		foreach ($orig_objs as $obj) { 
 						/* get general question info for dscribe2 */
 						if (!is_null($obj['questions'])) { 
-							
-								
-							// remove all non dscribe2 questions
-								foreach ($obj['questions'] as $k => $q) { 
-									
-								if($q['role']!='dscribe2') { unset($obj['questions'][$k]); }}
-								if (count($obj['questions'])) { 
+								$questions = (isset($obj['questions']['dscribe2']) && sizeof($obj['questions']['dscribe2'])>0)	
+													 ? $obj['questions']['dscribe2'] : null;
+
+								if (!is_null($questions)) {
 										$notalldone = false;
 										$obj['otype'] = 'original';
-										foreach ($obj['questions'] as $k => $q) { 
+										foreach ($questions as $k => $q) { 
 														 		if($q['status']<>'done') { $notalldone = true; }
 												 		 		$q['ta_data'] = array('name'=>$obj['otype'].'_'.$obj['id'].'_'.$q['id'],
 																									   	'value'=>$q['answer'],
@@ -201,7 +194,7 @@ class Coobject extends Model
 																								        'class'=>'do_d2_question_update');
 												 		 		$q['send_data'] = array('name'=>$obj['otype'].'_status_'.$obj['id'],
 																											  'value'=>'Send to dScribe', 'class'=>'do_d2_question_update');
-											 		 			$obj['questions'][$k] = $q;
+											 		 			$obj['questions']['dscribe2'][$k] = $q;
 										}
 										if ($notalldone) { array_push($general, $obj); $num_general++; } 
 										else { array_push($done['general'],$obj); $num_done++; }
@@ -433,12 +426,13 @@ class Coobject extends Model
 		if (!is_null($repl_objs)) {
 		foreach ($repl_objs as $obj) { 
 						if (!is_null($obj['questions'])) { 
-								// remove all non dscribe2 questions
-								foreach ($obj['questions'] as $k => $q) { if($q['role']!='dscribe2') { unset($obj['questions'][$k]); }}
-								if (count($obj['questions'])) { 
+								$questions = (isset($obj['questions']['dscribe2']) && sizeof($obj['questions']['dscribe2'])>0)	
+													 ? $obj['questions']['dscribe2'] : null;
+
+								if (!is_null($questions)) {
 										$obj['otype'] = 'replacement';
 										$notalldone = false;
-										foreach ($obj['questions'] as $q) { 
+										foreach ($questions as $k => $q) { 
 														 		if($q['status']<>'done') { $notalldone = true; } 
 												 		 		$q['ta_data'] = array('name'=>$obj['otype'].'_'.$obj['id'].'_'.$q['id'],
 																									   	'value'=>$q['answer'],
@@ -450,7 +444,7 @@ class Coobject extends Model
 																								        'class'=>'do_d2_question_update');
 												 		 		$q['send_data'] = array('name'=>$obj['otype'].'_status_'.$obj['id'],
 																											  'value'=>'Send to dScribe', 'class'=>'do_d2_question_update');
-												 		 		$obj['questions'][$k] = $q;
+												 		 		$obj['questions']['dscribe2'][$k] = $q;
 										}
 										if ($notalldone) { array_push($general, $obj); $num_general++; } 
 										else { array_push($done['general'],$obj); $num_done++; }
@@ -596,20 +590,26 @@ class Coobject extends Model
 	{
 		$questions = array();
 		$table = ($type == 'original') ? 'object_questions' : 'object_replacement_questions';
-		if ($role<>'')
-		{
-			$where = 'object_id="'.$oid.'" and role="'.$role.'"';	
-		}else{
-			$where = 'object_id="'.$oid.'"';	
-		}
+		$roles = $this->enum2array($table, 'role');
+
+		foreach($roles as $r) { if ($role=='' || $role==$r) { $questions[$r] = array(); }}
+		$where = ($role<>'') ? 'object_id="'.$oid.'" and role="'.$role.'"':	'object_id="'.$oid.'"';	
+
 		$this->db->select($details)->from($table)->where($where)->orderby('created_on DESC');
 		$q = $this->db->get();
 
 		if ($q->num_rows() > 0) {
 			foreach($q->result_array() as $row) {
-				array_push($questions, $row);
+				if ($row['role'] =='') { // assign unassigned questions to dscribe2 by default
+						$row['role'] = 'dscribe2';
+						$d = array('role'=>'dscribe2');
+	  				$this->db->update($table,$d,"id={$row['id']}");
+				}
+				array_push($questions[$row['role']], $row);
 			}
 		} 
+	
+		foreach($roles as $r) { if (isset($questions[$r]) && sizeof($questions[$r])==0) { unset($questions[$r]); }}
 
 		return (sizeof($questions) > 0) ? $questions : null;
 	}
@@ -998,25 +998,6 @@ class Coobject extends Model
 		return $rationale;
 	}
 	
-	/**
-	 * get the question for the object
-	 */
-	public function getQuestion($oid, $role)
-	{
-		// get the fairuse retional
-		$question="";
-		$table = "object_questions";
-		$this->db->where("object_id", $oid);
-		$this->db->where("role", "$role");
-		$q = $this->db->get($table);
-		if ($q->num_rows() > 0) {
-			// there is already a record for this object
-			foreach($q->result_array() as $row) { 
-		        $question = $row['question'];
-		      }
-		}
-		return $question;
-	}
 	/**
 	 * get the claim permission data
 	 */

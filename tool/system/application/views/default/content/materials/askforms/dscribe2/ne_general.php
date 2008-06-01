@@ -2,7 +2,10 @@
 $count = 1;
 $sliders = array();
 
-foreach($cos as $obj) { $questions = $obj['questions'];
+foreach($cos as $obj) { 
+  $questions = $obj['questions'];
+	$questions = (!is_null($questions) && 
+								 isset($questions['dscribe2']) && sizeof($questions['dscribe2'])>0) ? $questions['dscribe2'] : null;
 ?>
 <tr>
 	<!-- first column -->

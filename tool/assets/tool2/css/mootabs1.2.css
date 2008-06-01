@@ -16,7 +16,7 @@
 	cursor: pointer;
 	line-height: 24px;
 	background-color: #fff;
-	border: 1px dotted #bbb;
+	border: 1px dotted darkgray;
 }
 
 .mootabs_title a {
@@ -30,7 +30,7 @@
 
 .mootabs_title li.active,
 .mootabs_title li.active h2 {
-	background-color: #bbb;
+	background-color: darkgray;
 	color: #666;
 }
 
@@ -47,7 +47,7 @@
 }
 
 .mootabs_panel.active {
-	background-color: #bbb;
+	background-color: darkgray;
 	display: block;
 }
 
@@ -66,14 +66,15 @@
 #Replacement h3 {
 	display: block;
 	font-size: 1.5em;
-	color: #fff;
+	color: darkgreen;
 	text-align: left;
 	border-bottom: 1px solid #ddd;
 }
 
-#Replacement.mootabs_panel.active { background-color: gainsboro; }
+#Replacement.mootabs_panel.active h3 a,
+#Replacement.mootabs_panel.active { background-color: lightgreen; color:darkgreen}
 .mootabs_title li[title="Replacement"].active,
 .mootabs_title li[title="Replacement"].active h2 {
-	background-color: gainsboro;
-	color: #fff;
+	background-color: lightgreen;
+	color: darkgreen;
 }

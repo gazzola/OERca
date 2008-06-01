@@ -144,16 +144,14 @@ var Rules = {
 											if (once) {						
                        	if (response=='success') {
 														orig_com_ap.toggle();
-														var msg = "<small>by&nbsp;"+$('user').value+"&nbsp;today</small>";
-														var line = '<hr style="border: 1px solid #336699"/>';
-														var new_line = new Element('p').setHTML(line);
-														var new_time = new Element('p').setHTML(msg);
-														var new_cm = new Element('p').setHTML(comments);
-														new_line.injectTop( $('objectcomments') );
-														new_time.injectTop( $('objectcomments') );
-														new_cm.injectTop( $('objectcomments') );
+														var tr = new Element('tr');
+														var td1 = new Element('td').setText(comments); 
+														var td2 = new Element('td').setText($('user').value); 
+														var td3 = new Element('td').setText('Today'); 
+														tr.adopt(td1); tr.adopt(td2); tr.adopt(td3); 
+														tr.injectTop( $('objectcomments') );
 														$('comments').value = '';
-														if ($('nocomments')) { $('nocomments').innerHTML = ''; }
+														if ($('nocomments')) { $('nocomments').remove(); }
                         } else {
                             alert(response);
                        	}
@@ -164,13 +162,14 @@ var Rules = {
 		}
 	},
 	
-	'.do_add_instructor_object_question': function(element) {
+	'.do_add_object_question': function(element) {
 		element.onclick = function(e) {
 		  new Event(e).stop();
 			var object_id = $('oid').value; 
-      var url = $('server').value+'materials/add_instructor_object_question/'+object_id;
+      var url = $('server').value+'materials/add_object_question/'+object_id;
+			var role = $('origrole').value;
 			var qs = $('question').value;
-			var get_qs = encodeURIComponent($('question').value);
+			var get_qs = encodeURIComponent(qs);
 				
 			if (qs == '') {
           alert('Please enter a question');
@@ -178,7 +177,7 @@ var Rules = {
           var fb = $('feedback');
           var response;
 					var once = true;
-					url += '/'+get_qs; 
+					url += '/'+get_qs+'/'+role; 
 			
           new Ajax(url,
                   {
@@ -189,16 +188,19 @@ var Rules = {
 											if (once) {						
                        	if (response=='success') {
 														orig_q_ap.toggle();
-														var msg = "<small>by&nbsp;"+$('user').value+"&nbsp;today</small>";
-														var line = '<hr style="border: 1px solid #336699"/>';
-														var new_line = new Element('p').setHTML(line);
-														var new_time = new Element('p').setHTML(msg);
-														var new_cm = new Element('p').setHTML(qs);
-														new_line.injectTop( $('objectqs') );
-														new_time.injectTop( $('objectqs') );
-														new_cm.injectTop( $('objectqs') );
+														var tr = new Element('tr');
+														var td1 = new Element('td').setText(role); 
+														var td2 = new Element('td').setText(qs); 
+														var td3 = new Element('td').setText('No answer'); 
+														var td4 = new Element('td').setText($('user').value); 
+														var td5 = new Element('td'); 
+														var td6 = new Element('td').setText('Today'); 
+														var td7 = new Element('td').setText('Today'); 
+														tr.adopt(td1); tr.adopt(td2); tr.adopt(td3); tr.adopt(td4);
+														tr.adopt(td5); tr.adopt(td6); tr.adopt(td7);
+														tr.injectTop( $('objectqs') );
 														$('question').value = '';
-														if ($('noquestions')) { $('noquestions').innerHTML = ''; }
+														if ($('noquestions')) { $('noquestions').remove(); }
                         } else {
                             alert(response);
                        	}
@@ -209,50 +211,6 @@ var Rules = {
 		}
 	},
 
-	'.do_add_dscribe2_object_question': function(element) {
-		element.onclick = function(e) {
-		  new Event(e).stop();
-			var object_id = $('oid').value; 
-      var url = $('server').value+'materials/add_dscribe2_object_question/'+object_id;
-			var qs = $('dscribe2_question').value;
-			var get_qs = encodeURIComponent($('dscribe2_question').value);
-				
-			if (qs == '') {
-          alert('Please enter a question');
-			} else {
-          var fb = $('feedback');
-          var response;
-					var once = true;
-					url += '/'+get_qs; 
-			
-          new Ajax(url,
-                  {
-					 					method: 'get', 
-									 	update: fb,
-                    onComplete:function() {
-                       response = fb.innerHTML;
-											if (once) {						
-                       	if (response=='success') {
-														orig_q_dscribe2_ap.toggle();
-														var msg = "<small>by&nbsp;"+$('user').value+"&nbsp;today</small>";
-														var line = '<hr style="border: 1px solid #336699"/>';
-														var new_line = new Element('p').setHTML(line);
-														var new_time = new Element('p').setHTML(msg);
-														var new_cm = new Element('p').setHTML(qs);
-														new_line.injectTop( $('objectqs') );
-														new_time.injectTop( $('objectqs') );
-														new_cm.injectTop( $('objectqs') );
-														$('dscribe2_question').value = '';
-														if ($('nodscribe2questions')) { $('nodscribe2questions').innerHTML = ''; }
-                        } else {
-                            alert(response);
-                       	}
-												once = false;
-					  					}
-           }}).request();
-			  }
-		}
-	},
 	'.do_object_update' : function(element) {
 		element.onchange = function () {
 				var response;
@@ -299,7 +257,7 @@ var Rules = {
 					id = id.replace(/\w+_/g,'');
 					if (this.value == 'yes') {
 						if ($('ask_yes')) {
-							$('ask_yes').style.display = 'block';	
+							$('ask_yes').style.display = 'inline';	
 						}
 					} else {
 					   if ($('ask_yes')) { $('ask_yes').style.display = 'none';	}
@@ -410,10 +368,16 @@ var Rules = {
 			id = id.replace(/\w+_/g,'');
 			if (this.value == 'yes') {
 				if ($('ask_dscribe2_yes')) {
-					$('ask_dscribe2_yes').style.display = 'block';	
+					$('ask_dscribe2_yes').style.display = 'inline';	
+				 	orig_q_ap.setrole('dscribe2');
+				 	orig_q_ap.show();
+					var el = $('orig_q_addpanel');
+					window.scrollTo(el.getLeft(), el.getTop());
 				}
 			} else {
-			   if ($('ask_dscribe2_yes')) { $('ask_dscribe2_yes').style.display = 'none';	}
+			   if ($('ask_dscribe2_yes')) { 
+				 			orig_q_ap.hide();
+						$('ask_dscribe2_yes').style.display = 'none';	}
 			}
 		}
 	},
@@ -636,7 +600,7 @@ var Rules = {
 	'.do_add_replacement_comment': function(element) {
 		element.onclick = function(e) {
 		  new Event(e).stop();
-			var object_id = $('oid').value; 
+			var object_id = $('rid').value; 
       var url = $('server').value+'materials/add_object_comment/'+object_id;
 			var comments = $('repl_comments').value;
 			var get_comments = encodeURIComponent($('repl_comments').value);
@@ -658,16 +622,14 @@ var Rules = {
 											if (once) {						
                        	if (response=='success') {
 														repl_com_ap.toggle();
-														var msg = "<small>by&nbsp;"+$('user').value+"&nbsp;today</small>";
-														var line = '<hr style="border: 1px solid #336699"/>';
-														var new_line = new Element('p').setHTML(line);
-														var new_time = new Element('p').setHTML(msg);
-														var new_cm = new Element('p').setHTML(comments);
-														new_line.injectTop( $('replcomments') );
-														new_time.injectTop( $('replcomments') );
-														new_cm.injectTop( $('replcomments') );
+														var tr = new Element('tr');
+														var td1 = new Element('td').setText(comments); 
+														var td2 = new Element('td').setText($('user').value); 
+														var td3 = new Element('td').setText('Today'); 
+														tr.adopt(td1); tr.adopt(td2); tr.adopt(td3); 
+														tr.injectTop( $('replcomments') );
 														$('repl_comments').value = '';
-														if ($('noreplcomments')) { $('noreplcomments').innerHTML = ''; }
+														if ($('noreplcomments')) { $('noreplcomments').remove(); }
                         } else {
                             alert(response);
                        	}
@@ -682,7 +644,8 @@ var Rules = {
 		element.onclick = function(e) {
 		  new Event(e).stop();
 			var object_id = $('rid').value; 
-      var url = $('server').value+'materials/add_instructor_object_question/'+object_id;
+      var url = $('server').value+'materials/add_object_question/'+object_id;
+			var role = $('replrole').value;
 			var qs = $('repl_question').value;
 			var get_qs = encodeURIComponent($('repl_question').value);
 				
@@ -692,7 +655,7 @@ var Rules = {
           var fb = $('feedback');
           var response;
 					var once = true;
-					url += '/'+get_qs+'/replacement'; 
+					url += '/'+get_qs+'/'+role+'/replacement'; 
 			
           new Ajax(url,
                   {
@@ -703,16 +666,19 @@ var Rules = {
 											if (once) {						
                        	if (response=='success') {
 														repl_q_ap.toggle();
-														var msg = "<small>by&nbsp;"+$('user').value+"&nbsp;today</small>";
-														var line = '<hr style="border: 1px solid #336699"/>';
-														var new_line = new Element('p').setHTML(line);
-														var new_time = new Element('p').setHTML(msg);
-														var new_cm = new Element('p').setHTML(qs);
-														new_line.injectTop( $('replqs') );
-														new_time.injectTop( $('replqs') );
-														new_cm.injectTop( $('replqs') );
+														var tr = new Element('tr');
+														var td1 = new Element('td').setText(role); 
+														var td2 = new Element('td').setText(qs); 
+														var td3 = new Element('td').setText('No answer'); 
+														var td4 = new Element('td').setText($('user').value); 
+														var td5 = new Element('td'); 
+														var td6 = new Element('td').setText('Today'); 
+														var td7 = new Element('td').setText('Today'); 
+														tr.adopt(td1); tr.adopt(td2); tr.adopt(td3); tr.adopt(td4);
+														tr.adopt(td5); tr.adopt(td6); tr.adopt(td7);
+														tr.injectTop( $('replqs') );
 														$('repl_question').value = '';
-														if($('noreplquestions')) { $('noreplquestions').innerHTML = ''; }
+														if($('noreplquestions')) { $('noreplquestions').remove(); }
                         } else {
                             alert(response);
                        	}

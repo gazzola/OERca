@@ -6,6 +6,7 @@ echo style('style.css',array('media'=>"screen, projection"));
 echo style('table.css',array('media'=>"screen, projection"));
 echo style('multiupload.css',array('media'=>"screen, projection"));
 echo style('mootabs1.2.css',array('media'=>"screen, projection"));
+echo style('sidetabs.css',array('media'=>"screen, projection"));
 echo '<style type="text/css">body { padding: 0; margin:0; width: 600px; border:0px solid blue}</style>';
 
 echo script('mootools.js'); 
@@ -27,8 +28,11 @@ echo script('ocw_tool.js');
 <div class="column span-17 first last" style="text-align: left">
   <h3 style="font-size: 1.5em; color:#666;">OER Content Object: <?=$obj['name']?></h3>
 </div>
+
 <div id="myTabs" class="column span-17 first last">
+
 	<ul class="mootabs_title">
+
 		<li title="Original" style="padding-left:10px; margin-left:0;"><h2>Original</h2>
 	    <?=$this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],false,false,false);?>
       <br/>
@@ -56,12 +60,14 @@ echo script('ocw_tool.js');
 				|&nbsp;&nbsp;<a href="<?=site_url("materials/download_rco/$cid/$mid/{$obj['id']}/{$r[0]['id']}")?>" style="text-align: center" title="download replacement object" >Download &raquo;</a>&nbsp;&nbsp;
 			<?php } ?>
     </li>
+
   </ul>
+
   <!-- original form -->
-  <?php $this->load->view(property('app_views_path').'/materials/_edit_co_orig.php', $data); ?>
+  <?php $this->load->view(property('app_views_path').'/materials/co/edit_orig.php', $data); ?>
 
   <!-- replacement form -->
-  <?php $this->load->view(property('app_views_path').'/materials/_edit_co_repl.php', $data); ?>
+  <?php $this->load->view(property('app_views_path').'/materials/co/edit_repl.php', $data); ?>
 </div>
 
 <div class="column span-17 first last" style="text-align: center">
@@ -70,7 +76,10 @@ echo script('ocw_tool.js');
 
 </div>
 
-<script type="text/javascript">EventSelectors.start(Rules);</script>
+<script type="text/javascript">
+	EventSelectors.start(Rules);
+	<?php if($viewing=='replacement') {?>showreptab = true;<?php }?>
+</script>
 <div id="feedback" style="display:none"></div>
 <input type="hidden" id="imgurl" value="<?=property('app_img')?>" />
 <input type="hidden" id="server" value="<?=site_url();?>" />

@@ -308,21 +308,3 @@ ul#topnavlist li#active a { background-color: #fff; color: #990033; }
 #topnavlist li#active { background-color: white } 
 #topnavlist a:hover { background: #fff; }
 #topnavlist li:hover { background: #fff; }
-
-/* edit original / replacement cos */
-#orig-accordion, 
-#repl-accordion,
-#orig-accordion li, #repl-accordion li { 
-	margin:0; padding:0, list-style: none outside; }
-
-#orig-accordion li h3 { cursor: pointer; position: relative; color: #666;}	
-#repl-accordion li h3 { cursor: pointer; position: relative; color: #fff;}	
-#orig-accordion li h3 a { cursor: pointer; position: relative; color: #666;}	
-#repl-accordion li h3 a { cursor: pointer; position: relative; color: #fff;}	
-#orig-accordion li h3 span,
-#repl-accordion li h3 span { margin-top: -20px; float:right; } 
-
-div.collapse { margin: 5px 0;  }	
-div.collapse-container{ padding: 15px 20px; }
-
-	

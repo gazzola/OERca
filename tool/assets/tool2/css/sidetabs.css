@@ -1,0 +1,79 @@
+.clear {clear:both;}
+
+div.tabcontainer {
+  width:100%;
+}
+
+div.tabs {
+  position:relative;
+  float:left;
+  z-index:0;
+  margin-top:10px;
+  width:80px;
+  height:1%;
+}
+
+div.tabs input, div.tabs a {
+  background:#eee;
+  color:#444;
+  width:119px;
+  display:block;
+  background:url(../images/side-tab-bg-off.gif) no-repeat;
+  border:none;
+  cursor:pointer;
+  padding:0px 0px 0px 10px;
+  margin:0px 0px 5px 0px;
+  font-size:11px;
+  font-family:trebuchet ms,verdana,arial,helvetica,sans-serif;
+  font-weight:normal;
+  height:24px;
+  letter-spacing:0px;
+  text-align:left;
+}
+
+div.tabs a.activesubmit, div.tabs input.activesubmit,
+div.tabs a.activesubmit:hover, div.tabs input.activesubmit:hover {
+  background:#fff;
+  font-weight:bold;
+  width:120px;
+  border-right:#fff 1px solid;
+  border:none;
+  color:#0033CC;
+  background:url(../images/side-tab-bg.gif) no-repeat;
+  padding:0px 0px 0px 6px;
+  cursor:default;
+}
+
+div.tabs input:hover,
+div.tabs a:hover {
+  color:#0033CC;
+  background:url(../images/side-tab-bg-hov.gif) no-repeat;
+}
+div.tabformcontent {
+  position:relative;
+  float:left;
+  padding:6px 10px;
+  margin: 0px 0px 0px -1px;
+  border: 1px solid #eee;
+  border-right: 0px;
+  position:relative;
+  background:#fff url(../images/tabcontent-bg.png) no-repeat right bottom;
+  min-height:200px;
+  z-index:0;
+  width:560px;
+}
+
+
+div.tabformcontent h1 {
+  font-family:lucida sans unicode,trebuchet ms,Verdana,Arial,Helvetica,sans-serif;
+  color:rgb(87, 87, 119);
+  border-bottom:rgb(225, 225, 225) 2px solid;
+  margin-bottom:4px;
+  font-size:1.3em;
+  text-align:right;
+  padding-right:20px;
+}
+
+div.tabformcontent p {
+  margin:10px 2px 16px 2px;
+}

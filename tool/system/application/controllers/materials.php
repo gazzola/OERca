@@ -29,6 +29,27 @@ class Materials extends Controller {
 
   public function index($cid, $caller="") { $this->home($cid, $caller); }
 
+	/**
+	 * Process information coming from the snapper tool
+	 */
+  public function snapper($cid, $mid, $action='')
+  {
+      if ($action == 'submit') {
+          $res = $this->coobject->add_snapper_image($cid, $mid, getUserProperty('id'), $_REQUEST);
+          $success = ($res===true) ? 'true' : 'false';
+          $msg = ($success=='true') ? 'Image uploaded' : $res;
+          $value = array('success'=>$success, 'msg'=>$msg, 'url'=>site_url("materials/edit/$cid/$mid"));
+          $this->ocw_utils->send_response($value, 'json');
+      } else {
+          $data = array('cid'=>$cid, 'mid'=>$mid);
+          $data['select_subtypes'] =  $this->coobject->object_subtypes();
+          $data['objects'] =  $this->coobject->coobjects($mid);
+          $data['numobjects'] = count($data['objects']);
+          $this->load->view('default/content/materials/snapper/snapper', $data);
+      }
+  }
+
+
   // TODO: highlight the currently selected field
   // TODO: move stuff into smaller functions, the home function is quite long
   public function home($cid, $caller='', $openpane=NULL)
@@ -561,12 +582,12 @@ class Materials extends Controller {
 						$this->coobject->add_replacement($cid, $mid, $oid, array(), $_FILES);
 				}
 				
-				$rnd = time().rand(10,10000); // used to overcome caching problem
 				
 				if ($field == 'rep') {
-						redirect("materials/object_info/$cid/$mid/$oid/$rnd", 'location');
+						redirect("materials/object_info/$cid/$mid/$oid/upload", 'location');
 				} elseif($field=='irep') {
 						if (isset($_POST['view'])) { $rnd = $_POST['view']; }
+						$rnd = time().rand(10,10000); // used to overcome caching problem
 						redirect("materials/askforms/$cid/$mid/$rnd", 'location');
 				}
 				exit;
@@ -658,24 +679,15 @@ class Materials extends Controller {
      exit;
 	}
 
-	public function add_instructor_object_question($oid,$question,$type='original')
+	public function add_object_question($oid,$question,$role,$type='original')
 	{
+	   $data['role'] = $role;
 	   $data['question'] = $question;
-	   $data['role'] = 'instructor';
 	   $this->coobject->add_question($oid, getUserProperty('id'), $data, $type);
      $this->ocw_utils->send_response('success');
      exit;
 	}
 	
-	public function add_dscribe2_object_question($oid,$question,$type='original')
-	{
-	   $data['question'] = $question;
-	   $data['role'] ='dscribe2';
-	   $this->coobject->add_question($oid, getUserProperty('id'), $data, $type);
-     $this->ocw_utils->send_response('success');
-     exit;
-	}
-
 	public function update_object_question($oid,$qid,$answer,$type='original',$status='')
 	{
 	   $data['answer'] = $answer;
@@ -727,7 +739,7 @@ class Materials extends Controller {
      $this->ocw_utils->send_response('success');
 	}
 
-	public function object_info($cid,$mid,$oid)
+	public function object_info($cid,$mid,$oid,$tab='')
 	{
 		$subtypes =  $this->coobject->object_subtypes();
 		$obj = $this->coobject->coobjects($mid,$oid);
@@ -746,28 +758,27 @@ class Materials extends Controller {
 		// get the permission contact
 		$permission = $this->coobject->getClaimsPermission($oid);
 		
-		// get the instructor question
-		$question = $this->coobject->getQuestion($oid, "instructor");
-		
-		// get the dscribe2 question
-		$dscribe2_question = $this->coobject->getQuestion($oid, "dscribe2");
-		
+    if (isset($_REQUEST['tab'])) { $tab = $_REQUEST['tab'][0]; }
+    if ($tab=='upload') { $_REQUEST['viewing'] = 'replacement'; }
+
+		//$this->ocw_utils->dump($obj[0],true);
+
 		$data = array(
-				'obj'=>$obj[0],
-				'cid'=>$cid,
-				'mid'=>$mid,
-				'user'=>getUserProperty('user_name'),
-				'subtypes'=>$subtypes,
-			 	'objstats' => $objstats,
-				'repl_obj'=>$repl_objects[0],
-				'fairuse_rationale' => $fairuse_rationale,
-				'commission_rationale' => $commission_rationale,
-				'retain_rationale' => $retain_rationale,
-				'question'=> $question,
-				'dscribe2_question'=>$dscribe2_question,
+								'obj'=>$obj[0],
+								'cid'=>$cid,
+								'mid'=>$mid,
+								'user'=>getUserProperty('user_name'),
+								'subtypes'=>$subtypes,
+							 	'objstats' => $objstats,
+								'repl_obj'=>$repl_objects[0],
+								'fairuse_rationale' => $fairuse_rationale,
+								'commission_rationale' => $commission_rationale,
+								'retain_rationale' => $retain_rationale,
+				        'tab'=> (($tab<>'') ? array(ucfirst($tab)) : array('Status')),
+				        'viewing' => ((isset($_REQUEST['viewing'])) ? $_REQUEST['viewing']: ''),
 			      );
 		$data = array_merge($data, $permission);
-    		$this->load->view('default/content/materials/edit_co', $data);
+   	$this->load->view('default/content/materials/edit_co', $data);
 	}
 	
 	

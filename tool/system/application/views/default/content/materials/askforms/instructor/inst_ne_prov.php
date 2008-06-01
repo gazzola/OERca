@@ -9,10 +9,8 @@ $ttip2 = "If the instructor  created this object, they most likely hold its copy
 foreach($prov_objects as  $obj) {
 
   $questions = $obj['questions'];
-	if (!is_null($questions)) {
-		  foreach($questions as $key => $val) { if ($val['role']<>'instructor') { unset($questions[$key]); } }
-	}
-	$questions = (sizeof($questions)) ? $questions : null;
+	$questions = (!is_null($questions) && 
+								 isset($questions['instructor']) && sizeof($questions['instructor'])>0) ? $questions['instructor'] : null;
 
   if ($obj['ask_status'] <> 'done') {
 ?>

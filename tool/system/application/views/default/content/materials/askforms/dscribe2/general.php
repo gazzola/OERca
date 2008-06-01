@@ -3,7 +3,10 @@ $count = 1;
 $sliders = array();
 
 foreach($cos as $obj) {
-	$questions = $obj['questions'];
+  $questions = $obj['questions'];
+	$questions = (!is_null($questions) && 
+								 isset($questions['dscribe2']) && sizeof($questions['dscribe2'])>0) ? $questions['dscribe2'] : null;
+
 	// some array value might been unset, so need to loop in order to find the first set one
 	$found = false;
 	for ($i = 0; $i < sizeof($questions) && !$found; $i++)

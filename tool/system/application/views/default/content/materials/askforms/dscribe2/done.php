@@ -79,7 +79,12 @@ foreach($cos as $type => $co) {
 			<h2>Here are the responses the dScribe2 provided to the dscribe1's questions:</h2>
 			<br/>
 
-			<?php foreach($obj['questions'] as $question) { ?>
+			<?php 
+  					$questions = $obj['questions'];
+						$questions = (!is_null($questions) && 
+								 isset($questions['dscribe2']) && sizeof($questions['dscribe2'])>0) ? $questions['dscribe2'] : null;
+
+						foreach($questions as $question) { ?>
 				<fieldset>
 					<label><strong><?=$question['question']?></strong></label><br/>
     		<p style="margin-bottom:15px;border:1px solid #ccc; padding:5px; background-color:#eee">

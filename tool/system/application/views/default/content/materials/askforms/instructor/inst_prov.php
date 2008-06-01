@@ -11,10 +11,8 @@ $ttip2 = "If you created this object, you most likely hold its copyright. Howeve
 foreach($prov_objects as  $obj) {
 
   $questions = $obj['questions'];
-	if (!is_null($questions)) {
-		  foreach($questions as $key => $val) { if ($val['role']<>'instructor') { unset($questions[$key]); } }
-	}
-	$questions = (sizeof($questions)) ? $questions : null;
+	$questions = (!is_null($questions) && 
+								 isset($questions['instructor']) && sizeof($questions['instructor'])>0) ? $questions['instructor'] : null;
 
   if ($obj['ask_status'] <> 'done') {
 ?>

@@ -215,11 +215,15 @@ class OCW_user extends Model
     */
   public function username($uid)
   {
-    $where = array('id'=>$uid);
-    $this->db->select('user_name')->from('users')->where($where); 
-    $query = $this->db->get();
-    $u = $query->row_array();
-    return ($query->num_rows() > 0) ? $u['user_name'] : false;
+		if ($uid==null || $uid=='') {
+				return false;
+		} else {
+    	$where = array('id'=>$uid);
+    	$this->db->select('user_name')->from('users')->where($where); 
+    	$query = $this->db->get();
+    	$u = $query->row_array();
+    	return ($query->num_rows() > 0) ? $u['user_name'] : false;
+		}
   }
 
   /**

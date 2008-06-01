@@ -1,11 +1,17 @@
-var orig_com_ap, orig_q_ap, orig_q_dscribe2_ap,repl_com_ap, repl_q_ap; // references for add panel divs
+var orig_com_ap, orig_q_ap, repl_com_ap, repl_q_ap; // references for add panel divs
+
 // boolean values to determine if to open add pane - used in case of errors
 var open_uploadmat_pane, open_editcourse_pane, open_uploadco_pane, open_editinst_pane;
+
 // boolean value for edit co page
 var open_coinfo_pane;
-
 var btn_up_active = false;
 var btn_down_active = true;
+
+// for edit content object page: sets up the tabbing between original and replacement
+var myCOTabs;
+var showreptab = false;
+
 
 function update_edit_co_frame(id)
 {
@@ -49,7 +55,6 @@ var Site = {
     if($('imagebar')) Site.carousel();
     if($('filter-type')) Site.filtertype();
     if($('myTabs')) Site.setuptabs();
-		if($('orig-accordion')||$('repl-accordion')) Site.setupcollapsibles();
 
     if ($('do_open_courseinfo_pane')) Site.course_page_setup();
 
@@ -64,14 +69,17 @@ var Site = {
 
     if ($('orig_q_addpanel')) {
       orig_q_ap = new Fx.Slide($('orig_q_addpanel'), {duration: 500, transition: Fx.Transitions.linear });
+			orig_q_ap.setrole = function (role) { 
+							if ($('origrole')) { 
+									var opts = $('origrole').options;
+									for(var i=0; i < opts.length; i++) {
+											if (opts[i].value==role) { $('origrole').selectedIndex = i; } 
+									}
+							}
+			};
       orig_q_ap.hide();
     }
     
-    if ($('orig_q_dscribe2_addpanel')) {
-      orig_q_dscribe2_ap = new Fx.Slide($('orig_q_dscribe2_addpanel'), {duration: 500, transition: Fx.Transitions.linear });
-      orig_q_dscribe2_ap.hide();
-    }
-
     if ($('repl_com_addpanel')) {
       repl_com_ap = new Fx.Slide($('repl_com_addpanel'), {duration: 500, transition: Fx.Transitions.linear });
       repl_com_ap.hide();
@@ -79,6 +87,14 @@ var Site = {
 
     if ($('repl_q_addpanel')) {
       repl_q_ap = new Fx.Slide($('repl_q_addpanel'), {duration: 500, transition: Fx.Transitions.linear });
+			repl_q_ap.setrole = function (role) { 
+							if ($('replrole')) { 
+									var opts = $('replrole').options;
+									for(var i=0; i < opts.length; i++) {
+											if (opts[i].value==role) { $('replrole').selectedIndex = i; } 
+									}
+							}
+			};
       repl_q_ap.hide();
     }
   },
@@ -270,9 +286,9 @@ var Site = {
     }
   },
 
-
   setuptabs: function () {
-    myTabs1 = new mootabs('myTabs',{height: '300px', width: '40%'});
+    myCOTabs = new mootabs('myTabs',{height: '300px', width: '40%'});
+    if (showreptab) { myCOTabs.activate('Replacement'); }
   },
 
   filtertype: function() {
@@ -284,64 +300,6 @@ var Site = {
     });
   },
 
-	setupcollapsibles: function() {
-				var list = $$('li div.collapse');
-				var headings = $$('li h3');
-				var collapsibles = new Array();
-				
-				headings.each( function(heading, i) {
-
-					var collapsible = new Fx.Slide(list[i], { 
-						duration: 500, 
-						transition: Fx.Transitions.linear,
-						onComplete: function(request){ 
-							//var open = request.getStyle('margin-top').toInt();
-							//if(open >= 0) new Fx.Scroll(window).toElement(headings[i]);
-						}
-					});
-					
-					collapsibles[i] = collapsible;
-					
-					heading.onclick = function(){
-						var span = $E('span', heading);
-
-						if(span){
-							var newHTML = span.innerHTML == '+' ? '-' : '+';
-							span.setHTML(newHTML);
-						}
-						
-						collapsible.toggle();
-						return false;
-					}
-					
-					var span = $E('span', heading);
-					if(span){
-						if (span.innerHTML == '+') collapsible.hide();
-				  }
-						
-					
-				});
-			
-				/*	
-				$('collapse-all').onclick = function(){
-					headings.each( function(heading, i) {
-						collapsibles[i].hide();
-						var span = $E('span', heading);
-						if(span) span.setHTML('+');
-					});
-					return false;
-				}
-				
-				$('expand-all').onclick = function(){
-					headings.each( function(heading, i) {
-						collapsibles[i].show();
-						var span = $E('span', heading);
-						if(span) span.setHTML('-');
-					});
-					return false;
-				}
-				*/
-	},
 
   carousel: function () {
     var myScrollFx = new Fx.Scroll('imagebar', {
