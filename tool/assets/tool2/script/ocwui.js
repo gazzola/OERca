@@ -272,12 +272,21 @@ var Site = {
       var addclass = ($('do_open_uploadco_pane').parentNode.className=='active') ? 'normal' : 'active';
       var rmvclass = ($('do_open_uploadco_pane').parentNode.className=='active') ? 'active' : 'normal';
       this.parentNode.removeClass(rmvclass).addClass(addclass);
+
+			if ($('snapper_button')) {
+          var txt = (rmvclass!='active') ? 'Close Snapper': 'Use Snapper tool to capture Content Objects';
+					$('snapper_button').setHTML(txt);
+			}
+
       e.stop(); 
     });
     $('do_close_uploadco_pane').addEvent('click', function(e) {
       e = new Event(e);
       upload_co.toggle();
       $('do_open_uploadco_pane').parentNode.removeClass('active').addClass('normal');
+			if ($('snapper_button')) {
+					$('snapper_button').setHTML('Use Snapper tool to capture Content Objects');
+			}
       e.stop(); 
     });
 
