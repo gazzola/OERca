@@ -17,7 +17,7 @@ textarea{ font-size: 12px; font-family: Arial, Helvetica, sans-serif; border: 1p
 
 <!-- Header bar -->
 <h1 style="margin-bottom: 5px"><?=$course['title']?>&nbsp;&raquo;&nbsp;<?=$material['name']?> Content Objects</h1>
-<p style="border-top: 1px solid #ddd; background-color: #fff; padding: 2px 3px 0 0; color: #ddd">
+<p style="border-top: 1px solid #ddd; background-color: #fff; padding: 2px 3px 0 0; color: #222">
 	<b>Instructor:</b> 
 	<?php echo $material['author']; echo ($material['collaborators']<>'') ? ' with '.$material['collaborators'] : ''?> &nbsp;|&nbsp;
 	<b>Date: </b><?=mdate('%d %M, %Y',mysql_to_unix($course['start_date'])).' - '.  mdate('%d %M, %Y',mysql_to_unix($course['end_date']))?> &nbsp;|&nbsp;
