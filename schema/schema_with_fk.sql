@@ -452,7 +452,7 @@ CREATE TABLE `ocw_objects` (
   `ask_dscribe2` enum('yes','no') character set utf8 collate utf8_unicode_ci NOT NULL default 'no',
   `ask_dscribe2_status` enum('new','in progress','done') character set utf8 collate utf8_unicode_ci NOT NULL default 'new',
   `action_type` enum('Permission','Search','Fair Use','Re-Create','Retain: Instructor Created','Retain: Public Domain','Retain: No Copyright','Commission','Remove & Annotate') character set utf8 collate utf8_unicode_ci NOT NULL default 'Search',
-  `action_taken` varchar(255) character set utf8 collate utf8_unicode_ci NOT NULL,
+  `action_taken` enum('Permission','Search','Fair Use','Re-Create','Retain: Instructor Created','Retain: Public Domain','Retain: No Copyright','Commission','Remove & Annotate') character set utf8 collate utf8_unicode_ci default NULL,
   `status` varchar(255) character set utf8 collate utf8_unicode_ci NOT NULL,
   `done` enum('1','0') character set utf8 collate utf8_unicode_ci NOT NULL default '0',
   `time` bigint(20) NOT NULL,
