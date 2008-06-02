@@ -783,6 +783,10 @@ class Coobject extends Model
 		$data['modified_on'] = date('Y-m-d h:i:s');
 		$table = ($type == 'original') ? 'object_questions' : 'object_replacement_questions';
 		$this->db->insert($table,$data);
+
+		if (isset($data['role']) && $data['role']=='dscribe2' && $type=='original') {
+				$this->update($oid, array('ask_dscribe2'=>'yes'));
+		}
 	}
 	
 	/**
@@ -1140,6 +1144,9 @@ class Coobject extends Model
 		// add new object
 		$this->db->insert('objects',$data);
 		$oid = $this->db->insert_id();
+
+		// indicate in materials table that content objects exist
+		$this->db->update('materials',array('embedded_co'=>1),"id=$mid");
 
 		// add  questions and comments
 		if ($question <> '') {

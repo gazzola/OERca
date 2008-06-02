@@ -1,14 +1,5 @@
 <?php	
-$data['action_types'] = array('Permission'=>'Permission',
-						'Search'=>'Search',
-						'Fair Use'=>'Fair Use',
-						'Re-Create'=>'Re-Create', 
-						'Retain: Instructor Created'=>'Retain: Instructor Created',
-						'Retain: Public Domain' =>'Retain: Public Domain',
-						'Retain: No Copyright' =>'Retain: No Copyright',
-						'Commission'=>'Commission', 
-						'Remove & Annotate'=>'Remove & Annotate');
-$data['action_taken_types']=array_merge(array('no action assigned'=>'no action assigned'), $data['action_types']);
+$data['action_types']= array_merge(array(''=>'Choose one...'), $action_types);
 
 $data['ask_status'] = array('new'=>'Instructor has not looked at this object yet.',
 									  'in progress'=>'Instructor is working on this',

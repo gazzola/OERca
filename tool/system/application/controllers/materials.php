@@ -776,6 +776,7 @@ class Materials extends Controller {
 								'retain_rationale' => $retain_rationale,
 				        'tab'=> (($tab<>'') ? array(ucfirst($tab)) : array('Status')),
 				        'viewing' => ((isset($_REQUEST['viewing'])) ? $_REQUEST['viewing']: ''),
+								'action_types' => $this->coobject->enum2array('objects','action_type'), 
 			      );
 		$data = array_merge($data, $permission);
    	$this->load->view('default/content/materials/edit_co', $data);
