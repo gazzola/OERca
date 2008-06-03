@@ -39,12 +39,12 @@ $types .= '</select>';
 			<div class="formLabel">Content Type:</div>
     	<div class="formField"><?=$types?></div>
 		
-			<div class="formLabel">Location:</div>
+			<div class="formLabel">Location: (required)</div>
     	<div class="formField">
     			<input type="text" name="location" id="location" size="50" class="input" />
 			</div>
 		
- 			<div class="formField">Upload Content Object:</div>
+ 			<div class="formField">Upload Content Object: (required)</div>
 			<div class="formField">
 	     	<input type="file" name="userfile_0" id="userfile_0" size="30" />
 			</div>
@@ -61,14 +61,14 @@ $types .= '</select>';
 	
 		<div class="formField">
 			<form action="<?=site_url("materials/add_object_zip/$cid/$mid")?>" enctype="multipart/form-data" id="add_co_zip" method="post">
-			  Upload Content Objects ZIP file:
+			  Upload Content Objects ZIP file: (required)
 	     	<input type="file" name="userfile" id="userfile" size="30" />
 	       <br/><br/>
 	     	<input type="submit" name="submit" id="submit" value="Add" />
 			</form>
 	  </div>
 
-    <br style="clear:both"/><br/><br/>
+    <br style="clear:both"/><br/>
 
 	  <div  style="margin-top:5px; text-align:right;">
 		<input type="button" value="Close" id="do_close_uploadco_pane"/>
