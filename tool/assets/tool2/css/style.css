@@ -310,3 +310,5 @@ ul#topnavlist li#active a { background-color: #fff; color: #990033; }
 #topnavlist li:hover { background: #fff; }
 
 .prog-key { vertical-align: text-top;}
+.prog-bar { vertical-align: top;}
+.prog-no-CO { margin-bottom: 10px;}

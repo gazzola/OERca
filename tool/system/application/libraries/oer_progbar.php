@@ -15,7 +15,7 @@ class OER_progbar {
   
   // set default width and height (pixels)
   private $width = 600;
-  private $height = 60;
+  private $height = 20;
   
   // set key image dimensions (pixels)
   private $key_width = 10;
@@ -32,7 +32,6 @@ class OER_progbar {
   
   // TODO: provide a way for the user to reset the colors
   // the color values of the bars
-  private $bg_rgb = array(255, 255, 255);
   private $done_rgb = array(68, 146, 34);
   private $ask_rgb = array(241, 191, 36);
   private $rem_rgb = array(224, 41, 29);
@@ -233,12 +232,14 @@ class OER_progbar {
     
     /* create the canvas and allocate the colors. the canvas is padded
      * to allow for borders etc. which take up space */
-    $this->im = imagecreatetruecolor(($this->width + 3), ($this->height + 3));
+    $canv_pad = 3; 
+    
+    $this->im = imagecreatetruecolor(($this->width + $canv_pad),
+      ($this->height + $canv_pad));
     
     $border_color = imagecolorallocate($this->im, $this->border[0], 
       $this->border[1], $this->border[2]);
-    $bg_color = imagecolorallocate($this->im, $this->bg_rgb[0], 
-      $this->bg_rgb[1], $this->bg_rgb[2]);
+      
     $text_color = imagecolorallocate($this->im, 0, 0, 0);
     
     $done_color = imagecolorallocate($this->im, $this->done_rgb[0], 
@@ -248,10 +249,6 @@ class OER_progbar {
     $rem_color = imagecolorallocate($this->im, $this->rem_rgb[0],
       $this->rem_rgb[1], $this->rem_rgb[2]);
       
-    // set background rectangle starting coordinates
-    $bg_x1 = 2;
-    $bg_x2 = 2;
-    
     /* TODO: prevent rounding from making combined width > than total
      * width of image */
     // calculate the coordinates of the status displays
@@ -264,37 +261,32 @@ class OER_progbar {
     $rem_x1 = $ask_x2;
     $rem_x2 = $rem_x1 + ($this->_set_prog_width($rem_objects));
     
-    $y1 = (($this->height / 3) + 1);
-    $y2 = (2 * ($this->height / 3));
+    $y1 = 2;
+    $y2 = $this->height;
     
       
     // fill the canvas with the border color
     imagefill ($this->im, 0, 0, $border_color);
-    
-    // create a white background within the borders
-    imagefilledrectangle($this->im, $bg_x1, $bg_x2, $this->width, $this->height, 
-      $bg_color);
-      
+          
     // create the progress bars
     imagefilledrectangle($this->im, $done_x1, $y1, $done_x2, $y2, $done_color);
     imagefilledrectangle($this->im, $ask_x1, $y1, $ask_x2, $y2, $ask_color);
     imagefilledrectangle($this->im, $rem_x1, $y1, $rem_x2, $y2, $rem_color);
       
-
       
      /* TODO: change the text placement stuff so it is less hackishly done
       * get the coordinates for the text placement on each status display */
-     $done_text_loc = $this->_place_text($done_objects, ($done_x2 - $done_x1));
-     $ask_text_loc = $this->_place_text($ask_objects, ($ask_x2 - $ask_x1));
-     $rem_text_loc = $this->_place_text($rem_objects, ($rem_x2 - $rem_x1));
+    $done_text_loc = $this->_place_text($done_objects, ($done_x2 - $done_x1));
+    $ask_text_loc = $this->_place_text($ask_objects, ($ask_x2 - $ask_x1));
+    $rem_text_loc = $this->_place_text($rem_objects, ($rem_x2 - $rem_x1));
      
      // print the numbers of each object status on the respective display
-     imagestring($this->im, $this->font, $done_text_loc["x"], 
-       $done_text_loc["y"], $done_objects, $text_color);
-     imagestring($this->im, $this->font, ($done_x2 + $ask_text_loc["x"]),
-       $ask_text_loc["y"], $ask_objects, $text_color);
-     imagestring($this->im, $this->font, ($ask_x2 + $rem_text_loc["x"]),
-       $rem_text_loc["y"], $rem_objects, $text_color);
+    imagestring($this->im, $this->font, $done_text_loc["x"], 
+     $done_text_loc["y"], $done_objects, $text_color);
+    imagestring($this->im, $this->font, ($done_x2 + $ask_text_loc["x"]),
+     $ask_text_loc["y"], $ask_objects, $text_color);
+    imagestring($this->im, $this->font, ($ask_x2 + $rem_text_loc["x"]),
+     $rem_text_loc["y"], $rem_objects, $text_color);
   }
 
 
@@ -388,8 +380,8 @@ class OER_progbar {
    */
    private function _place_text($text, $width)
    {
-     /* TODO: we won't need it if we can calculate things from the
-      * height of the font */
+     /* TODO: we won't need $height_fudge if we can calculate things 
+      * from the height of the font? */
      // fine tune vertical location of text, inelegant
      $height_fudge = 3;
      
@@ -399,7 +391,7 @@ class OER_progbar {
        imagefontwidth($this->font))) / 2);
      /* TODO: use imagefontheight in font placement. not all fonts 
       * are equally high */
-     $text_start_point["y"] = ($this->height / 3) + $height_fudge;
+     $text_start_point["y"] = $height_fudge;
      
      return($text_start_point);
    }
