@@ -3,14 +3,14 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: May 28, 2008 at 03:59 PM
+-- Generation Time: Jun 03, 2008 at 04:41 PM
 -- Server version: 5.0.45
 -- PHP Version: 5.2.3-1ubuntu6.3
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
 -- 
--- Database: `oerdev`
+-- Database: `ocw`
 -- 
 
 -- --------------------------------------------------------
@@ -69,7 +69,7 @@ CREATE TABLE `ocw_claims_commission` (
   KEY `object_id` (`object_id`),
   KEY `user_id` (`user_id`),
   KEY `modified_by` (`modified_by`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -287,13 +287,13 @@ CREATE TABLE `ocw_curriculums` (
 
 DROP TABLE IF EXISTS `ocw_dscribe2_dscribe1`;
 CREATE TABLE `ocw_dscribe2_dscribe1` (
-  `id` bigint(20) NOT NULL,
+  `id` bigint(20) NOT NULL auto_increment,
   `dscribe2_id` int(11) NOT NULL,
   `dscribe1_id` int(11) NOT NULL,
   PRIMARY KEY  (`id`),
   KEY `dscribe2_id` (`dscribe2_id`),
   KEY `dscribe1_id` (`dscribe1_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -452,7 +452,7 @@ CREATE TABLE `ocw_objects` (
   `ask_dscribe2` enum('yes','no') character set utf8 collate utf8_unicode_ci NOT NULL default 'no',
   `ask_dscribe2_status` enum('new','in progress','done') character set utf8 collate utf8_unicode_ci NOT NULL default 'new',
   `action_type` enum('Permission','Search','Fair Use','Re-Create','Retain: Instructor Created','Retain: Public Domain','Retain: No Copyright','Commission','Remove & Annotate') character set utf8 collate utf8_unicode_ci NOT NULL default 'Search',
-  `action_taken` enum('Permission','Search','Fair Use','Re-Create','Retain: Instructor Created','Retain: Public Domain','Retain: No Copyright','Commission','Remove & Annotate') character set utf8 collate utf8_unicode_ci default NULL,
+  `action_taken` enum('Permission','Search','Fair Use','Re-Create','Retain: Instructor Created','Retain: Public Domain','Retain: No Copyright','Commission','Remove & Annotate') character set utf8 collate utf8_unicode_ci NOT NULL,
   `status` varchar(255) character set utf8 collate utf8_unicode_ci NOT NULL,
   `done` enum('1','0') character set utf8 collate utf8_unicode_ci NOT NULL default '0',
   `time` bigint(20) NOT NULL,
@@ -672,7 +672,7 @@ CREATE TABLE `ocw_object_replacement_questions` (
   KEY `object_id` (`object_id`),
   KEY `user_id` (`user_id`),
   KEY `modified_by` (`modified_by`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -786,28 +786,32 @@ ALTER TABLE `ocw_acl`
 -- 
 ALTER TABLE `ocw_claims_commission`
   ADD CONSTRAINT `ocw_claims_commission_ibfk_4` FOREIGN KEY (`object_id`) REFERENCES `ocw_objects` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `ocw_claims_commission_ibfk_5` FOREIGN KEY (`user_id`) REFERENCES `ocw_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `ocw_claims_commission_ibfk_5` FOREIGN KEY (`user_id`) REFERENCES `ocw_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `ocw_claims_commission_ibfk_6` FOREIGN KEY (`modified_by`) REFERENCES `ocw_users` (`id`);
 
 -- 
 -- Constraints for table `ocw_claims_fairuse`
 -- 
 ALTER TABLE `ocw_claims_fairuse`
   ADD CONSTRAINT `ocw_claims_fairuse_ibfk_4` FOREIGN KEY (`object_id`) REFERENCES `ocw_objects` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `ocw_claims_fairuse_ibfk_5` FOREIGN KEY (`user_id`) REFERENCES `ocw_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `ocw_claims_fairuse_ibfk_5` FOREIGN KEY (`user_id`) REFERENCES `ocw_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `ocw_claims_fairuse_ibfk_6` FOREIGN KEY (`modified_by`) REFERENCES `ocw_users` (`id`);
 
 -- 
 -- Constraints for table `ocw_claims_permission`
 -- 
 ALTER TABLE `ocw_claims_permission`
   ADD CONSTRAINT `ocw_claims_permission_ibfk_4` FOREIGN KEY (`object_id`) REFERENCES `ocw_objects` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `ocw_claims_permission_ibfk_5` FOREIGN KEY (`user_id`) REFERENCES `ocw_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `ocw_claims_permission_ibfk_5` FOREIGN KEY (`user_id`) REFERENCES `ocw_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `ocw_claims_permission_ibfk_6` FOREIGN KEY (`modified_by`) REFERENCES `ocw_users` (`id`);
 
 -- 
 -- Constraints for table `ocw_claims_retain`
 -- 
 ALTER TABLE `ocw_claims_retain`
   ADD CONSTRAINT `ocw_claims_retain_ibfk_4` FOREIGN KEY (`object_id`) REFERENCES `ocw_objects` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `ocw_claims_retain_ibfk_5` FOREIGN KEY (`user_id`) REFERENCES `ocw_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `ocw_claims_retain_ibfk_5` FOREIGN KEY (`user_id`) REFERENCES `ocw_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `ocw_claims_retain_ibfk_6` FOREIGN KEY (`modified_by`) REFERENCES `ocw_users` (`id`);
 
 -- 
 -- Constraints for table `ocw_copyright_contactinfo`
@@ -870,16 +874,14 @@ ALTER TABLE `ocw_material_comments`
 -- Constraints for table `ocw_material_files`
 -- 
 ALTER TABLE `ocw_material_files`
-  ADD CONSTRAINT `ocw_material_files_ibfk_4` FOREIGN KEY (`user_id`) REFERENCES `ocw_users` (`id`),
-  ADD CONSTRAINT `ocw_material_files_ibfk_3` FOREIGN KEY (`material_id`) REFERENCES `ocw_materials` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `ocw_material_files_ibfk_3` FOREIGN KEY (`material_id`) REFERENCES `ocw_materials` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `ocw_material_files_ibfk_4` FOREIGN KEY (`user_id`) REFERENCES `ocw_users` (`id`);
 
 -- 
 -- Constraints for table `ocw_objects`
 -- 
 ALTER TABLE `ocw_objects`
-  ADD CONSTRAINT `ocw_objects_ibfk_1` FOREIGN KEY (`material_id`) REFERENCES `ocw_materials` (`id`),
-  ADD CONSTRAINT `ocw_objects_ibfk_2` FOREIGN KEY (`subtype_id`) REFERENCES `ocw_object_subtypes` (`id`),
-  ADD CONSTRAINT `ocw_objects_ibfk_3` FOREIGN KEY (`modified_by`) REFERENCES `ocw_users` (`id`);
+  ADD CONSTRAINT `ocw_objects_ibfk_4` FOREIGN KEY (`material_id`) REFERENCES `ocw_materials` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- 
 -- Constraints for table `ocw_object_comments`
@@ -911,17 +913,19 @@ ALTER TABLE `ocw_object_log`
 -- Constraints for table `ocw_object_questions`
 -- 
 ALTER TABLE `ocw_object_questions`
-  ADD CONSTRAINT `ocw_object_questions_ibfk_6` FOREIGN KEY (`modified_by`) REFERENCES `ocw_users` (`id`),
   ADD CONSTRAINT `ocw_object_questions_ibfk_4` FOREIGN KEY (`object_id`) REFERENCES `ocw_objects` (`id`),
-  ADD CONSTRAINT `ocw_object_questions_ibfk_5` FOREIGN KEY (`user_id`) REFERENCES `ocw_users` (`id`);
+  ADD CONSTRAINT `ocw_object_questions_ibfk_5` FOREIGN KEY (`user_id`) REFERENCES `ocw_users` (`id`),
+  ADD CONSTRAINT `ocw_object_questions_ibfk_6` FOREIGN KEY (`modified_by`) REFERENCES `ocw_users` (`id`),
+  ADD CONSTRAINT `ocw_object_questions_ibfk_7` FOREIGN KEY (`modified_by`) REFERENCES `ocw_users` (`id`);
 
 -- 
 -- Constraints for table `ocw_object_replacements`
 -- 
 ALTER TABLE `ocw_object_replacements`
-  ADD CONSTRAINT `ocw_object_replacements_ibfk_8` FOREIGN KEY (`modified_by`) REFERENCES `ocw_users` (`id`),
   ADD CONSTRAINT `ocw_object_replacements_ibfk_4` FOREIGN KEY (`material_id`) REFERENCES `ocw_materials` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `ocw_object_replacements_ibfk_7` FOREIGN KEY (`object_id`) REFERENCES `ocw_objects` (`id`);
+  ADD CONSTRAINT `ocw_object_replacements_ibfk_7` FOREIGN KEY (`object_id`) REFERENCES `ocw_objects` (`id`),
+  ADD CONSTRAINT `ocw_object_replacements_ibfk_8` FOREIGN KEY (`modified_by`) REFERENCES `ocw_users` (`id`),
+  ADD CONSTRAINT `ocw_object_replacements_ibfk_9` FOREIGN KEY (`modified_by`) REFERENCES `ocw_users` (`id`);
 
 -- 
 -- Constraints for table `ocw_object_replacement_comments`
@@ -947,10 +951,11 @@ ALTER TABLE `ocw_object_replacement_log`
 -- Constraints for table `ocw_object_replacement_questions`
 -- 
 ALTER TABLE `ocw_object_replacement_questions`
-  ADD CONSTRAINT `ocw_object_replacement_questions_ibfk_7` FOREIGN KEY (`object_id`) REFERENCES `ocw_object_replacements` (`object_id`),
   ADD CONSTRAINT `ocw_object_replacement_questions_ibfk_4` FOREIGN KEY (`object_id`) REFERENCES `ocw_object_replacements` (`id`),
   ADD CONSTRAINT `ocw_object_replacement_questions_ibfk_5` FOREIGN KEY (`user_id`) REFERENCES `ocw_users` (`id`),
-  ADD CONSTRAINT `ocw_object_replacement_questions_ibfk_6` FOREIGN KEY (`modified_by`) REFERENCES `ocw_users` (`id`);
+  ADD CONSTRAINT `ocw_object_replacement_questions_ibfk_6` FOREIGN KEY (`modified_by`) REFERENCES `ocw_users` (`id`),
+  ADD CONSTRAINT `ocw_object_replacement_questions_ibfk_7` FOREIGN KEY (`object_id`) REFERENCES `ocw_object_replacements` (`object_id`),
+  ADD CONSTRAINT `ocw_object_replacement_questions_ibfk_8` FOREIGN KEY (`modified_by`) REFERENCES `ocw_users` (`id`);
 
 -- 
 -- Constraints for table `ocw_object_subtypes`
