@@ -598,8 +598,8 @@ var Rules = {
 				object_id = object_id.replace(/c_/g,'');
 				field = 'unsuitable_reason';
 			}
-			var url = $('server').value+'materials/update_replacement/'+ id +'/'+course_id+'/'+material_id;
-			url += '/'+object_id+'/'+field+'/'+encodeURIComponent(val);
+			var url = $('server').value+'materials/update_replacement/'+course_id+'/'+material_id;
+			url += '/'+object_id+'/'+field+'/'+encodeURIComponent(val)+'/'+id;
      	var fb = $('feedback');
      	new Ajax(url, { method: 'get', update: fb, }).request();
 		}

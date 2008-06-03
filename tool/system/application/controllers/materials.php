@@ -658,7 +658,7 @@ class Materials extends Controller {
 	   	exit;
 	}
 
-	public function update_replacement($id, $cid, $mid, $oid, $field, $val='') 
+	public function update_replacement($cid, $mid, $oid, $field, $val='', $id='') 
  	{
  		if ($field=='replacement_question')
 		{
@@ -666,7 +666,7 @@ class Materials extends Controller {
 		}
 		else
 		{
-	   		$data = array($field=>$val, 'id'=>$id);
+	   		$data = array($field=>$val, 'id'=>$oid);
 	   		$this->coobject->update_replacement($id, $data);
 		}
 		 /* send email to dscribe from instructor */	
