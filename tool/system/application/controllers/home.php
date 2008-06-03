@@ -86,5 +86,19 @@ class Home extends Controller {
     $this->oer_progbar->build_prog_bar($total,$done,$ask,$rem);
     $this->oer_progbar->get_prog_bar();
   }
+
+
+  /**
+    * Generates a colored square representing the specifed
+    * CO status
+    *
+    * @param    string the CO status (done, ask, rem)
+    * @return   void
+    */
+  public function make_stat_key($status)
+  {
+    $this->oer_progbar->build_stat_key($status);
+    $this->oer_progbar->get_stat_key();
+  }
 }
 ?>
