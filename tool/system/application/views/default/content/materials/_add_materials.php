@@ -10,7 +10,7 @@
 			<input type="hidden" name="in_ocw" value="1" />
 			<input type="hidden" name="nodetype" value="parent" />
 
-					<div class="formLabel">Author:</div>
+					<div class="formLabel">Author: (required)</div>
 					<div class="formField">
 						<input type="text" name="author" id="author" class="input" size="50px"  />
 					</div>
@@ -42,7 +42,7 @@
 				        <input type="radio" name="embedded_co" id="emip_no" class="update_material" value="0" />&nbsp;No
 						</div>
 
-					<div class="formLabel">Material:</div>
+					<div class="formLabel">Material: (required)</div>
 					<div class="formField">
 				      	<input type="file" name="single_userfile" id="single_userfile" size="30" />
 				  </div>
@@ -65,7 +65,7 @@
 		<input type="hidden" name="tag_id" value="15" />
 		
 		
-		<div class="formLabel">Author:</div>
+		<div class="formLabel">Author: (required)</div>
 		<div class="formField">
 			<input type="text" name="author" id="author" class="input" size="50px"  />
 		</div>
@@ -75,7 +75,7 @@
 			<input type="text" name="collaborators" id="collaborators" class="input" size="50px"  />
 		</div>
 				
-		<div class="formField">Zip file of Materials:</div>
+		<div class="formField">Zip file of Materials: (required)</div>
 		<div class="formField">
 	      	<input type="file" name="zip_userfile" id="zip_userfile" size="30" />
 	  </div>
