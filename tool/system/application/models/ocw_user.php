@@ -226,6 +226,22 @@ class OCW_user extends Model
 		}
   }
 
+  /** bdr - silly fix for displaying long user_name on questions form 
+    * system/application/views/default/content/materials/co/_edit_orig_status.php
+    */
+  public function goofyname($uid)
+  {
+                if ($uid==null || $uid=='') {
+                                return false;
+                } else {
+        $where = array('id'=>$uid);
+        $this->db->select('name')->from('users')->where($where);
+        $query = $this->db->get();
+        $u = $query->row_array();
+        return ($query->num_rows() > 0) ? $u['name'] : false;
+                }
+  }
+
   /**
     * Check to see if a user has a particular role 
     *
