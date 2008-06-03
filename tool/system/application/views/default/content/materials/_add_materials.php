@@ -25,7 +25,7 @@
 						<input type="text" name="ctools_url" id="ctools_url" class="input" size="50px"  />
 					</div>
 
-						<div class="formLabel">Tag:</div>
+						<div class="formLabel">Tag: (required)</div>
 						<div class="formField">
 							<?php echo form_dropdown('tag_id', $tags, '','id="tag_id"'); ?>
 						</div>
