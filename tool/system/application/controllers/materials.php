@@ -278,11 +278,15 @@ class Materials extends Controller {
 		}
 	}
 
-	public function add_comment($cid,$mid,$comments)
+	public function add_comment($cid,$mid)
 	{
-	   $data['comments'] = $comments;
-	   $this->material->add_comment($mid, getUserProperty('id'), $data);
-     $this->ocw_utils->send_response('success');
+		 if (isset($_REQUEST['comments']) && $_REQUEST['comments']<>'') {
+	   		 $data['comments'] = $_REQUEST['comments'];
+	   		 $this->material->add_comment($mid, getUserProperty('id'), $data);
+     		 $this->ocw_utils->send_response('success');
+		 } else {
+     		 $this->ocw_utils->send_response('Please enter a comment');
+		 }
      exit;
 	}
 
@@ -674,20 +678,28 @@ class Materials extends Controller {
      exit;
 	}
 
-	public function add_object_comment($oid,$comments,$type='original')
+	public function add_object_comment($oid,$type='original')
 	{
-	   $data['comments'] = $comments;
-	   $this->coobject->add_comment($oid, getUserProperty('id'), $data,$type);
-     $this->ocw_utils->send_response('success');
+		 if (isset($_REQUEST['comments']) && $_REQUEST['comments']<>'') {
+	   		 $data['comments'] = $_REQUEST['comments'];
+	  		 $this->coobject->add_comment($oid, getUserProperty('id'), $data,$type);
+         $this->ocw_utils->send_response('success');
+		 } else {
+         $this->ocw_utils->send_response('Please enter a comment');
+		 }
      exit;
 	}
 
-	public function add_object_question($oid,$question,$role,$type='original')
+	public function add_object_question($oid,$role,$type='original')
 	{
 	   $data['role'] = $role;
-	   $data['question'] = $question;
-	   $this->coobject->add_question($oid, getUserProperty('id'), $data, $type);
-     $this->ocw_utils->send_response('success');
+		 if (isset($_REQUEST['question']) && $_REQUEST['question']<>'') {
+	   		 $data['question'] = $_REQUEST['question'];
+	   		 $this->coobject->add_question($oid, getUserProperty('id'), $data, $type);
+     		 $this->ocw_utils->send_response('success');
+		 } else {
+     		 $this->ocw_utils->send_response('Please enter a question');
+		 }
      exit;
 	}
 	

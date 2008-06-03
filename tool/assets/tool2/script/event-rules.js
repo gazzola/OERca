@@ -105,11 +105,11 @@ var Rules = {
 				} else {
                 var fb = $('feedback');
                 var response;
-								url += '/'+encodeURIComponent(comments);
 
                 new Ajax(url,
                     {
-					 						method: 'get', 
+					 						method: 'post', 
+											postBody: 'comments='+encodeURIComponent(comments),
 					 						update: fb,
                      	onComplete:function() {
                         response = fb.innerHTML;
@@ -133,20 +133,19 @@ var Rules = {
 		  new Event(e).stop();
 			var object_id = $('oid').value; 
       var url = $('server').value+'materials/add_object_comment/'+object_id;
-			var comments = $('comments').value;
-			var get_comments = encodeURIComponent($('comments').value);
 
+			var comments = escape($('comments').value);
 			if (comments == '') {
           alert('Please enter a comment');
 			} else {
           var fb = $('feedback');
           var response;
 					var once = true;
-					url += '/'+get_comments; 
 
           new Ajax(url,
                   {
-					 					method: 'get', 
+					 					method: 'post', 
+										postBody: 'comments='+encodeURIComponent(comments),
 									 	update: fb,
                     onComplete:function() {
                        response = fb.innerHTML;
@@ -154,7 +153,7 @@ var Rules = {
                        	if (response=='success') {
 														orig_com_ap.toggle();
 														var tr = new Element('tr');
-														var td1 = new Element('td').setText(comments); 
+														var td1 = new Element('td').setText(unescape(decodeURIComponent(comments))); 
 														var td2 = new Element('td').setText($('user').value); 
 														var td3 = new Element('td').setText('Today'); 
 														tr.adopt(td1); tr.adopt(td2); tr.adopt(td3); 
@@ -177,20 +176,20 @@ var Rules = {
 			var object_id = $('oid').value; 
       var url = $('server').value+'materials/add_object_question/'+object_id;
 			var role = $('origrole').value;
-			var qs = $('question').value;
-			var get_qs = encodeURIComponent(qs);
 				
+			var qs = escape($('question').value);
 			if (qs == '') {
           alert('Please enter a question');
 			} else {
           var fb = $('feedback');
           var response;
 					var once = true;
-					url += '/'+get_qs+'/'+role; 
+					url += '/'+role; 
 			
           new Ajax(url,
                   {
-					 					method: 'get', 
+					 					method: 'post', 
+										postBody: 'question='+encodeURIComponent(qs),
 									 	update: fb,
                     onComplete:function() {
                        response = fb.innerHTML;
@@ -199,7 +198,7 @@ var Rules = {
 														orig_q_ap.toggle();
 														var tr = new Element('tr');
 														var td1 = new Element('td').setText(role); 
-														var td2 = new Element('td').setText(qs); 
+														var td2 = new Element('td').setText(unescape(decodeURIComponent(qs))); 
 														var td3 = new Element('td').setText('No answer'); 
 														var td4 = new Element('td').setText($('user').value); 
 														var td5 = new Element('td'); 
@@ -611,20 +610,20 @@ var Rules = {
 		  new Event(e).stop();
 			var object_id = $('rid').value; 
       var url = $('server').value+'materials/add_object_comment/'+object_id;
-			var comments = $('repl_comments').value;
-			var get_comments = encodeURIComponent($('repl_comments').value);
 				
+			var comments = escape($('repl_comments').value);
 			if (comments == '') {
           alert('Please enter a comment');
 			} else {
           var fb = $('feedback');
           var response;
 					var once = true;
-					url += '/'+get_comments+'/replacement'; 
+					url += '/replacement'; 
 
           new Ajax(url,
                   {
-					 					method: 'get', 
+					 					method: 'post', 
+										postBody: 'comments='+encodeURIComponent(comments),
 									 	update: fb,
                     onComplete:function() {
                        response = fb.innerHTML;
@@ -632,7 +631,7 @@ var Rules = {
                        	if (response=='success') {
 														repl_com_ap.toggle();
 														var tr = new Element('tr');
-														var td1 = new Element('td').setText(comments); 
+														var td1 = new Element('td').setText(unescape(decodeURIComponent(comments))); 
 														var td2 = new Element('td').setText($('user').value); 
 														var td3 = new Element('td').setText('Today'); 
 														tr.adopt(td1); tr.adopt(td2); tr.adopt(td3); 
@@ -655,20 +654,20 @@ var Rules = {
 			var object_id = $('rid').value; 
       var url = $('server').value+'materials/add_object_question/'+object_id;
 			var role = $('replrole').value;
-			var qs = $('repl_question').value;
-			var get_qs = encodeURIComponent($('repl_question').value);
-				
+
+			var qs = escape($('repl_question').value).replace(/\+/g, "%2B");
 			if (qs == '') {
           alert('Please enter a question');
 			} else {
           var fb = $('feedback');
           var response;
 					var once = true;
-					url += '/'+get_qs+'/'+role+'/replacement'; 
-			
+					url += '/'+role+'/replacement'; 
+
           new Ajax(url,
                   {
-					 					method: 'get', 
+					 					method: 'post', 
+										postBody: 'question='+encodeURIComponent(qs),
 									 	update: fb,
                     onComplete:function() {
                        response = fb.innerHTML;
@@ -677,7 +676,7 @@ var Rules = {
 														repl_q_ap.toggle();
 														var tr = new Element('tr');
 														var td1 = new Element('td').setText(role); 
-														var td2 = new Element('td').setText(qs); 
+														var td2 = new Element('td').setText(unescape(decodeURIComponent(qs))); 
 														var td3 = new Element('td').setText('No answer'); 
 														var td4 = new Element('td').setText($('user').value); 
 														var td5 = new Element('td'); 
