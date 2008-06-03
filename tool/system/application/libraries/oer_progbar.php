@@ -108,10 +108,13 @@ class OER_progbar {
     
     // create the canvas and allocate the colors
     $this->im = imagecreatetruecolor(($this->width + 3), ($this->height + 3));
+    
     $border_color = imagecolorallocate($this->im, $this->border[0], 
       $this->border[1], $this->border[2]);
     $bg_color = imagecolorallocate($this->im, $this->white[0], 
       $this->white[1], $this->white[2]);
+    $text_color = imagecolorallocate($this->im, 0, 0, 0);
+    
     $done_color = imagecolorallocate($this->im, $this->green[0], 
       $this->green[1], $this->green[2]);
     $ask_color = imagecolorallocate($this->im, $this->yellow[0], 
@@ -152,15 +155,15 @@ class OER_progbar {
       $rem_text_loc = $this->_place_text($rem_objects, $font, ($rem_x_2 - 2), 
         ($this->height - $rem_y_1));
       
-    // print the numbers of each object status on the respective display
+      // print the numbers of each object status on the respective display
       imagestring($this->im, $font, $done_text_loc["x"], $done_text_loc["y"],
-        $done_objects, $border_color);
+        $done_objects, $text_color);
       imagestring($this->im, $font, $ask_text_loc["x"], 
         ($ask_text_loc["y"] + ($this->height / 3)), $ask_objects, 
-          $border_color);
+          $text_color);
       imagestring($this->im, $font, $rem_text_loc["x"], 
         ($rem_text_loc["y"] + (2 * ($this->height / 3))), $rem_objects, 
-        $border_color);
+        $text_color);
   }
 
 
