@@ -471,7 +471,7 @@ class Materials extends Controller {
 	        if ($user_rels[0] == NULL) {
 			// use Name ($passName) istead of the User ID  ($passUid)
 			$passName = getUserProperty('name');
-	        	$data['alert_missing_dscribe']="Alert: Could not find corresponding dscribes for dscribe2 id=".$passName;   
+	        	$data['alert_missing_dscribe']="Alert: Could not find corresponding dscribes for the dscribe2 - ".$passName;   
 	        }
 	        
     		$this->layout->buildPage('materials/askforms/dscribe2/index', $data);
@@ -484,8 +484,9 @@ class Materials extends Controller {
 
 		} else {	// default: instructor view (no one really needs to login for this view)
     			$user_rels = $this->ocw_user->dscribes($cid);
+    			$course =  $this->course->get_course($cid); 
                 if ($user_rels[0] == NULL) {
-                	$data['alert_missing_dscribe']="Alert: Could not find any dscribe for course id=".$cid;    
+                	$data['alert_missing_dscribe']="Alert: Could not find any dscribe for course - ".$course['title'];    
                 }
     		$this->layout->buildPage('materials/askforms/instructor/index', $data);
 		}
