@@ -469,7 +469,9 @@ class Materials extends Controller {
 			$passUid = getUserProperty('id');
 			$user_rels = $this->ocw_user->get_dscribe2_rel($passUid);
 	        if ($user_rels[0] == NULL) {
-	        	$data['alert_missing_dscribe']="Alert: Could not find corresponding dscribes for dscribe2 id=".$passUid;
+			// use Name ($passName) istead of the User ID  ($passUid)
+			$passName = getUserProperty('name');
+	        	$data['alert_missing_dscribe']="Alert: Could not find corresponding dscribes for dscribe2 id=".$passName;   
 	        }
 	        
     		$this->layout->buildPage('materials/askforms/dscribe2/index', $data);
