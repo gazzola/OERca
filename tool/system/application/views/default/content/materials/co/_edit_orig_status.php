@@ -1,5 +1,5 @@
 <!-- STATUS -->
-<table width="100%">
+<table width="558px">
 	<!-- ASK INSTRUCTOR -->
   <tr>
 		<th>Ask instructor about origin of CO?</th>
@@ -228,16 +228,18 @@ if ($questions == null) { ?>
 <?php } else { 
 		foreach($questions as $askee => $qs) { 
 			foreach($qs as $question) {
+	                // bdr - NOTE: I changed ocw_user->username to use ocw_user->goofyname
+			//             because long username was skewing the columns in the table
 ?>
-	<tr>
-		<td><?=ucfirst($askee)?></td>
-		<td><?=$question['question']?></td>
-		<td><?=($question['answer']=='') ? 'No answer' : $question['answer'] ?></td>
-    <td><?=$this->ocw_user->username($question['user_id'])?></td>
-    <td><?= ($this->ocw_user->username($question['modified_by'])) ? $this->ocw_user->username($question['modified_by']):''?></td>
-    <td><?=mdate('%d %M, %Y %H:%i',mysql_to_unix($question['created_on']))?></td>
-    <td><?=mdate('%d %M, %Y %H:%i',mysql_to_unix($question['modified_on']))?></td>
-	</tr>
+		   <tr>
+		   <td><?=ucfirst($askee)?></td>
+		   <td><?=$question['question']?></td>
+		   <td><?=($question['answer']=='') ? 'No answer' : $question['answer'] ?></td>
+    		   <td><?=$this->ocw_user->goofyname($question['user_id'])?></td>
+    		   <td><?= ($this->ocw_user->goofyname($question['modified_by'])) ? $this->ocw_user->goofyname($question['modified_by']):''?></td>
+    		   <td><?=mdate('%d %M, %Y %H:%i',mysql_to_unix($question['created_on']))?></td>
+    		   <td><?=mdate('%d %M, %Y %H:%i',mysql_to_unix($question['modified_on']))?></td>
+		   </tr>
 <?php }}} ?>	
 </tbody>
 </table>
