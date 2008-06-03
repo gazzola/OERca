@@ -208,6 +208,7 @@ var Site = {
       $('do_open_coinfo_pane').parentNode.removeClass('normal').addClass('active');
     }
   },
+
   co_page_setup: function () {
     // toggle edit panes for material attributes
     var edit_mat = new Fx.Slide($('pane_matinfo')).hide();
@@ -217,9 +218,11 @@ var Site = {
 
     $('do_open_matinfo_pane').addEvent('click', function(e) {
       e = new Event(e);
+			var appletview = $('snapper-frame').contentDocument.clipboard;
 
       // close other panes
       view_comm.hide();
+			appletview.hide();
       upload_co.hide();
       $('do_open_matcomm_pane').parentNode.className= 'normal';
       $('do_open_uploadco_pane').parentNode.className= 'normal';
@@ -228,6 +231,7 @@ var Site = {
       var addclass = ($('do_open_matinfo_pane').parentNode.className=='active') ? 'normal' : 'active';
       var rmvclass = ($('do_open_matinfo_pane').parentNode.className=='active') ? 'active' : 'normal';
       this.parentNode.removeClass(rmvclass).addClass(addclass);
+
       e.stop(); 
     });
     $('do_close_matinfo_pane').addEvent('click', function(e) {
@@ -239,9 +243,11 @@ var Site = {
 
     $('do_open_matcomm_pane').addEvent('click', function(e) {
       e = new Event(e);
+			var appletview = $('snapper-frame').contentDocument.clipboard;
 
       // close other panes
       edit_mat.hide();
+			appletview.hide();
       upload_co.hide();
       $('do_open_matinfo_pane').parentNode.className= 'normal';
       $('do_open_uploadco_pane').parentNode.className= 'normal';
@@ -261,6 +267,7 @@ var Site = {
 
     $('do_open_uploadco_pane').addEvent('click', function(e) {
       e = new Event(e);
+			var appletview = $('snapper-frame').contentDocument.clipboard;
 
       // close other panes
       edit_mat.hide();
@@ -268,6 +275,7 @@ var Site = {
       $('do_open_matinfo_pane').parentNode.className= 'normal';
       $('do_open_matcomm_pane').parentNode.className= 'normal';
 
+			appletview.show();
       upload_co.toggle();
       var addclass = ($('do_open_uploadco_pane').parentNode.className=='active') ? 'normal' : 'active';
       var rmvclass = ($('do_open_uploadco_pane').parentNode.className=='active') ? 'active' : 'normal';
@@ -282,6 +290,8 @@ var Site = {
     });
     $('do_close_uploadco_pane').addEvent('click', function(e) {
       e = new Event(e);
+			var appletview = $('snapper-frame').contentDocument.clipboard;
+			appletview.hide();
       upload_co.toggle();
       $('do_open_uploadco_pane').parentNode.removeClass('active').addClass('normal');
 			if ($('snapper_button')) {
