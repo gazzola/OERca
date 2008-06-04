@@ -87,6 +87,7 @@ class Mimetype extends Model
         case "jpg": case "jpeg": case "jpe": return "image/jpeg";
         case "png": case "gif": case "bmp": return "image/".strtolower($m[1]);
         case "css": return "text/css";
+        case "ppt": return "application/pdf";
         case "xml": return "application/xml";
         case "html": case "htm": case "php": return "text/html";
         default:
