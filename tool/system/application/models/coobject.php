@@ -2222,12 +2222,12 @@ class Coobject extends Model
 
 				if ($obj['suitable']=='yes') { 
     				$html .= '<h3>'.$uname.' approved this replacement:</h3>'.
-						$this->ocw_utils->create_corep_img($cid,$mid,$obj['id'],$obj['location'],false);
+						$this->ocw_utils->create_corep_img($cid,$mid,$obj['object_id'],$obj['location'],false);
   			} else {
     				$html .= '<h3>'.$uname.' rejected replacement:</h3>'.
-    				$this->ocw_utils->create_corep_img($cid,$mid,$obj['id'],$obj['location'],false);
-    				$html .= '<br/><br/><h3>Reason:</h3>'.
-    				($obj['unsuitable_reason']=='') ? 'No reason provided' : $obj['unsuitable_reason']; 
+    				$this->ocw_utils->create_corep_img($cid,$mid,$obj['object_id'],$obj['location'],false);
+    				$html .= '<br style="clear:both"/><br/><h3>Reason:</h3>'.
+    				(($obj['unsuitable_reason']=='') ? 'No reason provided' : $obj['unsuitable_reason']); 
   			} 
 		}
 
