@@ -65,5 +65,50 @@ class Mimetype extends Model
         }
        return $rv;
 	}
+
+  public function get_mimetype_id_from_filename($filename)
+  {
+      $mime = $this->get_mime($filename);
+      $mimeid = $this->getMimetypeId($mime);
+			return ($mimeid==null) ? 6 : $mimeid; #TODO: get notype id dynamically 
+  }
+
+/**
+ * Tries to get mime data of the file.
+ * @return {String} mime-type of the given file
+ * @param $filename String
+ */
+	function get_mime($filename)
+	{
+    preg_match("/\.(.*?)$/", $filename, $m);    # Get File extension for a better match
+    switch(strtolower($m[1])){
+        case "js": return "application/javascript";
+        case "json": return "application/json";
+        case "jpg": case "jpeg": case "jpe": return "image/jpeg";
+        case "png": case "gif": case "bmp": return "image/".strtolower($m[1]);
+        case "css": return "text/css";
+        case "xml": return "application/xml";
+        case "html": case "htm": case "php": return "text/html";
+        default:
+            if(function_exists("mime_content_type")){ # if mime_content_type exists use it.
+               $m = mime_content_type($filename);
+            }else if(function_exists("")){    # if Pecl installed use it
+               $finfo = finfo_open(FILEINFO_MIME);
+               $m = finfo_file($finfo, $filename);
+               finfo_close($finfo);
+            }else{    # if nothing left try shell
+               if(strstr($_SERVER['HTTP_USER_AGENT'], "Windows")){ # Nothing to do on windows
+                   return ""; # Blank mime display most files correctly especially images.
+               }
+               if(strstr($_SERVER['HTTP_USER_AGENT'], "Macintosh")){ # Correct output on macs
+                   $m = trim(exec('file -b --mime '.escapeshellarg($filename)));
+               }else{    # Regular unix systems
+                   $m = trim(exec('file -bi '.escapeshellarg($filename)));
+               }
+            }
+            $m = split(";", $m);
+            return trim($m[0]);
+    	}
+	}
 }
 ?>

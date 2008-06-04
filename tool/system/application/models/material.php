@@ -15,6 +15,7 @@ class Material extends Model
     parent::Model();
 		# remove material objects and related info 
 		$this->load->model('coobject','co');
+		$this->load->model('mimetype');
   }
 
 
@@ -496,7 +497,8 @@ class Material extends Model
 		$idx = ($type=='bulk') ? 'zip_userfile' : 'single_userfile';
 		
 		if ($type=='single') {
-				$details['name'] = $files[$idx]['name'];
+				preg_match('/(\.\w+)$/',$files[$idx]['name'],$match);
+				$details['name'] = basename($files[$idx]['name'],$match[1]);
 				$details['`order`'] = $this->get_nextorder_pos($cid);
 				$this->db->insert('materials',$details);
 				$mid = $this->db->insert_id();
@@ -512,6 +514,7 @@ class Material extends Model
 											preg_match('/(\.\w+)$/',$newfile,$match);
 											$details['name'] = basename($newfile,$match[1]);
 											$details['`order`'] = $this->get_nextorder_pos($cid);
+											$details['mimetype_id'] = $this->mimetype->get_mimetype_id_from_filename($newfile);
 											$this->db->insert('materials',$details);
 											$mid = $this->db->insert_id();
                      	$filedata = array();
@@ -528,6 +531,7 @@ class Material extends Model
 		
 		return true;
 	}
+
 	
 	/** 
 	 * upload materials to correct path
@@ -561,6 +565,7 @@ class Material extends Model
       $path = $dirname;
 	  }
 		
+		$this->oer_filename->mkdir($path);
 
 		# get material direcotry name
 		$name = $this->generate_material_name($tmpname);
