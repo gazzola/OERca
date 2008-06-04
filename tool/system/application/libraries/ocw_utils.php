@@ -450,5 +450,18 @@ class OCW_utils {
     }
     return $mat_date;
   }
+  
+  
+  /**
+    * Get the current timestamp in a format suitable for the MySQL
+    * TIMESTAMP or DATETIME field
+    * lifted from http://snippets.dzone.com/posts/show/1455
+    *
+    * @return   string a timestamp that can be stored in MySQL
+    */
+  public function get_curr_mysql_time() {
+    $curr_unix_time = time();
+    return gmdate("Y-m-d H:i:s", $curr_unix_time);
+  }
 }
 ?>

@@ -100,7 +100,7 @@ class ManageCourses extends Controller {
      } else {
        $tabset = $this->oer_manage_nav->get_tabset($this->data['role']);
        $this->data['tabs'] = $this->navtab->make_tabs($tabset);
-       $this->oer_layout->build_custom_page('manage2', $this->data);
+       $this->layout->build_page('manage2', $this->data);
      }
    }
    

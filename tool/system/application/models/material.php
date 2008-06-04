@@ -534,14 +534,33 @@ class Material extends Model
 	 */
 	public function upload_materials($cid, $mid, $file)
 	{
+		$this->load->model('course');
 		$tmpname = $file['tmp_name'];
 		$path = property('app_uploads_path');
+		$r = NULL; //placeholder for DB $row results
+		$curr_mysql_time = $this->ocw_utils->get_curr_mysql_time();
 		
 	  # get course directory name
 		$this->db->select('filename')->from('course_files')->where("course_id=$cid")->order_by('created_on desc')->limit(1);
 		$q = $this->db->get();
-		$r = $q->row();
-		$path .= 'cdir_'.$r->filename;
+		if ($q->num_rows() > 0) {
+		  $r = $q->row();
+		  $path .= 'cdir_'.$r->filename;
+	  } else {
+	    // TODO: account for the case where there is no course data
+	    $cdata = $this->course->get_course($cid);
+	    $filename = $this->course->generate_course_name($cdata['title'].
+	      $cdata['start_date'].$cdata['end_date']);
+			$dirname = property('app_uploads_path') . 'cdir_' . $filename;
+			$this->oer_filename->mkdir($dirname);
+			$this->db->insert('course_files',
+											array('filename' => $filename,
+											      'modified_on' => $curr_mysql_time, 
+												    'created_on' => $curr_mysql_time,
+												    'course_id'=>$cdata['id']));
+      $path = $dirname;
+	  }
+		
 
 		# get material direcotry name
 		$name = $this->generate_material_name($tmpname);

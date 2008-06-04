@@ -27,15 +27,18 @@ class Course extends Model
 			$this->db->select('*')->from('courses')->where('title',$details['title']);
 			$q = $this->db->get();
 			$course = $q->row_array();
+			$curr_mysql_time = $this->ocw_utils->get_curr_mysql_time();
 	
 			if ($q->num_rows() > 0) {
 					$filename = $this->generate_course_name($course['title'].$course['start_date'].
 																								 $course['end_date']);
-					$dirname = property('app_uploads_path').$filename; 
+					$dirname = property('app_uploads_path') . 'cdir_' . $filename; 
 					$this->oer_filename->mkdir($dirname);
 					$this->db->insert('course_files',
-													array('filename'=>$filename,'modified_on'=>'NOW()', 
-														    'created_on'=>'NOW()','course_id'=>$course['id']));
+													array('filename'=>$filename,
+													      'modified_on'=>$curr_mysql_time,
+														    'created_on'=>$curr_mysql_time,
+														    'course_id'=>$course['id']));
 			}
 
 			return ($q->num_rows() > 0) ? $course : null;
@@ -175,7 +178,7 @@ class Course extends Model
      return ($q->num_rows() > 0) ? true : false;
   }
 
-  private function generate_course_name($uniqstr)
+  public function generate_course_name($uniqstr)
   {
       $digest = '';
       do {
