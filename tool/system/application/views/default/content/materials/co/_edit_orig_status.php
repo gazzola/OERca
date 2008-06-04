@@ -46,7 +46,7 @@
 	<tr>
 		<th>Recommended Action:</th>
 		<td>
-			  <?php echo form_dropdown('action_type', $action_types, $obj['action_type'] ,'id="action_type" class="do_object_update do_object_action_type"'); ?>
+			 <?php echo form_dropdown('action_type', $action_types, $obj['action_type'] ,'id="action_type" class="do_object_update"'); ?>
 		</td>
   </tr>
 

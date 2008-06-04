@@ -273,7 +273,7 @@ var Rules = {
 					
 				}
 				else
-				{
+				{	
 					url += '/'+object_id+'/'+field+'/'+encodeURIComponent(val);
 	      			var fb = $('feedback');
 					new Ajax(url, { method: 'get', update: fb, }).request();
@@ -296,64 +296,61 @@ var Rules = {
       				var fb1 = $('feedback');
 					new Ajax(url, { method: 'get', update: fb1, }).request();
 				}
+				
+				// show or hide relavent panels
+				if (field=='action_type')
+				{
+					if (this.value == 'Fair Use') {
+						if ($('Fair Use')) {
+							$('Fair Use').style.display = 'block';}
+						if ($('Permission')) {
+							$('Permission').style.display = 'none';}
+						if ($('Commission')) {
+							$('Commission').style.display = 'none';}
+						if ($('Retain')) {
+							$('Retain').style.display = 'none';}
+					} else if (this.value == 'Permission') {
+						if ($('Fair Use')) {
+							$('Fair Use').style.display = 'none';	}
+						if ($('Permission')) {
+							$('Permission').style.display = 'block';}
+						if ($('Commission')) {
+							$('Commission').style.display = 'none';}
+						if ($('Retain')) {
+							$('Retain').style.display = 'none';}
+					} else if (this.value == 'Commission') {
+						if ($('Fair Use')) {
+							$('Fair Use').style.display = 'none';	}
+						if ($('Permission')) {
+							$('Permission').style.display = 'none';}
+						if ($('Commission')) {
+							$('Commission').style.display = 'block';}
+						if ($('Retain')) {
+							$('Retain').style.display = 'none';}
+					} else if (this.value.substring(0, 6) == 'Retain' && this.value != 'Retain: Instructor Created') {
+						if ($('Fair Use')) {
+							$('Fair Use').style.display = 'none';	}
+						if ($('Permission')) {
+							$('Permission').style.display = 'none';}
+						if ($('Commission')) {
+							$('Commission').style.display = 'none';}
+						if ($('Retain')) {
+							$('Retain').style.display = 'block';}
+					}
+					else
+					{
+						if ($('Fair Use')) {
+							$('Fair Use').style.display = 'none';	}
+						if ($('Permission')) {
+							$('Permission').style.display = 'none';}
+						if ($('Commission')) {
+							$('Commission').style.display = 'none';}
+						if ($('Retain')) {
+							$('Retain').style.display = 'none';}
+					}
+				}
 		}
-		element.onclick = element.onchange;
-	},
-	
-
-	'.do_object_action_type' : function(element) {
-		element.onchange = function() {
-			var id = this.id;
-			id = id.replace(/\w+_/g,'');
-			if (this.value == 'Fair Use') {
-				if ($('Fair Use')) {
-					$('Fair Use').style.display = 'block';}
-				if ($('Permission')) {
-					$('Permission').style.display = 'none';}
-				if ($('Commission')) {
-					$('Commission').style.display = 'none';}
-				if ($('Retain')) {
-					$('Retain').style.display = 'none';}
-			} else if (this.value == 'Permission') {
-				if ($('Fair Use')) {
-					$('Fair Use').style.display = 'none';	}
-				if ($('Permission')) {
-					$('Permission').style.display = 'block';}
-				if ($('Commission')) {
-					$('Commission').style.display = 'none';}
-				if ($('Retain')) {
-					$('Retain').style.display = 'none';}
-			} else if (this.value == 'Commission') {
-				if ($('Fair Use')) {
-					$('Fair Use').style.display = 'none';	}
-				if ($('Permission')) {
-					$('Permission').style.display = 'none';}
-				if ($('Commission')) {
-					$('Commission').style.display = 'block';}
-				if ($('Retain')) {
-					$('Retain').style.display = 'none';}
-			} else if (this.value.substring(0, 6) == 'Retain' && this.value != 'Retain: Instructor Created') {
-				if ($('Fair Use')) {
-					$('Fair Use').style.display = 'none';	}
-				if ($('Permission')) {
-					$('Permission').style.display = 'none';}
-				if ($('Commission')) {
-					$('Commission').style.display = 'none';}
-				if ($('Retain')) {
-					$('Retain').style.display = 'block';}
-			}
-			else
-			{
-				if ($('Fair Use')) {
-					$('Fair Use').style.display = 'none';	}
-				if ($('Permission')) {
-					$('Permission').style.display = 'none';}
-				if ($('Commission')) {
-					$('Commission').style.display = 'none';}
-				if ($('Retain')) {
-					$('Retain').style.display = 'none';}
-			}
-		}
+		//element.onclick = element.onchange;
 	},
 	
 	'.do_replacement_ask_yesno' : function(element) {
