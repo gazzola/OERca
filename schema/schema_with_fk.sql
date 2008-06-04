@@ -954,7 +954,7 @@ ALTER TABLE `ocw_object_replacement_questions`
   ADD CONSTRAINT `ocw_object_replacement_questions_ibfk_4` FOREIGN KEY (`object_id`) REFERENCES `ocw_object_replacements` (`id`),
   ADD CONSTRAINT `ocw_object_replacement_questions_ibfk_5` FOREIGN KEY (`user_id`) REFERENCES `ocw_users` (`id`),
   ADD CONSTRAINT `ocw_object_replacement_questions_ibfk_6` FOREIGN KEY (`modified_by`) REFERENCES `ocw_users` (`id`),
-  ADD CONSTRAINT `ocw_object_replacement_questions_ibfk_7` FOREIGN KEY (`object_id`) REFERENCES `ocw_object_replacements` (`object_id`),
+  ADD CONSTRAINT `ocw_object_replacement_questions_ibfk_7` FOREIGN KEY (`object_id`) REFERENCES `ocw_object_replacements` (`id`),
   ADD CONSTRAINT `ocw_object_replacement_questions_ibfk_8` FOREIGN KEY (`modified_by`) REFERENCES `ocw_users` (`id`);
 
 -- 
