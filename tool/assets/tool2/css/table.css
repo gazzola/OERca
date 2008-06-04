@@ -100,7 +100,7 @@ table thead th.reverseSort a
 
 th.sort-active
 {
-        background:#CAE8EA url(../images/bg_header_sorting.jpg) no-repeat 0 0;
+        /*background:#CAE8EA url(../images/bg_header_sorting.jpg) no-repeat 0 0;*/
         cursor:wait;
 }
 
