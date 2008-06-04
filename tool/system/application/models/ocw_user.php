@@ -15,6 +15,38 @@ class OCW_user extends Model
     parent::Model();
   }
 
+    /**
+     * Retrieves all records and all fields (or those passed in the $fields string)
+     * from the table user. It is possible (optional) to pass the wonted fields, 
+     * the query limit, and the query WHERE clause.
+     *
+     * @param string of fields wanted $fields
+     * @param array $limit
+     * @param string $where
+     * @return query string
+     */
+	function getUsers($fields=null, $limit=null, $where=null)
+	{	
+    $users = array();
+
+		($fields != null) ? $this->db->select($fields) :'';
+		
+    $this->db->from('users');
+		
+		($where != null) ? $this->db->where($where) :'';
+		
+		($limit != null ? $this->db->limit($limit['start'], $limit['end']) : '');
+        
+		$q = $this->db->get();
+
+    if ($q->num_rows() > 0) {
+      foreach($q->result_array() as $row) { $users[] = $row; }
+    }
+
+    return (sizeof($users) > 0) ? $users : null;
+	}
+	
+	// ------------------------------------------------------------------------
   /**
     * Get a user's courses 
     *

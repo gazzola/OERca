@@ -13,7 +13,40 @@ foreach($courses as $school => $curriculum) {
 		$select_box .= '</optgroup>';
 } 
 $select_box .= '</select>';
+
+$ds_select_box = '';
+if ($all_dscribes != null) {
+    $onteam = array();
+    if ($dscribes<>null) { foreach($dscribes as $d) { array_push($onteam,$d['user_name']);} }
+		$ds_select_box = '<select id="ds" name="ds" onchange="setds();" width="200px">';
+		$ds_select_box .= '<option value="none">Choose a dScribe...</option>';
+		foreach($all_dscribes as $d) {
+            if (!in_array($d['user_name'],$onteam)) {
+								$v = $d['email'].'|#|'.$d['name'].'|#|'.$d['user_name'];
+								$ds_select_box .= '<option value="'.$v.'">'.
+															$d['name'].' ('.$d['user_name'].')</option>';
+						}
+		}
+		$ds_select_box .= '</select>';
+}
 ?>
+
+<?php if ($ds_select_box <> '')  { ?>
+<script type="text/javascript">
+	function setds() {
+			if ($('ds').value=='none') {
+					$('name').value = '';
+					$('user_name').value = '';
+					$('email').value = '';
+			} else {
+					var vals = ($('ds').value).split("|#|");
+					$('email').value = vals[0];
+					$('name').value = vals[1];
+					$('user_name').value = vals[2];
+			}
+	}
+</script>
+<?php }?>
 
 <div class="column span-24 first last">
 
@@ -25,8 +58,10 @@ $select_box .= '</select>';
 <br/>
 
 <?php if ($cid <> 'none') { ?>
+
+
 <fieldset>
-    <legend><?php echo $this->lang->line('ocw_ins_dscribes_addadscribe')?></legend>
+    <legend>Add a dScribe</legend>
 
     <form name="adminform" method="post" action="<?php echo site_url("dscribe2/dscribes/$cid")?>" style="margin:0px;">
 
@@ -34,11 +69,17 @@ $select_box .= '</select>';
     <input type="hidden" name="role" value="dscribe1" />
 
     <table>
+			<?php if ($ds_select_box <> '')  { ?>
+			<tr>
+				<th style="text-align:right">Add an existing dScribe:</th>
+				<td><?=$ds_select_box?></td>
+			</tr>
+			<?php } ?>
       <tr>
         <th style="text-align:right">
           <?php echo $this->lang->line('ocw_ins_dscribes_name')?>: &nbsp;&nbsp;
         </th>
-        <td><input type="text"  name="name" tabindex="1" size="20" /></td>
+        <td><input type="text" id="name"  name="name" tabindex="1" size="20" /></td>
       </tr>
       <tr>
         <th style="text-align: right">
