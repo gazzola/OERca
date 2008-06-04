@@ -80,7 +80,8 @@ class OCW_user extends Model
     $q = $this->db->get()->
       order_by('courses.start_date', 'desc'); */
     
-    $sql = "SELECT ocw_courses. *, ocw_curriculums.name AS cname, 
+    $sql = "SELECT ocw_courses.*, 
+      ocw_curriculums.name AS cname, 
       ocw_schools.name AS sname
       FROM ocw_courses, ocw_curriculums, ocw_schools, ocw_acl
       WHERE ocw_curriculums.id = ocw_courses.curriculum_id
@@ -96,7 +97,26 @@ class OCW_user extends Model
         $courses[$row['sname']][$row['cname']][] = $row; 
       }
     }
-
+    
+    // get the courses that have NULL curriculum ids
+    $sql_no_curr_id = "SELECT ocw_courses.*,
+      ocw_courses.curriculum_id AS cname,
+      ocw_courses.curriculum_id AS sname
+      FROM ocw_courses, ocw_acl
+      WHERE ocw_courses.curriculum_id IS NULL
+      AND ocw_acl.course_id = ocw_courses.id
+      AND ocw_acl.user_id = '$uid'
+      ORDER BY ocw_courses.start_date DESC";
+    
+    $q_no_curr_id = $this->db->query($sql_no_curr_id);
+    
+    if ($q_no_curr_id->num_rows() > 0) {
+      foreach ($q_no_curr_id->result_array() as $row) {
+        $courses['No School Specified']['No Curriculum Specified'][]
+         = $row;
+      }
+    }
+    
     return (sizeof($courses) > 0) ? $courses : null;
   }
 
