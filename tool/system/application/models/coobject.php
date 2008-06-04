@@ -596,7 +596,13 @@ class Coobject extends Model
 
 		if (isset($data['status']) and $data['status']=='done') {
 				$d = array('ask_dscribe2_status'=>'done', 'modified_by'=>getUserProperty('id'));
+				$this->db->select('action')->from($table)->where('id',$claim_id);
+				$q = $this->db->get();
+				if ($q->num_rows() > 0) {
+						foreach($q->result_array() as $row) {  $d['action_type']=$row['action']; }
+				} 
 	  		$this->update($oid, $d);
+				$this->add_log($oid, getUserProperty('id'), array('log'=>'dScribe2 has responded to this claim and sent it to the dscribe'));
 		}
 	}
 
