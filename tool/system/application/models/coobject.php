@@ -131,12 +131,14 @@ class Coobject extends Model
 
 		} else {
 			if ($action_type <> '') { 
+				$act_whr = '';
 				switch ($action_type) {
-					case 'Ask': $idx = 'ask'; $ans = 'yes'; break;
-					case 'Done': $idx = 'done'; $ans = '1'; break;
-					default: $idx = 'action_type'; $ans = $action_type;
+					case 'Ask': $act_whr = "ask = 'yes'"; break;
+					case 'Done': $act_whr = "done = '1'"; break;
+					case 'Retain': $this->db->like('action_type', 'Retain:','after'); break;
+					default: $act_whr = "action_type= '$action_type'";
 				}
-				$where .= " AND $idx='$ans'";
+				$where .= ($act_whr=='') ? '' : " AND $act_whr";
 			}
 		}
 
@@ -220,11 +222,11 @@ class Coobject extends Model
 		} else {
 				if ($action_type <> '') { 
 						switch ($action_type) {
-								case 'Ask': $idx = 'ask'; $ans = 'yes'; break;
-								case 'Done': $idx = 'done'; $ans = '1'; break;
-								default: $idx = 'action_type'; $ans = $action_type;
+							case 'Ask': $where['ask'] = 'yes'; break;
+							case 'Done': $where['done']= '1'; break;
+							case 'Retain': $this->db->like('action_type', 'Retain:','after'); break;
+							default: $where['action_type']= $action_type;
 						}
-						$where[$idx] = $ans; 
 				}
 				$table = 'objects';
 		}		
