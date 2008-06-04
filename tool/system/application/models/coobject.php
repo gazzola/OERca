@@ -88,6 +88,8 @@ class Coobject extends Model
                                                   'modified_on'=>date('Y-m-d h:i:s'),
                                                   'created_on'=>date('Y-m-d h:i:s')));
 
+					// indicate in materials table that content objects exist
+					$this->db->update('materials',array('embedded_co'=>1),"id=$mid");
       } else {
           return 'Error adding image: please specify whether it is a slide or object.';
       }
