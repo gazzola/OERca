@@ -286,7 +286,7 @@ class Coobject extends Model
 						} 
 
 						/* get objects with fair use claims */
-						if (($c = $this->claim_exists($obj['id'],'fairuse')) !== FALSE) {
+						if (($c = $this->claim_exists($obj['id'],'fairuse')) !== FALSE && $obj['action_type'] == 'Fair Use') {
 								 $added = $notalldone = false;
 								 $obj['otype'] = 'original';
 								 foreach($c as $k => $cl) {
@@ -333,7 +333,7 @@ class Coobject extends Model
 						}
 
 						/* get objects with permission claims */
-						if (($c = $this->claim_exists($obj['id'], 'permission')) !== FALSE) {
+						if (($c = $this->claim_exists($obj['id'], 'permission')) !== FALSE && $obj['action_type'] == 'Permission') {
 								 $added = $notalldone = false;
 								 $obj['otype'] = 'original';
 								 foreach($c as $k => $cl) {
@@ -403,7 +403,7 @@ class Coobject extends Model
 						}
 
 						/* get objects with commission claims */
-						if (($c = $this->claim_exists($obj['id'],'commission')) !== FALSE) {
+						if (($c = $this->claim_exists($obj['id'],'commission')) !== FALSE && $obj['action_type'] == 'Commission') {
 								 $added = $notalldone = false;
 								 $obj['otype'] = 'original';
 								 foreach($c as $k => $cl) {
@@ -456,7 +456,9 @@ class Coobject extends Model
 						}
 
 						/* get objects with retain (no copyright) claims */
-						if (($c = $this->claim_exists($obj['id'], 'retain')) !== FALSE) {
+						log_message('error', $obj['action_type']);
+						//log_message('error', $obj['action_type'], 'Retain'));
+						if (($c = $this->claim_exists($obj['id'], 'retain')) !== FALSE && stripos($obj['action_type'], 'Retain:') !== FALSE) {
 								 $added = $notalldone = false;
 								 $obj['otype'] = 'original';
 								 foreach($c as $k => $cl) {
