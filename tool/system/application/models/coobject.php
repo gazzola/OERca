@@ -89,7 +89,7 @@ class Coobject extends Model
                                                   'created_on'=>date('Y-m-d h:i:s')));
 
 					// indicate in materials table that content objects exist
-					$this->db->update('materials',array('embedded_co'=>1),"id=$mid");
+					$this->db->update('materials',array('embedded_co'=>'1'),"id=$mid");
       } else {
           return 'Error adding image: please specify whether it is a slide or object.';
       }
@@ -1158,7 +1158,7 @@ class Coobject extends Model
 		$oid = $this->db->insert_id();
 
 		// indicate in materials table that content objects exist
-		$this->db->update('materials',array('embedded_co'=>1),"id=$mid");
+		$this->db->update('materials',array('embedded_co'=>'1'),"id=$mid");
 
 		// add  questions and comments
 		if ($question <> '') {
