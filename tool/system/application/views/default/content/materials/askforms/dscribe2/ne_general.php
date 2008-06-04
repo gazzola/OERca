@@ -62,9 +62,9 @@ foreach($cos as $obj) {
 				<?php } else { echo $obj['citation']; }?><br/><br/>
 
 				<?php if (is_array($obj['copyright'])) { $c = $obj['copyright'];?>
-						<b>Copyright Status:</b> <?=$c['status']?>
-						<b>Copyright Holder:</b> <?=$c['holder']?>
-						<b>Copyright Info URL:</b> <?=$c['url']?>
+						<b>Copyright Status:</b> <?=$c['status']?><br/><br/>
+						<b>Copyright Holder:</b> <?=$c['holder']?><br/><br/>
+						<b>Copyright Info URL:</b> <?=$c['url']?><br/><br/>
 						<b>Copyright Notice:</b> <?=$c['notice']?>
 				<?php } else { ?>
 						<b>Copyright:</b> <span style="color:red">No copyright information</span>
