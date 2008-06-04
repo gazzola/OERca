@@ -11,6 +11,7 @@ foreach($repl_objects as  $obj) {
 
   if ($obj['ask_status'] <> 'done') {
 ?>
+<input type="hidden" id="oid-<?=$obj['id']?>" name="oid-<?=$obj['id']?>" value="<?=$obj['object_id']?>" />
 <tr>
 <td style="vertical-align:top"><?=$count?></td>
 
@@ -39,7 +40,7 @@ foreach($repl_objects as  $obj) {
 	$n = count($inplaceeditors) + 1; 
 	$ine_id = 'txt_citation_'.$obj['id'];
 	$ine_holder = 'holder_citation_'.$obj['id'];
-    $ine_url = "materials/update_replacement/$cid/$mid/{$obj['id']}/citation/";
+    $ine_url = "materials/update_replacement/$cid/$mid/{$obj['object_id']}/{$obj['id']}/citation/";
 	$inplaceeditors[]="var editor$n = new InPlaceEditor('$ine_id','$ine_holder',".
 					  "'$ine_url','No citation'); ".
 					  "editor$n.hover('$ine_id','$ine_holder','#ffffcc','#fff');";
@@ -56,7 +57,7 @@ foreach($repl_objects as  $obj) {
 	$n = count($inplaceeditors) + 1; 
 	$ine_id = 'txt_tags_'.$obj['id'];
 	$ine_holder = 'holder_tags_'.$obj['id'];
-    $ine_url = "materials/update_replacement/$cid/$mid/{$obj['id']}/tags/";
+    $ine_url = "materials/update_replacement/$cid/$mid/{$obj['object_id']}/{$obj['id']}/tags/";
 	$inplaceeditors[]="var editor$n = new InPlaceEditor('$ine_id','$ine_holder',".
 					  "'$ine_url','No keywords'); ".
 					  "editor$n.hover('$ine_id','$ine_holder','#ffffcc','#fff');";
@@ -68,7 +69,7 @@ foreach($repl_objects as  $obj) {
 	<div id="suit_no_other_<?=$obj['id']?>" style="display: <?= ($obj['suitable']=='no') ? 'block':'none'?>"> 
 	<p>
 		<b>Why is this not a suitable replacement?</b><br/>
-       	<textarea name="notsuitable" id="c_<?=$obj['id']?>" rows="10" cols="50" class="do_replacement_update"><?=$obj['unsuitable_reason']?></textarea>
+       	<textarea name="notsuitable_<?=$obj['id']?>" id="c_<?=$obj['id']?>" rows="10" cols="50" class="do_replacement_update"><?=$obj['unsuitable_reason']?></textarea>
 	</p>
 	</div>
 

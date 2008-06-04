@@ -577,30 +577,19 @@ var Rules = {
 	// replacement form
 	'.do_replacement_update' : function(element) {
 		element.onchange = function () {
-			var response;
+     	var fb = $('feedback');
 			var course_id = $('cid').value;
 			var material_id = $('mid').value; 
-			var object_id = $('oid').value;
-			var id = $('rid').value;
-			var field = this.name;  
-		  object_id = object_id.replace(/^\w+_/g,'');
-			var field = this.name; 
-		  field = field.replace(/_\d+/g,'');
+			var repl_id =  ($('rid')) ?  $('rid').value : this.name.replace(/^\w+_/g,'');
+		  var object_id = ($('oid')) ? $('oid').value : $('oid-'+repl_id).value;
+			var field = this.name.replace(/_\d+/g,'');
 			var val = this.value;
 
-			if (field=='rep_ok') { 
-				object_id = this.id;
-				object_id = object_id.replace(/repok_\w+_/g,'');
-				field = 'suitable';
-			}
-			if (field == 'notsuitable') {
-				object_id = this.id;
-				object_id = object_id.replace(/c_/g,'');
-				field = 'unsuitable_reason';
-			}
-			var url = $('server').value+'materials/update_replacement/'+course_id+'/'+material_id;
-			url += '/'+object_id+'/'+field+'/'+encodeURIComponent(val)+'/'+id;
-     	var fb = $('feedback');
+			if (field=='rep_ok') { field = 'suitable'; }
+			if (field == 'notsuitable') { field = 'unsuitable_reason'; }
+
+			var url = $('server').value+'materials/update_replacement/'+course_id+'/'+material_id+
+			 				 '/'+object_id+'/'+repl_id+'/'+field+'/'+encodeURIComponent(val);
      	new Ajax(url, { method: 'get', update: fb, }).request();
 		}
 	},
@@ -736,9 +725,11 @@ var Rules = {
 			var course_id = $('cid').value;
 			var material_id = $('mid').value; 
 			var view = $('view').value; 
-			var object_id = this.name.replace(/status_/g,'');
+			var repl_id = this.name.replace(/status_/g,'');
+		  var object_id = ($('oid')) ? $('oid').value : $('oid-'+repl_id).value;
+
 			var url = $('server').value+'materials/update_replacement/'+course_id+'/'+
-					  material_id+'/'+object_id+'/ask_status/'+encodeURIComponent(val);
+					  material_id+'/'+object_id+'/'+repl_id+'/ask_status/'+encodeURIComponent(val);
             var fb = $('feedback');
 			var response;
             new Ajax(url, { method: 'get',
