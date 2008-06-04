@@ -228,7 +228,9 @@ var Rules = {
 				var field = this.name; 
 				var url = $('server').value+'materials/update_object/'+course_id+'/'+material_id;
 				var val = this.value;
+	     	var fb = $('feedback');
 				var proceed = true;
+
 				if (field=='done') {
 					if (val == 1)
 					{
@@ -240,11 +242,9 @@ var Rules = {
 						}
 					}
 					url += '/'+object_id+'/'+field+'/'+encodeURIComponent(val);
-	      			var fb = $('feedback');
 					new Ajax(url, { method: 'get', update: fb, }).request();
-				}
-				else if (field=='ask_inst')
-				{
+
+				} else if (field=='ask_inst') {
 					if(val == 'yes')
 					{
 						// if going to ask instructor and the CO is already marked as cleared, generate a message to remind user to unclear the CO first
@@ -257,7 +257,6 @@ var Rules = {
 						}
 					}
 					url += '/'+object_id+'/'+field+'/'+encodeURIComponent(val);
-	      			var fb = $('feedback');
 					new Ajax(url, { method: 'get', update: fb, }).request();
 					
 					// show the div
@@ -271,11 +270,8 @@ var Rules = {
 					   if ($('ask_yes')) { $('ask_yes').style.display = 'none';	}
 					}
 					
-				}
-				else
-				{	
+				} else {	
 					url += '/'+object_id+'/'+field+'/'+encodeURIComponent(val);
-	      			var fb = $('feedback');
 					new Ajax(url, { method: 'get', update: fb, }).request();
 				}	
 				
@@ -293,7 +289,7 @@ var Rules = {
 					// reset url
 					url = $('server').value+'materials/update_object/'+course_id+'/'+material_id;
 					url += '/'+object_id+'/ask_dscribe2/'+encodeURIComponent('yes');
-      				var fb1 = $('feedback');
+      		var fb1 = $('feedback');
 					new Ajax(url, { method: 'get', update: fb1, }).request();
 				}
 				
@@ -301,52 +297,32 @@ var Rules = {
 				if (field=='action_type')
 				{
 					if (this.value == 'Fair Use') {
-						if ($('Fair Use')) {
-							$('Fair Use').style.display = 'block';}
-						if ($('Permission')) {
-							$('Permission').style.display = 'none';}
-						if ($('Commission')) {
-							$('Commission').style.display = 'none';}
-						if ($('Retain')) {
-							$('Retain').style.display = 'none';}
+						if ($('Fair Use')) { $('Fair Use').style.display = 'block';}
+						if ($('Permission')) { $('Permission').style.display = 'none';}
+						if ($('Commission')) { $('Commission').style.display = 'none';}
+						if ($('Retain')) { $('Retain').style.display = 'none';}
 					} else if (this.value == 'Permission') {
-						if ($('Fair Use')) {
-							$('Fair Use').style.display = 'none';	}
-						if ($('Permission')) {
-							$('Permission').style.display = 'block';}
-						if ($('Commission')) {
-							$('Commission').style.display = 'none';}
-						if ($('Retain')) {
-							$('Retain').style.display = 'none';}
+						if ($('Fair Use')) { $('Fair Use').style.display = 'none';	}
+						if ($('Permission')) { $('Permission').style.display = 'block';}
+						if ($('Commission')) { $('Commission').style.display = 'none';}
+						if ($('Retain')) { $('Retain').style.display = 'none';}
 					} else if (this.value == 'Commission') {
-						if ($('Fair Use')) {
-							$('Fair Use').style.display = 'none';	}
-						if ($('Permission')) {
-							$('Permission').style.display = 'none';}
-						if ($('Commission')) {
-							$('Commission').style.display = 'block';}
-						if ($('Retain')) {
-							$('Retain').style.display = 'none';}
+						if ($('Fair Use')) { $('Fair Use').style.display = 'none';	}
+						if ($('Permission')) { $('Permission').style.display = 'none';}
+						if ($('Commission')) { $('Commission').style.display = 'block';}
+						if ($('Retain')) { $('Retain').style.display = 'none';}
 					} else if (this.value.substring(0, 6) == 'Retain' && this.value != 'Retain: Instructor Created') {
-						if ($('Fair Use')) {
-							$('Fair Use').style.display = 'none';	}
-						if ($('Permission')) {
-							$('Permission').style.display = 'none';}
-						if ($('Commission')) {
-							$('Commission').style.display = 'none';}
-						if ($('Retain')) {
-							$('Retain').style.display = 'block';}
+						if ($('Fair Use')) { $('Fair Use').style.display = 'none';	}
+						if ($('Permission')) { $('Permission').style.display = 'none';}
+						if ($('Commission')) { $('Commission').style.display = 'none';}
+						if ($('Retain')) { $('Retain').style.display = 'block';}
 					}
 					else
 					{
-						if ($('Fair Use')) {
-							$('Fair Use').style.display = 'none';	}
-						if ($('Permission')) {
-							$('Permission').style.display = 'none';}
-						if ($('Commission')) {
-							$('Commission').style.display = 'none';}
-						if ($('Retain')) {
-							$('Retain').style.display = 'none';}
+						if ($('Fair Use')) { $('Fair Use').style.display = 'none';	}
+						if ($('Permission')) { $('Permission').style.display = 'none';}
+						if ($('Commission')) { $('Commission').style.display = 'none';}
+						if ($('Retain')) { $('Retain').style.display = 'none';}
 					}
 				}
 		}

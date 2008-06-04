@@ -31,9 +31,9 @@
 			  	<li class="normal"><a id="do_open_uploadco_pane">Add Content Objects</a></li>
 			    <li class="normal"><a id="do_open_matinfo_pane">Material Info</a></li>
 			    <li class="normal"><a id="do_open_matcomm_pane">Material Comments</a></li>
-			    	<?php if ($objstats['ask']>0) { ?>
+			    	<?php #if ($objstats['ask']>0) { ?>
 					<li class="normal"><a href="<?=site_url("materials/askforms/$cid/$mid")?>" target="_new">ASK Forms</a></li>
-					<?php		} ?>
+					<?php		#} ?>
 			    <li class="normal"><a href="<?=site_url("materials/download_all_rcos/$cid/$mid/")?>">Download all RCOs</a></li>
       </ul>
     </div>
