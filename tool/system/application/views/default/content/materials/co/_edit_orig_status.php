@@ -208,7 +208,7 @@
 </div>
 
 <em style="color:black;">Note: Hold down the shift key to select multiple columns to sort</em>
-<table id="origquestions" class="sortable-onload-7-reverse rowstyle-alt no-arrow" width="100%">
+<table id="origquestions" class="sortable-onload-7-reverse rowstyle-alt no-arrow" width="100%" bgcolor="white">
 <thead>
 	<tr>
 		<th class="sortable">Asked to</th>
