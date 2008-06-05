@@ -41,7 +41,7 @@ class Courses extends Controller {
       'subj_id' => "integer|maxlength[4]|xss_clean",
       'cnum' => "integer|maxlength[4]|xss_clean",
       'title' => "maxlength[255]|xss_clean",
-      'courselevel' => "alpha|maxlength[15]|xss_clean",
+      'courselevel' => "alphanum|maxlength[15]|xss_clean",
       'courselength' => "integer|maxlength[2]|xss_clean",
       'term' => "alphanum|maxlength[8]|xss_clean",
       'year' => "integer|maxlength[4]|xss_clean",
