@@ -54,7 +54,7 @@
   		<td colspan="2">
   			<div id="Fair Use" style="display: <?= ($obj['action_type']=='Fair Use') ? 'block':'none'?>">
   				<p>
-						<b>Please provide the dScribe2 with your rationale for the fair use of this content object in the space below.</b><br/>
+						<b>Please provide the dScribe2 with your rationale for the fair use of this content object in the space below. (REQUIRED)</b><br/>
 			       	<textarea name="fairuse_rationale" id="fairuse_rationale" rows="10" cols="50" class="do_object_rationale"><?=$fairuse_rationale?></textarea>
 					</p>
 	  		</div>
@@ -67,7 +67,7 @@
 						       	<table>
 						       		<tr>
 						       			<th>
-						       				<label for="contact_name">Name:</label>
+						       				<label for="contact_name">Name: (required)</label>
 						       			</th>
 						       			<td>
 						       				<input type="text"  name="contact_name" id="contact_name"  class="do_update_contact" size="50" value="<?=isset($contact_name)?$contact_name:''?>" />
@@ -122,7 +122,7 @@
 						       		</tr>
 						       		<tr>
 						       			<th>
-						       				<label for="contact_phone">Phone:</label>
+						       				<label for="contact_phone">Phone:(required) </label>
 						       			</th>
 						       			<td>
 						       				<input type="text"  name="contact_phone" id="contact_phone"  class="do_update_contact" size="50" value="<?=isset($contact_phone)?$contact_phone:''?>"/>
@@ -138,7 +138,7 @@
 						       		</tr>
 						       		<tr>
 						       			<th>
-						       				<label for="contact_email">Email:</label>
+						       				<label for="contact_email">Email: (required)</label>
 						       			</th>
 						       			<td>
 						       				<input type="text"  name="contact_email" id="contact_email"  class="do_update_contact" size="50" value="<?=isset($contact_email)?$contact_email:''?>"/>
@@ -150,7 +150,7 @@
 
   		<div id="Commission" style="display: <?= ($obj['action_type']=='Commission') ? 'block':'none'?>">
 			  				<p>
-								<b>Please provide the dScribe2 with your rationale for commissioning a re-creation of this content object in the space below.</b><br/>
+								<b>Please provide the dScribe2 with your rationale for commissioning a re-creation of this content object in the space below. (REQUIRED)</b><br/>
 						       	<textarea name="commission_rationale" id="commission_rationale" rows="10" cols="50" class="do_object_rationale"><?=$commission_rationale?></textarea><br/>
 						       	<b>Provide a detailed description of the desired re-creation of this content object. Provide as much context as possible to explain what critical features the re-creation should emphasize.</b><br/>
 						       	<textarea name="description" id="description" rows="10" cols="50" class="do_update_description"><?=$obj['description']?></textarea>
@@ -159,7 +159,7 @@
 
   		<div id="Retain" style="display: <?= (substr($obj['action_type'], 0, 6)=='Retain') ? 'block':'none'?>">
 			  				<p>
-								<b>Please provide the dScribe2 with your rationale for retaining this content object in the space below.</b><br/>
+								<b>Please provide the dScribe2 with your rationale for retaining this content object in the space below. (REQUIRED)</b><br/>
 						       	<textarea name="retain_rationale" id="retain_rationale" rows="10" cols="50" class="do_object_rationale"><?=$retain_rationale?></textarea>
 							</p>
   		</div>
