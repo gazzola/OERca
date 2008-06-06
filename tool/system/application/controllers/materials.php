@@ -649,8 +649,12 @@ class Materials extends Controller {
    	exit;
 	}
 
-	public function update_contact($cid, $mid, $oid, $field, $val='') 
+	public function update_contact($cid, $mid, $oid) 
  	{
+ 		if (isset($_REQUEST['field']) && $_REQUEST['field']<>'' && isset($_REQUEST['val']) && $_REQUEST['val']<>'') {
+ 			$field = $_REQUEST['field'];
+ 			$val = $_REQUEST['val'];
+ 		}
 		$data = array($field=>$val);
 		$this->coobject->update_contact($oid, getUserProperty('id'), $data);
 	

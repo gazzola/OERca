@@ -402,12 +402,27 @@ var Rules = {
 				var material_id = $('mid').value; 
 				var object_id = $('oid').value;
 				var field = this.name; 
-				var url = $('server').value+'materials/update_contact/'+course_id+'/'+material_id;
-				var val = this.value;
-				url += '/'+object_id+'/'+field+'/'+encodeURIComponent(val);
+				var val = escape(this.value);
+				var url = $('server').value+'materials/update_contact/'+course_id+'/'+material_id+'/'+object_id;
 			
-      	var fb = $('feedback');
-				new Ajax(url, { method: 'get', update: fb, }).request();
+				
+				var fb = $('feedback');
+                var response;
+
+                new Ajax(url, { method: 'post',
+							postBody: 'field='+field+'&val='+val,
+							update: fb, 
+                     		onComplete:function() {
+                        		response = fb.innerHTML;
+                        		if (response=='success') {
+                            		url = $('server').value+'materials/askforms/'+
+										course_id+'/'+material_id+'/'+view;
+                            		window.location.replace(url);
+                        		} else {
+                            		alert(response + url);
+                        		}
+							}
+				}).request();
 		}
 	},
 
