@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Jun 03, 2008 at 04:41 PM
+-- Generation Time: Jun 06, 2008 at 03:45 PM
 -- Server version: 5.0.45
 -- PHP Version: 5.2.3-1ubuntu6.3
 
@@ -61,7 +61,7 @@ CREATE TABLE `ocw_claims_commission` (
   `have_replacement` enum('yes','no','pending') collate utf8_unicode_ci NOT NULL default 'pending',
   `recommend_commission` enum('yes','no') collate utf8_unicode_ci NOT NULL default 'no',
   `status` enum('new','in progress','done') collate utf8_unicode_ci NOT NULL default 'new',
-  `action` enum('None','Permission','Search','Fair Use','Re-Create','Retain: Instructor Created','Retain: Public Domain','Retain: No Copyright','Remove and Annotate') collate utf8_unicode_ci NOT NULL default 'None',
+  `action` enum('None','Permission','Search','Retain: Permission','Retain: Public Domain','Retain: No Copyright','Re-Create','Commission','Fair Use','Remove and Annotate') collate utf8_unicode_ci NOT NULL default 'None',
   `created_on` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   `modified_by` int(11) default NULL,
   `modified_on` timestamp NOT NULL default '0000-00-00 00:00:00',
@@ -69,7 +69,7 @@ CREATE TABLE `ocw_claims_commission` (
   KEY `object_id` (`object_id`),
   KEY `user_id` (`user_id`),
   KEY `modified_by` (`modified_by`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -86,7 +86,7 @@ CREATE TABLE `ocw_claims_fairuse` (
   `additional_rationale` text collate utf8_unicode_ci,
   `comments` text collate utf8_unicode_ci NOT NULL,
   `warrant_review` enum('yes','no','pending') collate utf8_unicode_ci NOT NULL default 'pending',
-  `action` enum('None','Permission','Search','Re-Create','Retain: Instructor Created','Retain: Public Domain','Retain: No Copyright','Commission','Remove and Annotate') collate utf8_unicode_ci NOT NULL default 'None',
+  `action` enum('None','Permission','Search','Retain: Permission','Retain: Public Domain','Retain: No Copyright','Re-Create','Commission','Fair Use','Remove and Annotate') collate utf8_unicode_ci NOT NULL default 'None',
   `status` enum('new','in progress','ip review','done') collate utf8_unicode_ci NOT NULL default 'new',
   `approved` enum('yes','no','pending') collate utf8_unicode_ci NOT NULL default 'pending',
   `created_on` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
@@ -122,7 +122,7 @@ CREATE TABLE `ocw_claims_permission` (
   `comments` text collate utf8_unicode_ci,
   `status` enum('new','in progress','done') collate utf8_unicode_ci NOT NULL default 'new',
   `info_sufficient` enum('yes','no','pending') collate utf8_unicode_ci NOT NULL default 'pending',
-  `action` enum('None','Search','Fair Use','Re-Create','Retain: Instructor Created','Retain: Public Domain','Retain: No Copyright','Commission','Remove and Annotate') collate utf8_unicode_ci NOT NULL default 'None',
+  `action` enum('None','Permission','Search','Retain: Permission','Retain: Public Domain','Retain: No Copyright','Re-Create','Commission','Fair Use','Remove and Annotate') collate utf8_unicode_ci NOT NULL default 'None',
   `letter_sent` enum('yes','no') collate utf8_unicode_ci NOT NULL default 'no',
   `response_received` enum('yes','no') collate utf8_unicode_ci NOT NULL default 'no',
   `approved` enum('yes','no','pending') collate utf8_unicode_ci NOT NULL default 'pending',
@@ -150,7 +150,7 @@ CREATE TABLE `ocw_claims_retain` (
   `comments` text collate utf8_unicode_ci NOT NULL,
   `accept_rationale` enum('yes','no','unsure','pending') collate utf8_unicode_ci NOT NULL default 'pending',
   `status` enum('new','in progress','ip review','done') collate utf8_unicode_ci NOT NULL default 'new',
-  `action` enum('None','Permission','Search','Fair Use','Re-Create','Retain: Instructor Created','Retain: Public Domain','Commission','Remove and Annotate') collate utf8_unicode_ci NOT NULL default 'None',
+  `action` enum('None','Permission','Search','Retain: Permission','Retain: Public Domain','Retain: No Copyright','Re-Create','Commission','Fair Use','Remove and Annotate') collate utf8_unicode_ci NOT NULL default 'None',
   `approved` enum('yes','no') collate utf8_unicode_ci NOT NULL default 'no',
   `created_on` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   `modified_by` int(11) default NULL,
@@ -451,8 +451,8 @@ CREATE TABLE `ocw_objects` (
   `ask_status` enum('new','in progress','done') character set utf8 collate utf8_unicode_ci NOT NULL default 'new',
   `ask_dscribe2` enum('yes','no') character set utf8 collate utf8_unicode_ci NOT NULL default 'no',
   `ask_dscribe2_status` enum('new','in progress','done') character set utf8 collate utf8_unicode_ci NOT NULL default 'new',
-  `action_type` enum('Permission','Search','Fair Use','Re-Create','Retain: Instructor Created','Retain: Public Domain','Retain: No Copyright','Commission','Remove and Annotate') character set utf8 collate utf8_unicode_ci default NULL,
-  `action_taken` enum('Permission','Search','Fair Use','Re-Create','Retain: Instructor Created','Retain: Public Domain','Retain: No Copyright','Commission','Remove and Annotate') character set utf8 collate utf8_unicode_ci default NULL,
+  `action_type` enum('Permission','Search','Retain: Permission','Retain: Public Domain','Retain: No Copyright','Re-Create','Commission','Fair Use','Remove and Annotate') character set utf8 collate utf8_unicode_ci default NULL,
+  `action_taken` enum('Permission','Search','Retain: Permission','Retain: Public Domain','Retain: No Copyright','Re-Create','Commission','Fair Use','Remove and Annotate') character set utf8 collate utf8_unicode_ci default NULL,
   `status` varchar(255) character set utf8 collate utf8_unicode_ci NOT NULL,
   `done` enum('1','0') character set utf8 collate utf8_unicode_ci NOT NULL default '0',
   `time` bigint(20) NOT NULL,
@@ -672,7 +672,7 @@ CREATE TABLE `ocw_object_replacement_questions` (
   KEY `object_id` (`object_id`),
   KEY `user_id` (`user_id`),
   KEY `modified_by` (`modified_by`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -951,10 +951,10 @@ ALTER TABLE `ocw_object_replacement_log`
 -- Constraints for table `ocw_object_replacement_questions`
 -- 
 ALTER TABLE `ocw_object_replacement_questions`
+  ADD CONSTRAINT `ocw_object_replacement_questions_ibfk_9` FOREIGN KEY (`object_id`) REFERENCES `ocw_object_replacements` (`id`),
   ADD CONSTRAINT `ocw_object_replacement_questions_ibfk_4` FOREIGN KEY (`object_id`) REFERENCES `ocw_object_replacements` (`id`),
   ADD CONSTRAINT `ocw_object_replacement_questions_ibfk_5` FOREIGN KEY (`user_id`) REFERENCES `ocw_users` (`id`),
   ADD CONSTRAINT `ocw_object_replacement_questions_ibfk_6` FOREIGN KEY (`modified_by`) REFERENCES `ocw_users` (`id`),
-  ADD CONSTRAINT `ocw_object_replacement_questions_ibfk_7` FOREIGN KEY (`object_id`) REFERENCES `ocw_object_replacements` (`id`),
   ADD CONSTRAINT `ocw_object_replacement_questions_ibfk_8` FOREIGN KEY (`modified_by`) REFERENCES `ocw_users` (`id`);
 
 -- 
