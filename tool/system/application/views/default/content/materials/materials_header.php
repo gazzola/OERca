@@ -42,8 +42,7 @@
 
     <div id="materials_nav" style="float: right">
 		  <ul>
-		      <?php  // bdr - I commented this out per Pieter OERDEV-97
-                             // <li class="normal"><a id="do_open_instinfo_pane">Edit Instructor Info</a></li> ?>
+		      <li class="normal"><a id="do_open_instinfo_pane">Edit Instructor Info</a></li>
 			    <li class="normal"><a id="do_open_courseinfo_pane">Edit Course Info</a></li>
 			    <li class="normal"><a id="do_open_uploadmat_pane">Add Materials</a></li>
       </ul>
