@@ -224,7 +224,7 @@ var Site = {
 
       // close other panes
       view_comm.hide();
-			if (appv) appletview.hide();
+			if (appv) appletview.style.display='none';
       upload_co.hide();
       $('do_open_matcomm_pane').parentNode.className= 'normal';
       $('do_open_uploadco_pane').parentNode.className= 'normal';
@@ -249,7 +249,7 @@ var Site = {
 
       // close other panes
       edit_mat.hide();
-			appletview.hide();
+			appletview.style.display='none';
       upload_co.hide();
       $('do_open_matinfo_pane').parentNode.className= 'normal';
       $('do_open_uploadco_pane').parentNode.className= 'normal';
@@ -278,7 +278,7 @@ var Site = {
       $('do_open_matinfo_pane').parentNode.className= 'normal';
       $('do_open_matcomm_pane').parentNode.className= 'normal';
 
-			if( appv) appletview.show();
+			if (appv) appletview.style.display='block';
       upload_co.toggle();
       var addclass = ($('do_open_uploadco_pane').parentNode.className=='active') ? 'normal' : 'active';
       var rmvclass = ($('do_open_uploadco_pane').parentNode.className=='active') ? 'active' : 'normal';
@@ -295,7 +295,7 @@ var Site = {
       e = new Event(e);
 			var appv =  ($('snapper-frame')) ? true : false;
 			var appletview = (appv)  ? $('snapper-frame').contentDocument.clipboard : ''; 
-			if (appv) appletview.hide();
+			if (appv) appletview.style.display='none';
       upload_co.toggle();
       $('do_open_uploadco_pane').parentNode.removeClass('active').addClass('normal');
 			if ($('snapper_button')) {

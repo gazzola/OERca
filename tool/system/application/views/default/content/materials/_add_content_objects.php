@@ -14,7 +14,51 @@ $types .= '</select>';
 
   <div class="column span-10 first colborder">
      <h2>Snapper Upload</h2>
-    <iframe id="snapper-frame" name="snapper-frame" src="<?=site_url("materials/snapper/$cid/$mid")?>" scrolling="no" marginwidth="0" marginheight="0" frameborder="0" vspace="0" hspace="0" style="overflow:visible; width:100%; height: 470px;"></iframe>
+			
+				<?php print form_open_multipart("materials/snapper/$cid/$mid/submit",array('id'=>'snapper-form')) ?>	
+				<div id="controls">
+					<div>
+						<input id="snap_aCapture" type="checkbox" checked="checked"/>
+						<label for="snap_aCapture">auto capture</label>
+					</div>
+				</div>
+				
+				<div id="capture">
+					<applet id="clipboard" width="200" height="200" archive="<?=site_url()?>snapper/Ssnapper.jar,<?=site_url()?>snapper/commons-codec-1.3.jar" code="org.muse.snapper.Snapper" codebase="<?=site_url()?>snapper/">
+					</applet>
+					<br />
+					<input id="snap" type="button" value="Capture" />
+					<div id="snap_status" style="margin-top: 5px;"></div>
+					<input id="snap_image" type="hidden" name="image"/>
+					<input id="snap_st" type="hidden" name="subtype_id" value="6"/>
+				</div>
+				
+				<div id="meta" style="margin-top: 10px;">
+					<h2>Meta Data</h2>
+					<label>What are you capturing?</label>
+				
+					&nbsp;&nbsp;
+			
+					<input type="hidden" id="snap_type" value="object" />	
+					<input class="snapper_captype" name="type" id="snap_aCaptureTypeObject" type="radio" value="object" checked="checked"/>
+					<label for="aCaptureType">Original Object</label>
+				
+					&nbsp;&nbsp;
+				
+					<input class="snapper_captype" name="type" id="snap_aCaptureTypeSlide" type="radio" value="slide" />
+					<label for="aCaptureType">Slide</label>
+				
+					<div id="contentloc">
+						<br />
+						<label for="snap_location">Slide number:</label>
+						<input id="snap_location" name="location" type="text" width="30" />
+					</div>
+				</div>
+				
+				<div id="action" style="margin-top:20px;">
+					<input id="snap_save" type="button" value="Save" />
+				</div>
+				<?php print form_close(); ?>
   </div>
 
   <div class="column span-8">

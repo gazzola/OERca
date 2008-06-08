@@ -26,6 +26,7 @@
 	   echo script('ocwui.js');
      echo script('ocw_tool.js');
 	   echo script('multiupload.js'); 
+	   echo script('snapper.js'); 
 
 	   echo script('flash.js'); 
 

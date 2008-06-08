@@ -8,13 +8,13 @@ function captureClipboard()
 
 	// update the display	
 	var report = (String) (document.clipboard.getReport());
-	$("#status").html(report);
+	$('snap_status').setHTML(report);
 		
 	if (!newImageExists) return false;
 
 	// get the image into the form field
 	var image = (String) (document.clipboard.getBase64Jpeg());
-	$("#image").val(image);
+	$('snap_image').value = image;
 
 	return true;
 }
@@ -25,11 +25,7 @@ function autoCapture()
 
 	if (captureClipboard())
 	{
-		if (autoSendEnabled)
-		{
-			sendImage();
-			return;
-		}
+		if (autoSendEnabled) { sendImage(); return; }
 	}
 
 	setTimeout(autoCapture, 1000);
@@ -37,31 +33,21 @@ function autoCapture()
 
 function sendImage()
 {
-	var cid = $('#cid').val();
-	var mid = $('#mid').val();
-	var url = $('#server').val()+'materials/snapper/'+cid+'/'+mid+'/submit';
+	var cid = $('cid').value;
+	var mid = $('mid').value;
+	var url = $('server').value+'materials/snapper/'+cid+'/'+mid+'/submit';
 	var check = validate();
 	if (check != 'success') { sendDone(check); return false; }
 
-	var data =
-	{
-		image: $("#image").val(),
-		type: $("#type").val(),
-		subtype_id: $("#subtype_id").val(),
-		location: $("#location").val(),
-	};
-	$.post(url, data, sendDone, 'json');
+	$('snapper-form').send({onComplete: function(jsonObj,xml){ sendDone(Json.evaluate(jsonObj)); } });
 }
 
 function validate()
 {
-	if ($("#image").val() == '') {
+	if ($("snap_image").value == '') {
 			return {success: 'false', msg:'Please capture an image and fill out the meta info below before submitting.'};
 	}
-	if ($("#type").val() == 'object' && $('#subtype_id').val()=='22') {
-			return {success: 'false', msg:'Please specify the content type.'};
-	}
-	if ($("#location").val() == '') {
+	if ($("snap_location").value == '') {
 			return {success: 'false', msg:'Please specify the slide or page number for this image.'};
 	}
 	return 'success';
@@ -71,53 +57,38 @@ function sendDone(data, textStatus)
 {
 	if (data.success=='true') {
 			document.clipboard.clear();
-			$("#status").html($("#status").html()+": sent");
-			$("#image").val('');
+			$("snap_status").setHTML($("snap_status").innerHTML+": sent");
+			$("snap_image").value='';
 	
+      window.location.replace(data.url);
 			if (autoCaptureEnabled) { setTimeout(autoCapture, 1000); }
-
-      parent.window.location.replace(data.url);
 			
 	} else {
-			$("#status").html('<p style="padding: 2px; font-size:small; background: #FBE3E4; color: #D12F19; border-color: #FBC2C4;">'+data.msg+'</p>');
+			$("snap_status").setHTML('<p style="padding: 2px; font-size:small; background: #FBE3E4; color: #D12F19; border-color: #FBC2C4;">'+data.msg+'</p>');
 	}
 }
 
-function setAutoSend(e)
-{
-	autoSendEnabled = this.checked;
-}
+function setAutoSend(e) { autoSendEnabled = this.checked; }
 
 function setAutoCapture(e)
 {
 	autoCaptureEnabled = this.checked;
-	if (autoCaptureEnabled)
-	{
-		setTimeout(autoCapture, 1000);
-	}
+	if (autoCaptureEnabled) { setTimeout(autoCapture, 1000); }
 }
 
-function showHideContenttype() 
-{
-		if (this.value == 'object') {
-				$('#contenttype').show('fast');
-		} else {
-				$('#contenttype').hide('fast');
-		}
-		$('#type').val(this.value);
-}
+function setType() { $('snap_type').value=this.value; }
 
 
-$(document).ready(function()
-{
-	$("#snap").click(captureClipboard);
-	$("#save").click(sendImage);
-	$("#aSend").change(setAutoSend);
-	$("#aCapture").change(setAutoCapture);
-	$(".snapper_captype").click(showHideContenttype);
-	
-	if (autoCaptureEnabled)
-	{
-		setTimeout(autoCapture, 1000);
+var SNAP = {
+snapper: function() {
+	if ($('do_open_uploadco_pane')) {
+		$("snap").addEvent('click',captureClipboard);
+		$("snap_save").addEvent('click',sendImage);
+		$("snap_aCapture").addEvent('change',setAutoCapture);
+		$("snap_aCaptureTypeObject").addEvent('change',setType);
+		$("snap_aCaptureTypeSlide").addEvent('change',setType);
+		if (autoCaptureEnabled) { setTimeout(autoCapture, 1000); }
 	}
-});
+},
+};
+ window.addEvent('domready', SNAP.snapper);
