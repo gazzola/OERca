@@ -796,8 +796,10 @@ class Coobject extends Model
 		$table = ($type == 'original') ? 'object_questions' : 'object_replacement_questions';
 		$this->db->insert($table,$data);
 
-		if (isset($data['role']) && $data['role']=='dscribe2' && $type=='original') {
-				$this->update($oid, array('ask_dscribe2'=>'yes'));
+		if (isset($data['role'])) {
+				if ($data['role']=='dscribe2' && $type=='original') { $this->update($oid, array('ask_dscribe2'=>'yes')); }
+				if ($data['role']=='instructor') { $r = ($type=='original') ? $this->update($oid, array('ask'=>'yes')) 
+																																		: $this->update_replacement($oid, array('ask'=>'yes')); }
 		}
 	}
 	

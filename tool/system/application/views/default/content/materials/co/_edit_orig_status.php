@@ -7,8 +7,8 @@
 			  <?php 
 							  $yes = ($obj['ask']=='yes') ? true : false;
 							  $no = ($obj['ask']=='yes') ? false : true;
-			          echo form_radio('ask_inst', 'yes', $yes, 'class="do_object_update"').'&nbsp;Yes&nbsp;';
-			          echo form_radio('ask_inst', 'no', $no, 'class="do_object_update"').'&nbsp;No&nbsp;';
+			          echo form_radio('ask_inst', 'yes', $yes, 'class="do_object_update" id="ask_inst_yes"').'&nbsp;Yes&nbsp;';
+			          echo form_radio('ask_inst', 'no', $no, 'class="do_object_update" id="ask_inst_no"').'&nbsp;No&nbsp;';
 				?>
 
 				<div id="ask_yes" style="display: <?= ($obj['ask']=='yes') ? 'inline':'none'?>"> 
@@ -29,8 +29,8 @@
 			  <?php 
 							  $yes = ($obj['ask_dscribe2']=='yes') ? true : false;
 							  $no = ($obj['ask_dscribe2']=='yes') ? false : true;
-							  echo form_radio('ask_dscribe2', 'yes', $yes, 'class="do_object_update do_object_ask_dscribe2_yesno"').'&nbsp;Yes&nbsp;'; 
-							  echo form_radio('ask_dscribe2', 'no', $no, 'class="do_object_update do_object_ask_dscribe2_yesno"').'&nbsp;No&nbsp;&nbsp;';
+							  echo form_radio('ask_dscribe2', 'yes', $yes, 'class="do_object_update do_object_ask_dscribe2_yesno" id="ask_dscribe2r_yes"').'&nbsp;Yes&nbsp;'; 
+							  echo form_radio('ask_dscribe2', 'no', $no, 'class="do_object_update do_object_ask_dscribe2_yesno" id="ask_dscribe2r_no"').'&nbsp;No&nbsp;&nbsp;';
 				?>
 
 				<div id="ask_dscribe2_yes" style="display: <?= ($obj['ask_dscribe2']=='yes') ? 'inline':'none'?>"> 

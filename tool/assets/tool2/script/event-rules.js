@@ -208,6 +208,16 @@ var Rules = {
 														tr.adopt(td5); tr.adopt(td6); tr.adopt(td7);
 														tr.injectTop( $('objectqs') );
 														$('question').value = '';
+														if (role=='dscribe2') {
+																		$('ask_dscribe2r_yes').checked=true;
+																		$('ask_dscribe2r_no').checked=false;
+																		$('ask_dscribe2_yes').style.display='block';	
+														}
+														if (role=='instructor') {
+																		$('ask_inst_yes').checked=true;
+																		$('ask_inst_no').checked=false;
+																		$('ask_yes').style.display='block';	
+														}
 														if ($('noquestions')) { $('noquestions').remove(); }
                         } else {
                             alert(response);
@@ -662,6 +672,12 @@ var Rules = {
 														tr.adopt(td1); tr.adopt(td2); tr.adopt(td3); tr.adopt(td4);
 														tr.adopt(td5); tr.adopt(td6); tr.adopt(td7);
 														tr.injectTop( $('replqs') );
+														if (role=='instructor') {
+																$('ask_yes').checked=true;
+																$('ask_no').checked=false;
+																$('ask_yes').style.display='block';	
+																$('repl_ask_yes').style.display='block';	
+                            }
 														$('repl_question').value = '';
 														if($('noreplquestions')) { $('noreplquestions').remove(); }
                         } else {

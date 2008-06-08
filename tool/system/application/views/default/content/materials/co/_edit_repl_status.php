@@ -8,7 +8,7 @@
 				  $no = ($repl_obj['ask']=='yes') ? FALSE : TRUE;
 				  $data = array(
             			  	'name'        => 'ask',
-              				'id'          => 'ask',
+              				'id'          => 'ask_yes',
               				'value'       => 'yes',
               				'checked'     => $yes,
               				'class'       => 'do_replacement_update do_replacement_ask_yesno',
@@ -16,7 +16,7 @@
 				  echo form_radio($data).'&nbsp;Yes&nbsp;';
 				  $data = array(
             			  	'name'        => 'ask',
-              				'id'          => 'ask',
+              				'id'          => 'ask_no',
               				'value'       => 'no',
               				'checked'     => $no,
               				'class'       => 'do_replacement_update do_replacement_ask_yesno',
