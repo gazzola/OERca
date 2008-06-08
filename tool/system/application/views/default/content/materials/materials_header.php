@@ -6,6 +6,8 @@
 </script>
 
 <?php
+	$data['loc_tip'] = "For textual materials like Powerpoints or PDFs, please enter the slide or page number. For videos, please enter a time stamp.";
+
 	$course_list_url = '';
    if (getUserProperty('role') == 'dscribe1') { 
 			$course_list_url = site_url('manage');
@@ -34,7 +36,7 @@
 			    	<?php #if ($objstats['ask']>0) { ?>
 					<li class="normal"><a href="<?=site_url("materials/askforms/$cid/$mid")?>" target="_new">ASK Forms</a></li>
 					<?php		#} ?>
-			    <li class="normal"><a href="<?=site_url("materials/download_all_rcos/$cid/$mid/")?>">Download all RCOs</a></li>
+			    <li class="normal"><a href="<?=site_url("materials/download_all_rcos/$cid/$mid/")?>">Download all Replacement COs</a></li>
       </ul>
     </div>
 

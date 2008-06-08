@@ -7,12 +7,6 @@
   $comments = $material['comments'];
   $copyholder = ($material['author']=='') ? $course['director'] : $material['author'];
 
-  $action_types = array('Fair Use'=>'Fair Use', 
-					    'Search'=>'Search',
-						  'Commission'=>'Commission',
-						  'Permission'=>'Permission',
-						  'Retain'=>'Retain',
-					    'Remove'=>'Remove');
 	
   $types = '<select id="subtype_id" name="subtype_id">';
   foreach($subtypes as $type => $subtype) {

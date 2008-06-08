@@ -219,8 +219,8 @@ var Site = {
 
     $('do_open_matinfo_pane').addEvent('click', function(e) {
       e = new Event(e);
-			var appv =  ($('snapper-frame')) ? true : false;
-			var appletview = (appv)  ? $('snapper-frame').contentDocument.clipboard : ''; 
+			var appv =  ($('snapper-form')) ? true : false;
+			var appletview = (appv)  ? document.clipboard : ''; 
 
       // close other panes
       view_comm.hide();
@@ -245,7 +245,7 @@ var Site = {
 
     $('do_open_matcomm_pane').addEvent('click', function(e) {
       e = new Event(e);
-			var appletview = $('snapper-frame').contentDocument.clipboard;
+			var appletview = document.clipboard;
 
       // close other panes
       edit_mat.hide();
@@ -269,8 +269,8 @@ var Site = {
 
     $('do_open_uploadco_pane').addEvent('click', function(e) {
       e = new Event(e);
-			var appv =  ($('snapper-frame')) ? true : false;
-			var appletview = (appv)  ? $('snapper-frame').contentDocument.clipboard : ''; 
+			var appv =  ($('snapper-form')) ? true : false;
+			var appletview = (appv)  ? document.clipboard : ''; 
 
       // close other panes
       edit_mat.hide();
@@ -293,8 +293,8 @@ var Site = {
     });
     $('do_close_uploadco_pane').addEvent('click', function(e) {
       e = new Event(e);
-			var appv =  ($('snapper-frame')) ? true : false;
-			var appletview = (appv)  ? $('snapper-frame').contentDocument.clipboard : ''; 
+			var appv =  ($('snapper-form')) ? true : false;
+			var appletview = (appv)  ? document.clipboard : ''; 
 			if (appv) appletview.style.display='none';
       upload_co.toggle();
       $('do_open_uploadco_pane').parentNode.removeClass('active').addClass('normal');

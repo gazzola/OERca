@@ -20,7 +20,7 @@
         <?php echo form_textarea($inst_infobox); ?>
       </div>
       
-      <div class="formLabel">URI:</div>
+      <div class="formLabel">Instructor's website:</div>
       <div class="formField">
         <input type="text" name="uri" id="uri" class="input" 
         value="<?=$instdetails['uri'] ?>" />

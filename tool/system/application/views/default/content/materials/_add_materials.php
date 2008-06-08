@@ -25,12 +25,12 @@
 						<input type="text" name="ctools_url" id="ctools_url" class="input" size="50px"  />
 					</div>
 
-						<div class="formLabel">Tag: (required)</div>
+						<div class="formLabel">Material Type: (required)</div>
 						<div class="formField">
 							<?php echo form_dropdown('tag_id', $tags, '','id="tag_id"'); ?>
 						</div>
 
-						<div class="formLabel">Mimetype:</div>
+						<div class="formLabel">File Type:</div>
 						<div class="formField">
 								<?php echo form_dropdown('mimetype_id', $mimetypes, ''); ?>
 						</div>

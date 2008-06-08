@@ -253,7 +253,7 @@ class OCW_utils {
 					: '<img id="object-'.$oid.'" class="carousel-image" '.$title.' src="'.$imgUrl.'" '.$size.'/>';
 	}
 
-	function create_slide($cid,$mid,$loc,$text='view context',$useimage=false)
+	function create_slide($cid,$mid,$loc,$text='view context image',$useimage=false)
 	{
 			$name = $this->object->coobject->material_filename($mid);
 			$path = $this->object->coobject->material_path($cid, $mid);

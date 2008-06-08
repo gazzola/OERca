@@ -46,12 +46,13 @@ $types .= '</select>';
 					&nbsp;&nbsp;
 				
 					<input class="snapper_captype" name="type" id="snap_aCaptureTypeSlide" type="radio" value="slide" />
-					<label for="aCaptureType">Slide</label>
+					<label for="aCaptureType">Context Image</label>
 				
 					<div id="contentloc">
-						<br />
-						<label for="snap_location">Slide number:</label>
+						<br/>
+						<label for="snap_location" class="ine_tip" title="<?=$loc_tip?>">Location in material:</label>
 						<input id="snap_location" name="location" type="text" width="30" />
+						&nbsp;<img src="<?=property('app_img')?>/info.gif" style="margin:0; padding:0" class="ine_tip" title="<?=$loc_tip?>" />
 					</div>
 				</div>
 				
@@ -83,9 +84,10 @@ $types .= '</select>';
 			<div class="formLabel">Content Type:</div>
     	<div class="formField"><?=$types?></div>
 		
-			<div class="formLabel">Location: (required)</div>
+			<div class="formField" class="ine_tip" title="<?=$loc_tip?>">Location in material (required):</div>
     	<div class="formField">
     			<input type="text" name="location" id="location" size="50" class="input" />
+&nbsp;<img src="<?=property('app_img')?>/info.gif" style="margin:0; padding:0" class="ine_tip" title="<?=$loc_tip?>" />
 			</div>
 		
  			<div class="formField">Upload Content Object: (required)</div>
@@ -114,7 +116,7 @@ $types .= '</select>';
 
     <br style="clear:both"/><br/>
 
-	  <div  style="margin-top:5px; text-align:right;">
+	  <div  style="margin-top:5px; margin-right: 10px; text-align:right;">
 		<input type="button" value="Close" id="do_close_uploadco_pane"/>
 	</div>
 	</div>

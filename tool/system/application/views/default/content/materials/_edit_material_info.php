@@ -23,12 +23,12 @@
 </div>
 
 <div class="column span-14 last">
-		<div class="formLabel">Tag:</div>
+		<div class="formLabel">Material Type:</div>
 		<div class="formField">
 			<?php echo form_dropdown('selectname_'.$material['id'], $tags, $material['tag_id'],'class="update_tag" id="selectname_'.$material['id'].'"'); ?>
 		</div>
 
-		<div class="formLabel">Mimetype:</div>
+		<div class="formLabel">File Type:</div>
 		<div class="formField">
 				<?php echo form_dropdown('mimetype_id', $mimetypes, $material['mimetype_id'], 'class="update_material"'); ?>
 		</div>

@@ -4,9 +4,10 @@
 <!-- INFORMATION -->
 		<table style="border:none" width="558px">
         <tr>
-						<th><span style="color:red">*</span> Location:</th>
+						<th><span style="color:red">*</span> Location in material:</th>
             <td>
-            <input type="text" name="location_<?=$repl_obj['id']?>" id="location" size="50" value="<?=$repl_obj['location']?>" class="do_replacement_update"/>
+            <input type="text" name="location_<?=$repl_obj['id']?>" id="location" size="20" value="<?=$repl_obj['location']?>" class="do_replacement_update"/>
+						&nbsp;<img src="<?=property('app_img')?>/info.gif" style="margin:0; padding:0" class="ine_tip" title="<?=$loc_tip?>" />
             </td>
         </tr>
         <tr>

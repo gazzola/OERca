@@ -175,7 +175,7 @@
   </tr>
 
 	<tr>
-		<th>Cleared:</th>
+		<th>Is this CO cleared for publishing?</th>
 		<td colspan="3">
 						  <?php 
 							  $yes = ($obj['done']=='1') ? true : false;

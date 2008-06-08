@@ -33,6 +33,7 @@ $data['dscribe2_questions']= ($questions<>null && isset($questions['dscribe2']))
 $data['comments'] = $obj['comments'];
 $data['log'] = $obj['log'];
 $tab = $tab[0];
+$data['loc_tip'] = "For textual materials like Powerpoints or PDFs, please enter the slide or page number. For videos, please enter a time stamp.";
 ?>
 
 <div id="Original" class="mootabs_panel">
@@ -45,7 +46,7 @@ $tab = $tab[0];
 			<input type="submit" <?=($tab=='Information') ? 'class="activesubmit"':''?> name="tab[]" value="Information" />
 			<input type="submit" <?=($tab=='Copyright') ? 'class="activesubmit"':''?> name="tab[]" value="Copyright" />
 			<input type="submit" <?=($tab=='Comments') ? 'class="activesubmit"':''?> name="tab[]" value="Comments" />
-			<input type="submit" <?=($tab=='Log') ? 'class="activesubmit"':''?> name="tab[]" value="Log" />
+			<input type="submit" <?=($tab=='History') ? 'class="activesubmit"':''?> name="tab[]" value="History" />
 		</div>
 
 		<div class="tabformcontent">
@@ -55,7 +56,7 @@ $tab = $tab[0];
 						case 'Information': $this->load->view(property('app_views_path').'/materials/co/_edit_orig_info.php', $data); break; 
 						case 'Copyright': $this->load->view(property('app_views_path').'/materials/co/_edit_orig_copy.php', $data); break; 
 						case 'Comments': $this->load->view(property('app_views_path').'/materials/co/_edit_orig_comments.php', $data); break; 
-						case 'Log': $this->load->view(property('app_views_path').'/materials/co/_edit_orig_log.php', $data); break; 
+						case 'History': $this->load->view(property('app_views_path').'/materials/co/_edit_orig_log.php', $data); break; 
 						default: $this->load->view(property('app_views_path').'/materials/co/_edit_orig_status.php', $data); break; 
 				}
 		?>
