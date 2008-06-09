@@ -110,20 +110,37 @@ class Course extends Model
     public function get_courses()
     {
         $courses = array();
-		$sql = 'SELECT ocw_courses. *, ocw_curriculums.name AS cname, ocw_schools.name AS sname
+		    $sql = 'SELECT ocw_courses. *, ocw_curriculums.name AS cname, ocw_schools.name AS sname
 				  FROM ocw_courses, ocw_curriculums, ocw_schools
 				 WHERE ocw_curriculums.id = ocw_courses.curriculum_id
 				   AND ocw_schools.id = ocw_curriculums.school_id
 				 ORDER BY ocw_courses.start_date DESC';
-		$q = $this->db->query($sql);
+		   $q = $this->db->query($sql);
 
         if ($q->num_rows() > 0) {
             foreach($q->result_array() as $row) { 
 					$courses[$row['sname']][$row['cname']][] = $row; 
-			}
-        }
+			  }
+      }
+      
+      // get the courses that have NULL curriculum ids
+      $sql_no_curr_id = "SELECT ocw_courses.*,
+        ocw_courses.curriculum_id AS cname,
+        ocw_courses.curriculum_id AS sname
+        FROM ocw_courses
+        WHERE ocw_courses.curriculum_id IS NULL
+        ORDER BY ocw_courses.start_date DESC";
 
-        return (sizeof($courses) > 0) ? $courses : null;
+      $q_no_curr_id = $this->db->query($sql_no_curr_id);
+
+      if ($q_no_curr_id->num_rows() > 0) {
+        foreach ($q_no_curr_id->result_array() as $row) {
+          $courses['No School Specified']['No Curriculum Specified'][]
+           = $row;
+        }
+      }
+      
+      return (sizeof($courses) > 0) ? $courses : null;
     }
 
 	/**

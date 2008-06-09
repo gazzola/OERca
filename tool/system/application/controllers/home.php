@@ -56,7 +56,7 @@ class Home extends Controller {
       	// get the navigation tab set
       	$tabset = $this->oer_manage_nav->get_tabset($data['role']);
       	$data['tabs'] = $this->navtab->make_tabs($tabset);
-      	$this->oer_layout->buildpage('homedscribe1', $data);
+      	$this->layout->buildpage('homedscribe1', $data);
       
     } elseif ($data['role'] == 'dscribe2') {
         redirect('dscribe2/home/', 'location');
