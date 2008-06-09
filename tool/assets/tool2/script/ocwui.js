@@ -101,16 +101,16 @@ var Site = {
   course_page_setup: function() {
     var edit_course = new Fx.Slide($('pane_courseinfo')).hide();
     var upload_mat = new Fx.Slide($('pane_uploadmat')).hide();
-    var edit_inst = new Fx.Slide($('pane_instinfo')).hide();
+    // var edit_inst = new Fx.Slide($('pane_instinfo')).hide();
 
     $('do_open_courseinfo_pane').addEvent('click', function(e) {
       e = new Event(e);
 
       // hide other panes
       upload_mat.hide();
-      edit_inst.hide();
+      // edit_inst.hide();
       $('do_open_uploadmat_pane').parentNode.className= 'normal';
-      $('do_open_instinfo_pane').parentNode.className= 'normal';
+      // $('do_open_instinfo_pane').parentNode.className= 'normal';
 
       edit_course.toggle();
       var addclass = ($('do_open_courseinfo_pane').parentNode.className=='active') ? 'normal' : 'active';
@@ -131,9 +131,9 @@ var Site = {
 
       // hide other pains
       edit_course.hide();
-      edit_inst.hide();
+      // edit_inst.hide();
       $('do_open_courseinfo_pane').parentNode.className= 'normal';
-      $('do_open_instinfo_pane').parentNode.className= 'normal';
+      // $('do_open_instinfo_pane').parentNode.className= 'normal';
 
       upload_mat.toggle();
       var addclass = ($('do_open_uploadmat_pane').parentNode.className=='active') ? 'normal' : 'active';
@@ -148,29 +148,29 @@ var Site = {
       e.stop(); 
     });
 
-		if($('do_open_instinfo_pane')) {
-		    $('do_open_instinfo_pane').addEvent('click', function(e) {
-		      e = new Event(e);
+		// if($('do_open_instinfo_pane')) {
+		  //   $('do_open_instinfo_pane').addEvent('click', function(e) {
+		    //   e = new Event(e);
 		
 		      //hide other panes
-		      upload_mat.hide();
-		      edit_course.hide();
-		      $('do_open_uploadmat_pane').parentNode.className= 'normal';
-		      $('do_open_courseinfo_pane').parentNode.className= 'normal';
+	// 	      upload_mat.hide();
+// 		      edit_course.hide();
+// 		      $('do_open_uploadmat_pane').parentNode.className= 'normal';
+// 		      $('do_open_courseinfo_pane').parentNode.className= 'normal';
 		
-		      edit_inst.toggle();
-		      var addclass = ($('do_open_instinfo_pane').parentNode.className=='active') ? 'normal' : 'active';
-		      var rmvclass = ($('do_open_instinfo_pane').parentNode.className=='active') ? 'active' : 'normal';
-		      this.parentNode.removeClass(rmvclass).addClass(addclass);
-		      e.stop();
-		    });
-		    $('do_close_instinfo_pane').addEvent('click', function(e) {
-		      e = new Event(e);
-		      edit_inst.toggle();
-		      $('do_open_instinfo_pane').parentNode.removeClass('active').addClass('normal');
-		      e.stop();
-		    });
-		}
+// 		      edit_inst.toggle();
+// 		      var addclass = ($('do_open_instinfo_pane').parentNode.className=='active') ? 'normal' : 'active';
+// 		      var rmvclass = ($('do_open_instinfo_pane').parentNode.className=='active') ? 'active' : 'normal';
+// 		      this.parentNode.removeClass(rmvclass).addClass(addclass);
+// 		      e.stop();
+// 		    });
+// 		    $('do_close_instinfo_pane').addEvent('click', function(e) {
+// 		      e = new Event(e);
+// 		      edit_inst.toggle();
+// 		      $('do_open_instinfo_pane').parentNode.removeClass('active').addClass('normal');
+// 		      e.stop();
+// 		    });
+// 		}
 
     if (open_uploadmat_pane) { upload_mat.toggle();
       $('do_open_uploadmat_pane').parentNode.removeClass('normal').addClass('active');
@@ -178,9 +178,9 @@ var Site = {
     if (open_editcourse_pane) { edit_course.toggle();
       $('do_open_courseinfo_pane').parentNode.removeClass('normal').addClass('active');
     }
-    if (open_editinst_pane) { edit_inst.toggle();
-      $('do_open_instinfo_pane').parentNode.removeClass('normal').addClass('active');
-    }
+    // if (open_editinst_pane) { edit_inst.toggle();
+    //   $('do_open_instinfo_pane').parentNode.removeClass('normal').addClass('active');
+    // }
   },
   // toggle the content object information panel
   coinfo_page_setup: function() {
