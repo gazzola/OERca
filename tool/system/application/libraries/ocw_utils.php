@@ -258,17 +258,40 @@ class OCW_utils {
 			$name = $this->object->coobject->material_filename($mid);
 			$path = $this->object->coobject->material_path($cid, $mid);
 
+	   	// hack this to allow upper case image extensions
 	   	$p_imgurl = property('app_uploads_url')."$path/{$name}_slide_$loc.png";
+	   	$p_imgurl_upper = property('app_uploads_url')."$path/{$name}_slide_$loc.PNG";
 	   	$p_imgpath = property('app_uploads_path')."$path/{$name}_slide_$loc.png";
+	   	$p_imgpath_upper = property('app_uploads_path')."$path/{$name}_slide_$loc.PNG";
 	   	$j_imgurl = property('app_uploads_url')."$path/{$name}_slide_$loc.jpg";
+	   	$j_imgurl_upper = property('app_uploads_url')."$path/{$name}_slide_$loc.JPG";
 	   	$j_imgpath = property('app_uploads_path')."$path/{$name}_slide_$loc.jpg";
+	   	$j_imgpath_upper = property('app_uploads_path')."$path/{$name}_slide_$loc.JPG";
 	   	$g_imgurl = property('app_uploads_url')."$path/{$name}_slide_$loc.gif";
+	   	$g_imgurl_upper = property('app_uploads_url')."$path/{$name}_slide_$loc.GIF";
 	   	$g_imgpath = property('app_uploads_path')."$path/{$name}_slide_$loc.gif";
+	   	$g_imgpath_upper = property('app_uploads_path')."$path/{$name}_slide_$loc.GIF";
+	   	
 	   	$imgurl = '';
 	
-	   	if (is_readable($p_imgpath) || is_readable($j_imgpath) || is_readable($g_imgpath)) {
-					$thumb_found = true;	
-				 	$imgurl = (is_readable($p_imgpath)) ? $p_imgurl : ((is_readable($j_imgpath)) ? $j_imgurl : $g_imgurl);
+	   	if (is_readable($p_imgpath)) {
+	   	  $imgurl = $p_imgurl;
+	   	  $thumb_found = true;
+	   	} elseif (is_readable($j_imgpath)) {
+	   	  $imgurl = $j_imgurl;
+	   	  $thumb_found = true;
+	   	} elseif (is_readable($g_imgpath)) {
+	   	  $imgurl = $g_imgurl;
+	   	  $thumb_found = true;
+	   	} elseif (is_readable($p_imgpath_upper)) {
+	   	  $imgurl = $p_imgurl_upper;
+	   	  $thumb_found = true;
+	   	} elseif (is_readable($j_imgpath_upper)) {
+	   	  $imgurl = $j_imgurl_upper;
+	   	  $thumb_found = true;
+	   	} elseif (is_readable($g_imgpath_upper)) {
+				$imgurl = $g_imgurl_upper;
+				$thumb_found = true;
 	   	} else {
 					$thumb_found = false;	
 	   	}
