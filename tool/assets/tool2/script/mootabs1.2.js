@@ -59,5 +59,5 @@ var mootabs = new Class({
 			
 			this.activeTitle = tab;
 		}
-	},
+	}
 });

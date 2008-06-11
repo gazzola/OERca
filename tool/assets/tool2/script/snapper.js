@@ -87,6 +87,6 @@ snapper: function() {
 		$("snap_aCaptureTypeSlide").addEvent('change',setType);
 		if (autoCaptureEnabled) { setTimeout(autoCapture, 1000); }
 	}
-},
+}
 };
  window.addEvent('domready', SNAP.snapper);

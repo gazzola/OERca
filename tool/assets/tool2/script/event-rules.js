@@ -252,7 +252,7 @@ var Rules = {
 						}
 					}
 					url += '/'+object_id+'/'+field+'/'+encodeURIComponent(val);
-					new Ajax(url, { method: 'get', update: fb, }).request();
+					new Ajax(url, { method: 'get', update: fb }).request();
 
 				} else if (field=='ask_inst') {
 					if(val == 'yes')
@@ -267,7 +267,7 @@ var Rules = {
 						}
 					}
 					url += '/'+object_id+'/'+field+'/'+encodeURIComponent(val);
-					new Ajax(url, { method: 'get', update: fb, }).request();
+					new Ajax(url, { method: 'get', update: fb }).request();
 					
 					// show the div
 					var id = this.id;
@@ -282,7 +282,7 @@ var Rules = {
 					
 				} else {	
 					url += '/'+object_id+'/'+field+'/'+encodeURIComponent(val);
-					new Ajax(url, { method: 'get', update: fb, }).request();
+					new Ajax(url, { method: 'get', update: fb }).request();
 				}	
 				
 				// if the selected action is other than "Search" and "Remove", the ask dscribe2 should be checked
@@ -300,7 +300,7 @@ var Rules = {
 					url = $('server').value+'materials/update_object/'+course_id+'/'+material_id;
 					url += '/'+object_id+'/ask_dscribe2/'+encodeURIComponent('yes');
       		var fb1 = $('feedback');
-					new Ajax(url, { method: 'get', update: fb1, }).request();
+					new Ajax(url, { method: 'get', update: fb1 }).request();
 				}
 				
 				// show or hide relavent panels
@@ -385,7 +385,7 @@ var Rules = {
 				url += '/'+object_id+'/'+field+'/'+encodeURIComponent(val);
 			
       	var fb = $('feedback');
-				new Ajax(url, { method: 'get', update: fb, }).request();
+				new Ajax(url, { method: 'get', update: fb }).request();
 		}
 	},
 	
@@ -401,7 +401,7 @@ var Rules = {
 				url += '/'+object_id+'/'+field+'/'+encodeURIComponent(val);
 			
       	var fb = $('feedback');
-				new Ajax(url, { method: 'get', update: fb, }).request();
+				new Ajax(url, { method: 'get', update: fb }).request();
 		}
 	},
 	
@@ -472,7 +472,7 @@ var Rules = {
 			var url = $('server').value+'materials/update_object/'+course_id+'/'+material_id;
 			url += '/'+object_id+'/'+field+'/'+encodeURIComponent(val);
             var fb = $('feedback');
-            new Ajax(url, { method: 'get', update: fb, }).request();
+            new Ajax(url, { method: 'get', update: fb }).request();
 		}
 	},
 
@@ -588,7 +588,7 @@ var Rules = {
 
 			var url = $('server').value+'materials/update_replacement/'+course_id+'/'+material_id+
 			 				 '/'+object_id+'/'+repl_id+'/'+field+'/'+encodeURIComponent(val);
-     	new Ajax(url, { method: 'get', update: fb, }).request();
+     	new Ajax(url, { method: 'get', update: fb }).request();
 		}
 	},
 
@@ -938,7 +938,7 @@ var Rules = {
 																} }).request();
 							}
 			} 
-	},
+	}
 }
 
 // Remove/Comment this if you do not wish to reapply Rules automatically

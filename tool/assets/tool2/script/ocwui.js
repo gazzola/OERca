@@ -115,7 +115,7 @@ var Site = {
       edit_course.toggle();
       var addclass = ($('do_open_courseinfo_pane').parentNode.className=='active') ? 'normal' : 'active';
       var rmvclass = ($('do_open_courseinfo_pane').parentNode.className=='active') ? 'active' : 'normal';
-      this.parentNode.removeClass(rmvclass).addClass(addclass);
+      $(this.parentNode).removeClass(rmvclass).addClass(addclass);
       e.stop(); 
     });
     $('do_close_courseinfo_pane').addEvent('click', function(e) {
@@ -138,7 +138,7 @@ var Site = {
       upload_mat.toggle();
       var addclass = ($('do_open_uploadmat_pane').parentNode.className=='active') ? 'normal' : 'active';
       var rmvclass = ($('do_open_uploadmat_pane').parentNode.className=='active') ? 'active' : 'normal';
-      this.parentNode.removeClass(rmvclass).addClass(addclass);
+      $(this.parentNode).removeClass(rmvclass).addClass(addclass);
       e.stop(); 
     });
     $('do_close_uploadmat_pane').addEvent('click', function(e) {
@@ -161,7 +161,7 @@ var Site = {
 // 		      edit_inst.toggle();
 // 		      var addclass = ($('do_open_instinfo_pane').parentNode.className=='active') ? 'normal' : 'active';
 // 		      var rmvclass = ($('do_open_instinfo_pane').parentNode.className=='active') ? 'active' : 'normal';
-// 		      this.parentNode.removeClass(rmvclass).addClass(addclass);
+// 		      $(this.parentNode).removeClass(rmvclass).addClass(addclass);
 // 		      e.stop();
 // 		    });
 // 		    $('do_close_instinfo_pane').addEvent('click', function(e) {
@@ -195,7 +195,7 @@ var Site = {
       co_info.toggle();
       var addclass = ($('do_open_coinfo_pane').parentNode.className=='active') ? 'normal' : 'active';
       var rmvclass = ($('do_open_coinfo_pane').parentNode.className=='active') ? 'active' : 'normal';
-      this.parentNode.removeClass(rmvclass).addClass(addclass);
+      $(this.parentNode).removeClass(rmvclass).addClass(addclass);
       e.stop(); 
     });
     $('do_close_coinfo_pane').addEvent('click', function(e) {
@@ -232,7 +232,7 @@ var Site = {
       edit_mat.toggle();
       var addclass = ($('do_open_matinfo_pane').parentNode.className=='active') ? 'normal' : 'active';
       var rmvclass = ($('do_open_matinfo_pane').parentNode.className=='active') ? 'active' : 'normal';
-      this.parentNode.removeClass(rmvclass).addClass(addclass);
+      $(this.parentNode).removeClass(rmvclass).addClass(addclass);
 
       e.stop(); 
     });
@@ -257,7 +257,7 @@ var Site = {
       view_comm.toggle();
       var addclass = ($('do_open_matcomm_pane').parentNode.className=='active') ? 'normal' : 'active';
       var rmvclass = ($('do_open_matcomm_pane').parentNode.className=='active') ? 'active' : 'normal';
-      this.parentNode.removeClass(rmvclass).addClass(addclass);
+      $(this.parentNode).removeClass(rmvclass).addClass(addclass);
       e.stop(); 
     });
     $('do_close_matcomm_pane').addEvent('click', function(e) {
@@ -282,7 +282,7 @@ var Site = {
       upload_co.toggle();
       var addclass = ($('do_open_uploadco_pane').parentNode.className=='active') ? 'normal' : 'active';
       var rmvclass = ($('do_open_uploadco_pane').parentNode.className=='active') ? 'active' : 'normal';
-      this.parentNode.removeClass(rmvclass).addClass(addclass);
+      $(this.parentNode).removeClass(rmvclass).addClass(addclass);
 
 			if ($('snapper_button')) {
           var txt = (rmvclass!='active') ? 'Close Snapper': 'Use Snapper tool to capture Content Objects';
@@ -336,7 +336,7 @@ var Site = {
         knobpos = step;
         myScrollFx.toElement($('carousel-item-'+step));
         //update_prev_next();
-      },
+      }
       }).set(0);
 
       $('upd').setHTML('1 of '+numitems);
@@ -430,6 +430,6 @@ var Site = {
       var myTips1 = new MooTips($$('.tooltip'), {
         maxTitleChars: 50// long caption
       });
-    },
+    }
   };
   window.addEvent('domready', Site.start);
