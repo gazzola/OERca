@@ -1,9 +1,3 @@
-<?php if ($numobjects == 0) { ?>
-<div class="column span-24 first last"> 
-	<p class="error">Presently, none of the content objects in this material need copyright clarification.</p>
-</div>
-<?php } else { ?>
-
 <h2>Content Objects in need of Instructor input (<?=$need_input?> items)</h2>
 
 <div class="column span-24 first last" style="margin-bottom: 10px;">
@@ -22,5 +16,3 @@
 	</div>
 </div>
 <br/><br/>
-
-<?php } ?>

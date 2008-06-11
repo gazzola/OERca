@@ -20,18 +20,18 @@ Thanks for your cooperation!
 		$num_done=0;
 	if (!isset($num_prov))
 		$num_prov=0;
-if ($numobjects == 0) { ?>
-<div class="column span-24 first last"> 
-	<p class="error">Presently, none of the content objects in this material need copyright clarification.</p>
-</div>
-<?php } else { ?>
+?>
 
 <h2>Content Objects in need of Instructor input (<?=isset($need_input)?$need_input:0?> items)</h2>
 
 <div class="column span-24 first last" style="margin-bottom: 10px;">
 	<?php 
-	$att = ' id="active"'; $irep = 'Replacements ('.$num_repl.')'; $dn = 'View Sent items ('.$num_done.')'; $iprov = 'Provenance ('.$num_prov.')';?>
-    <div id="navlist">
+		$att = ' id="active"';
+		$iprov = 'Provenance ('.$num_prov.')';
+		$irep = 'Replacements ('.$num_repl.')';
+		$dn = 'View Sent items ('.$num_done.')';
+	?>
+  <div id="navlist">
 		<ul id="navlist">
 			<li<?=($view=='provenance')?$att:''?>><?=anchor("/materials/askforms/$cid/$mid/provenance",$iprov)?></li>
 			<li<?=($view=='replacement')?$att:''?>><?=anchor("/materials/askforms/$cid/$mid/replacement",$irep)?></li>
@@ -40,5 +40,3 @@ if ($numobjects == 0) { ?>
 	</div>
 </div>
 <br/><br/>
-
-<?php } ?>

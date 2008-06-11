@@ -4,14 +4,15 @@ $this->load->view(property('app_views_path').'/materials/askforms/instructor/ins
 if (!isset($num_avail))
 		$num_avail=0;
 if ($num_avail[$view] == 0) {
-    if ($numobjects != 0) { 
 ?>
 
 <div class="column span-24 first last"> 
 	<p class="error">Presently, none of the content objects in this material fall in this category.</p>
 </div>
 
-<?php } } else { ?>
+<?php 
+		} else if ($numobjects != 0) {
+?>
 
 <div class="column span-24 first last"> 
 <table class="rowstyle-alt no-arrow" style="padding: 0">
@@ -48,6 +49,12 @@ if ($num_avail[$view] == 0) {
 		?>
 	</tbody>
 </table>
+</div>
+
+<?php } else {
+?>
+<div class="column span-24 first last"> 
+	<p class="error">Presently, none of the content objects in this material fall in this category.</p>
 </div>
 
 <?php } ?>
