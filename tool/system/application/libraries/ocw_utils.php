@@ -134,7 +134,7 @@ class OCW_utils {
     		case 'application/vnd.ms-excel': $file = ''; break;
     		case 'application/x-cdlink': $file = ''; break;
     		case 'application/x-gzip': $file = ''; break;
-  		  	case 'application/x-shockwave-flash': $file = ''; break;
+  		 	case 'application/x-shockwave-flash': $file = ''; break;
     		case 'application/x-tar': $file = ''; break;
     		case 'application/zip': $file = ''; break;
    			case 'audio/midi': $file = ''; break;
@@ -189,21 +189,26 @@ class OCW_utils {
 		 	$name = $this->object->coobject->object_filename($oid);
 		 	$path = $this->object->coobject->object_path($cid, $mid,$oid);
 
-	   	$p_imgurl = property('app_uploads_url').$path.'/'.$name.'_grab.png';
-	   	$p_imgpath = property('app_uploads_path').$path.'/'.$name.'_grab.png';
-	   	$j_imgurl = property('app_uploads_url').$path.'/'.$name.'_grab.jpg';
-	   	$j_imgpath = property('app_uploads_path').$path.'/'.$name.'_grab.jpg';
-	   	$g_imgurl = property('app_uploads_url').$path.'/'.$name.'_grab.gif';
-	   	$g_imgpath = property('app_uploads_path').$path.'/'.$name.'_grab.gif';
-	   	$imgurl = '';
-
-	   	if (is_readable($p_imgpath) || is_readable($j_imgpath) || is_readable($g_imgpath)) {
-				 	$thumb_found = true;	
-				 	$imgurl = (is_readable($p_imgpath)) ? $p_imgurl : ((is_readable($j_imgpath)) ? $j_imgurl : $g_imgurl);
-	   	} else {
-					$thumb_found = false;	
-	   	}
-
+	   	// $p_imgurl = property('app_uploads_url').$path.'/'.$name.'_grab.png';
+	   	// $p_imgpath = property('app_uploads_path').$path.'/'.$name.'_grab.png';
+	   	// $j_imgurl = property('app_uploads_url').$path.'/'.$name.'_grab.jpg';
+	   	// $j_imgpath = property('app_uploads_path').$path.'/'.$name.'_grab.jpg';
+	   	// $g_imgurl = property('app_uploads_url').$path.'/'.$name.'_grab.gif';
+	   	// $g_imgpath = property('app_uploads_path').$path.'/'.$name.'_grab.gif';
+	   	// $imgurl = '';
+      // 
+	   	// if (is_readable($p_imgpath) || is_readable($j_imgpath) || is_readable($g_imgpath)) {
+			// 	 	$thumb_found = true;	
+			// 	 	$imgurl = (is_readable($p_imgpath)) ? $p_imgurl : ((is_readable($j_imgpath)) ? $j_imgurl : $g_imgurl);
+	   	// } else {
+			// 		$thumb_found = false;	
+	   	// }
+      
+      $image_details = $this->_get_imgurl($path, $name, 'grab');
+      
+      $imgurl = $image_details['imgurl'];
+      $thumb_found = $image_details['thumb_found'];
+      
 	   	$imgUrl = ($thumb_found) ? $imgurl : property('app_img').'/noorig.png';
 
 	   	$aurl = '<a href="'.site_url("materials/object_info/$cid/$mid/$oid").'?TB_iframe=true&height=500&width=520" class="smoothbox">';
@@ -223,22 +228,31 @@ class OCW_utils {
 		 	$name = $this->object->coobject->object_filename($oid);
 		 	$path = $this->object->coobject->object_path($cid, $mid,$oid);
 
-	   	$p_imgurl = property('app_uploads_url').$path.'/'.$name.'_rep.png';
-	   	$p_imgpath = property('app_uploads_path').$path.'/'.$name.'_rep.png';
-	   	$j_imgurl = property('app_uploads_url').$path.'/'.$name.'_rep.jpg';
-	   	$j_imgpath = property('app_uploads_path').$path.'/'.$name.'_rep.jpg';
-	   	$g_imgurl = property('app_uploads_url').$path.'/'.$name.'_rep.gif';
-	   	$g_imgpath = property('app_uploads_path').$path.'/'.$name.'_rep.gif';
-	   	$imgurl = '';
-
-	   	if (is_readable($p_imgpath) || is_readable($j_imgpath) || is_readable($g_imgpath)) {
-					$thumb_found = true;	
-				 	$imgurl = (is_readable($p_imgpath)) ? $p_imgurl : ((is_readable($j_imgpath)) ? $j_imgurl : $g_imgurl);
-	   	} else {
-					$thumb_found = false;	
-					$name = "none";
-	   	}
-
+	   	// $p_imgurl = property('app_uploads_url').$path.'/'.$name.'_rep.png';
+	   	// $p_imgpath = property('app_uploads_path').$path.'/'.$name.'_rep.png';
+	   	// $j_imgurl = property('app_uploads_url').$path.'/'.$name.'_rep.jpg';
+	   	// $j_imgpath = property('app_uploads_path').$path.'/'.$name.'_rep.jpg';
+	   	// $g_imgurl = property('app_uploads_url').$path.'/'.$name.'_rep.gif';
+	   	// $g_imgpath = property('app_uploads_path').$path.'/'.$name.'_rep.gif';
+	   	// $imgurl = '';
+      // 
+	   	// if (is_readable($p_imgpath) || is_readable($j_imgpath) || is_readable($g_imgpath)) {
+			// 		$thumb_found = true;	
+			// 	 	$imgurl = (is_readable($p_imgpath)) ? $p_imgurl : ((is_readable($j_imgpath)) ? $j_imgurl : $g_imgurl);
+	   	// } else {
+			// 		$thumb_found = false;	
+			// 		$name = "none";
+	   	// }
+      
+      $image_details = $this->_get_imgurl($path, $name, 'rep');
+      
+      $imgurl = $image_details['imgurl'];
+      $thumb_found = $image_details['thumb_found'];
+      
+      if ($thumb_found = false) {
+        $name = "none";
+      }
+      
 	   	$imgUrl = ($thumb_found) ? $imgurl : property('app_img').'/norep.png';
 
 	   	$aurl = '<a href="'.site_url("materials/object_info/$cid/$mid/$oid").'?TB_iframe=true&height=500&width=520" class="smoothbox">';
@@ -257,45 +271,16 @@ class OCW_utils {
 	{
 			$name = $this->object->coobject->material_filename($mid);
 			$path = $this->object->coobject->material_path($cid, $mid);
-
-	   	// hack this to allow upper case image extensions
-	   	$p_imgurl = property('app_uploads_url')."$path/{$name}_slide_$loc.png";
-	   	$p_imgurl_upper = property('app_uploads_url')."$path/{$name}_slide_$loc.PNG";
-	   	$p_imgpath = property('app_uploads_path')."$path/{$name}_slide_$loc.png";
-	   	$p_imgpath_upper = property('app_uploads_path')."$path/{$name}_slide_$loc.PNG";
-	   	$j_imgurl = property('app_uploads_url')."$path/{$name}_slide_$loc.jpg";
-	   	$j_imgurl_upper = property('app_uploads_url')."$path/{$name}_slide_$loc.JPG";
-	   	$j_imgpath = property('app_uploads_path')."$path/{$name}_slide_$loc.jpg";
-	   	$j_imgpath_upper = property('app_uploads_path')."$path/{$name}_slide_$loc.JPG";
-	   	$g_imgurl = property('app_uploads_url')."$path/{$name}_slide_$loc.gif";
-	   	$g_imgurl_upper = property('app_uploads_url')."$path/{$name}_slide_$loc.GIF";
-	   	$g_imgpath = property('app_uploads_path')."$path/{$name}_slide_$loc.gif";
-	   	$g_imgpath_upper = property('app_uploads_path')."$path/{$name}_slide_$loc.GIF";
-	   	
-	   	$imgurl = '';
-	
-	   	if (is_readable($p_imgpath)) {
-	   	  $imgurl = $p_imgurl;
-	   	  $thumb_found = true;
-	   	} elseif (is_readable($j_imgpath)) {
-	   	  $imgurl = $j_imgurl;
-	   	  $thumb_found = true;
-	   	} elseif (is_readable($g_imgpath)) {
-	   	  $imgurl = $g_imgurl;
-	   	  $thumb_found = true;
-	   	} elseif (is_readable($p_imgpath_upper)) {
-	   	  $imgurl = $p_imgurl_upper;
-	   	  $thumb_found = true;
-	   	} elseif (is_readable($j_imgpath_upper)) {
-	   	  $imgurl = $j_imgurl_upper;
-	   	  $thumb_found = true;
-	   	} elseif (is_readable($g_imgpath_upper)) {
-				$imgurl = $g_imgurl_upper;
-				$thumb_found = true;
-	   	} else {
-					$thumb_found = false;	
-	   	}
-
+      
+      $imgurl = '';
+      $thumb_found = false;
+	   	      
+      $image_details = $this->_get_imgurl($path, $name, "slide", $loc);
+      // TODO: see if we can simply check for the 'thumb_found' array value
+      if(array_key_exists('imgurl', $image_details)) {
+        $imgurl = $image_details['imgurl'];
+        $thumb_found = $image_details['imgurl'];
+      }
 	   	$img = '<small style="clear:both">'.$text.'</small><br>'.'<img src="'.$imgurl.'" width="150" height="150" />';
 	   	$aurl = ($useimage) 
 						?'<a href="'.$imgurl.'" class="smoothbox" title="" rel="gallery-slide">'.$img.'</a>'
@@ -485,6 +470,72 @@ class OCW_utils {
   public function get_curr_mysql_time() {
     $curr_unix_time = time();
     return gmdate("Y-m-d H:i:s", $curr_unix_time);
+  }
+  
+  
+  /**
+    * Get the image url and indicate if thumbnail is found
+    *
+    * @param    string path of the file
+    * @param    string name to the file
+    * @param    string (optional) file pre-suffix, e.g. "grab" if it is
+    *           a screen grab
+    * @param    int (optional) location (page or slide number) of the image
+    * @return   array:
+    *             'thumb_found' boolean, set true if we match
+    *             'imgurl' string url to image
+    */
+  private function _get_imgurl($path, $name, $pre_ext = '',
+    $location = NULL) {
+      $base_url = property('app_uploads_url') . $path . "/";
+    $base_path = property('app_uploads_path') . $path . "/";
+    
+    $file_details;      
+    // TODO: should we check to make sure we've been passed an int?
+    if ($location) {
+      $base_path .= "{$name}_" . $pre_ext . "_" . $location;
+      $base_url .= "{$name}_" . $pre_ext . "_" . $location;
+    } else {
+      $base_path .= $name . "_" . $pre_ext;
+      $base_url .= $name . "_" . $pre_ext;
+    }
+    
+    $p_imgurl = $base_url . ".png";
+   	$p_imgurl_upper = $base_url . ".PNG";
+   	$p_imgpath = $base_path . ".png";
+   	$p_imgpath_upper = $base_path . ".PNG";
+   	$j_imgurl = $base_url . ".jpg";
+   	$j_imgurl_upper = $base_url . ".JPG";
+   	$j_imgpath = $base_path . ".jpg";
+   	$j_imgpath_upper = $base_path . ".JPG";
+   	$g_imgurl = $base_url . ".gif";
+   	$g_imgurl_upper = $base_url . ".GIF";
+   	$g_imgpath = $base_path . ".gif";
+   	$g_imgpath_upper = $base_path . ".GIF";
+   	
+   	if (is_readable($p_imgpath)) {
+   	  $file_details['imgurl'] = $p_imgurl;
+   	  $file_details['thumb_found'] = true;
+   	} elseif (is_readable($j_imgpath)) {
+   	  $file_details['imgurl'] = $j_imgurl;
+   	  $file_details['thumb_found'] = true;
+   	} elseif (is_readable($g_imgpath)) {
+   	  $file_details['imgurl'] = $g_imgurl;
+   	  $file_details['thumb_found'] = true;
+   	} elseif (is_readable($p_imgpath_upper)) {
+   	  $file_details['imgurl'] = $p_imgurl_upper;
+   	  $file_details['thumb_found'] = true;
+   	} elseif (is_readable($j_imgpath_upper)) {
+   	  $file_details['imgurl'] = $j_imgurl_upper;
+   	  $file_details['thumb_found'] = true;
+   	} elseif (is_readable($g_imgpath_upper)) {
+			$file_details['imgurl'] = $g_imgurl_upper;
+			$file_details['thumb_found'] = true;
+   	} else {
+			$file_details['thumb_found'] = false;
+   	}
+   	
+   	return $file_details;
   }
 }
 ?>
