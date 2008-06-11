@@ -28,6 +28,9 @@ class Coobject extends Model
    */
   public function add_snapper_image($cid,$mid,$uid,$data)
   {
+  	
+  	try
+  	{
       /* validate values */
       if (!isset($data['image']) || !$this->is_base64_encoded($data['image'])) {
           return 'Error adding image: image file is corrupt';
@@ -95,6 +98,11 @@ class Coobject extends Model
       }
 
       return true;
+  	}
+  	catch(Exception $e)
+  	{
+  		return $e->getMessage();
+  	}
   }
 
 	/**
