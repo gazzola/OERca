@@ -228,30 +228,30 @@ class OCW_utils {
 		 	$name = $this->object->coobject->object_filename($oid);
 		 	$path = $this->object->coobject->object_path($cid, $mid,$oid);
 
-	   	// $p_imgurl = property('app_uploads_url').$path.'/'.$name.'_rep.png';
-	   	// $p_imgpath = property('app_uploads_path').$path.'/'.$name.'_rep.png';
-	   	// $j_imgurl = property('app_uploads_url').$path.'/'.$name.'_rep.jpg';
-	   	// $j_imgpath = property('app_uploads_path').$path.'/'.$name.'_rep.jpg';
-	   	// $g_imgurl = property('app_uploads_url').$path.'/'.$name.'_rep.gif';
-	   	// $g_imgpath = property('app_uploads_path').$path.'/'.$name.'_rep.gif';
-	   	// $imgurl = '';
-      // 
-	   	// if (is_readable($p_imgpath) || is_readable($j_imgpath) || is_readable($g_imgpath)) {
-			// 		$thumb_found = true;	
-			// 	 	$imgurl = (is_readable($p_imgpath)) ? $p_imgurl : ((is_readable($j_imgpath)) ? $j_imgurl : $g_imgurl);
-	   	// } else {
-			// 		$thumb_found = false;	
-			// 		$name = "none";
-	   	// }
-      
+     /* 
+	   	 $p_imgurl = property('app_uploads_url').$path.'/'.$name.'_rep.png';
+	   	 $p_imgpath = property('app_uploads_path').$path.'/'.$name.'_rep.png';
+	   	 $j_imgurl = property('app_uploads_url').$path.'/'.$name.'_rep.jpg';
+	   	 $j_imgpath = property('app_uploads_path').$path.'/'.$name.'_rep.jpg';
+	   	 $g_imgurl = property('app_uploads_url').$path.'/'.$name.'_rep.gif';
+	   	 $g_imgpath = property('app_uploads_path').$path.'/'.$name.'_rep.gif';
+	   	 $imgurl = '';
+       
+	   	 if (is_readable($p_imgpath) || is_readable($j_imgpath) || is_readable($g_imgpath)) {
+			 		$thumb_found = true;	
+			 	 	$imgurl = (is_readable($p_imgpath)) ? $p_imgurl : ((is_readable($j_imgpath)) ? $j_imgurl : $g_imgurl);
+	   	 } else {
+			 		$thumb_found = false;	
+			 		$name = "none";
+	   	 }
+		*/
+
       $image_details = $this->_get_imgurl($path, $name, 'rep');
       
       $imgurl = $image_details['imgurl'];
       $thumb_found = $image_details['thumb_found'];
       
-      if ($thumb_found = false) {
-        $name = "none";
-      }
+      $name = ($thumb_found) ? $name : 'none';
       
 	   	$imgUrl = ($thumb_found) ? $imgurl : property('app_img').'/norep.png';
 
@@ -485,8 +485,7 @@ class OCW_utils {
     *             'thumb_found' boolean, set true if we match
     *             'imgurl' string url to image
     */
-  private function _get_imgurl($path, $name, $pre_ext = '',
-    $location = NULL) {
+  private function _get_imgurl($path, $name, $pre_ext = '', $location = NULL) {
       $base_url = property('app_uploads_url') . $path . "/";
     $base_path = property('app_uploads_path') . $path . "/";
     
@@ -532,6 +531,7 @@ class OCW_utils {
 			$file_details['imgurl'] = $g_imgurl_upper;
 			$file_details['thumb_found'] = true;
    	} else {
+			$file_details['imgurl'] = '';
 			$file_details['thumb_found'] = false;
    	}
    	
