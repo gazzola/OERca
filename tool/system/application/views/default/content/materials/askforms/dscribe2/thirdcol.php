@@ -135,7 +135,7 @@
 				</p>
 				<br/>
 
-				<?php if ($view == 'general') { ?>
+				<?php if ($view == 'general' && $obj['otype']=='original') { ?>
 				<p style="clear:both"><h3>dScribe Recommended Action:</small></h3> 
 						<?php echo ($obj['action_type']=='') ? 'No action recommended':$obj['action_type']; ?>
 				</p>
