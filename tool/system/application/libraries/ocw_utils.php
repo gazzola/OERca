@@ -386,7 +386,7 @@ class OCW_utils {
 
                   // Set the rights
                   if(file_exists($file_name)) {
-										 if (!preg_match('/^\./',$file_name,$match)) {
+										 if (!preg_match('/^\./',basename($file_name),$match)) {
                       	chmod($file_name, 0777);
                       	array_push($zip_files, $file_name);
 										 } 
