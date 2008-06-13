@@ -342,7 +342,7 @@ class OCW_utils {
     * @param   boolean     Indicates if the files will be unpacked in a directory with the name of the zip-file (true) or not (false) (only if the destination directory is set to false!)
     * @param   boolean     Overwrite existing files (true) or not (false)
     *
-    *  @return  boolean     Succesful or not
+    * @return  boolean     Succesful or not
     */
     function unzip($src_file, $dest_dir=false, $create_zip_name_dir=true, $overwrite=true)
   {

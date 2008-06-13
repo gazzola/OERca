@@ -24,19 +24,28 @@
         $params_url = $value['num']['total'].'/'.$value['num']['done']. 
               '/'.$value['num']['ask'].'/'.$value['num']['rem'];
       if ($value['num']['total'] > 0) { ?> 
-    <div class="column span-24 first last" >
-      <h2>
-      <a href="<?php echo site_url("materials/home/{$value['id']}"); ?>" >
-        <img src="<?= site_url("/home/make_bar/$params_url") ?>" 
-        alt="Progress Bar: 
-        Total Objects=<?=$value['num']['total'] ?>
-        Cleared Objects=<?=$value['num']['done'] ?> 
-        Objects in progress=<?=$value['num']['ask'] ?> 
-        Remaining Objects=<?=$value['num']['rem'] ?>"
-        class="prog-bar">
-        <?=$value['number'] ?> <?=$value['title'] ?>
+    <div class="column span-24 first last prog-link">     
+      <a href="<?php echo site_url("materials/home/{$value['id']}"); ?>">       
+        <div class="column span-15 first">
+          Total Objects: <?=$value['num']['total'] ?>
+          &nbsp; &nbsp;
+          Cleared Objects: <?=$value['num']['done'] ?>
+          &nbsp; &nbsp;
+          Objects in progress: <?=$value['num']['ask'] ?>
+          &nbsp; &nbsp;
+          Remaining Objects: <?=$value['num']['rem'] ?>
+              <img src="<?= site_url("/home/make_bar/$params_url") ?>" 
+              alt="Progress Bar: 
+              Total Objects=<?=$value['num']['total'] ?>
+              Cleared Objects=<?=$value['num']['done'] ?> 
+              Objects in progress=<?=$value['num']['ask'] ?> 
+              Remaining Objects=<?=$value['num']['rem'] ?>"
+              class="prog-bar">
+        </div>
+        <div class="column span-8 last prog-title">
+            <?=$value['number'] ?> <?=$value['title'] ?>
+        </div>
       </a>
-      </h2>
     </div>
   <?php } else { ?>
   <div class="column span-24 first last prog-no-CO">

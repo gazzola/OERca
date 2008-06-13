@@ -249,44 +249,66 @@ class OER_progbar {
     $rem_color = imagecolorallocate($this->im, $this->rem_rgb[0],
       $this->rem_rgb[1], $this->rem_rgb[2]);
       
+    // fill the canvas with the border color
+    imagefill ($this->im, 0, 0, $border_color);
+    
     /* TODO: prevent rounding from making combined width > than total
      * width of image */
     // calculate the coordinates of the status displays
+    
+    // assume that all counts are 0 and set same starting point for all
     $done_x1 = 2;
-    $done_x2 = ($this->_set_prog_width($done_objects));
+    $ask_x1 = $done_x1;
+    $rem_x1 = $done_x1;
     
-    $ask_x1 = $done_x2 + 1;
-    $ask_x2 = $ask_x1 + ($this->_set_prog_width($ask_objects));
+    // set all ending points to the initial starting point
+    $done_x2 = $done_x1;
+    $ask_x2 = $done_x1;
+    $rem_x2 = $done_x1;
     
-    $rem_x1 = $ask_x2;
-    $rem_x2 = $rem_x1 + ($this->_set_prog_width($rem_objects));
-    
-    $y1 = 2;
+    $y1 = $done_x1;
     $y2 = $this->height;
     
+    /* if there are COs of a particular type:
+     *  calculate horizontal end point
+     *  draw the progress bar section
+     *  get the coordinates for the text placement on each status display
+     *  print the number of objects
+     *  and change the starting point for the next C0 types */
+    // TODO: change the text placement stuff so it is less hackishly done
+    if ($done_objects > 0) {
+      $done_x2 = ($this->_set_prog_width($done_objects));
+      imagefilledrectangle($this->im, $done_x1, $y1, $done_x2, $y2,
+        $done_color);
+      // $done_text_loc = $this->_place_text($done_objects,
+      //   ($done_x2 - $done_x1));
+      // imagestring($this->im, $this->font, $done_text_loc["x"], 
+      //   $done_text_loc["y"], $done_objects, $text_color);
+      $ask_x1 = $done_x2 + 1;
+      $rem_x1 = $ask_x1;
       
-    // fill the canvas with the border color
-    imagefill ($this->im, 0, 0, $border_color);
-          
-    // create the progress bars
-    imagefilledrectangle($this->im, $done_x1, $y1, $done_x2, $y2, $done_color);
-    imagefilledrectangle($this->im, $ask_x1, $y1, $ask_x2, $y2, $ask_color);
-    imagefilledrectangle($this->im, $rem_x1, $y1, $rem_x2, $y2, $rem_color);
-      
-      
-     /* TODO: change the text placement stuff so it is less hackishly done
-      * get the coordinates for the text placement on each status display */
-    $done_text_loc = $this->_place_text($done_objects, ($done_x2 - $done_x1));
-    $ask_text_loc = $this->_place_text($ask_objects, ($ask_x2 - $ask_x1));
-    $rem_text_loc = $this->_place_text($rem_objects, ($rem_x2 - $rem_x1));
-     
-     // print the numbers of each object status on the respective display
-    imagestring($this->im, $this->font, $done_text_loc["x"], 
-     $done_text_loc["y"], $done_objects, $text_color);
-    imagestring($this->im, $this->font, ($done_x2 + $ask_text_loc["x"]),
-     $ask_text_loc["y"], $ask_objects, $text_color);
-    imagestring($this->im, $this->font, ($ask_x2 + $rem_text_loc["x"]),
-     $rem_text_loc["y"], $rem_objects, $text_color);
+    }
+    
+    if ($ask_objects > 0) {
+      $ask_x2 = $ask_x1 + ($this->_set_prog_width($ask_objects));
+      imagefilledrectangle($this->im, $ask_x1, $y1, $ask_x2, $y2,
+        $ask_color);
+      // $ask_text_loc = $this->_place_text($ask_objects,
+      //   ($ask_x2 - $ask_x1));
+      // imagestring($this->im, $this->font, ($done_x2 + $ask_text_loc["x"]),
+      //   $ask_text_loc["y"], $ask_objects, $text_color);
+      $rem_x1 = $ask_x2 + 1;
+    }
+    
+    if ($rem_objects > 0) {
+      $rem_x2 = $rem_x1 + ($this->_set_prog_width($rem_objects));
+      imagefilledrectangle($this->im, $rem_x1, $y1, $rem_x2, $y2,
+        $rem_color);
+      // $rem_text_loc = $this->_place_text($rem_objects,
+      //   ($rem_x2 - $rem_x1));
+      // imagestring($this->im, $this->font, ($ask_x2 + $rem_text_loc["x"]),
+      //    $rem_text_loc["y"], $rem_objects, $text_color);
+    }
   }
 
 
