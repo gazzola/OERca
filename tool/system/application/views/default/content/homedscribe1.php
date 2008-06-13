@@ -24,8 +24,8 @@
         $params_url = $value['num']['total'].'/'.$value['num']['done']. 
               '/'.$value['num']['ask'].'/'.$value['num']['rem'];
       if ($value['num']['total'] > 0) { ?> 
-    <div class="column span-24 first last prog-link">     
-      <a href="<?php echo site_url("materials/home/{$value['id']}"); ?>">       
+    <div class="column span-24 first last">     
+      <a class="prog-link" href="<?php echo site_url("materials/home/{$value['id']}"); ?>">       
         <div class="column span-15 first">
           Total Objects: <?=$value['num']['total'] ?>
           &nbsp; &nbsp;

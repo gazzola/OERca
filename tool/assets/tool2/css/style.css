@@ -317,6 +317,6 @@ ul#topnavlist li#active a { background-color: #fff; color: #990033; }
               margin-top: 13px; 
               padding-left: 8px;
             }
-.prog-link a:visited, a:link {color: #555555;}
+a.prog-link:visited, a.prog-link:link {color: #555555;}
 
 
