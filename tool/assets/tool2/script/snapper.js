@@ -1,4 +1,4 @@
-var autoCaptureEnabled = true;
+var autoCaptureEnabled = false;
 var autoSendEnabled = false;
 
 function captureClipboard()

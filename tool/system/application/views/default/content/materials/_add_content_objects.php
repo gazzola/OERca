@@ -18,7 +18,7 @@ $types .= '</select>';
 				<?php print form_open_multipart("materials/snapper/$cid/$mid/submit",array('id'=>'snapper-form')) ?>	
 				<div id="controls">
 					<div>
-						<input id="snap_aCapture" type="checkbox" checked="checked"/>
+						<input id="snap_aCapture" type="checkbox" />
 						<label for="snap_aCapture">auto capture</label>
 					</div>
 				</div>
