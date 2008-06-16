@@ -614,7 +614,23 @@ class Materials extends Controller {
 						if ($val == 'done') {
 						    $this->instructor_dscribe1_email($cid);
 						}
-
+				} elseif ($field == 'ask_inst') {
+						$field = 'ask';
+						$data = array($field=>$val);
+						if ($val == 'yes')
+						{
+							// need to update ask instructor status to new
+							$data['ask_status']='new';
+						}
+						$this->coobject->update($oid, $data);
+				} elseif ($field=='ask_dscribe2') {
+						$data = array($field=>$val);
+						if ($val=='yes')
+						{
+							// need to set the ask dscribe2 status to new
+							$data['ask_dscribe2_status']='new';
+						}
+						$this->coobject->update($oid, $data);
 				} elseif ($field=='done') {
 						$lgcm = 'Changed cleared status to '.(($val==1)?'"yes"':'"no"');
 						$this->coobject->add_log($oid, getUserProperty('id'), array('log'=>$lgcm));

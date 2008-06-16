@@ -825,18 +825,28 @@ var Rules = {
 									var check = this.validate(object_id, clm_id, clm_type, field, val);
 									if (check != 'success') { alert(check); return false; }
 
-            			new Ajax(url, {	method: 'get', update: fb,
+            							new Ajax(url, {	method: 'get', update: fb,
                      							onComplete: function() {
                         							response = fb.innerHTML;
                         							if (response=='success') {
-																					if(field=='status') {
-                            								url = $('server').value+'materials/askforms/'+cid+'/'+mid+'/'+view;
-                            								window.location.replace(url);
-																					}
+														if(field=='status') {
+															if (val != 'in progress')
+															{
+																// at this time, if the val is not the "in progress one"
+																// clear the ask d2 setting to 'No'																		
+																url = $('server').value +'materials/update_object/'+cid+'/'+ mid+'/'+object_id+'/ask_dscribe2/' + encodeURIComponent("no");
+													            new Ajax(url, {	method: 'get', update: fb}).request();
+												            }
+												         }
+											            			
+								            			// refresh the page
+			                         								
+			                         					url = $('server').value+'materials/askforms/'+cid+'/'+mid+'/'+view;
+			                         					window.location.replace(url);
                         							} else {
                             							alert(response);
                         							}
-																} }).request();
+												} }).request();
 							}
 			}
 			element.validate = function(oid, clm_id, clm_type, field, val) {
