@@ -16,12 +16,12 @@ $types .= '</select>';
      <h2>Snapper Upload</h2>
 			
 				<?php print form_open_multipart("materials/snapper/$cid/$mid/submit",array('id'=>'snapper-form')) ?>	
-				<div id="controls">
+				<!--<div id="controls">
 					<div>
 						<input id="snap_aCapture" type="checkbox" />
 						<label for="snap_aCapture">auto capture</label>
 					</div>
-				</div>
+				</div> -->
 				
 				<div id="capture">
 					<applet id="clipboard" width="200" height="200" archive="<?=site_url()?>snapper/Ssnapper.jar,<?=site_url()?>snapper/commons-codec-1.3.jar" code="org.muse.snapper.Snapper" codebase="<?=site_url()?>snapper/">
