@@ -160,9 +160,11 @@ class Fal_front
      */
     function login()
     {	
+        log_message('debug', "FAL_front:login: entered");
         //if a valid user is already logged in
         if($this->CI->freakauth_light->belongsToGroup('user'))
         {
+            log_message('debug', "FAL_front:login: $this->CI->freakauth_light->getUserName() is already logged in");
             // we can arrive here after two different things
             $requested_page = $this->CI->db_session->flashdata('requested_page');
             if ( $requested_page == '')
@@ -181,11 +183,13 @@ class Fal_front
             flashMsg($msg);
    
             // redirects to homepage
+            log_message('debug', "FAL_front:login: Redirecting to home page");
             redirect('', 'location');
         }
 	// ------------- this means the user has not yet logged in successfully -- bdr ----------------
         else
         {
+            log_message('debug', "Checking config's remote_user");
 	    if ($this->CI->config->item('remote_user')) {
 		$username_login = $this->CI->config->item('remote_user');
 	    }
@@ -284,19 +288,25 @@ class Fal_front
             	if (isset($users))
             	{
                     unset($users);
-                    // is better to do a 1 call to unset_userdata passing an array?
-                    $this->CI->db_session->unset_userdata('id');
-                    $this->CI->db_session->unset_userdata('user_name');
-                    $this->CI->db_session->unset_userdata('role');
+                    // bdr - turns out I don't need this stuff from Freakauth_light logoff
+                    //    $this->CI->db_session->unset_userdata('id');
+                    //    $this->CI->db_session->unset_userdata('user_name');
+                    //    $this->CI->db_session->unset_userdata('role');
+		    //    $this->CI->db_session->unset_userdata('name');
+		    //    $this->CI->db_session->unset_userdata('email');
+		    // bdr - I think this one matters the most .... bdr june 16, 2008
+		    //    $this->CI->db_session->sess_destroy();
                 }
             }
 	// bdr -- now let's delete the cookies and then send browser to www.umich.edu
 	$this->CI->load->helper('cookie');
-	delete_cookie("FreakAuth");
+	// delete_cookie("FreakAuth"); // bdr:  don't do this our the Cosign GoBack doesn't work!
 	delete_cookie("cosign-oer.umms.med");
+
 	$logout_url = $this->CI->config->slash_item('logout_url');
 	echo '<META http-equiv="refresh" content="0;URL=https://weblogin.umich.edu/cgi-bin/logout?',$logout_url,'">';
-       // bdr -- don't need this:  redirect($this->CI->config->item('FAL_logout_success_action'), 'location');
+       // bdr -- don't need this because of the refresh done above:  
+       //        redirect($this->CI->config->item('FAL_logout_success_action'), 'location');
     }
    
 	// --------------------------------------------------------------------
