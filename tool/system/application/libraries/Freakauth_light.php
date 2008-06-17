@@ -145,19 +145,34 @@ class Freakauth_light
      */
     function check($_lock_to_role=null, $_only=null)
     {
+		log_message('debug', "bdr: freakauth_light: check()");	// bdr debugging
 
 	        // check who did the request and build role hierarchy
 	        $_who_is = $this->CI->db_session->userdata('role');
+
+	        // bdr - silly debugging stuff follows
+		// $_who_id = $this->CI->db_session->userdata('user_id');
+		$_who_name = $this->CI->db_session->userdata('user_name');
+		// log_message('debug', "freakauth_light_check(): id: $_who_id, name: $_who_name, role: $_who_is");
+                $cosign_user  = $_SERVER['REMOTE_USER'];
+                log_message('debug', "bdr:  freakauth_light_check - cosign USERID: $cosign_user");
 	        
 	        // if we have a role stored in DB session for this user
-	        if ($this->CI->db_session AND $this->CI->config->item('FAL') AND !empty($_who_is))
+	
+		// bdr - I commented this line out and replaced it wit the one that follows so 
+		//       we could deal with a "closed my browser but did not logout" situation
+		//
+	        //   if ($this->CI->db_session AND $this->CI->config->item('FAL') AND !empty($_who_is))
+		if ($this->CI->db_session AND $this->CI->config->item('FAL') AND !empty($_who_is)
+ 					  AND ($cosign_user == $_who_name))
 	        {
+		    // log_message('debug', "freakauth_light: check() we have a db_session AND we're using FAL AND _who_is is set");// bdr debugging
 	            
 	            // gets the locked role hierarchy value
 	            $_hierarchy = $this->CI->config->item('FAL_roles');
 	            
 	            // if we didn't specify to who we will reserve the action
-                // let's restrict it to registered users
+                    // let's restrict it to registered users
 	            if ($_lock_to_role==null){$_lock_to_role='user';}
 	            
 	            // let's see who did we reserve the area to
@@ -212,11 +227,15 @@ class Freakauth_light
     function denyAccess($role)
     {
         $this->CI->lang->load('freakauth');
+	log_message('debug', 'bdr: denyAccess #1');
+
         if ($this->CI->config->item('FAL_deny_with_flash_message'))
         {
+	    log_message('debug', 'bdr: denyAccess #2');
             // if visitor is a GUEST
             if ($role == '')
             {
+		log_message('debug', 'bdr: denyAccess #3');
                 // First, we have to store the requested page in order
                 // to serve it back to the visitor after a successful login.
                 $this->CI->db_session->set_flashdata('requested_page',
@@ -232,21 +251,30 @@ class Freakauth_light
             // else if visitor is a USER
             else
             {
+		log_message('debug', 'bdr: denyAccess #4');
                 $msg = $this->CI->lang->line('FAL_no_credentials_user');
                 flashMsg($msg);
                 
                 // if visitor came to this site with an http_referer
                 if (isset($_SERVER['HTTP_REFERER']))
                 {
+			log_message('debug', 'bdr: denyAccess #5');
                     $referer = $_SERVER['HTTP_REFERER'];
                     if (preg_match("|^".base_url()."|", $referer) == 0)
                     {
-                        // if http_referer is from an external site,
-                        // users are taken to the page defined in the config file
+			// bdr - this is where we can handle cosignUID != ocw_userUID
+			//       we need to destroy the session data & then things
+			//	 will get correctly sorted out
+			log_message('debug', 'bdr: denyAccess #6');
+                        $this->CI->db_session->sess_destroy();
+
+			// if http_referer is from an external site,
+                        // users are taken to the page defined in the config file$a
                         redirect($this->CI->config->item('FAL_denied_from_ext_location'));
                     }
                     else
                     {
+			log_message('debug', 'bdr: denyAccess #7');
                         // if we came from our website, just go to this page back
                         // but maybe we arrived here because of the
                         // 'redirect to requested page', so in order not to
@@ -259,12 +287,14 @@ class Freakauth_light
                 // redirect to the page defined in the config file too
                 else
                 {
+		    log_message('debug', 'bdr: denyAccess #8');
                     redirect($this->CI->config->item('FAL_denied_from_ext_location'), 'location');
                 }
             }
         }
         else
         {
+	    log_message('debug', 'bdr: denyAccess #9');
             $page = $this->CI->config->item('FAL_denied_page');
             $data['role'] = $role;
             // this is how we stop the execution
@@ -455,6 +485,7 @@ class Freakauth_light
      */
     function login()
     {
+        log_message('debug', "bdr: Freakauth_light:login: entered");
         if (!$this->CI->config->item('FAL')) 
         {
         	redirect($this->CI->config->item('FAL_login_success_action'), 'location');
