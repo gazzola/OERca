@@ -301,7 +301,7 @@ class Fal_front
 	// bdr -- now let's delete the cookies and then send browser to www.umich.edu
 	$this->CI->load->helper('cookie');
 	// delete_cookie("FreakAuth"); // bdr:  don't do this our the Cosign GoBack doesn't work!
-	delete_cookie("cosign-oer.umms.med");
+	// delete_cookie("cosign-oer.umms.med");
 
 	$logout_url = $this->CI->config->slash_item('logout_url');
 	echo '<META http-equiv="refresh" content="0;URL=https://weblogin.umich.edu/cgi-bin/logout?',$logout_url,'">';
