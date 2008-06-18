@@ -223,12 +223,17 @@ class Materials extends Controller {
 	   // echo $this->email->print_debugger();
 	}
 
-	private function dscribe2_dscribe1_email() {
-                // bdr -- now see if we can find dscribe1
-                //         begin by getting user id for dscribe2 (current user)
-                $passUid = getUserProperty('id');
+	private function dscribe1_dscribe2_email($cid, $mid)
+	{
+	}
+
+	private function dscribe2_dscribe1_email($cid, $mid) 
+	{
+      // bdr -- now see if we can find dscribe1
+      //         begin by getting user id for dscribe2 (current user)
+    $passUid = getUserProperty('id');
 		$user_rels = $this->ocw_user->get_dscribe2_rel($passUid);
-                if ($user_rels[0] == NULL) {
+    if ($user_rels[0] == NULL) {
 		    log_message("error", '**** controller/material.php error - user_rels == NULL ****');
 		} else {
                     $dScribe1_uid = $user_rels[0]['dscribe1_id'];
@@ -238,11 +243,12 @@ class Materials extends Controller {
 		    $emsg .= " needing your attention at ";
 		    $emsg .= base_url();
                     $this->_postoffice('dScribe2','dScribe', $dScribe1_uid, $emsg);
-                }
+    }
 	        return;
 	}
 
-        private function instructor_dscribe1_email($cid) {
+  private function instructor_dscribe1_email($cid) 
+	{
                 $user_rels = $this->ocw_user->dscribes($cid);
                 if ($user_rels[0] == NULL) {
                     log_message("error", '**** controller/material.php error - user_rels == NULL ****');
@@ -264,7 +270,7 @@ class Materials extends Controller {
 		    }
                 }
                 return;
-        }
+ }
 
     // bdr ----------------- end of my functions added for email -------------------
 
@@ -630,40 +636,38 @@ class Materials extends Controller {
 				} elseif ($field == 'ask_inst') {
 						$field = 'ask';
 						$data = array($field=>$val);
-						if ($val == 'yes')
-						{
-							// need to update ask instructor status to new
-							$data['ask_status']='new';
-						}
+						if ($val == 'yes') { $data['ask_status']='new'; }
 						$this->coobject->update($oid, $data);
+
 				} elseif ($field=='ask_dscribe2') {
 						$data = array($field=>$val);
-						if ($val=='yes')
-						{
-							// need to set the ask dscribe2 status to new
-							$data['ask_dscribe2_status']='new';
-						}
+						if ($val=='yes') { $data['ask_dscribe2_status']='new'; }
 						$this->coobject->update($oid, $data);
+
 				} elseif ($field=='done') {
 						$lgcm = 'Changed cleared status to '.(($val==1)?'"yes"':'"no"');
 						$this->coobject->add_log($oid, getUserProperty('id'), array('log'=>$lgcm));
 						$data = array($field=>$val);
 						$this->coobject->update($oid, $data);
+
 				} elseif ($field=='fairuse_rationale' || $field=='commission_rationale' || $field=='retain_rationale') {
-					 $claimtype = preg_replace('/_rationale/','',$field);
-					 $this->coobject->add_object_claim($oid, getUserProperty('id'), $claimtype, array('rationale'=>$val));
+					 	$claimtype = preg_replace('/_rationale/','',$field);
+					 	$this->coobject->add_object_claim($oid, getUserProperty('id'), $claimtype, array('rationale'=>$val));
+		
+						/* EMAIL DSCRIBE2 */
+						$this->dscribe1_dscribe2_email($cid, $mid);
 
 				} elseif ($field=='inst_question') {
-					$this->coobject->add_additional_question($oid, getUserProperty('id'), array('question'=>$val,'role'=>'instructor'));
+						$this->coobject->add_additional_question($oid, getUserProperty('id'), array('question'=>$val,'role'=>'instructor'));
 
 				} elseif ($field=='dscribe2_question') {
-					$this->coobject->add_additional_question($oid, getUserProperty('id'), array('question'=>$val,'role'=>'dscribe2'));
+						$this->coobject->add_additional_question($oid, getUserProperty('id'), array('question'=>$val,'role'=>'dscribe2'));
+
+						/* EMAIL DSCRIBE2 */
+						$this->dscribe1_dscribe2_email($cid, $mid);
 
 				} else {
 					
-					// change 'ask_inst' to 'ask'
-					if ($field == 'ask_inst')
-						$field = 'ask';
 					$data = array($field=>$val);
 					$this->coobject->update($oid, $data);
 				}
@@ -741,7 +745,7 @@ class Materials extends Controller {
      $this->ocw_utils->send_response('success');
 	}
 
-	public function update_questions_status($oid, $status, $role, $type='original')
+	public function update_questions_status($cid, $mid, $oid, $status, $role, $type='original')
 	{
 	   $data['status'] = $status;
 	   $this->coobject->update_questions_status($oid, $data, $role, $type);
@@ -749,12 +753,12 @@ class Materials extends Controller {
 	   /* send email to dscribe1 */
 	   if ($status=='done') {
 	       // echo 'update_questions_status send_email';
-	       $this->dscribe2_dscribe1_email();
+	       $this->dscribe2_dscribe1_email($cid, $mid);
 	   }
            $this->ocw_utils->send_response('success');
 	}
 
-	public function update_object_claim($oid, $claimtype, $claimid)
+	public function update_object_claim($cid, $mid, $oid, $claimtype, $claimid)
 	{
 		 $field = (isset($_REQUEST['field']) && $_REQUEST['field']<>'') ? $_REQUEST['field'] : '';
 		 $value = (isset($_REQUEST['val'])) ? $_REQUEST['val'] : '';
@@ -764,7 +768,7 @@ class Materials extends Controller {
 
 		 /* send email to dscribe1 */
 		 if ($field=='status' && $value=='done') {
-		        $this->dscribe2_dscribe1_email();
+		        $this->dscribe2_dscribe1_email($cid, $mid);
 		 /* send email to ip review team */
 		 } elseif ($field=='status' && $value=='ip review') {
 			     $this->_postoffice('dscribe2','ipreview','9','notify Pieter');

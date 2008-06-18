@@ -489,6 +489,7 @@ var Rules = {
 				var material_id = $('mid').value; 
 				var object_id = $('oid').value;
 				var field = this.name; 
+				var view = $('view').value; 
 				var val = escape(this.value);
 				var url = $('server').value+'materials/update_contact/'+course_id+'/'+material_id+'/'+object_id;
 			
@@ -503,7 +504,7 @@ var Rules = {
                         		response = fb.innerHTML;
                         		if (response=='success') {
                             		url = $('server').value+'materials/askforms/'+
-										course_id+'/'+material_id+'/'+view;
+																			course_id+'/'+material_id+'/'+view;
                             		window.location.replace(url);
                         		} else {
                             		alert(response + url);
@@ -859,6 +860,8 @@ var Rules = {
 
 	'.do_d2_claim_update' : function(element) {
 			element.onchange = function () {
+							var cid = $('cid').value;
+							var mid = $('mid').value; 
             	var fb = $('feedback');
 							var url = $('server').value+'materials/';
 
@@ -870,7 +873,7 @@ var Rules = {
 
 							// update question answer
 							if (field != 'status') {
-									url = url+'update_object_claim/'+object_id+'/'+clm_type+'/'+clm_id;
+									url = url+'update_object_claim/'+cid+'/'+mid+'/'+object_id+'/'+clm_type+'/'+clm_id;
       						new Ajax(url, {	method: 'post', postBody: 'field='+field+'&val='+val, update: fb}).request();
 							}
 			}
@@ -892,7 +895,7 @@ var Rules = {
 									val = (val.toLowerCase() == 'send to dscribe') ? 'done' : val;
 									val = (val.toLowerCase() == 'send to legal & policy review') ? 'ip review' : val;
 									val = (val.toLowerCase() == 'send to commission review') ? 'commission review' : val;
-									url = url+'update_object_claim/'+object_id+'/'+clm_type+'/'+clm_id;
+									url = url+'update_object_claim/'+cid+'/'+mid+'/'+object_id+'/'+clm_type+'/'+clm_id;
 	
 									var check = this.validate(object_id, clm_id, clm_type, field, val);
 									if (check != 'success') { alert(check); return false; }
@@ -1006,7 +1009,7 @@ var Rules = {
 							if (val=='done' || val=='in progress') {
 									var object_id = this.name.replace(/^\w+_status_/g,'');
 									var object_type = this.name.replace(/_status_\d+$/g,'');
-									url = url+'update_questions_status/'+object_id+'/'+val+'/dscribe2/'+object_type;
+									url = url+'update_questions_status/'+cid+'/'+mid+'/'+object_id+'/'+val+'/dscribe2/'+object_type;
             			new Ajax(url, {	method: 'get', update: fb,
                      							onComplete: function() {
                         							response = fb.innerHTML;
