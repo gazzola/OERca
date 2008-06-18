@@ -64,11 +64,11 @@ var Rules = {
 			var check = this.check(field, value);
 
 			if (check=='success') {
-				var url = $('server').value+'materials/update/'+course_id+'/'+
-						   material_id+'/'+field+'/'+encodeURIComponent(value);	
+				var url = $('server').value+'materials/update/'+course_id+'/'+material_id;
 
 				new Ajax(url,
-            		{ method: 'get',
+            		{ method: 'post',
+									postBody: 'field='+field+'&val='+value,
 					  update: $('feedback'),
 			 	 	  onComplete:function(request){
                   		response = $('feedback').innerHTML;
@@ -251,8 +251,8 @@ var Rules = {
 							 return false;
 						}
 					}
-					url += '/'+object_id+'/'+field+'/'+encodeURIComponent(val);
-					new Ajax(url, { method: 'get', update: fb }).request();
+					url += '/'+object_id;
+					new Ajax(url, { method: 'post', postBody: 'field='+field+'&val='+val, update: fb }).request();
 
 				} else if (field=='ask_inst') {
 					if(val == 'yes')
@@ -266,8 +266,8 @@ var Rules = {
 							return false;
 						}
 					}
-					url += '/'+object_id+'/'+field+'/'+encodeURIComponent(val);
-					new Ajax(url, { method: 'get', update: fb }).request();
+					url += '/'+object_id;
+					new Ajax(url, { method: 'post', postBody: 'field='+field+'&val='+val, update: fb }).request();
 					
 					// show the div
 					var id = this.id;
@@ -281,8 +281,8 @@ var Rules = {
 					}
 					
 				} else {	
-					url += '/'+object_id+'/'+field+'/'+encodeURIComponent(val);
-					new Ajax(url, { method: 'get', update: fb }).request();
+					url += '/'+object_id;
+					new Ajax(url, { method: 'post', postBody: 'field='+field+'&val='+val, update: fb }).request();
 				}	
 				
 				// if the selected action is other than "Search" and "Remove", the ask dscribe2 should be checked
@@ -297,10 +297,9 @@ var Rules = {
 						}
 					}
 					// reset url
-					url = $('server').value+'materials/update_object/'+course_id+'/'+material_id;
-					url += '/'+object_id+'/ask_dscribe2/'+encodeURIComponent('yes');
+					url = $('server').value+'materials/update_object/'+course_id+'/'+material_id+'/'+object_id;
       		var fb1 = $('feedback');
-					new Ajax(url, { method: 'get', update: fb1 }).request();
+					new Ajax(url, { method: 'post', postBody: 'field=ask_dscribe2&val=yes', update: fb1 }).request();
 				}
 				
 				// show or hide relavent panels
@@ -382,10 +381,10 @@ var Rules = {
 				var field = this.name; 
 				var url = $('server').value+'materials/update_object/'+course_id+'/'+material_id;
 				var val = this.value;
-				url += '/'+object_id+'/'+field+'/'+encodeURIComponent(val);
+				url += '/'+object_id;
 			
       	var fb = $('feedback');
-				new Ajax(url, { method: 'get', update: fb }).request();
+				new Ajax(url, { method: 'post', postBody: 'field='+field+'&val='+val, update: fb }).request();
 		}
 	},
 	
@@ -398,10 +397,10 @@ var Rules = {
 				var field = this.name; 
 				var url = $('server').value+'materials/update_object/'+course_id+'/'+material_id;
 				var val = this.value;
-				url += '/'+object_id+'/'+field+'/'+encodeURIComponent(val);
+				url += '/'+object_id;
 			
       	var fb = $('feedback');
-				new Ajax(url, { method: 'get', update: fb }).request();
+				new Ajax(url, { method: 'post', postBody: 'field='+field+'&val='+val, update: fb }).request();
 		}
 	},
 	
@@ -445,9 +444,9 @@ var Rules = {
 			var field = this.name.replace(/copy_/g,'');
 			field = field.replace(/_\d+$/g,'');
 			var url = $('server').value+'materials/update_object_copyright/'+
-					  		object_id+'/'+field+'/'+encodeURIComponent(val)+'/original';
+					  		object_id+'/original';
       var fb = $('feedback');
-      new Ajax(url, {	method: 'get', update: fb}).request();
+      new Ajax(url, {	method: 'post', postBody: 'field='+field+'&val='+val, update: fb}).request();
 		}
 	},
 
@@ -469,10 +468,9 @@ var Rules = {
 			}
 			if (field == 'unique') { field = 'is_unique'; }
 
-			var url = $('server').value+'materials/update_object/'+course_id+'/'+material_id;
-			url += '/'+object_id+'/'+field+'/'+encodeURIComponent(val);
-            var fb = $('feedback');
-            new Ajax(url, { method: 'get', update: fb }).request();
+			var url = $('server').value+'materials/update_object/'+course_id+'/'+material_id+'/'+object_id;
+      var fb = $('feedback');
+			new Ajax(url, { method: 'post', postBody: 'field='+field+'&val='+val, update: fb }).request();
 		}
 	},
 
@@ -485,11 +483,11 @@ var Rules = {
 			var material_id = $('mid').value; 
 			var view = $('view').value; 
 			var object_id = this.name.replace(/status_/g,'');
-			var url = $('server').value+'materials/update_object/'+course_id+'/'+
-					  material_id+'/'+object_id+'/ask_status/'+encodeURIComponent(val);
+			var url = $('server').value+'materials/update_object/'+course_id+'/'+material_id+'/'+object_id;
             var fb = $('feedback');
 			var response;
-            new Ajax(url, { method: 'get',
+            new Ajax(url, { method: 'post',
+														postBody: 'field=ask_status&val='+val,
 							update: fb, 
                      		onComplete:function() {
                         		response = fb.innerHTML;
@@ -514,10 +512,9 @@ var Rules = {
 			var question_id = object_id;
 			object_id = object_id.replace(/_\d+$/g,'');
 			question_id = question_id.replace(/^\d+_/g,'');
-			var url = $('server').value+'materials/update_object_question/'+
-					  object_id+'/'+question_id+'/'+encodeURIComponent(val);
-            var fb = $('feedback');
-            new Ajax(url, {	method: 'get', update: fb}).request();
+			var url = $('server').value+'materials/update_object_question/'+object_id+'/'+question_id;
+      var fb = $('feedback');
+			new Ajax(url, { method: 'post', postBody: 'answer='+val, update: fb }).request();
 		}
 	},
 
@@ -586,9 +583,8 @@ var Rules = {
 			if (field=='rep_ok') { field = 'suitable'; }
 			if (field == 'notsuitable') { field = 'unsuitable_reason'; }
 
-			var url = $('server').value+'materials/update_replacement/'+course_id+'/'+material_id+
-			 				 '/'+object_id+'/'+repl_id+'/'+field+'/'+encodeURIComponent(val);
-     	new Ajax(url, { method: 'get', update: fb }).request();
+			var url = $('server').value+'materials/update_replacement/'+course_id+'/'+material_id+'/'+object_id+'/'+repl_id;
+			new Ajax(url, { method: 'post', postBody: 'field='+field+'&val='+val, update: fb }).request();
 		}
 	},
 
@@ -699,10 +695,9 @@ var Rules = {
 			var question_id = object_id;
 			object_id = object_id.replace(/_\d+$/g,'');
 			question_id = question_id.replace(/^\d+_/g,'');
-			var url = $('server').value+'materials/update_object_question/'+
-					  object_id+'/'+question_id+'/'+encodeURIComponent(val)+'/replacement';
+			var url = $('server').value+'materials/update_object_question/'+object_id+'/'+question_id+'/replacement';
       var fb = $('feedback');
-      new Ajax(url, {	method: 'get', update: fb}).request();
+			new Ajax(url, { method: 'post', postBody: 'answer='+val, update: fb }).request();
 		}
 	},
 
@@ -715,9 +710,9 @@ var Rules = {
 			var field = this.name.replace(/copy_/g,'');
 			field = field.replace(/_\d+$/g,'');
 			var url = $('server').value+'materials/update_object_copyright/'+
-					  		object_id+'/'+field+'/'+encodeURIComponent(val)+'/replacement';
+					  		object_id+'/replacement';
       var fb = $('feedback');
-      new Ajax(url, {	method: 'get', update: fb}).request();
+      new Ajax(url, {	method: 'post', postBody: 'field='+field+'&val='+val, update: fb}).request();
 		}
 	},
 
@@ -732,12 +727,13 @@ var Rules = {
 			var repl_id = this.name.replace(/status_/g,'');
 		  var object_id = ($('oid')) ? $('oid').value : $('oid-'+repl_id).value;
 
-			var url = $('server').value+'materials/update_replacement/'+course_id+'/'+
-					  material_id+'/'+object_id+'/'+repl_id+'/ask_status/'+encodeURIComponent(val);
-            var fb = $('feedback');
+			var url = $('server').value+'materials/update_replacement/'+course_id+'/'+material_id+'/'+object_id+'/'+repl_id;
+      var fb = $('feedback');
 			var response;
-            new Ajax(url, { method: 'get',
-							update: fb, 
+            new Ajax(url, { 
+											method: 'post',
+											postBody: 'field=ask_status&val='+val,
+											update: fb, 
                      		onComplete:function() {
                         		response = fb.innerHTML;
                         		if (response=='success') {
@@ -796,9 +792,8 @@ var Rules = {
 
 							// update question answer
 							if (field != 'status') {
-									url = url+'update_object_claim/'+object_id+'/'+clm_type+'/'+clm_id+
-												'/'+field+'/'+encodeURIComponent(val);
-            			new Ajax(url, {	method: 'get', update: fb}).request();
+									url = url+'update_object_claim/'+object_id+'/'+clm_type+'/'+clm_id;
+      						new Ajax(url, {	method: 'post', postBody: 'field='+field+'&val='+val, update: fb}).request();
 							}
 			}
 			element.onclick = function () {
@@ -819,13 +814,12 @@ var Rules = {
 									val = (val.toLowerCase() == 'send to dscribe') ? 'done' : val;
 									val = (val.toLowerCase() == 'send to legal & policy review') ? 'ip review' : val;
 									val = (val.toLowerCase() == 'send to commission review') ? 'commission review' : val;
-									url = url+'update_object_claim/'+object_id+'/'+clm_type+'/'+clm_id+
-												'/'+field+'/'+encodeURIComponent(val);
+									url = url+'update_object_claim/'+object_id+'/'+clm_type+'/'+clm_id;
 	
 									var check = this.validate(object_id, clm_id, clm_type, field, val);
 									if (check != 'success') { alert(check); return false; }
 
-            							new Ajax(url, {	method: 'get', update: fb,
+            							new Ajax(url, {	method: 'post', postBody:'field='+field+'&val='+val, update: fb,
                      							onComplete: function() {
                         							response = fb.innerHTML;
                         							if (response=='success') {
@@ -834,10 +828,10 @@ var Rules = {
 															{
 																// at this time, if the val is not the "in progress one"
 																// clear the ask d2 setting to 'No'																		
-																url = $('server').value +'materials/update_object/'+cid+'/'+ mid+'/'+object_id+'/ask_dscribe2/' + encodeURIComponent("no");
-													            new Ajax(url, {	method: 'get', update: fb}).request();
-												            }
-												         }
+																url = $('server').value +'materials/update_object/'+cid+'/'+ mid+'/'+object_id;
+      													new Ajax(url, {	method: 'post', postBody: 'field=ask_dscribe2&val=no', update: fb}).request();
+												       }
+												    }
 											            			
 								            			// refresh the page
 			                         								
@@ -915,9 +909,8 @@ var Rules = {
 									var object_id = this.name.replace(/^(original|replacement)_/g,'');
 									object_id = object_id.replace(/_\d+$/g,'');
 									
-									url = url+'update_object_question/'+object_id+'/'+question_id+'/'+
-												encodeURIComponent(val)+'/'+object_type;
-            			new Ajax(url, {	method: 'get', update: fb}).request();
+									url = url+'update_object_question/'+object_id+'/'+question_id+'/'+object_type;
+									new Ajax(url, { method: 'post', postBody: 'answer='+val, update: fb }).request();
 							}
 			}
 			element.onclick = function () {

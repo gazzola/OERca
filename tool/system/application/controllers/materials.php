@@ -268,10 +268,13 @@ class Materials extends Controller {
 
     // bdr ----------------- end of my functions added for email -------------------
 
-	public function update($cid,$mid,$field,$val,$resp=true)
+	public function update($cid,$mid,$field='',$val='',$resp=true)
 	{
-                $data = array($field=>$val);
-                $this->material->update($mid, $data);            
+		$field = (isset($_REQUEST['field']) && $_REQUEST['field']<>'') ? $_REQUEST['field'] : $field;
+		$val = (isset($_REQUEST['val'])) ? $_REQUEST['val'] : $val;
+
+    $data = array($field=>$val);
+    $this->material->update($mid, $data);            
 		if ($resp) {
 			$this->ocw_utils->send_response('success');            
 			exit;
@@ -580,8 +583,11 @@ class Materials extends Controller {
 		}
 	}
 
-	public function update_object($cid, $mid, $oid, $field, $val='') 
+	public function update_object($cid, $mid, $oid, $field='', $val='') 
  	{
+		$field = (isset($_REQUEST['field']) && $_REQUEST['field']<>'') ? $_REQUEST['field'] : $field;
+		$val = (isset($_REQUEST['val'])) ? $_REQUEST['val'] : $val;
+
 		if ($field=='rep' or $field=='irep') {
 				if ($this->coobject->replacement_exists($cid, $mid, $oid)) {
 						$this->coobject->update_rep_image($cid, $mid, $oid, $_FILES);
@@ -678,8 +684,11 @@ class Materials extends Controller {
 	   	exit;
 	}
 
-	public function update_replacement($cid, $mid, $oid, $rid,$field,$val='') 
+	public function update_replacement($cid, $mid, $oid, $rid) 
  	{
+		$field = (isset($_REQUEST['field']) && $_REQUEST['field']<>'') ? $_REQUEST['field'] : '';
+		$val = (isset($_REQUEST['val'])) ? $_REQUEST['val'] : '';
+
  		if ($field=='replacement_question')
 		{
 			$this->coobject->add_replacement_question($rid, $oid, getUserProperty('id'), array('question'=>$val,'role'=>'instructor'));
@@ -723,9 +732,9 @@ class Materials extends Controller {
      exit;
 	}
 	
-	public function update_object_question($oid,$qid,$answer,$type='original',$status='')
+	public function update_object_question($oid,$qid,$type='original',$status='')
 	{
-	   $data['answer'] = $answer;
+	   $data['answer'] = (isset($_REQUEST['answer'])) ? $_REQUEST['answer']:'';
 		 if ($status<>'') { $data['status'] = $status; }
 	   $this->coobject->update_question($oid, $qid, $data,$type);
      $this->ocw_utils->send_response('success');
@@ -744,8 +753,11 @@ class Materials extends Controller {
            $this->ocw_utils->send_response('success');
 	}
 
-	public function update_object_claim($oid, $claimtype, $claimid, $field, $value)
+	public function update_object_claim($oid, $claimtype, $claimid)
 	{
+		 $field = (isset($_REQUEST['field']) && $_REQUEST['field']<>'') ? $_REQUEST['field'] : '';
+		 $value = (isset($_REQUEST['val'])) ? $_REQUEST['val'] : '';
+
 		 $data[$field] = $value;
 	   $this->coobject->update_object_claim($oid, $claimid, $claimtype, $data);
 
@@ -763,9 +775,9 @@ class Materials extends Controller {
      $this->ocw_utils->send_response('success');
 	}
 
-	public function update_object_copyright($oid,$field,$val,$type='original')
+	public function update_object_copyright($oid,$type='original')
 	{
-		 $data = array($field=>$val);
+		 $data = array($_REQUEST['field']=>$_REQUEST['val']);
 		 if ($this->coobject->copyright_exists($oid, $type)) {
 	   		 $this->coobject->update_copyright($oid, $data,$type);
 		 } else {

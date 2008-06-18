@@ -82,7 +82,7 @@ snapper: function() {
 	if ($('do_open_uploadco_pane')) {
 		$("snap").addEvent('click',captureClipboard);
 		$("snap_save").addEvent('click',sendImage);
-		$("snap_aCapture").addEvent('change',setAutoCapture);
+		//$("snap_aCapture").addEvent('change',setAutoCapture);
 		$("snap_aCaptureTypeObject").addEvent('change',setType);
 		$("snap_aCaptureTypeSlide").addEvent('change',setType);
 		if (autoCaptureEnabled) { setTimeout(autoCapture, 1000); }
