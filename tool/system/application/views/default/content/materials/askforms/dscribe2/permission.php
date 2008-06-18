@@ -6,6 +6,7 @@ foreach($cos as $obj) {
   			$items = $obj['permission'];
 			
 			  foreach($items as $item) {
+					if ($item['status']<>'done') {
 ?>
 <tr>
 	<!-- first column -->
@@ -159,7 +160,7 @@ foreach($cos as $obj) {
 						e.stop();
 				  });";
  	$count++; 
-}} 
+}}} 
 ?>
 
 <script type="text/javascript">

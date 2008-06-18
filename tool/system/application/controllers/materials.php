@@ -607,10 +607,17 @@ class Materials extends Controller {
 
 		} else {
 				if ($field=='action_type') {
-						$lgcm = 'Changed action type to '.$val;
-						$this->coobject->add_log($oid, getUserProperty('id'), array('log'=>$lgcm));
 						$data = array($field=>$val);
-						$this->coobject->update($oid, $data);
+						$res = $this->coobject->update($oid, $data);
+	
+						if ($res===true) {
+								$lgcm = 'Changed action type to '.$val;
+								$this->coobject->add_log($oid, getUserProperty('id'), array('log'=>$lgcm));
+    						$this->ocw_utils->send_response('success');
+						} else {
+    						$this->ocw_utils->send_response($res);
+						}
+   					exit;
 
 				} elseif ($field=='ask_status') {
 						$data = array($field=>$val);
@@ -642,21 +649,16 @@ class Materials extends Controller {
 						$this->coobject->add_log($oid, getUserProperty('id'), array('log'=>$lgcm));
 						$data = array($field=>$val);
 						$this->coobject->update($oid, $data);
-				} elseif ($field=='fairuse_rationale')
-				{
-					$this->coobject->add_fairuse_rationale($oid, getUserProperty('id'), array('rationale'=>$val));
-				} elseif ($field=='commission_rationale')
-				{
-					$this->coobject->add_commission_rationale($oid, getUserProperty('id'), array('rationale'=>$val));
-				} elseif ($field=='retain_rationale')
-				{
-					$this->coobject->add_retain_rationale($oid, getUserProperty('id'), array('rationale'=>$val));
-				} elseif ($field=='inst_question')
-				{
+				} elseif ($field=='fairuse_rationale' || $field=='commission_rationale' || $field=='retain_rationale') {
+					 $claimtype = preg_replace('/_rationale/','',$field);
+					 $this->coobject->add_object_claim($oid, getUserProperty('id'), $claimtype, array('rationale'=>$val));
+
+				} elseif ($field=='inst_question') {
 					$this->coobject->add_additional_question($oid, getUserProperty('id'), array('question'=>$val,'role'=>'instructor'));
-				} elseif ($field=='dscribe2_question')
-				{
+
+				} elseif ($field=='dscribe2_question') {
 					$this->coobject->add_additional_question($oid, getUserProperty('id'), array('question'=>$val,'role'=>'dscribe2'));
+
 				} else {
 					
 					// change 'ask_inst' to 'ask'
@@ -674,14 +676,13 @@ class Materials extends Controller {
 	public function update_contact($cid, $mid, $oid) 
  	{
  		if (isset($_REQUEST['field']) && $_REQUEST['field']<>'' && isset($_REQUEST['val']) && $_REQUEST['val']<>'') {
- 			$field = $_REQUEST['field'];
- 			$val = $_REQUEST['val'];
+ 				$field = $_REQUEST['field'];
+ 				$val = $_REQUEST['val'];
  		}
 		$data = array($field=>$val);
-		$this->coobject->update_contact($oid, getUserProperty('id'), $data);
-	
-	    $this->ocw_utils->send_response('success');
-	   	exit;
+	  $this->coobject->add_object_claim($oid, getUserProperty('id'), 'permission', $data); 
+	  $this->ocw_utils->send_response('success');
+	  exit;
 	}
 
 	public function update_replacement($cid, $mid, $oid, $rid) 
@@ -1071,6 +1072,14 @@ class Materials extends Controller {
 				force_download($name, $data);	
 			}
 		}
-		
+
+		public function valid_recommendation($oid, $recommendation) 
+		{
+				$res = $this->coobject->valid_recommendation($oid, $recommendation);	
+				return ($res===true) ?
+    						$this->ocw_utils->send_response('success'):
+    						$this->ocw_utils->send_response($res);
+				exit;
+		}		
 }
 ?>

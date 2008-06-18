@@ -5,6 +5,7 @@ foreach($cos as $obj) {
   			$items = $obj['retain'];
 			
 			  foreach($items as $item) {
+					if ($item['status']<>'done') {
 ?>
 <tr>
 	<!-- first column -->
@@ -113,4 +114,4 @@ foreach($cos as $obj) {
 	</td>
 </tr>	
 
-<?php $count++; }} ?>
+<?php $count++; }}} ?>

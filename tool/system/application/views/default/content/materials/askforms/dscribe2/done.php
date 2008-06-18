@@ -100,7 +100,9 @@ foreach($cos as $type => $co) {
 	<?php } elseif ($type=='commission') { ?>
 
 			<h2>Here are the responses the dScribe2 provided to the dscribe1's commission claims:</h2>
-			<?php foreach($obj['commission'] as $item) { ?>
+			<?php foreach($obj['commission'] as $item) { 
+						if ($item['status']=='done') {
+			?>
 
 				<fieldset>
 					<label>Commission Claim</label>
@@ -115,7 +117,7 @@ foreach($cos as $type => $co) {
 
        	<p><hr style="border: 1px solid #eee"/></p>
 
-			<?php } ?>	
+			<?php }} ?>	
 
 
 	<?php } elseif ($type=='retain') { ?>
@@ -123,7 +125,9 @@ foreach($cos as $type => $co) {
 			<h2>Here are the responses the dScribe2 provided to the dscribe1's No copyright claims:</h2>
 			<br/>
 
-			<?php foreach($obj['retain'] as $item) { ?>
+			<?php foreach($obj['retain'] as $item) { 
+						if ($item['status']=='done') {
+			?>
 
 				<fieldset>
 					<label>No Copyright Claim</label>
@@ -138,14 +142,16 @@ foreach($cos as $type => $co) {
 
        	<p><hr style="border: 1px solid #eee"/></p>
 
-			<?php } ?>	
+			<?php }} ?>	
 
 	<?php } elseif ($type=='permission') { ?>
 
 			<h2>Here are the responses the dScribe2 provided to the dscribe1's Permission claims:</h2>
 			<br/>
 
-			<?php foreach($obj['permission'] as $item) { ?>
+			<?php foreach($obj['permission'] as $item) { 
+						if ($item['status']=='done') {
+			?>
 			<fieldset>
 					<label>Permission Claim</label>
      			<p><h3>Contact Information:</h3></p>
@@ -166,14 +172,16 @@ foreach($cos as $type => $co) {
 					<?php echo $this->coobject->claim_report($cid,$mid,$obj,'permission'); ?>
 			</fieldset>
       <p><hr style="border: 1px solid #eee"/></p>
-			<?php } ?>	
+			<?php }} ?>	
 
 	<?php } elseif ($type=='fairuse') { ?>
 
 			<h2>Here are the responses the dScribe2 provided to the dscribe1's Fair Use claims:</h2>
 			<br/>
 
-			<?php foreach($obj['fairuse'] as $item) { ?>
+			<?php foreach($obj['fairuse'] as $item) { 
+						if ($item['status']=='done') {
+			?>
 				<fieldset>
 					<label>Fair Use Claim</label>
      			<p><h3><?=$this->ocw_user->username($item['user_id']) ?>'s (dScribe) Rationale:</h3></p>
@@ -185,7 +193,7 @@ foreach($cos as $type => $co) {
 					<?php echo $this->coobject->claim_report($cid,$mid,$obj,'fairuse'); ?>
 				</fieldset>
        	<p><hr style="border: 1px solid #eee"/></p>
-				<?php } ?>
+				<?php }} ?>
 
 	<?php } ?>
 

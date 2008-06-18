@@ -294,7 +294,7 @@ class Coobject extends Model
 						} 
 
 						/* get objects with fair use claims */
-						if (($c = $this->claim_exists($obj['id'],'fairuse')) !== FALSE && $obj['action_type'] == 'Fair Use') {
+						if (($c = $this->claim_exists($obj['id'],'fairuse')) !== FALSE) {
 								 $added = $notalldone = false;
 								 $obj['otype'] = 'original';
 								 foreach($c as $k => $cl) {
@@ -341,7 +341,7 @@ class Coobject extends Model
 						}
 
 						/* get objects with permission claims */
-						if (($c = $this->claim_exists($obj['id'], 'permission')) !== FALSE && $obj['action_type'] == 'Permission') {
+						if (($c = $this->claim_exists($obj['id'], 'permission')) !== FALSE) {
 								 $added = $notalldone = false;
 								 $obj['otype'] = 'original';
 								 foreach($c as $k => $cl) {
@@ -411,7 +411,7 @@ class Coobject extends Model
 						}
 
 						/* get objects with commission claims */
-						if (($c = $this->claim_exists($obj['id'],'commission')) !== FALSE && $obj['action_type'] == 'Commission') {
+						if (($c = $this->claim_exists($obj['id'],'commission')) !== FALSE) {
 								 $added = $notalldone = false;
 								 $obj['otype'] = 'original';
 								 foreach($c as $k => $cl) {
@@ -464,9 +464,7 @@ class Coobject extends Model
 						}
 
 						/* get objects with retain (no copyright) claims */
-						log_message('error', $obj['action_type']);
-						//log_message('error', $obj['action_type'], 'Retain'));
-						if (($c = $this->claim_exists($obj['id'], 'retain')) !== FALSE && stripos($obj['action_type'], 'Retain:') !== FALSE) {
+						if (($c = $this->claim_exists($obj['id'], 'retain')) !== FALSE) {
 								 $added = $notalldone = false;
 								 $obj['otype'] = 'original';
 								 foreach($c as $k => $cl) {
@@ -579,7 +577,7 @@ class Coobject extends Model
 		$claims = array();
 		$table = 'claims_'.$type; 
 
-		$this->db->select('*')->from($table)->where('object_id',$oid)->orderby('modified_on DESC');
+		$this->db->select('*')->from($table)->where('object_id',$oid)->orderby('id DESC');
 		$q = $this->db->get();
 
 		if ($q->num_rows() > 0) {
@@ -589,6 +587,33 @@ class Coobject extends Model
 		return (sizeof($claims) > 0) ? $claims : false;
 	}
      
+	/**
+	 * Add the claim for the object
+	 */
+	public function add_object_claim($oid, $uid, $type, $data)
+	{
+		$cl = $this->claim_exists($oid,$type);
+
+		if ($cl!==false && $cl[0]['status']<>'done') { 
+				// there is already a record for this object
+		    $claim_id = $cl[0]['id'];
+				if ($type <> 'permission') { $ndata['rationale'] = $data['rationale']; }
+				$ndata['modified_by'] = getUserProperty('id');
+				$ndata['modified_on'] = date('Y-m-d h:i:s');
+				$this->update_object_claim($oid, $claim_id, $type, $ndata);
+
+		} else {
+				// no record yet, insert one
+				$table = 'claims_'.$type; 
+				$data['object_id'] =$oid;
+				$data['user_id'] = $uid;
+				$data['created_on'] = date('Y-m-d h:i:s');
+				$data['modified_by'] = getUserProperty('id');
+				$data['modified_on'] = date('Y-m-d h:i:s');
+				$this->db->insert($table, $data);
+		}
+	}
+
 
 	/** 
 	 * Update an object claim 
@@ -954,138 +979,6 @@ class Coobject extends Model
 		$this->db->insert($table,$data);
 	}
 
-	/**
-	 * Add the fairuse rationale for the object
-	 */
-	public function add_fairuse_rationale($oid, $uid, $data)
-	{
-		
-		$table = "claims_fairuse";
-		// whether there is already a record for this object
-		$this->db->select("*")->from($table)->where("object_id=$oid");
-		$q = $this->db->get();
-
-		if ($q->num_rows() > 0) {
-			// there is already a record for this object
-			foreach($q->result_array() as $row) { 
-		        $id = $row['id'];
-		      }
-		    $ndata['rationale'] = $data['rationale'];
-				$ndata['modified_by'] = getUserProperty('id');
-			$ndata['modified_on'] = date('Y-m-d h:i:s');
-        	$this->db->where("id=$id");
-        	$this->db->update($table, $ndata);
-		}
-		else
-		{
-			// no record yet, insert one
-			$data['object_id'] =$oid;
-			$data['user_id'] = $uid;
-			$data['created_on'] = date('Y-m-d h:i:s');
-			$data['modified_by'] = getUserProperty('id');
-			$data['modified_on'] = date('Y-m-d h:i:s');
-			$this->db->insert($table, $data);
-		}
-		
-	}
-	
-	/**
-	 * Add the commission rationale for the object
-	 */
-	public function add_commission_rationale($oid, $uid, $data)
-	{
-		$table = "claims_commission";
-		// whether there is already a record for this object
-		$this->db->select("*")->from($table)->where("object_id=$oid");
-		$q = $this->db->get();
-
-		if ($q->num_rows() > 0) {
-			// there is already a record for this object
-			foreach($q->result_array() as $row) { 
-		        $id = $row['id'];
-		      }
-		    $ndata['rationale'] = $data['rationale'];
-				$ndata['modified_by'] = getUserProperty('id');
-			$ndata['modified_on'] = date('Y-m-d h:i:s');
-        	$this->db->where("id=$id");
-        	$this->db->update($table, $ndata);
-		}
-		else
-		{
-			// no record yet, insert one
-			$data['object_id'] =$oid;
-			$data['user_id'] = $uid;
-			$data['created_on'] = date('Y-m-d h:i:s');
-			$data['modified_by'] = getUserProperty('id');
-			$data['modified_on'] = date('Y-m-d h:i:s');
-			$this->db->insert($table, $data);
-		}
-		
-	}
-	
-	/**
-	 * Add the retain rationale for the object
-	 */
-	public function add_retain_rationale($oid, $uid, $data)
-	{
-		$table = "claims_retain";
-		// whether there is already a record for this object
-		$this->db->select("*")->from($table)->where("object_id=$oid");
-		$q = $this->db->get();
-
-		if ($q->num_rows() > 0) {
-			// there is already a record for this object
-			foreach($q->result_array() as $row) { 
-		        $id = $row['id'];
-		      }
-		    $ndata['rationale'] = $data['rationale'];
-				$ndata['modified_by'] = getUserProperty('id');
-			$ndata['modified_on'] = date('Y-m-d h:i:s');
-        	$this->db->where("id=$id");
-        	$this->db->update($table, $ndata);
-		}
-		else
-		{
-			// no record yet, insert one
-			$data['object_id'] =$oid;
-			$data['user_id'] = $uid;
-			$data['created_on'] = date('Y-m-d h:i:s');
-			$data['modified_by'] = getUserProperty('id');
-			$data['modified_on'] = date('Y-m-d h:i:s');
-			$this->db->insert($table, $data);
-		}
-	}
-
-	public function update_contact($oid, $uid, $data)
-	{
-		$table = 'claims_permission';
-		
-		// whether there is already a record for this object
-		$this->db->select("*")->from($table)->where("object_id=$oid");
-		$q = $this->db->get();
-
-		if ($q->num_rows() > 0) {
-			// there is already a record for this object
-			foreach($q->result_array() as $row) { 
-		        $id = $row['id'];
-		      }
-					$data['modified_by'] = getUserProperty('id');
-        	$this->db->where("id=$id");
-        	$this->db->update($table, $data);
-		}
-		else
-		{
-			// no record yet, insert one
-			$data['object_id'] =$oid;
-			$data['user_id'] = $uid;
-			$data['created_on'] = date('Y-m-d h:i:s');
-			$data['modified_by'] = getUserProperty('id');
-			$data['modified_on'] = date('Y-m-d h:i:s');
-			$this->db->insert($table, $data);
-		}
-		
-	}
-	
 	/**
 	 * get the rationale for the object
 	 */
@@ -1523,7 +1416,37 @@ class Coobject extends Model
 		if(!isset($data['modified_by']) || $data['modified_by']=='') {
 			 $data['modified_by'] = getUserProperty('id');
 		}
+
+		if (isset($data['action_type'])) {
+        if (($res = $this->valid_recommendation($oid, $data['action_type'])) !== true) { return $res; }
+		}
+
 		$this->db->update('objects',$data,"id=$oid");
+		return true;
+	}
+
+	public function valid_recommendation($oid, $recommendation)
+	{
+			$fu = $this->claim_exists($oid,'fairuse');
+			$pm = $this->claim_exists($oid,'permission');
+			$cm = $this->claim_exists($oid,'commission');
+			$rt = $this->claim_exists($oid,'retain');
+
+			//	* ensure that the object is not currently being processed in another bin  
+			$anotherbin = false;	
+			if ($fu!==false && $fu[0]['status']<>'done') { $anotherbin = 'Fair Use'; }
+			if ($pm!==false && $pm[0]['status']<>'done') { $anotherbin = 'Permission'; }
+			if ($cm!==false && $cm[0]['status']<>'done') { $anotherbin = 'Commission'; }
+			if ($rt!==false && $rt[0]['status']<>'done') { $anotherbin = 'Retainment'; }
+
+			// check to see if the recommended action is the same as we already have 
+			if ($anotherbin==false && $recommendation=='Fair Use') { if ($fu!==false && $fu[0]['status']=='done') { return true; } } 
+			if ($anotherbin==false && $recommendation=='Permission') { if ($pm!==false && $pm[0]['status']=='done') { return true; } } 
+			if ($anotherbin==false && $recommendation=='Commission') { if ($cm!==false && $cm[0]['status']=='done') { return true; } } 
+			if ($anotherbin==false && substr($recommendation,0,6)=='Retain') { if ($rt!==false && $rt[0]['status']=='done') { return true;}} 
+			return ($anotherbin==false or ($recommendation==$anotherbin)) 
+						? true : "Cannot accept recommended action: this object is currently under ".
+										 "consideration for $anotherbin."; 
 	}
 
 	/**

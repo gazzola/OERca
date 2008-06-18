@@ -1,3 +1,12 @@
+function valid_recommendation(oid,recommendation) 
+{
+	if (recommendation=='') { return 'Please recommend an action'; }
+	var response = null;
+	var url = $('server').value+'materials/valid_recommendation/'+oid+'/'+recommendation;
+	var xhr = new XHR({ method: 'get', async: false }).send(url);
+	return (response || xhr.transport.responseText);
+}
+
 // Event rules for OCW Tool 
 var Rules = {
 	'.confirm' : function(element) {
@@ -236,7 +245,7 @@ var Rules = {
 				var material_id = $('mid').value; 
 				var object_id = $('oid').value;
 				var field = this.name; 
-				var url = $('server').value+'materials/update_object/'+course_id+'/'+material_id;
+				var url = $('server').value+'materials/update_object/'+course_id+'/'+material_id+'/'+object_id;
 				var val = this.value;
 	     	var fb = $('feedback');
 				var proceed = true;
@@ -251,7 +260,6 @@ var Rules = {
 							 return false;
 						}
 					}
-					url += '/'+object_id;
 					new Ajax(url, { method: 'post', postBody: 'field='+field+'&val='+val, update: fb }).request();
 
 				} else if (field=='ask_inst') {
@@ -266,7 +274,6 @@ var Rules = {
 							return false;
 						}
 					}
-					url += '/'+object_id;
 					new Ajax(url, { method: 'post', postBody: 'field='+field+'&val='+val, update: fb }).request();
 					
 					// show the div
@@ -280,62 +287,133 @@ var Rules = {
 					   if ($('ask_yes')) { $('ask_yes').style.display = 'none';	}
 					}
 					
+				// show or hide relavent panels
+				} else if (field=='action_type') {
+
+						result = valid_recommendation(object_id, val);
+
+						if (result!='success') {
+							alert(result);
+							// go back to previous recommended action
+							var options = $('action_type').options;
+  						for(var i=0; i < options.length; i++) {
+									if (options[i].value == $('raction').value) {
+											$('action_type').selectedIndex = options[i].index;
+									}
+  						}
+							
+							return false;
+						} else {
+								if (val == 'Search' || val == 'Re-Create' || val=='Remove and Annotate') {
+										new Ajax(url, { method: 'post', postBody: 'field='+field+'&val='+val, update: fb }).request();
+										var ask_dscrib2 = document.getElementsByName('ask_dscribe2');
+										for ( var i = 0 ; i < ask_dscrib2.length ; i++ ) {
+												 ask_dscrib2[i].checked = (ask_dscrib2[i].value == 'no') ? 'checked' : '';
+										}
+      							var fb1 = $('feedback');
+										new Ajax(url, { method: 'post', postBody: 'field=ask_dscribe2&val=no', update: fb1 }).request();
+
+										if ($('Fair Use')) { $('Fair Use').style.display = 'none';	}
+										if ($('Permission')) { $('Permission').style.display = 'none';}
+										if ($('Commission')) { $('Commission').style.display = 'none';}
+										if ($('Retain')) { $('Retain').style.display = 'none';}
+
+								} else if (val == 'Fair Use') {
+									if ($('Fair Use')) { $('Fair Use').style.display = 'block';}
+									if ($('Permission')) { $('Permission').style.display = 'none';}
+									if ($('Commission')) { $('Commission').style.display = 'none';}
+									if ($('Retain')) { $('Retain').style.display = 'none';}
+								} else if (val == 'Permission') {
+									if ($('Fair Use')) { $('Fair Use').style.display = 'none';	}
+									if ($('Permission')) { $('Permission').style.display = 'block';}
+									if ($('Commission')) { $('Commission').style.display = 'none';}
+									if ($('Retain')) { $('Retain').style.display = 'none';}
+								} else if (val == 'Commission') {
+									if ($('Fair Use')) { $('Fair Use').style.display = 'none';	}
+									if ($('Permission')) { $('Permission').style.display = 'none';}
+									if ($('Commission')) { $('Commission').style.display = 'block';}
+									if ($('Retain')) { $('Retain').style.display = 'none';}
+								} else if (val.substring(0, 6) == 'Retain' && val != 'Retain: Instructor Created') {
+									if ($('Fair Use')) { $('Fair Use').style.display = 'none';	}
+									if ($('Permission')) { $('Permission').style.display = 'none';}
+									if ($('Commission')) { $('Commission').style.display = 'none';}
+									if ($('Retain')) { $('Retain').style.display = 'block';}
+								} else {
+									if ($('Fair Use')) { $('Fair Use').style.display = 'none';	}
+									if ($('Permission')) { $('Permission').style.display = 'none';}
+									if ($('Commission')) { $('Commission').style.display = 'none';}
+									if ($('Retain')) { $('Retain').style.display = 'none';}
+								} 
+								$('raction').value=val;
+						}	
+
 				} else {	
-					url += '/'+object_id;
 					new Ajax(url, { method: 'post', postBody: 'field='+field+'&val='+val, update: fb }).request();
 				}	
-				
-				// if the selected action is other than "Search" and "Remove", the ask dscribe2 should be checked
-				if (field=='action_type' && this.value != 'Search' && this.value != 'Remove & Annotate' && this.value != 'Retain: Instructor Created')
-				{
-					var ask_dscrib2 = document.getElementsByName('ask_dscribe2');
-					for ( var i = 0 ; i < ask_dscrib2.length ; i++ )
-					{
-						if (ask_dscrib2[i].value == 'yes')
-						{
-							ask_dscrib2[i].checked = 'checked';
-						}
-					}
-					// reset url
-					url = $('server').value+'materials/update_object/'+course_id+'/'+material_id+'/'+object_id;
-      		var fb1 = $('feedback');
-					new Ajax(url, { method: 'post', postBody: 'field=ask_dscribe2&val=yes', update: fb1 }).request();
-				}
-				
-				// show or hide relavent panels
-				if (field=='action_type')
-				{
-					if (this.value == 'Fair Use') {
-						if ($('Fair Use')) { $('Fair Use').style.display = 'block';}
-						if ($('Permission')) { $('Permission').style.display = 'none';}
-						if ($('Commission')) { $('Commission').style.display = 'none';}
-						if ($('Retain')) { $('Retain').style.display = 'none';}
-					} else if (this.value == 'Permission') {
-						if ($('Fair Use')) { $('Fair Use').style.display = 'none';	}
-						if ($('Permission')) { $('Permission').style.display = 'block';}
-						if ($('Commission')) { $('Commission').style.display = 'none';}
-						if ($('Retain')) { $('Retain').style.display = 'none';}
-					} else if (this.value == 'Commission') {
-						if ($('Fair Use')) { $('Fair Use').style.display = 'none';	}
-						if ($('Permission')) { $('Permission').style.display = 'none';}
-						if ($('Commission')) { $('Commission').style.display = 'block';}
-						if ($('Retain')) { $('Retain').style.display = 'none';}
-					} else if (this.value.substring(0, 6) == 'Retain' && this.value != 'Retain: Instructor Created') {
-						if ($('Fair Use')) { $('Fair Use').style.display = 'none';	}
-						if ($('Permission')) { $('Permission').style.display = 'none';}
-						if ($('Commission')) { $('Commission').style.display = 'none';}
-						if ($('Retain')) { $('Retain').style.display = 'block';}
-					}
-					else
-					{
-						if ($('Fair Use')) { $('Fair Use').style.display = 'none';	}
-						if ($('Permission')) { $('Permission').style.display = 'none';}
-						if ($('Commission')) { $('Commission').style.display = 'none';}
-						if ($('Retain')) { $('Retain').style.display = 'none';}
-					}
-				}
 		}
 		//element.onclick = element.onchange;
+	},
+
+	'.do_update_action_type' : function (element) {
+			element.onclick = function() {
+				var response;
+				var course_id = $('cid').value;
+				var material_id = $('mid').value; 
+				var object_id = $('oid').value;
+				var field = 'action_type'; 
+				var url = $('server').value+'materials/update_object/'+course_id+'/'+material_id+'/'+object_id;
+				var val = $('action_type').value;
+	     	var fb = $('feedback');
+
+				var check = this.validate(val);
+				if (check != 'success') { alert(check); return false; }
+
+				new Ajax(url, { method: 'post', postBody: 'field='+field+'&val='+val, update: fb, 
+                     		onComplete:function() {
+                        		response = fb.innerHTML;
+                        		if (response=='success') {
+																if($('update_msg')){ 
+																		var div = $('update_msg').setStyles({ display:'block', opacity: 1 });
+																		var fx = new Fx.Style(div, 'opacity', {duration: 5000 } ).addEvent("onComplete", function() {
+																														var hidediv = $('update_msg').setStyles({display:'none'}); });
+																		fx.start(0);
+																}
+																	// if the selected action is other than "Search" 
+																	// and "Remove", the ask dscribe2 should be checked
+																	if (val != 'Search' && val != 'Remove and Annotate' && 
+																			val != 'Retain: Instructor Created') {
+																			var ask_dscrib2 = document.getElementsByName('ask_dscribe2');
+																			for ( var i = 0 ; i < ask_dscrib2.length ; i++ ) {
+																					if (ask_dscrib2[i].value == 'yes') {
+																						ask_dscrib2[i].checked = 'checked';
+																					}
+																			}
+																			// reset url
+      																var fb1 = $('feedback');
+																			new Ajax(url, { method: 'post', 
+																											postBody: 'field=ask_dscribe2&val=yes', 
+																											update: fb1 }).request();
+																	}
+														} else {
+																alert(response); return false;
+														}
+												}
+											}
+						).request();
+
+		}
+		element.validate = function(action) {
+					if (action=='') { return 'Please recommend an action'; }
+					if (action=='Fair Use' && $('fairuse_rationale').value=='') { 
+							return 'Please fill out required field for this action'; } 
+					if (action=='Commission' && $('commission_rationale').value=='') { 
+							return 'Please fill out required field for this action'; } 
+					if (action=='Permission' && ($('description').value=='' || $('contact_name').value=='' || $('contact_phone').value=='' || $('contact_email').value=='')) { 
+							return 'Please fill out required fields for this action'; } 
+					if ((action=='Retain: Permission' || action=='Retain: No Copyright' || action=='Retain: Public Domain') && $('retain_rationale').value=='') { 
+							return 'Please fill out required field for this action'; } 
+					return 'success';
+		}
 	},
 	
 	'.do_replacement_ask_yesno' : function(element) {

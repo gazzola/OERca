@@ -47,15 +47,20 @@
 		<th>Recommended Action:</th>
 		<td>
 			 <?php echo form_dropdown('action_type', $action_types, $obj['action_type'] ,'id="action_type" class="do_object_update"'); ?>
+				<input type="hidden" value="<?=$obj['action_type']?>" id="raction" name="raction" />
 		</td>
   </tr>
 
   <tr>
   		<td colspan="2">
+				<p style="padding:5px; background-color:yellow; border:2px solid gray; color:black;display:none" id="update_msg">Sent to dScribe2!</p>
+
   			<div id="Fair Use" style="display: <?= ($obj['action_type']=='Fair Use') ? 'block':'none'?>">
   				<p>
 						<b>Please provide the dScribe2 with your rationale for the fair use of this content object in the space below. (REQUIRED)</b><br/>
 			       	<textarea name="fairuse_rationale" id="fairuse_rationale" rows="10" cols="50" class="do_object_rationale"><?=$fairuse_rationale?></textarea>
+							<br/><br/>
+							<input type="button" value="Send to dScribe2" class="do_update_action_type" />
 					</p>
 	  		</div>
 
@@ -145,6 +150,8 @@
 						       			</td>
 						       		</tr>
 						       	</table>	
+							<br/><br/>
+							<input type="button" value="Send to dScribe2" class="do_update_action_type" />
 							</p>
 			</div>
 
@@ -154,6 +161,8 @@
 						       	<textarea name="commission_rationale" id="commission_rationale" rows="10" cols="50" class="do_object_rationale"><?=$commission_rationale?></textarea><br/>
 						       	<b>Provide a detailed description of the desired re-creation of this content object. Provide as much context as possible to explain what critical features the re-creation should emphasize.</b><br/>
 						       	<textarea name="description" id="description" rows="10" cols="50" class="do_update_description"><?=$obj['description']?></textarea>
+							<br/><br/>
+							<input type="button" value="Send to dScribe2" class="do_update_action_type" />
 							</p>
   		</div>
 
@@ -161,6 +170,8 @@
 			  				<p>
 								<b>Please provide the dScribe2 with your rationale for retaining this content object in the space below. (REQUIRED)</b><br/>
 						       	<textarea name="retain_rationale" id="retain_rationale" rows="10" cols="50" class="do_object_rationale"><?=$retain_rationale?></textarea>
+							<br/><br/>
+							<input type="button" value="Send to dScribe2" class="do_update_action_type" />
 							</p>
   		</div>
 		</td>
