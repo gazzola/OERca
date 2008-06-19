@@ -1431,7 +1431,7 @@ class Coobject extends Model
 			$pm = $this->claim_exists($oid,'permission');
 			$cm = $this->claim_exists($oid,'commission');
 			$rt = $this->claim_exists($oid,'retain');
-
+			
 			//	* ensure that the object is not currently being processed in another bin  
 			$anotherbin = false;	
 			if ($fu!==false && $fu[0]['status']<>'done') { $anotherbin = 'Fair Use'; }
@@ -1444,7 +1444,8 @@ class Coobject extends Model
 			if ($anotherbin==false && $recommendation=='Permission') { if ($pm!==false && $pm[0]['status']=='done') { return true; } } 
 			if ($anotherbin==false && $recommendation=='Commission') { if ($cm!==false && $cm[0]['status']=='done') { return true; } } 
 			if ($anotherbin==false && substr($recommendation,0,6)=='Retain') { if ($rt!==false && $rt[0]['status']=='done') { return true;}} 
-			return ($anotherbin==false or ($recommendation==$anotherbin)) 
+
+			return ($anotherbin==false or (substr($recommendation,0,6)==substr($anotherbin,0,6))) 
 						? true : "Cannot accept recommended action: this object is currently under ".
 										 "consideration for $anotherbin."; 
 	}
