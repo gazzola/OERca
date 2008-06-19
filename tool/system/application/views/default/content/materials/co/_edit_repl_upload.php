@@ -6,6 +6,7 @@
 			<b>New Replacement Image:</b>
 			<div class="formField">
       			<input type="file" name="userfile_0" id="userfile_0" size="30" />
+						<input type="hidden" name="location" value="<?=$obj['location']?>" />
 						<input type="hidden" name="question" value="" />
 						<input type="hidden" name="comment" value="" />
 						<input type="hidden" name="copyurl" value="" />

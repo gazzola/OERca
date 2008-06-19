@@ -600,18 +600,19 @@ class Materials extends Controller {
 		$val = (isset($_REQUEST['val'])) ? $_REQUEST['val'] : $val;
 
 		if ($field=='rep' or $field=='irep') {
+					$data = array('location'=>$_REQUEST['location']);
 				if ($this->coobject->replacement_exists($cid, $mid, $oid)) {
-						$this->coobject->update_rep_image($cid, $mid, $oid, $_FILES);
+						$this->coobject->update_rep_image($cid, $mid, $oid, $data, $_FILES);
 				} else {
-						$this->coobject->add_replacement($cid, $mid, $oid, array(), $_FILES);
+						$this->coobject->add_replacement($cid, $mid, $oid, $data, $_FILES);
 				}
 				
 				
 				if ($field == 'rep') {
 						redirect("materials/object_info/$cid/$mid/$oid/upload", 'location');
 				} elseif($field=='irep') {
-						if (isset($_POST['view'])) { $rnd = $_POST['view']; }
 						$rnd = time().rand(10,10000); // used to overcome caching problem
+						if (isset($_POST['view'])) { $rnd = $_POST['view']; }
 						redirect("materials/askforms/$cid/$mid/$rnd", 'location');
 				}
 				exit;
@@ -690,6 +691,10 @@ class Materials extends Controller {
  		}
 		$data = array($field=>$val);
 	  $this->coobject->add_object_claim($oid, getUserProperty('id'), 'permission', $data); 
+
+		/* EMAIL DSCRIBE2 */
+		$this->dscribe1_dscribe2_email($cid, $mid);
+
 	  $this->ocw_utils->send_response('success');
 	  exit;
 	}

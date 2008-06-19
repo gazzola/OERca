@@ -42,6 +42,7 @@ foreach($cos as $obj) {
 				<b>Upload Replacement Image:</b>
 					<div class="formField" style="margin-right: 200px;">
       			<input type="file" name="userfile_0" id="userfile_0" size="30" />
+						<input type="hidden" name="location" value="<?=$obj['location']?>" />
 						<input type="hidden" name="question" value="" />
 						<input type="hidden" name="view" value="<?=$view?>" />
 						<input type="hidden" name="comment" value="" />

@@ -1475,15 +1475,14 @@ class Coobject extends Model
      * @param   array	data
      * @return  void
      */
-	public function update_rep_image($cid, $mid, $oid, $files)
+	public function update_rep_image($cid, $mid, $oid, $data, $files)
 	{
 		// check for slides and get any data embedded in the file
-		$data = array();
 		if (is_array($files['userfile_0'])) {
 				$filename = $files['userfile_0']['name'];
 				$tmpname = $files['userfile_0']['tmp_name'];
 				$data['name'] = $filename;
-				$data = $this->prep_data($cid, $mid, array(), $filename, $tmpname);
+				$data = $this->prep_data($cid, $mid, $data, $filename, $tmpname);
 				if ($data=='slide') { return true; }
 		}
 
