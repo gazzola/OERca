@@ -1960,16 +1960,17 @@ class Coobject extends Model
      * @param   string	claim type  (commission | permission | retain | fairuse) 
      * @return  string
      */
-  public function claim_report($cid, $mid, $obj, $type)
+  public function claim_report($cid, $mid, $obj, $item_id, $type)
 	{
 			$html = '';
 
-			if (($item = $this->claim_exists($obj['id'], $type)) !== FALSE) {
-					 $item = $item[0];
+			if (($items = $this->claim_exists($obj['id'], $type)) !== FALSE) {
+					 $item = array();
+					 foreach($items as $i) { if ($item_id==$i['id']) {$item=$i;} }
 
 					 if ($item['status']=='new' or $item['status']=='in progress') {
 							 return 'This claim request is still under review by the dscribe2';
-					}
+					 }
 
 					$uname = ($item['modified_by']<>'') ? $this->ocw_user->username($item['modified_by']) : 'dScribe2';
 					$uname = '<b>'.$uname.'</b>';

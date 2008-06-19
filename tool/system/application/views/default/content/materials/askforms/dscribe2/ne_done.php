@@ -126,7 +126,7 @@ foreach($cos as $type => $co) {
 					</p>
 
 					<p><h3>Actions Taken:</h3>                
-					<?php echo $this->coobject->claim_report($cid,$mid,$obj,'commission'); ?>
+					<?php echo $this->coobject->claim_report($cid,$mid,$obj,$item['id'],'commission'); ?>
 				</fieldset>
 
        	<p><hr style="border: 1px solid #eee"/></p>
@@ -151,7 +151,7 @@ foreach($cos as $type => $co) {
 					</p>
 
 					<p><h3>Actions Taken:</h3>                
-					<?php echo $this->coobject->claim_report($cid,$mid,$obj,'retain'); ?>
+					<?php echo $this->coobject->claim_report($cid,$mid,$obj,$item['id'],'retain'); ?>
 				</fieldset>
 
        	<p><hr style="border: 1px solid #eee"/></p>
@@ -183,7 +183,7 @@ foreach($cos as $type => $co) {
 					</p>
 
 					<p><h3>Actions Taken:</h3>                
-					<?php echo $this->coobject->claim_report($cid,$mid,$obj,'permission'); ?>
+					<?php echo $this->coobject->claim_report($cid,$mid,$obj,$item['id'],'permission'); ?>
 			</fieldset>
       <p><hr style="border: 1px solid #eee"/></p>
 			<?php }} ?>	
@@ -204,7 +204,7 @@ foreach($cos as $type => $co) {
 					</p>
 
 					<p><h3>Actions Taken:</h3>                
-					<?php echo $this->coobject->claim_report($cid,$mid,$obj,'fairuse'); ?>
+					<?php echo $this->coobject->claim_report($cid,$mid,$obj,$item['id'],'fairuse'); ?>
 				</fieldset>
        	<p><hr style="border: 1px solid #eee"/></p>
 				<?php }} ?>
