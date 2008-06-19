@@ -25,6 +25,10 @@ class Materials extends Controller {
     $this->load->model('dbmetadata');
     $this->load->model('instructors');
     $this->load->library('zip');
+
+    // $this->ocw_utils->dump($_SERVER);	// kwc debugging
+    // do this check in the constructor to make sure we always check!
+    $this->freakauth_light->check();
   }
 
   public function index($cid, $caller="") { $this->home($cid, $caller); }
@@ -240,7 +244,8 @@ class Materials extends Controller {
 		    $emsg  = getUserPropertyFromId($dScribe1_uid, 'name');
 		    $emsg .= " - You have Ask Forms from ";
 		    $emsg .=  getUserProperty('name');
-		    $emsg .= " needing your attention at ";
+		    $emsg .= " (dScribe2) needing your attention for ";
+		    // $emsg .= site_url("materials/edit/$cid/$mid");
 		    $emsg .= base_url();
                     $this->_postoffice('dScribe2','dScribe', $dScribe1_uid, $emsg);
     }
@@ -740,9 +745,9 @@ class Materials extends Controller {
 	public function update_object_question($oid,$qid,$type='original',$status='')
 	{
 	   $data['answer'] = (isset($_REQUEST['answer'])) ? $_REQUEST['answer']:'';
-		 if ($status<>'') { $data['status'] = $status; }
+	   if ($status<>'') { $data['status'] = $status; }
 	   $this->coobject->update_question($oid, $qid, $data,$type);
-     $this->ocw_utils->send_response('success');
+           $this->ocw_utils->send_response('success');
 	}
 
 	public function update_questions_status($cid, $mid, $oid, $status, $role, $type='original')
@@ -752,7 +757,6 @@ class Materials extends Controller {
 
 	   /* send email to dscribe1 */
 	   if ($status=='done') {
-	       // echo 'update_questions_status send_email';
 	       $this->dscribe2_dscribe1_email($cid, $mid);
 	   }
            $this->ocw_utils->send_response('success');

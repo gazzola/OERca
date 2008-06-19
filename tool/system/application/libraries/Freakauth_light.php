@@ -270,7 +270,13 @@ class Freakauth_light
 
 			// if http_referer is from an external site,
                         // users are taken to the page defined in the config file$a
-                        redirect($this->CI->config->item('FAL_denied_from_ext_location'));
+			log_message('debug', "bdr: denyAccess #6 referer: $referer");
+			// $this->ocw_utils->dump($_SERVER);
+			if (isset($_SERVER['PATH_INFO'])) {
+                          redirect($_SERVER['PATH_INFO'], 'location');
+			} else {
+                          redirect($this->CI->config->item('FAL_denied_from_ext_location'));
+			}
                     }
                     else
                     {
