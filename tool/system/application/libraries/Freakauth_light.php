@@ -154,17 +154,35 @@ class Freakauth_light
 		// $_who_id = $this->CI->db_session->userdata('user_id');
 		$_who_name = $this->CI->db_session->userdata('user_name');
 		// log_message('debug', "freakauth_light_check(): id: $_who_id, name: $_who_name, role: $_who_is");
-                $cosign_user  = $_SERVER['REMOTE_USER'];
-                log_message('debug', "bdr:  freakauth_light_check - cosign USERID: $cosign_user");
-	        
-	        // if we have a role stored in DB session for this user
-	
-		// bdr - I commented this line out and replaced it wit the one that follows so 
-		//       we could deal with a "closed my browser but did not logout" situation
-		//
-	        //   if ($this->CI->db_session AND $this->CI->config->item('FAL') AND !empty($_who_is))
+		if ($this->CI->config->item('remote_user')) {
+			$cosign_user = $this->CI->config->item('remote_user');
+			log_message('debug', "bdr: freakauth_light_check - Config user: $cosign_user");
+		} else {
+			$cosign_user = $_SERVER['REMOTE_USER'];
+			log_message('debug', "bdr: freakauth_light_check - COSIGN user: $cosign_user");
+		}
+
+		/**
+		 * kwc - If there is an existing session, but it isn't for the
+		 * currently logged-in user, delete the session and redirect
+		 * them to the originally requested page.  There, they should
+		 * get a new session created and continue normally.
+		 * If it is a different user and are trying to get to a page
+		 * they don't have access to, they will be redirected to their
+		 * home and see the access denied message.
+		 */
 		if ($this->CI->db_session AND $this->CI->config->item('FAL') AND !empty($_who_is)
- 					  AND ($cosign_user == $_who_name))
+ 					  AND ($cosign_user != $_who_name)) {
+                        $this->CI->db_session->sess_destroy();
+			if (isset($_SERVER['PATH_INFO'])) {
+				redirect($_SERVER['PATH_INFO'], 'location');
+			} else {
+				redirect("", 'location');
+			}
+		}
+
+	        // if we have a role stored in DB session for this user
+	        if ($this->CI->db_session AND $this->CI->config->item('FAL') AND !empty($_who_is))
 	        {
 		    // log_message('debug', "freakauth_light: check() we have a db_session AND we're using FAL AND _who_is is set");// bdr debugging
 	            
@@ -266,17 +284,11 @@ class Freakauth_light
 			//       we need to destroy the session data & then things
 			//	 will get correctly sorted out
 			log_message('debug', 'bdr: denyAccess #6');
-                        $this->CI->db_session->sess_destroy();
 
 			// if http_referer is from an external site,
                         // users are taken to the page defined in the config file$a
 			log_message('debug', "bdr: denyAccess #6 referer: $referer");
-			// $this->ocw_utils->dump($_SERVER);
-			if (isset($_SERVER['PATH_INFO'])) {
-                          redirect($_SERVER['PATH_INFO'], 'location');
-			} else {
-                          redirect($this->CI->config->item('FAL_denied_from_ext_location'));
-			}
+                        redirect($this->CI->config->item('FAL_denied_from_ext_location'));
                     }
                     else
                     {
