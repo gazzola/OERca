@@ -202,7 +202,6 @@ class Materials extends Controller {
 	private function _postoffice($from_role, $to_role, $to_uid, $emsg)
 	{
            // bdr --  this "load" is done in the config/autoload.php -- bdr
-	   // echo '********** send_email materials.php ********************';
            $config['protocol'] = 'sendmail';
            $config['mailpath'] = '/usr/sbin/sendmail';
            $config['charset'] = 'iso-8859-1';
@@ -212,43 +211,68 @@ class Materials extends Controller {
 	   // bdr -- I have no idea why this initialization is not done by autoload.php or email.php in /config
            $this->email->initialize($config);
 
-           // echo '----- send email -------';
 	   $from_email = getUserProperty('email');
            $this->email->from($from_email, $from_role);
 	   $to_email = getUserPropertyFromId($to_uid, 'email');
            $this->email->to($to_email);
            $this->email->subject('OER Ask Form items for '.$to_role);
            $this->email->message($emsg);
-	   // echo $from_email; echo $to_email; echo $to_uid;
            $this->email->send();
            //  bdr -- here's how to debug & see if the email message is being sent out
 	   //  ... you can also look in /var/log/mail.log to see if the message
 	   //  ... was actually sent to the mail relay server.
-	   // echo $this->email->print_debugger();
+	   //  echo $this->email->print_debugger();
 	}
 
-	private function dscribe1_dscribe2_email($cid, $mid)
+	private function dscribe1_dscribe2_email($cid, $mid, $reason)
 	{
+          // bdr -- now see if we can find dscribe2
+          //         begin by getting user id for dscribe1 (current user)
+          $passUid = getUserProperty('id');
+          $user_rels = $this->ocw_user->get_dscribe_rel($passUid);
+          if ($user_rels[0] == NULL) {
+                    log_message("error", '**** material.php error - user_rels == NULL ****');
+                } else {
+                    $dScribe2_uid = $user_rels[0]['dscribe2_id'];
+                    $emsg  = '"';
+                    $emsg .= getUserPropertyFromId($dScribe2_uid, 'name');
+                    $emsg .= '" - You have Ask Forms from ';
+                    $emsg .=  getUserProperty('name');
+                    $emsg .= ' (dScribe1) for "';
+                    $emsg .= $this->material->getMaterialName($mid);
+                    $emsg .= '" of "';
+                    $emsg .= $this->course->course_title($cid);
+                    $emsg .= '" needing your attention because of ';
+		    $emsg .= $reason;
+		    $emsg .= ' at ';
+                    $emsg .= site_url("materials/edit/$cid/$mid");
+                    $this->_postoffice('dScribe1','dScribe2', $dScribe2_uid, $emsg);
+           }
+                return;
 	}
 
 	private function dscribe2_dscribe1_email($cid, $mid) 
 	{
-      // bdr -- now see if we can find dscribe1
-      //         begin by getting user id for dscribe2 (current user)
-    $passUid = getUserProperty('id');
-		$user_rels = $this->ocw_user->get_dscribe2_rel($passUid);
-    if ($user_rels[0] == NULL) {
-		    log_message("error", '**** controller/material.php error - user_rels == NULL ****');
+          // bdr -- now see if we can find dscribe1
+          //         begin by getting user id for dscribe2 (current user)
+          $passUid = getUserProperty('id');
+          $user_rels = $this->ocw_user->get_dscribe2_rel($passUid);
+          if ($user_rels[0] == NULL) {
+		    log_message("error", '**** material.php error - user_rels == NULL ****');
 		} else {
                     $dScribe1_uid = $user_rels[0]['dscribe1_id'];
-		    $emsg  = getUserPropertyFromId($dScribe1_uid, 'name');
-		    $emsg .= " - You have Ask Forms from ";
+		    $emsg  = '"';
+		    $emsg .= getUserPropertyFromId($dScribe1_uid, 'name');
+		    $emsg .= '" - You have Ask Forms from ';
 		    $emsg .=  getUserProperty('name');
-		    $emsg .= " (dScribe2) needing your attention for ";
-		    // $emsg .= site_url("materials/edit/$cid/$mid");
-		    $emsg .= base_url();
-                    $this->_postoffice('dScribe2','dScribe', $dScribe1_uid, $emsg);
-    }
+		    $emsg .= ' (dScribe2) for "';
+		    $emsg .= $this->material->getMaterialName($mid);
+		    $emsg .= '" of "';
+		    $emsg .= $this->course->course_title($cid);
+		    $emsg .= '" needing your attention at ';
+		    $emsg .= site_url("materials/askforms/$cid/$mid/aitems/dscribe2");
+                    $this->_postoffice('dScribe2','dScribe1', $dScribe1_uid, $emsg);
+           }
 	        return;
 	}
 
@@ -262,7 +286,6 @@ class Materials extends Controller {
 		    $j = sizeof($user_rels);
 		    for ($i=0; $i<$j; $i++) {
 		        $row = $user_rels[$i];
-		        // echo $this->ocw_utils->dump($row);
                         $emsg  = getUserPropertyFromId($row['id'], 'name');
                         $emsg .= " - You have Ask Forms from ";
                         $emsg .=  getUserProperty('name');
@@ -596,6 +619,9 @@ class Materials extends Controller {
 
 	public function update_object($cid, $mid, $oid, $field='', $val='') 
  	{
+		// bdr - email notification for dscribe1 -> dscribe2
+		// $this->dscribe1_dscribe2_email($cid, $mid, "changes");
+
 		$field = (isset($_REQUEST['field']) && $_REQUEST['field']<>'') ? $_REQUEST['field'] : $field;
 		$val = (isset($_REQUEST['val'])) ? $_REQUEST['val'] : $val;
 
@@ -615,6 +641,7 @@ class Materials extends Controller {
 						if (isset($_POST['view'])) { $rnd = $_POST['view']; }
 						redirect("materials/askforms/$cid/$mid/$rnd", 'location');
 				}
+				$this->dscribe1_dscribe2_email($cid, $mid, "exit-1");
 				exit;
 
 		} else {
@@ -626,9 +653,13 @@ class Materials extends Controller {
 								$lgcm = 'Changed action type to '.$val;
 								$this->coobject->add_log($oid, getUserProperty('id'), array('log'=>$lgcm));
     						$this->ocw_utils->send_response('success');
+                                                /* EMAIL DSCRIBE2 */
+                                                $this->dscribe1_dscribe2_email($cid, $mid, $lgcm);
+
 						} else {
     						$this->ocw_utils->send_response($res);
 						}
+					$this->dscribe1_dscribe2_email($cid, $mid, "exit-2");
    					exit;
 
 				} elseif ($field=='ask_status') {
@@ -661,7 +692,7 @@ class Materials extends Controller {
 					 	$this->coobject->add_object_claim($oid, getUserProperty('id'), $claimtype, array('rationale'=>$val));
 		
 						/* EMAIL DSCRIBE2 */
-						$this->dscribe1_dscribe2_email($cid, $mid);
+						$this->dscribe1_dscribe2_email($cid, $mid, $field);
 
 				} elseif ($field=='inst_question') {
 						$this->coobject->add_additional_question($oid, getUserProperty('id'), array('question'=>$val,'role'=>'instructor'));
@@ -670,16 +701,17 @@ class Materials extends Controller {
 						$this->coobject->add_additional_question($oid, getUserProperty('id'), array('question'=>$val,'role'=>'dscribe2'));
 
 						/* EMAIL DSCRIBE2 */
-						$this->dscribe1_dscribe2_email($cid, $mid);
-
+						$this->dscribe1_dscribe2_email($cid, $mid, "Questions");
 				} else {
 					
 					$data = array($field=>$val);
 					$this->coobject->update($oid, $data);
 				}
+
 		}
 
-    $this->ocw_utils->send_response('success');
+        $this->ocw_utils->send_response('success');
+	$this->dscribe1_dscribe2_email($cid, $mid, "exit-3");
    	exit;
 	}
 
@@ -690,13 +722,13 @@ class Materials extends Controller {
  				$val = $_REQUEST['val'];
  		}
 		$data = array($field=>$val);
-	  $this->coobject->add_object_claim($oid, getUserProperty('id'), 'permission', $data); 
+	        $this->coobject->add_object_claim($oid, getUserProperty('id'), 'permission', $data); 
 
 		/* EMAIL DSCRIBE2 */
-		$this->dscribe1_dscribe2_email($cid, $mid);
+		$this->dscribe1_dscribe2_email($cid, $mid, "permission");
 
-	  $this->ocw_utils->send_response('success');
-	  exit;
+	        $this->ocw_utils->send_response('success');
+	        exit;
 	}
 
 	public function update_replacement($cid, $mid, $oid, $rid) 
