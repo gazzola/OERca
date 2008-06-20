@@ -276,7 +276,7 @@ class Materials extends Controller {
 	        return;
 	}
 
-  private function instructor_dscribe1_email($cid) 
+  private function instructor_dscribe1_email($cid, $mid) 
 	{
                 $user_rels = $this->ocw_user->dscribes($cid);
                 if ($user_rels[0] == NULL) {
@@ -286,14 +286,17 @@ class Materials extends Controller {
 		    $j = sizeof($user_rels);
 		    for ($i=0; $i<$j; $i++) {
 		        $row = $user_rels[$i];
-                        $emsg  = getUserPropertyFromId($row['id'], 'name');
-                        $emsg .= " - You have Ask Forms from ";
+			$emsg  = '"';
+                        $emsg .= getUserPropertyFromId($row['id'], 'name');
+                        $emsg .= '" - You have Ask Forms from ';
                         $emsg .=  getUserProperty('name');
-			$emsg .= " for ";
+			$emsg .= ' (Instructor) for "';
+			$emsg .= $this->material->getMaterialName($mid);
+			$emsg .= '" of "';
 			$emsg .= $this->course->course_title($cid);
-			$emsg .= " "; 
-                        $emsg .= " needing your attention at ";
-                        $emsg .= base_url();
+			$emsg .= ' '; 
+                        $emsg .= ' needing your attention at ';
+                        $emsg .= site_url("materials/edit/$cid/$mid");
                         $this->_postoffice('instructor','dScribe', $row['id'],$emsg);
 		    }
                 }
@@ -668,7 +671,7 @@ class Materials extends Controller {
 
 						/* send email to dscribe from instructor */
 						if ($val == 'done') {
-						    $this->instructor_dscribe1_email($cid);
+						    $this->instructor_dscribe1_email($cid, $mid);
 						}
 				} elseif ($field == 'ask_inst') {
 						$field = 'ask';
@@ -747,7 +750,7 @@ class Materials extends Controller {
 		}
 		 /* send email to dscribe from instructor */	
 		 if ($field=='ask_status' and $val=='done') {
-		     $this->instructor_dscribe1_email($cid);
+		     $this->instructor_dscribe1_email($cid, $mid);
 		 }
 
      $this->ocw_utils->send_response('success');
