@@ -441,7 +441,7 @@ class Materials extends Controller {
 		if ($view == 'retain') { $data['select_actions'] = $this->coobject->enum2array('claims_retain','action'); }
 
 		/* info for queries sent to instructor */
-		if ($questions_to=='instructor' || (($role=='dscribe1' || $role == 'instructor') && $questions_to=='') || $role=='') {
+		if ($questions_to=='instructor' || ($role == 'instructor' && $questions_to=='') || $role=='') {
 				$view = (!in_array($view, array('provenance','replacement','done'))) ? 'provenance' : $view;
 
 				$prov_objects =  $this->coobject->coobjects($mid,'','Ask'); // objects with provenace questions
@@ -474,7 +474,7 @@ class Materials extends Controller {
 				$data['num_avail'] = array('provenance'=>$num_prov, 'replacement'=>$num_repl, 'done'=>$num_done);
 				$data['list'] = $this->ocw_utils->create_co_list($cid,$mid,$prov_objects);
 
-		} elseif ($questions_to=='dscribe2' || ($role=='dscribe2' && $questions_to=='')) { // dscribes page info
+		} elseif ($questions_to=='dscribe2' || (($role=='dscribe1' || $role=='dscribe2') && $questions_to=='')) { // dscribes page info
 				$view = ($view=='') ? 'general' : $view;
 
 				$info =  $this->coobject->ask_form_info($cid, $mid); 
@@ -497,7 +497,7 @@ class Materials extends Controller {
 
 		/* go to the right view */
 		if ($role == 'dscribe1') {
-				$q2 = ($questions_to == '') ? 'instructor' : $questions_to;
+				$q2 = ($questions_to == '') ? 'dscribe2' : $questions_to;
 				$data['questions_to'] = $q2; 
 
     		$this->layout->buildPage('materials/askforms/dscribe1/index', $data);
