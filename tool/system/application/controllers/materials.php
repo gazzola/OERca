@@ -208,7 +208,7 @@ class Materials extends Controller {
            $config['smtp_host'] = 'mail-relay.itd.umich.edu';
            $config['useragent'] = 'OER-Notification';
            $config['mailtype'] = 'text';
-	   // bdr -- I have no idea why this initialization is not done by autoload.php or email.php in /config
+	   // bdr -- I have no idea why this is not done by autoload.php or email.php in /config
            $this->email->initialize($config);
 
 	   $from_email = getUserProperty('email');
@@ -286,18 +286,23 @@ class Materials extends Controller {
 		    $j = sizeof($user_rels);
 		    for ($i=0; $i<$j; $i++) {
 		        $row = $user_rels[$i];
-			$emsg  = '"';
-                        $emsg .= getUserPropertyFromId($row['id'], 'name');
-                        $emsg .= '" - You have Ask Forms from ';
-                        $emsg .=  getUserProperty('name');
-			$emsg .= ' (Instructor) for "';
-			$emsg .= $this->material->getMaterialName($mid);
-			$emsg .= '" of "';
-			$emsg .= $this->course->course_title($cid);
-			$emsg .= ' '; 
-                        $emsg .= ' needing your attention at ';
-                        $emsg .= site_url("materials/edit/$cid/$mid");
-                        $this->_postoffice('instructor','dScribe', $row['id'],$emsg);
+			$fromid = getUserPropertyFromId($row['id'], 'name');
+			$toid  = getUserProperty('name');
+			// bdr - don't send instructor email to the same instructor
+			if ($fromid != $toid) {
+				$emsg  = '"';
+                        	$emsg .= $fromid;
+                        	$emsg .= '" - You have Ask Forms from "';
+                        	$emsg .=  $toid;
+				$emsg .= '" (Instructor) for "';
+				$emsg .= $this->material->getMaterialName($mid);
+				$emsg .= '" of "';
+				$emsg .= $this->course->course_title($cid);
+				$emsg .= ' '; 
+                        	$emsg .= ' needing your attention at ';
+                        	$emsg .= site_url("materials/edit/$cid/$mid");
+                        	$this->_postoffice('instructor','dScribe', $row['id'],$emsg);
+			}
 		    }
                 }
                 return;
