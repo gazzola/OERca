@@ -658,11 +658,23 @@ class Materials extends Controller {
 						$res = $this->coobject->update($oid, $data);
 	
 						if ($res===true) {
+								// update claim action as well.
+								if ($val<>'Search' && $val<>'Re-Create' && $val<>'Remove and Annotate') {
+										$claimtype = array('Permission'=>'permission','Commission'=>'commission', 'Fair Use'=>'fairuse',
+																			 'Retain: Public Domain'=>'retain',
+																			 'Retain: No Copyright'=>'retain',
+																			 'Retain: Permission'=>'retain');
+										$cl = $this->coobject->claim_exists($oid,$claimtype[$val]);
+										if ($cl!== false) {
+											  $ndata = array('action'=>$val);
+												$this->coobject->update_object_claim($oid, $cl[0]['id'], $claimtype[$val], $ndata);
+										}
+								}
 								$lgcm = 'Changed action type to '.$val;
 								$this->coobject->add_log($oid, getUserProperty('id'), array('log'=>$lgcm));
     						$this->ocw_utils->send_response('success');
                                                 /* EMAIL DSCRIBE2 */
-                                                $this->dscribe1_dscribe2_email($cid, $mid, $lgcm);
+                $this->dscribe1_dscribe2_email($cid, $mid, $lgcm);
 
 						} else {
     						$this->ocw_utils->send_response($res);
@@ -699,9 +711,6 @@ class Materials extends Controller {
 					 	$claimtype = preg_replace('/_rationale/','',$field);
 					 	$this->coobject->add_object_claim($oid, getUserProperty('id'), $claimtype, array('rationale'=>$val));
 		
-						/* EMAIL DSCRIBE2 */
-						$this->dscribe1_dscribe2_email($cid, $mid, $field);
-
 				} elseif ($field=='inst_question') {
 						$this->coobject->add_additional_question($oid, getUserProperty('id'), array('question'=>$val,'role'=>'instructor'));
 
