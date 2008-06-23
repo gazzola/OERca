@@ -385,7 +385,7 @@ class OCW_user extends Model
     
     // only use part of the table name because 'ocw_' is defined as a 
     // prefix in database.php
-    $this->db->where('ocw_dscribe2_dscribe1.dscribe1_id', $uid);
+    $this->db->where('dscribe1_id', $uid);
     $q = $this->db->get('dscribe2_dscribe1');
     if ($q->num_rows() > 0) {
       foreach ($q->result() as $row) {

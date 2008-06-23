@@ -66,7 +66,7 @@
 
 				<div id="Permission" style="display: <?= ($obj['action_type']=='Permission') ? 'block':'none'?>">
 			  				<p>
-								<b>Provide a detailed description of the content object for reference in the permission form.</b><br/>
+								<b>Provide a detailed description of the content object for reference in the permission form (REQUIRED).</b><br/>
 						       	<textarea name="description" id="description" rows="10" cols="50" class="do_update_description"><?=$obj['description']?></textarea><br/>
 						       	<b>Please provide the contact information for the copyright holder of this content object.</b><br/>
 						       	<table>

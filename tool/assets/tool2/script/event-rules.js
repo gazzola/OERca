@@ -489,7 +489,6 @@ var Rules = {
 				var material_id = $('mid').value; 
 				var object_id = $('oid').value;
 				var field = this.name; 
-				var view = $('view').value; 
 				var val = escape(this.value);
 				var url = $('server').value+'materials/update_contact/'+course_id+'/'+material_id+'/'+object_id;
 			
@@ -503,11 +502,10 @@ var Rules = {
                      		onComplete:function() {
                         		response = fb.innerHTML;
                         		if (response=='success') {
-                            		url = $('server').value+'materials/askforms/'+
-																			course_id+'/'+material_id+'/'+view;
-                            		window.location.replace(url);
+                            		//url = $('server').value+'materials/askforms/'+course_id+'/'+material_id;
+                            		//window.location.replace(url);
                         		} else {
-                            		alert(response + url);
+                            		alert(response);
                         		}
 							}
 				}).request();
@@ -943,6 +941,16 @@ var Rules = {
 								  		if (ta.value=='' && val=='commission review') {
 													check = 'You must provide additional rationale in order to send the CO to the Commission review team';
 											}
+									}
+									if (clm_type == 'permission' && field=='status') {
+											var idx = ($('info_sufficient_no_'+clm_id).style.display=='none') ? 0 : 1;
+											var notapproved = document.getElementsByName(oid+'_permission_'+clm_id+'_approved')[1]; // no value 
+											if (idx==0 && notapproved.checked && $('response_received_yes_'+clm_id).style.display=='none') {
+													return 'Cannot submit to dscribe until we receive word from publishers';
+											}	
+											var ta = document.getElementsByName(oid+'_permission_'+clm_id+'_comments')[idx]; 
+											var act = document.getElementsByName(oid+'_permission_'+clm_id+'_action')[idx]; 
+											if (ta.value=='' || act.value=='None') { check = 'Please recommend an action and a reason why...'}
 									}
 									return check;
 			}

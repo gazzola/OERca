@@ -729,14 +729,16 @@ class Materials extends Controller {
  				$field = $_REQUEST['field'];
  				$val = $_REQUEST['val'];
  		}
+
 		$data = array($field=>$val);
-	        $this->coobject->add_object_claim($oid, getUserProperty('id'), 'permission', $data); 
+
+    $this->coobject->add_object_claim($oid, getUserProperty('id'), 'permission', $data); 
 
 		/* EMAIL DSCRIBE2 */
 		$this->dscribe1_dscribe2_email($cid, $mid, "permission");
 
-	        $this->ocw_utils->send_response('success');
-	        exit;
+    $this->ocw_utils->send_response('success');
+    exit;
 	}
 
 	public function update_replacement($cid, $mid, $oid, $rid) 

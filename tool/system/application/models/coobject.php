@@ -597,6 +597,7 @@ class Coobject extends Model
 		if ($cl!==false && $cl[0]['status']<>'done') { 
 				// there is already a record for this object
 		    $claim_id = $cl[0]['id'];
+				$ndata = $data;
 				if ($type <> 'permission') { $ndata['rationale'] = $data['rationale']; }
 				$ndata['modified_by'] = getUserProperty('id');
 				$ndata['modified_on'] = date('Y-m-d h:i:s');
