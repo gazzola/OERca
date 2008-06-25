@@ -27,7 +27,9 @@
             'Commission'=>'Commission',
             'Permission'=>'Permission',
             'Retain'=>'Retain',
-            'Remove'=>'Remove');
+            'Remove'=>'Remove',
+            'Replace'=>'Replace',
+            'Re-Create'=>'Re-Create');
 ?>
 
 <input type="hidden" id="cid" name="cid" value="<?=$cid?>" />

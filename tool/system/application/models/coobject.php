@@ -226,7 +226,10 @@ class Coobject extends Model
 		
 		if ($action_type == 'AskRCO') {
 				$table = 'object_replacements';
-				$where['Ask'] = 'yes'; 
+				$where['ask'] = 'yes';
+		} elseif ($action_type == 'Replace') {
+			$table = 'object_replacements';
+			$where['ask'] = 'no';
 		} else {
 				if ($action_type <> '') { 
 						switch ($action_type) {
@@ -238,7 +241,7 @@ class Coobject extends Model
 				}
 				$table = 'objects';
 		}		
-
+		
 		$where['material_id'] = $mid;				
 		$this->db->select("COUNT(*) AS c")->from($table)->where($where);		
 		$q = $this->db->get();
