@@ -332,7 +332,12 @@ class Material extends Model
         //indicate if material has been fully cleared
         $status = $this->is_cleared($id, $cm['embedded_co']); 
         $cm['validated'] = ($status['notdone'] > 0) ? 0 : 1;  
-        $cm['statcount'] = $status['done'] .'/'.($status['done']+$status['notdone']);  
+        $cm['statcount'] = $status['done'] .'/'.($status['done']+$status['notdone']); 
+        if ($status['done'] == 0 && $status['notdone'] == 0 && $cm['embedded_co'] != 0) 
+        {
+        	// if both done and notdone object are equal to 0, mark the validated attribute to be false, in order to force dscribes to do content object capture
+        	$cm['validated'] = 0;
+        }
 
         if (sizeof($children) > 0) {
           $cm['show'] = ($this->child_not_in_ocw($children))?1:0;
@@ -363,7 +368,12 @@ class Material extends Model
           $tmp[$order] = $ccm;
           $status = $this->is_cleared($cid, $ccm['embedded_co']); 
           $tmp[$order]['validated'] = ($status['notdone'] > 0) ? 0 : 1;  
-          $tmp[$order]['statcount'] = $status['done'] .'/'.($status['done']+$status['notdone']);  
+          $tmp[$order]['statcount'] = $status['done'] .'/'.($status['done']+$status['notdone']);
+          if ($status['done'] == 0 && $status['notdone'] == 0 && $cm['embedded_co'] != 0) 
+	      {
+	      		// if both done and notdone object are equal to 0, mark the validated attribute to be false, in order to force dscribes to do content object capture
+	        	$cm['validated'] = 0;
+	      }
 
           // find more children if necessary
           list($children, $done) = 
