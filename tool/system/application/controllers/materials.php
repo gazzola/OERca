@@ -633,24 +633,37 @@ class Materials extends Controller {
 		$field = (isset($_REQUEST['field']) && $_REQUEST['field']<>'') ? $_REQUEST['field'] : $field;
 		$val = (isset($_REQUEST['val'])) ? $_REQUEST['val'] : $val;
 
+		$wrong_type='';
 		if ($field=='rep' or $field=='irep') {
+			if (is_array($_FILES['userfile_0'])) {
+				// check to see whether this is a image file
+				$type = $_FILES['userfile_0']['type'];
+				$result = strchr($type, "image/");
+				if ($result)
+				{
 					$data = array('location'=>$_REQUEST['location']);
-				if ($this->coobject->replacement_exists($cid, $mid, $oid)) {
-						$this->coobject->update_rep_image($cid, $mid, $oid, $data, $_FILES);
-				} else {
-						$this->coobject->add_replacement($cid, $mid, $oid, $data, $_FILES);
+					if ($this->coobject->replacement_exists($cid, $mid, $oid)) {
+							$this->coobject->update_rep_image($cid, $mid, $oid, $data, $_FILES);
+					} else {
+							$this->coobject->add_replacement($cid, $mid, $oid, $data, $_FILES);
+					}
 				}
-				
-				
-				if ($field == 'rep') {
-						redirect("materials/object_info/$cid/$mid/$oid/upload", 'location');
-				} elseif($field=='irep') {
-						$rnd = time().rand(10,10000); // used to overcome caching problem
-						if (isset($_POST['view'])) { $rnd = $_POST['view']; }
-						redirect("materials/askforms/$cid/$mid/$rnd", 'location');
+				else
+				{
+					// generate alert
+					$wrong_type="wrong_type";
 				}
-				$this->dscribe1_dscribe2_email($cid, $mid, "exit-1");
-				exit;
+			}
+			
+			if ($field == 'rep') {
+				redirect("materials/object_info/$cid/$mid/$oid/upload/$wrong_type", 'location');
+			} elseif($field=='irep') {
+					$rnd = time().rand(10,10000); // used to overcome caching problem
+					if (isset($_POST['view'])) { $rnd = $_POST['view']; }
+					redirect("materials/askforms/$cid/$mid/$rnd", 'location');
+			}
+			$this->dscribe1_dscribe2_email($cid, $mid, "exit-1");
+			exit;
 
 		} else {
 				if ($field=='action_type') {
@@ -851,7 +864,7 @@ class Materials extends Controller {
      $this->ocw_utils->send_response('success');
 	}
 
-	public function object_info($cid,$mid,$oid,$tab='')
+	public function object_info($cid,$mid,$oid,$tab='', $alert_wrong_mimetype='')
 	{
 		$subtypes =  $this->coobject->object_subtypes();
 		$obj = $this->coobject->coobjects($mid,$oid);
@@ -889,6 +902,8 @@ class Materials extends Controller {
 				        'tab'=> (($tab<>'') ? array(ucfirst($tab)) : array('Status')),
 				        'viewing' => ((isset($_REQUEST['viewing'])) ? $_REQUEST['viewing']: ''),
 								'action_types' => $this->coobject->enum2array('objects','action_type'), 
+								'alert_wrong_mimetype' => $alert_wrong_mimetype,
+								
 			      );
 		$data = array_merge($data, $permission);
    	$this->load->view('default/content/materials/edit_co', $data);
