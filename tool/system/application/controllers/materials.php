@@ -405,8 +405,8 @@ class Materials extends Controller {
 			
 			// check matchup of dscribe2 and dscribe
 			$passUid = getUserProperty('id');
-			$user_rels = $this->ocw_user->get_dscribe2_rel($passUid);
-	        if ($user_rels[0] == NULL) {
+			$user_rels = $this->ocw_user->get_users_by_relationship($passUid,'dscribe1');
+	        if ($user_rels == false) {
 			// use Name ($passName) istead of the User ID  ($passUid)
 			$passName = getUserProperty('name');
 	        	$data['alert_missing_dscribe']="Alert: Could not find corresponding dscribes for the dscribe2 - ".$passName.".";   
