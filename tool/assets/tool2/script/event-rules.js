@@ -182,8 +182,10 @@ var Rules = {
 	'.do_add_object_question': function(element) {
 		element.onclick = function(e) {
 		  new Event(e).stop();
+			var course_id = $('cid').value;
+			var material_id = $('mid').value; 
 			var object_id = $('oid').value; 
-      var url = $('server').value+'materials/add_object_question/'+object_id;
+      var url = $('server').value+'materials/add_object_question/'+course_id+'/'+material_id+'/'+object_id;
 			var role = $('origrole').value;
 				
 			var qs = escape($('question').value);
@@ -711,8 +713,10 @@ var Rules = {
 	'.do_add_replacement_question': function(element) {
 		element.onclick = function(e) {
 		  new Event(e).stop();
+			var course_id = $('cid').value;
+			var material_id = $('mid').value; 
 			var object_id = $('rid').value; 
-      var url = $('server').value+'materials/add_object_question/'+object_id;
+      var url = $('server').value+'materials/add_object_question/'+course_id+'/'+material_id+'/'+object_id;
 			var role = $('replrole').value;
 
 			var qs = escape($('repl_question').value);

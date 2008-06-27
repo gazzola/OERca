@@ -59,27 +59,6 @@ class OCW_user extends Model
   {
     $courses = array();
     
-/** TODO: fix this active record query
-    
-    $this->db->from('courses');
-    $this->db->
-      join('curriculums', 'curriculums.id = courses.curriculum_id', 'inner')->
-      join('schools', 'schools.id = curriculums.school_id', 'inner')->
-      join('acl', 'acl.course_id = courses.id', 'inner');
-    
-    $passedParams = array('ocw_acl.user_id' => $uid);
-    
-    if (isset($role)) {
-      $passedParams['ocw_acl.role'] = $role;
-    }
-    
-    $this->db->where($passedParams);
-    $this->db->select('ocw_courses.*, ocw_curriculums.name, 
-      ocw_schools.name' );
-    
-    $q = $this->db->get()->
-      order_by('courses.start_date', 'desc'); */
-    
     $sql = "SELECT ocw_courses.*, 
       ocw_curriculums.name AS cname, 
       ocw_schools.name AS sname
@@ -133,8 +112,7 @@ class OCW_user extends Model
     $dscribes = array();
 
     $this->db->select('ocw_users.*');
-    $this->db->from('acl')->where("course_id='$cid' AND ocw_acl.role = 
-      'dscribe1'");
+    $this->db->from('acl')->where("course_id='$cid' AND ocw_acl.role = 'dscribe1'");
     $this->db->join('users','acl.user_id=users.id');
 
     $q = $this->db->get();
@@ -225,6 +203,20 @@ class OCW_user extends Model
   public function get_user($uname)
   {
     $where = array('user_name'=>$uname);
+    $query = $this->db->getwhere('users', $where); 
+    return ($query->num_rows() > 0) ? $query->row_array() : false;
+  }
+
+  /**
+    * Get user info based on id 
+    *
+    * @access  public
+    * @param   int	id 
+    * @return  string | boolean
+    */
+  public function get_user_by_id($uid)
+  {
+    $where = array('id'=>$uid);
     $query = $this->db->getwhere('users', $where); 
     return ($query->num_rows() > 0) ? $query->row_array() : false;
   }
@@ -372,63 +364,61 @@ class OCW_user extends Model
   
   
   /**
-    * Get the dscribe2 for a particular dscribe1
+    * Get individuals with the specified relationship to the given uid 
     *
     * @access   public
-    * @param    int uid dscribe1 user id
-    * @return   array containing the row id, the dscribe2_id and 
-    *           the dscribe1_id
+    * @param    int 		uid		id of known user 
+    * @param    string 	type	type of relationship (instructor, dscribe1, dscribe2)	
+    * @param    int 		cid 	optional course id	
+	  *
+    * @return   array containing the information of the related users 
     */
-  public function get_dscribe_rel($uid)
+  public function get_users_by_relationship($uid, $type, $cid='')
   {
-    $user_rels = array();
+    $users = array();
+		$urole = getUserPropertyFromId($uid, 'role');
+	
+		if ($urole=='') {
+				return 'Error: Cannot determine user\'s role';
+
+		} elseif($urole==$type) {
+				$table = 'users'; 
+				$field = 'id'; 
+				$where = array('role'=>$type);
+
+		} elseif ($urole=='dscribe1') {
+				$table = ($type=='instructor') ? 'acl' : 'dscribe2_dscribe1';
+				$field = ($type=='instructor') ? 'user_id AS uid' : 'dscribe2_id AS uid';
+				$where = ($type=='instructor') ? array('course_id'=>$cid, 'role'=>'instructor')
+																			 : array('dscribe1_id'=>$uid);
+
+		} elseif ($urole=='dscribe2') {
+				// presently, dscribe2 have no formal relationships with instructors
+				if ($type=='instructor') { return 'Error: cannot define a relationship between instructor and dscribe2'; }
+
+				$field = 'dscribe1_id AS uid';
+				$table = 'dscribe2_dscribe1';
+				$where = array('dscribe2_id'=>$uid);
+
+		} elseif ($urole=='instructor') {
+				// presently, dscribe2 have no formal relationships with instructors
+				if ($type=='dscribe2') { return 'Error: cannot define a relationship between instructor and dscribe2'; }
+
+				$table = 'acl';
+				$field = 'user_id AS uid';
+				$where =  array('course_id'=>$cid, 'role'=>'dscribe1');
+
+		} else {
+				return 'Error: the current user\'s role is not recognized.';
+		}
+
+		$this->db->select($field)->from($table)->where($where);
+ 		$q = $this->db->get();
     
-    // only use part of the table name because 'ocw_' is defined as a 
-    // prefix in database.php
-    $this->db->where('dscribe1_id', $uid);
-    $q = $this->db->get('dscribe2_dscribe1');
-    if ($q->num_rows() > 0) {
-      foreach ($q->result() as $row) {
-        $user_rels[] = array(
-          'id' => $row->id,
-          'dscribe2_id' => $row->dscribe2_id,
-          'dscribe1_id' => $row->dscribe1_id
-          );
-      }
-    }
-    // only return the array if we get results, else return NULL
-    return((sizeof($user_rels) > 0) ? $user_rels : NULL);
-  }
+		if ($q->num_rows() > 0) { foreach ($q->result() as $row) { array_push($users, $row->uid); } }
 
-  
-  /**
-    * Get the dscribe1 for a particular dscribe2
-    *
-    * @access   public
-    * @param    int uid dscribe2 user id
-    * @return   array containing the row id, the dscribe2_id and 
-    *           the dscribe1_id
-    */
-  public function get_dscribe2_rel($uid)
-  {
-    $user_rels = array();
-
-    // only use part of the table name because 'ocw_' is defined as a 
-    // prefix in database.php
-    $this->db->where('ocw_dscribe2_dscribe1.dscribe2_id', $uid);
-    $q = $this->db->get('dscribe2_dscribe1');
-    if ($q->num_rows() > 0) {
-      foreach ($q->result() as $row) {
-        $user_rels[] = array(
-          'id' => $row->id,
-          'dscribe2_id' => $row->dscribe2_id,
-          'dscribe1_id' => $row->dscribe1_id
-          );
-      }
-    }
-    // only return the array if we get results, else return NULL
-    return((sizeof($user_rels) > 0) ? $user_rels : NULL);
-  }
-
+    // only return the array if we get results, else return false
+    return (sizeof($users) > 0) ? $users : false;
+ }
 }
 ?>
