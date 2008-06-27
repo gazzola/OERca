@@ -383,7 +383,7 @@ class OCW_user extends Model
 
 		} elseif($urole==$type) {
 				$table = 'users'; 
-				$field = 'id'; 
+				$field = 'id AS uid'; 
 				$where = array('role'=>$type);
 
 		} elseif ($urole=='dscribe1') {
