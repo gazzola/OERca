@@ -136,6 +136,21 @@ class Coobject extends Model
 						$where .= ")";
 				} 
 				$action_type == '';
+		}
+		elseif ($action_type=='RCO') {
+				$replacements = $this->replacements($mid,'','', $action_type='AskNo');
+				if ($replacements != null) {
+						$where .= " AND id IN (";
+						$robj = array();
+						foreach($replacements as $o) {
+										if (!in_array($o['object_id'],$robj)) { 
+												$where .= ((sizeof($robj)) ? ', ':'') . $o['object_id'];
+														array_push($robj, $o['object_id']); 
+										}
+						}
+						$where .= ")";
+				} 
+				$action_type == '';
 
 		} else {
 			if ($action_type <> '') { 
@@ -144,6 +159,7 @@ class Coobject extends Model
 					case 'Ask': $act_whr = "ask = 'yes'"; break;
 					case 'Done': $act_whr = "done = '1'"; break;
 					case 'Retain': $this->db->like('action_type', 'Retain:','after'); break;
+					case 'Remove': $this->db->like('action_type', 'Remove','after'); break;
 					default: $act_whr = "action_type= '$action_type'";
 				}
 				$where .= ($act_whr=='') ? '' : " AND $act_whr";
@@ -199,6 +215,7 @@ class Coobject extends Model
 		if ($action_type <> '') { 
 			switch ($action_type) {
 				case 'Ask': $idx = 'ask'; $ans = 'yes'; break;
+				case 'AskNo': $idx = 'ask'; $ans = 'no'; break;
 				default: $idx = 'action_type'; $ans = $action_type;
 			}
 			$where[$idx] = $ans; 
@@ -223,19 +240,20 @@ class Coobject extends Model
 	public function num_objects($mid,	$action_type='')
 	{
 		$action_type = ($action_type == 'Any') ? '' : $action_type;
-		
 		if ($action_type == 'AskRCO') {
 				$table = 'object_replacements';
 				$where['ask'] = 'yes';
-		} elseif ($action_type == 'Replace') {
-			$table = 'object_replacements';
-			$where['ask'] = 'no';
+		}elseif ( $action_type == 'RCO')
+		{
+				$table = 'object_replacements';
+				$where['ask'] = 'no';
 		} else {
 				if ($action_type <> '') { 
 						switch ($action_type) {
 							case 'Ask': $where['ask'] = 'yes'; break;
 							case 'Done': $where['done']= '1'; break;
 							case 'Retain': $this->db->like('action_type', 'Retain:','after'); break;
+							case 'Remove': $this->db->like('action_type', 'Remove','after'); break;
 							default: $where['action_type']= $action_type;
 						}
 				}

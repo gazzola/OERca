@@ -20,7 +20,7 @@
 
   $filter_types = array('Any'=>'Show All',
             'Ask'=>'Ask Instructor (Original)',
-						'AskRCO'=> 'Ask Instructor (Replacments)',
+			'AskRCO'=> 'Ask Instructor (Replacments)',
             'Done'=>'Cleared',
             'Fair Use'=>'Fair Use',
             'Search'=>'Search',
@@ -28,7 +28,7 @@
             'Permission'=>'Permission',
             'Retain'=>'Retain',
             'Remove'=>'Remove',
-            'Replace'=>'Replace',
+            'RCO'=>'Replace',
             'Re-Create'=>'Re-Create');
 ?>
 
