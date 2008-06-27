@@ -275,7 +275,7 @@ class Postoffice extends Model
 	{
 		 $this->email->clear();
      $this->email->from($from_info['email'], $from_info['name']);
-     $this->email->to('dkhutch@umich.edu');
+     $this->email->to('dkhutch@umich.edu','pkleij@gmail.com');
      //$this->email->to($to_email);
      $this->email->subject($subject);
      $this->email->message($msg);
