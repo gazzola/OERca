@@ -1030,7 +1030,7 @@ class Materials extends Controller {
 				// the replacement file extension
 				$rep_name = $rco['name'];
 				$rep_name_parts=explode(".", $rep_name);
-				$rep_extension = ".".$rep_name_parts[1];
+				$rep_extension = strtolower(".".$rep_name_parts[1]);
 				// the file path to the replacement data
 				$rep_filepath=$object_filepath."/".$object_filename."_rep".$rep_extension;
 				
