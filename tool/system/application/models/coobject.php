@@ -214,11 +214,10 @@ class Coobject extends Model
 		$action_type = ($action_type == 'Any') ? '' : $action_type;
 		if ($action_type <> '') { 
 			switch ($action_type) {
-				case 'Ask': $idx = 'ask'; $ans = 'yes'; break;
-				case 'AskNo': $idx = 'ask'; $ans = 'no'; break;
-				default: $idx = 'action_type'; $ans = $action_type;
-			}
-			$where[$idx] = $ans; 
+				case 'Ask': $idx = 'ask'; $ans = 'yes'; $where[$idx] = $ans; break;
+				case 'AskNo': break;
+				default: $idx = 'action_type'; $ans = $action_type;$where[$idx] = $ans;
+			} 
 		}
 		$this->db->select($details)->from('object_replacements')->where($where);
 		$q = $this->db->get();
@@ -239,6 +238,7 @@ class Coobject extends Model
 
 	public function num_objects($mid,	$action_type='')
 	{
+		$where['material_id'] = $mid;
 		$action_type = ($action_type == 'Any') ? '' : $action_type;
 		if ($action_type == 'AskRCO') {
 				$table = 'object_replacements';
@@ -246,7 +246,6 @@ class Coobject extends Model
 		}elseif ( $action_type == 'RCO')
 		{
 				$table = 'object_replacements';
-				$where['ask'] = 'no';
 		} else {
 				if ($action_type <> '') { 
 						switch ($action_type) {
@@ -258,9 +257,7 @@ class Coobject extends Model
 						}
 				}
 				$table = 'objects';
-		}		
-		
-		$where['material_id'] = $mid;				
+		}						
 		$this->db->select("COUNT(*) AS c")->from($table)->where($where);		
 		$q = $this->db->get();
 		$row = $q->result_array();
