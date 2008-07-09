@@ -1027,17 +1027,31 @@ class Materials extends Controller {
 				// object file path and name
 				$object_filepath = $this->coobject->object_path($cid, $mid, $object_id);
 				$object_filename = $this->coobject->object_filename($object_id);
-				// the replacement file extension
-				$rep_name = $rco['name'];
-				$rep_name_parts=explode(".", $rep_name);
-				$rep_extension = strtolower(".".$rep_name_parts[1]);
+				// the replacement file extension, try all three: png, gif, jpg
 				// the file path to the replacement data
-				$rep_filepath=$object_filepath."/".$object_filename."_rep".$rep_extension;
+				$ext_array = array(".png", ".gif", ".jpg");
+				$rep_filepath=$object_filepath."/".$object_filename."_rep";
+				$found = false;
+				foreach ($ext_array as $ext)
+				{
+					if (!$found)
+					{
+						$rep_filepath_final = $rep_filepath.$ext;
+						if (is_readable(property('app_uploads_path').$rep_filepath_final))
+						{
+							// find the replacement file
+							$found = true;
+						}
+					}
+				}
 				
-				// get the replacement file name and data and download
-				$name = $rco['name'];
-				$data = file_get_contents(getcwd().'/uploads/'.$rep_filepath); // Read the file's contents
-				force_download($name, $data);	
+				// get the replacement file name and data and download]
+				if ($found)
+				{
+					$name = $rco['name'];
+					$data = file_get_contents(getcwd().'/uploads/'.$rep_filepath_final); // Read the file's contents
+					force_download($name, $data);
+				}
 			}
 		}
 
