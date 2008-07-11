@@ -1031,24 +1031,33 @@ class Materials extends Controller {
 				// the file path to the replacement data
 				$ext_array = array(".png", ".gif", ".jpg");
 				$rep_filepath=$object_filepath."/".$object_filename."_rep";
-				$found = false;
+				$foundExt = "";
 				foreach ($ext_array as $ext)
 				{
-					if (!$found)
+					if (strlen($foundExt) != 0)
 					{
 						$rep_filepath_final = $rep_filepath.$ext;
 						if (is_readable(property('app_uploads_path').$rep_filepath_final))
 						{
 							// find the replacement file
-							$found = true;
+							$foundExt = $ext;
 						}
 					}
 				}
 				
 				// get the replacement file name and data and download]
-				if ($found)
+				if (strlen($foundExt) != 0)
 				{
 					$name = $rco['name'];
+					// check to see whether file name is end with the extension. If not, append the extension to it
+					$extLen = strlen($foundExt);
+					// Look at the end of file for the substring the size of EndStr
+					$nameStrEnd = substr($name, strlen($name) - $extLen);
+					if ($nameStrEnd != $foundExt)
+					{
+						$name = $name.$foundExt;
+					}
+					
 					$data = file_get_contents(getcwd().'/uploads/'.$rep_filepath_final); // Read the file's contents
 					force_download($name, $data);
 				}
