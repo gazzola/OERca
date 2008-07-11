@@ -79,23 +79,26 @@ if ($user <> '') {
 					{
 						// reading the assignment list xml string
 						$doc = new DOMDocument();
-						$doc->loadXML($assignmentListXML);
-						$assignments = $doc->getElementsByTagName( "Assignment" );
-						foreach($assignments as $assignment)
+						if (strlen($assignmentListXML) != 0)
 						{
-							$assignmentIds = $assignment->getElementsByTagName("AssignmentId");
-							$assignmentId = $assignmentIds->item(0)->nodeValue;
-							$assignmentTitles = $assignment->getElementsByTagName("AssignmentTitle");
-							$assignmentTitle = $assignmentTitles->item(0)->nodeValue;
-							echo "<div style='text-indent:1em'>";
-						?>
-							<div> &nbsp;&nbsp; 
-							<input type='checkbox' name='chooseItem'>&nbsp;&nbsp; <?=$assignmentTitle?>
-							<?=anchor(site_url('instructor/add_material/'.$cid.$this->ocw_utils->escapeUrl($assignmentId)),
-					  			'<img src="'.property('app_img').'/add.png" title="Add only this item" />',
-					 	 		array("title"=>"Add only this item"))?>&nbsp;&nbsp;
-						<?php
-							 echo "</div>";
+							$doc->loadXML($assignmentListXML);
+							$assignments = $doc->getElementsByTagName( "Assignment" );
+							foreach($assignments as $assignment)
+							{
+								$assignmentIds = $assignment->getElementsByTagName("AssignmentId");
+								$assignmentId = $assignmentIds->item(0)->nodeValue;
+								$assignmentTitles = $assignment->getElementsByTagName("AssignmentTitle");
+								$assignmentTitle = $assignmentTitles->item(0)->nodeValue;
+								echo "<div style='text-indent:1em'>";
+							?>
+								<div> &nbsp;&nbsp; 
+								<input type='checkbox' name='chooseItem'>&nbsp;&nbsp; <?=$assignmentTitle?>
+								<?=anchor(site_url('instructor/add_material/'.$cid.$this->ocw_utils->escapeUrl($assignmentId)),
+						  			'<img src="'.property('app_img').'/add.png" title="Add only this item" />',
+						 	 		array("title"=>"Add only this item"))?>&nbsp;&nbsp;
+							<?php
+								 echo "</div>";
+							}
 						}
 					}
 					else if ($title == "Resources")
@@ -103,39 +106,42 @@ if ($user <> '') {
 						// reading the assignment list xml string
 						//echo "$resourcesListXML";
 						$doc = new DOMDocument();
-						// get the resource list
-						$doc->loadXML($resourcesListXML);
-						$entities = $doc->getElementsByTagName( "ResourceEntity" );
-						foreach($entities as $entity)
+						if (strlen($resourcesListXML) != 0)
 						{
-							$entityIds = $entity->getElementsByTagName("EntityId");
-							$entityId = $entityIds->item(0)->nodeValue;
-							$entityTitles = $entity->getElementsByTagName("EntityTitle");
-							$entityTitle = $entityTitles->item(0)->nodeValue;
-							$entityDepths = $entity->getElementsByTagName("EntityDepth");
-							$entityDepth = $entityDepths->item(0)->nodeValue;
-							$entityIsCollections = $entity->getElementsByTagName("EntityIsCollection");
-							$entityIsCollection = $entityIsCollections->item(0)->nodeValue;
-							$unit ="em";
-							$entityDepth = $entityDepth;
-							$width = "$entityDepth$unit";
-							if ($entityIsCollection != 'true')
+							// get the resource list
+							$doc->loadXML($resourcesListXML);
+							$entities = $doc->getElementsByTagName( "ResourceEntity" );
+							foreach($entities as $entity)
 							{
-							echo "<div style='text-indent:".$width."'>";
-							?>
-							<?php echo form_checkbox('chooseItem[]', $entityId, FALSE); 
-								echo $entityTitle;
-							?>
-							<?=anchor(site_url('instructor/add_material/'.$cid.'/'.$this->ocw_utils->escapeUrl($entityId)),
-					  			'<img src="'.property('app_img').'/add.png" title="Add only this item" />',
-					 	 		array("title"=>"Add only this item"))?>&nbsp;&nbsp;
-							<?php }
-							else
-							{
-								echo "<div style='text-indent:$width'>$entityTitle";
+								$entityIds = $entity->getElementsByTagName("EntityId");
+								$entityId = $entityIds->item(0)->nodeValue;
+								$entityTitles = $entity->getElementsByTagName("EntityTitle");
+								$entityTitle = $entityTitles->item(0)->nodeValue;
+								$entityDepths = $entity->getElementsByTagName("EntityDepth");
+								$entityDepth = $entityDepths->item(0)->nodeValue;
+								$entityIsCollections = $entity->getElementsByTagName("EntityIsCollection");
+								$entityIsCollection = $entityIsCollections->item(0)->nodeValue;
+								$unit ="em";
+								$entityDepth = $entityDepth;
+								$width = "$entityDepth$unit";
+								if ($entityIsCollection != 'true')
+								{
+								echo "<div style='text-indent:".$width."'>";
+								?>
+								<?php echo form_checkbox('chooseItem[]', $entityId, FALSE); 
+									echo $entityTitle;
+								?>
+								<?=anchor(site_url('instructor/add_material/'.$cid.'/'.$this->ocw_utils->escapeUrl($entityId)),
+						  			'<img src="'.property('app_img').'/add.png" title="Add only this item" />',
+						 	 		array("title"=>"Add only this item"))?>&nbsp;&nbsp;
+								<?php }
+								else
+								{
+									echo "<div style='text-indent:$width'>$entityTitle";
+								}
+								
+								echo "</div>";
 							}
-							
-							echo "</div>";
 						}
 					}
 				}

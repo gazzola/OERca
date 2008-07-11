@@ -94,8 +94,8 @@ class Auth extends Controller
 				 $userdata['site'] = $site;
 				 
 				$this->CI->_set_logindata($userdata);
-				
-				if ($this->course->get_course_by_title($courseTitle) == null)
+				$course = $this->course->get_course_by_title($courseTitle);
+				if ( $course == null)
 				{
 					// if there is no course, add the current one as the first course
 					// if there is no course, add the current one as the first course
@@ -117,9 +117,13 @@ class Auth extends Controller
 						$userDetails['role'] = $role; 
 						$this->course->add_user($userDetails);
 					}
+					$courseId= $u['id'];
 				}
-				
-				redirect('home','location');
+				else
+				{
+					$courseId = $course['id'];
+				}
+				redirect($role.'/materials/'.$courseId,'location');
 			}
 			else
 			{
