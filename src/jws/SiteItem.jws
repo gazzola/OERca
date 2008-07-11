@@ -460,7 +460,7 @@ System.out.println("id=" + s.getId());
 		}
 		else
 		{
-			return "empty";
+			return "";
 		}
     	
     }
