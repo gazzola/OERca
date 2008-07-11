@@ -1034,7 +1034,7 @@ class Materials extends Controller {
 				$foundExt = "";
 				foreach ($ext_array as $ext)
 				{
-					if (strlen($foundExt) != 0)
+					if (strlen($foundExt) == 0)
 					{
 						$rep_filepath_final = $rep_filepath.$ext;
 						if (is_readable(property('app_uploads_path').$rep_filepath_final))
