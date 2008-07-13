@@ -753,7 +753,7 @@ class Materials extends Controller {
      $this->ocw_utils->send_response('success');
 	}
 
-	public function object_info($cid,$mid,$oid,$tab='', $alert_wrong_mimetype='')
+	public function object_info($cid,$mid,$oid,$tab='', $alert_wrong_mimetype='', $filter='')
 	{
 		$subtypes =  $this->coobject->object_subtypes();
 		$obj = $this->coobject->coobjects($mid,$oid);
@@ -792,6 +792,7 @@ class Materials extends Controller {
 				        'viewing' => ((isset($_REQUEST['viewing'])) ? $_REQUEST['viewing']: ''),
 								'action_types' => $this->coobject->enum2array('objects','action_type'), 
 								'alert_wrong_mimetype' => $alert_wrong_mimetype,
+								'filter' => $filter,
 								
 			      );
 		$data = array_merge($data, $permission);

@@ -1663,22 +1663,19 @@ class Coobject extends Model
     *
     * @return   string the html source for the navigation links
     */
-  public function prev_next($cid, $mid, $oid)
+  public function prev_next($cid, $mid, $oid, $filter="")
 	{
 		$prev_obj = NULL;
 		$curr_num = NULL;
 		$next_obj = NULL;
 		
-		$this->db->select('id, name')->
-		  from('objects')->where('material_id',$mid)->orderby('id');
-		$q = $this->db->get();
-		$total_num = $q->num_rows();
+		$q_results =  $this->coobject->coobjects($mid,'',$filter);
+		$total_num = sizeOf($q_results);
 	
 		/* content object ID's for previous and next items if any and get
 		 * the number of the current content object $oid for the current
 		 * material $mid nothing happens if no content objects are found */
 		if ($total_num > 0) {
-		  $q_results = $q->result_array();
 		   for ($i = 0; $i < $total_num; $i++) {
 		     // $this->ocw_utils->dump($q_results[$i]);
 		     if ($q_results[$i]['id'] == $oid) {

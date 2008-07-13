@@ -72,7 +72,7 @@ echo script('ocw_tool.js');
 </div>
 
 <div class="column span-17 first last" style="text-align: center">
- <br/><?= $this->coobject->prev_next($cid, $mid, $obj['id']);?>
+ <br/><?= $this->coobject->prev_next($cid, $mid, $obj['id'], $filter);?>
 </div>
 
 </div>

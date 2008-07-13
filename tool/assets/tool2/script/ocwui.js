@@ -16,7 +16,7 @@ function update_edit_co_frame(id)
 {
   // update frame url.
 	var oid = (id).replace(/objspan_/g,'');
-  var url = $('server').value+'materials/object_info/'+$('cid').value+'/'+$('mid').value+'/'+oid;
+  var url = $('server').value+'materials/object_info/'+$('cid').value+'/'+$('mid').value+'/'+oid + '/status/status/' + $('filter').value;
   $('edit-co-frame').src = url;
 }
 
