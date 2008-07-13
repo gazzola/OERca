@@ -1692,10 +1692,10 @@ class Coobject extends Model
 		
 		/* make buttons active if the respective values are defined,
 		 * plain text otherwise */
-		$prev_nav = ($prev_obj) ? '<a href="'.site_url("materials/object_info/$cid/$mid/$prev_obj").'">&laquo;&nbsp;Previous</a>' : 
+		$prev_nav = ($prev_obj) ? '<a href="'.site_url("materials/object_info/$cid/$mid/$prev_obj/status/status/$filter").'">&laquo;&nbsp;Previous</a>' : 
 		  '&laquo;&nbsp;Previous';
 		$curr_nav = ($curr_num) ? "$curr_num of $total_num" : "";
-		$next_nav = ($next_obj) ? '<a href="'.site_url("materials/object_info/$cid/$mid/$next_obj").'">Next&nbsp;&raquo;</a>' :
+		$next_nav = ($next_obj) ? '<a href="'.site_url("materials/object_info/$cid/$mid/$next_obj/status/status/$filter").'">Next&nbsp;&raquo;</a>' :
 		  'Next&nbsp;&raquo;';
 		
 		return $prev_nav.'&nbsp;&nbsp;-&nbsp;'.
