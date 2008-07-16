@@ -285,9 +285,19 @@ class Postoffice extends Model
 	private function send($from_info, $to_email, $subject, $msg)
 	{
 		 $this->email->clear();
+
+     $config['protocol']  = 'sendmail';
+     $config['mailpath']  = '/usr/sbin/sendmail';
+     $config['charset']   = 'iso-8859-1';
+     $config['smtp_host'] = 'mail-relay.itd.umich.edu';
+     $config['useragent'] = 'CodeIgniter';
+     $config['useragent'] = 'OER-Notification';
+     $config['mailtype']  = 'text';
+     $this->email->initialize($config);
+
      $this->email->from($from_info['email'], $from_info['name']);
-     $this->email->to('bdr@umich.edu','dkhutch@umich.edu','pklymee@umich.edu');
-     //$this->email->to($to_email);
+     //$this->email->to('bdr@umich.edu,dkhutch@umich.edu,pklymee@umich.edu');
+     $this->email->to($to_email);
      $this->email->subject($subject);
      $this->email->message($msg);
      return $this->email->send();
@@ -296,10 +306,10 @@ class Postoffice extends Model
 	/** templates for email messages */
 	private function template($type)
 	{
-			$template['intro'] = "Dearest {TO_NAME},\n\nYou have ASK Form items from the following people that need your attention:\n\n";
+			$template['intro'] = "{TO_NAME},\n\nYou have ASK Form items from the following people that need your attention:\n\n";
 			$template['body1'] = "{FROM_NAME} ({FROM_ROLE}):\n\n"; 
 			$template['body2'] = "  Course: {CNAME}{ITEMS}\n\n\n"; 
-		  $template['footer'] = "Ciao!\n\nOER Tool\n\nps: Don't reply to this email -- it will go no where :)";
+		  $template['footer'] = "Thank you.\n\nOER Tool\n\nps: Don't reply to this email -- it will go no where :)";
 
 			return $template[$type];
 	}
