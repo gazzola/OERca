@@ -184,7 +184,7 @@ class Course extends Model
 		$this->db->select('*')->from('acl')->where($where);
 		$q = $this->db->get();
 		$course = $q->row_array();
-		return ($q->num_rows() > 0) ? $course : null;
+		return ($q->num_rows() > 0 || sizeof($course) > 0) ? $course : null;
 	}
 
 

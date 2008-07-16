@@ -32,13 +32,16 @@ class Postoffice extends Model
 	public function dscribe1_dscribe2_email($cid, $mid, $oid, $type)
 	{
      $from_id = getUserProperty('id');
-		
+		 $urole = getUserPropertyFromId($from_id, 'role');
+
 		 if ($this->ocw_user->get_user_by_id($from_id) !== false) {	
-		 		 $dscribe2 = $this->ocw_user->get_users_by_relationship($from_id,'dscribe2'); 
+		 		 $dscribe2 = $this->ocw_user->get_users_by_relationship($from_id,'dscribe2',$cid); 
 
      		 if ($dscribe2 !== false) {
 							foreach ($dscribe2 as $to_id) {
+									if ($this->course->has_access($to_id, $cid) != null) {
 											 $this->add($from_id, $to_id, 'dscribe1_to_dscribe2', $cid, $mid, $oid, $type);
+									}
 							}
      		 } else {
 						return 'Error: Cannot find dscribe2s associated with this dscribe.';
@@ -69,7 +72,9 @@ class Postoffice extends Model
 
      		 if ($dscribe1 !== false) {
 							foreach ($dscribe1 as $to_id) {
+									if ($this->course->has_access($to_id, $cid) != null) {
 											 $this->add($from_id, $to_id, 'dscribe2_to_dscribe1', $cid, $mid, $oid, $type);
+									}
 							}
      		 } else {
 						return 'Error: Cannot find dscribe1s associated with this dscribe.';
@@ -100,7 +105,9 @@ class Postoffice extends Model
 
      		 if ($dscribe1 !== false) {
 							foreach ($dscribe1 as $to_id) {
+									if ($this->course->has_access($to_id, $cid) != null) {
 											 $this->add($from_id, $to_id, 'instructor_to_dscribe1', $cid, $mid, $oid, $type);
+									}
 							}
      		 } else {
 						return 'Error: Cannot find dscribe1s associated with this dscribe.';
@@ -145,7 +152,7 @@ class Postoffice extends Model
 											}
 											array_push($sendlist[$m->to_id][$m->from_id][$m->course_id][$m->material_id], $m);	
 							}
-
+							//$this->ocw_utils->dump($sendlist,true);
 
 							foreach($sendlist as $to_id => $receivers) {
 											$to_user = $this->ocw_user->get_user_by_id($to_id); 
@@ -164,9 +171,11 @@ class Postoffice extends Model
 																		 $items = '';
 																		 foreach($materials as $mid => $messages) {
 																		  			 $mname = $this->material->getMaterialName($mid);
+																						 $done = array();
 
 																						 foreach($messages as $m) {
-																										 array_push($update_candidates, $m->id);
+																								 array_push($update_candidates, $m->id);
+																									if (!in_array($mname, $done)) {
 																										 switch($m->msg_type) {
 																												case 'dscribe1_to_instructor': $items .= "\n\t$mname -- {unwrap}".
 																																			site_url("materials/askforms/$cid/$mid").'{/unwrap}';
@@ -181,6 +190,8 @@ class Postoffice extends Model
 		    																															site_url("materials/askforms/$cid/$mid/done/instructor").'{/unwrap}';
 																																			break;
 																										 }
+																										 array_push($done, $mname);
+																									}
 																						 }
 																		 }
 																		 $msg = preg_replace('/{ITEMS}/', $items, $msg);	
@@ -275,7 +286,7 @@ class Postoffice extends Model
 	{
 		 $this->email->clear();
      $this->email->from($from_info['email'], $from_info['name']);
-     $this->email->to('dkhutch@umich.edu','pkleij@gmail.com');
+     $this->email->to('bdr@umich.edu','dkhutch@umich.edu','pklymee@umich.edu');
      //$this->email->to($to_email);
      $this->email->subject($subject);
      $this->email->message($msg);
