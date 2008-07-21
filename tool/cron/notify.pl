@@ -209,7 +209,7 @@ sub email
 		return 0;
 	} else {
 		my %mail = (
-			To => "dhutchful\@gmail.com", 
+			To => $to_email,
 		 	From	=> "OER Tool Notifier <nobody\@umich.edu>", 
 			Subject => $subject,
 			Message => $msg,
