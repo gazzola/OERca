@@ -1,60 +1,60 @@
 <h1><?=$name . "'s"?> Content Object Clearance Status</h1><br />
 
   <?php
-  $printkey = FALSE; 
   if ($courses) { 
-    foreach ($courses as $value) {
-      if ($value['num']['total'] > 0) {
-        $printkey = TRUE;
-        break;
-      }
-    }
-    if ($printkey == TRUE) { // print the key only if we have COs ?> 
-      <div class="column span-24 first last">
-        <h2>
-          <img src="<?= site_url("/home/make_stat_key/done") ?>" class="prog-key"> Cleared
-          &nbsp; &nbsp; &nbsp;
-          <img src="<?= site_url("/home/make_stat_key/ask") ?>" class="prog-key"> In Progress
-          &nbsp; &nbsp; &nbsp;
-          <img src="<?= site_url("/home/make_stat_key/rem") ?>" class="prog-key"> Not Cleared
-        </h2>  
-      </div>
-  <?php } ?>
-  <? foreach ($courses as $value) {
+			//$bhs='chco=4d89f9,c6d9fd'; 
+			$data = array();	
+			$max = $min = 0;
+			foreach ($courses as $value) {
         $params_url = $value['num']['total'].'/'.$value['num']['done']. 
               '/'.$value['num']['ask'].'/'.$value['num']['rem'];
-      if ($value['num']['total'] > 0) { ?> 
+      if ($value['num']['total'] > 0) { 
+					$max = ($value['num']['total']>$max) ? $value['num']['total']:$max;		
+					$course = $value['title'];
+					$data[$course] = array($value['num']['done'],$value['num']['ask'],$value['num']['rem']);
+			?> 
     <div class="column span-24 first last">     
-      <a class="prog-link" href="<?php echo site_url("materials/home/{$value['id']}"); ?>">       
-        <div class="column span-15 first">
-          Total Objects: <?=$value['num']['total'] ?>
-          &nbsp; &nbsp;
-          Cleared Objects: <?=$value['num']['done'] ?>
-          &nbsp; &nbsp;
-          Objects in progress: <?=$value['num']['ask'] ?>
-          &nbsp; &nbsp;
-          Remaining Objects: <?=$value['num']['rem'] ?>
-              <img src="<?= site_url("/home/make_bar/$params_url") ?>" 
-              alt="Progress Bar: 
-              Total Objects=<?=$value['num']['total'] ?>
-              Cleared Objects=<?=$value['num']['done'] ?> 
-              Objects in progress=<?=$value['num']['ask'] ?> 
-              Remaining Objects=<?=$value['num']['rem'] ?>"
-              class="prog-bar">
+			<h2><?= $value['number'].' '.$value['title'].' ('.$value['num']['total'].' content objects)';?></h2>
+        <div class="column span-15 first" style="margin-bottom: 20px;">
+							<?php
+									$cl = $value['num']['done'] / $value['num']['total'];
+									$inp = $value['num']['ask'] / $value['num']['total'];
+									$rem = $value['num']['rem'] / $value['num']['total'];
+									$chd = "chd=t:$cl,$inp,$rem";
+									$chl = 'chl=Cleared|In Progress|Not Cleared';
+									$chco = 'chco=00FF00,FFFF00,FF0000';
+									$chdl = "chl=Not+Cleared+({$value['num']['rem']})|In+Progress+({$value['num']['ask']})|Done+({$value['num']['done']})";
+									$params = "&$chd&$chdl&$chco&chdlp=r";
+              		$title="Progress Chart: {$value['num']['total']} Total objects, {$value['num']['done']} Cleared Objects, {$value['num']['ask']} In progress objects, {$value['num']['rem']} Remaining objects";
+							?>
+      <a class="prog-link" href="<?php echo site_url("materials/home/{$value['id']}"); ?>"><img src="http://chart.apis.google.com/chart?cht=p&chs=450x100&<?=$params?>" title="<?=$title?>"/></a>
+							<br/><br/><br/>
         </div>
-        <div class="column span-8 last prog-title">
-            <?=$value['number'] ?> <?=$value['title'] ?>
-        </div>
-      </a>
     </div>
   <?php } else { ?>
   <div class="column span-24 first last prog-no-CO">
-    <h2><a href="<?php echo site_url("materials/home/{$value['id']}"); ?>" >
-        <?=$value['number'] ?> <?=$value['title'] ?>
-        </a> does not contain any content objects.<br />
+    <h2><a href="<?php echo site_url("materials/home/{$value['id']}"); ?>" ><?=$value['number'] ?> <?=$value['title'] ?></a> does not contain any content objects.<br />
     </h2>
   </div>
-  <?php  }}} else { ?>
+  <?php  }
+    }
+		$c = $s = '';
+		$chco = '00FF00,FFFF00,FF0000';
+		for ($i=0; $i < 3; $i++) {
+				if ($s<>'') { $s .= '|'; }
+		foreach ($data as $course => $d) {
+				if ($c<>'' && $i==0) { $c .= '|'; }
+				if ($s<>'' && !preg_match('/\|$/',$s)) { $s .= ','; }
+				 if ($i==0) { $c .= $course; }
+				 $s .= $d[$i];
+		} 
+	 }
+?>
+<!-- bar graph -->
+    <img src="http://chart.apis.google.com/chart?cht=bhs&chs=550x300&chco=<?=$chco?>&chd=t:<?=$s?>&chtx=y,x&chxl=0:|<?=$c?>|1:|<?=$min.'|'.$max?>&chds=<?=$min.','.$max?>" />
+
+<?php
+		} else { ?>
   <div class="column span-24 first last">
     You have no courses at present. Ask one of the staff to assign a course.
   </div>

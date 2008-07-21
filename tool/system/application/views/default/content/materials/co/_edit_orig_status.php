@@ -18,6 +18,8 @@
 							<a href="#orig_q_addpanel" onclick="orig_q_ap.setrole('instructor'); orig_q_ap.show();">Ask instructor additional questions</a>&nbsp;&raquo;
 							<br/><br/>
 							<a href="#origquestions">View answers</a>&nbsp;&raquo;
+							<br/><br/>
+							<?php echo $this->coobject->ask_instructor_report($cid,$mid,$obj,'original'); ?>
 				</div>
  	  </td>
 	</tr>

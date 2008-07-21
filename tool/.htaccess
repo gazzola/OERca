@@ -1,5 +1,5 @@
 <ifmodule mod_rewrite.c>
 RewriteEngine on
-RewriteCond $1 !^(index\.php|images|robots\.txt|assets|public|tmp|uploads|file_conv\.php|snapper)
+RewriteCond $1 !^(index\.php|images|robots\.txt|assets|public|tmp|uploads|file_conv\.php|snapper|report.php)
 RewriteRule ^(.*)$ /tool/index.php/$1 [L]
 </IfModule>
