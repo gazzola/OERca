@@ -12,9 +12,9 @@
 |
 */
 if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']=='on') {
-		$config['base_url']	= "https://{$_SERVER['HTTP_HOST']}/oerbob/";
+		$config['base_url']	= "https://{$_SERVER['HTTP_HOST']}/oer/";
 } else {
-		$config['base_url']	= "http://{$_SERVER['HTTP_HOST']}/oerbob/";
+		$config['base_url']	= "http://{$_SERVER['HTTP_HOST']}/oer/";
 }
 
 /*
