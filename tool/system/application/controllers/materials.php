@@ -809,10 +809,11 @@ class Materials extends Controller {
 		
 		// get the permission contact
 		$permission = $this->coobject->getClaimsPermission($oid);
-		
+
+	$tab = $this->db_session->userdata('tab_name');
     if (isset($_REQUEST['tab'])) { $tab = $_REQUEST['tab'][0]; }
     if ($tab=='upload') { $_REQUEST['viewing'] = 'replacement'; }
-
+	$this->db_session->set_userdata('tab_name', $tab);
 		//$this->ocw_utils->dump($obj[0],true);
 
 		$data = array(
