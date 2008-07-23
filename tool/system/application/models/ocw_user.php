@@ -394,11 +394,12 @@ class OCW_user extends Model
 
 		} elseif ($urole=='dscribe2') {
 				// presently, dscribe2 have no formal relationships with instructors
-				if ($type=='instructor') { return 'Error: cannot define a relationship between instructor and dscribe2'; }
+				if ($type=='instructor' && $cid=='') { return 'Error: cannot define a relationship between instructor and dscribe2'; }
 
-				$field = 'dscribe1_id AS uid';
-				$table = 'dscribe2_dscribe1';
-				$where = array('dscribe2_id'=>$uid);
+				$field = ($type=='instructor' && $cid<>'') ? 'user_id as uid' : 'dscribe1_id AS uid';
+				$table = ($type=='instructor' && $cid<>'') ? 'acl' : 'dscribe2_dscribe1';
+				$where = ($type=='instructor' && $cid<>'') ? array('course_id'=>$cid,'role'=>'instructor')
+																									 : array('dscribe2_id'=>$uid);
 
 		} elseif ($urole=='instructor') {
 				// presently, dscribe2 have no formal relationships with instructors
