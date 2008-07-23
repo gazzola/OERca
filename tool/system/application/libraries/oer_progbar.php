@@ -280,10 +280,6 @@ class OER_progbar {
       $done_x2 = ($this->_set_prog_width($done_objects));
       imagefilledrectangle($this->im, $done_x1, $y1, $done_x2, $y2,
         $done_color);
-      // $done_text_loc = $this->_place_text($done_objects,
-      //   ($done_x2 - $done_x1));
-      // imagestring($this->im, $this->font, $done_text_loc["x"], 
-      //   $done_text_loc["y"], $done_objects, $text_color);
       $ask_x1 = $done_x2 + 1;
       $rem_x1 = $ask_x1;
       
@@ -293,10 +289,6 @@ class OER_progbar {
       $ask_x2 = $ask_x1 + ($this->_set_prog_width($ask_objects));
       imagefilledrectangle($this->im, $ask_x1, $y1, $ask_x2, $y2,
         $ask_color);
-      // $ask_text_loc = $this->_place_text($ask_objects,
-      //   ($ask_x2 - $ask_x1));
-      // imagestring($this->im, $this->font, ($done_x2 + $ask_text_loc["x"]),
-      //   $ask_text_loc["y"], $ask_objects, $text_color);
       $rem_x1 = $ask_x2 + 1;
     }
     
@@ -304,10 +296,6 @@ class OER_progbar {
       $rem_x2 = $rem_x1 + ($this->_set_prog_width($rem_objects));
       imagefilledrectangle($this->im, $rem_x1, $y1, $rem_x2, $y2,
         $rem_color);
-      // $rem_text_loc = $this->_place_text($rem_objects,
-      //   ($rem_x2 - $rem_x1));
-      // imagestring($this->im, $this->font, ($ask_x2 + $rem_text_loc["x"]),
-      //    $rem_text_loc["y"], $rem_objects, $text_color);
     }
   }
 

@@ -53,9 +53,6 @@ class Home extends Controller {
         				$value['num']['rem'] = $this->material->get_rem_count($value['id']);
       			}
 				}
-      	// get the navigation tab set
-      	$tabset = $this->oer_manage_nav->get_tabset($data['role']);
-      	$data['tabs'] = $this->navtab->make_tabs($tabset);
       	$this->layout->buildpage('homedscribe1', $data);
       
     } elseif ($data['role'] == 'dscribe2') {
