@@ -35,7 +35,9 @@ if ($num_avail[$view] == 0) {
 
     <tbody>
 		<?php 
-			if ($view == 'provenance') {
+			if ($view == 'general') {
+				$this->load->view(property('app_views_path').'/materials/askforms/instructor/inst_ne_general.php', $data); 
+			} elseif ($view == 'provenance') {
 				$this->load->view(property('app_views_path').'/materials/askforms/instructor/inst_ne_prov.php', $data); 
 
 			} elseif ($view == 'replacement') {

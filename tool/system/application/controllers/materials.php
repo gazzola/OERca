@@ -339,11 +339,12 @@ class Materials extends Controller {
 
 		/* info for queries sent to instructor */
 		if ($questions_to=='instructor' || ($role == 'instructor' && $questions_to=='') || $role=='') {
-				$view = (!in_array($view, array('provenance','replacement','done'))) ? 'provenance' : $view;
+				$view = (!in_array($view, array('general', 'provenance','replacement','done'))) ? 'general' : $view;
 
 				$prov_objects =  $this->coobject->coobjects($mid,'','Ask'); // objects with provenace questions
 				$repl_objects =  $this->coobject->replacements($mid,'','','Ask'); // objects with replacement questions
-				$num_obj = $num_repl = $num_prov = $num_done = 0;
+				$num_obj = $num_general = $num_repl = $num_prov = $num_done = 0;
+				$general = $done = array();
 
 				if ($prov_objects != null) {	
 						foreach($prov_objects as $obj) {
@@ -352,6 +353,39 @@ class Materials extends Controller {
 										$num_obj++;
 						}
 				}
+				
+				$orig_objs = $this->coobject->coobjects($mid);
+				if (!is_null($orig_objs)) {
+					foreach ($orig_objs as $obj) {
+										// get general question info for instructors 
+										if (!is_null($obj['questions'])) {
+												$questions = (isset($obj['questions']['instructor']) && sizeof($obj['questions']['instructor'])>0)	
+																	 ? $obj['questions']['instructor'] : null;
+				
+												if (!is_null($questions)) {
+														$notalldone = false;
+														$obj['otype'] = 'original';
+														foreach ($questions as $k => $q) { 
+																		 		if($q['status']<>'done') { $notalldone = true; }
+																 		 		$q['ta_data'] = array('name'=>$obj['otype'].'_'.$obj['id'].'_'.$q['id'],
+																													   	'value'=>$q['answer'],
+																													   	'class'=>'do_d2_question_update',
+																													   	'rows'=>'10', 'cols'=>'60');
+																 		 		$q['save_data'] = array('name'=>$obj['otype'].'_status_'.$obj['id'],
+																											   	  	  'id'=>'close_'.$obj['id'],
+																												        'value'=>'Save for later',
+																												        'class'=>'do_d2_question_update');
+																 		 		$q['send_data'] = array('name'=>$obj['otype'].'_status_'.$obj['id'],
+																															  'value'=>'Send to dScribe', 'class'=>'do_d2_question_update');
+															 		 			$obj['questions']['instructor'][$k] = $q;
+														}
+														if ($notalldone) { array_push($general, $obj); $num_general++;} 
+														else { array_push($done['general'],$obj); $num_done++; }
+												}
+										}
+					}
+				}
+				
 				if ($repl_objects != null) {	
 						foreach($repl_objects as $obj) {
 										if ($obj['ask_status'] == 'done') { $num_done++; }
@@ -361,14 +395,18 @@ class Materials extends Controller {
 				}
 				
 				$data['view'] = $view; 
+				
+				//$data['cos'] = $info[$view]; 
 				$data['num_done'] = $num_done; 
+				$data['num_general'] = $num_general;
 				$data['num_prov'] = $num_prov; 
 				$data['num_repl'] = $num_repl; 
 				$data['numobjects'] = $num_obj;
 				$data['need_input'] = $num_prov + $num_repl;
 				$data['prov_objects'] = $prov_objects; 
 				$data['repl_objects'] = $repl_objects; 
-				$data['num_avail'] = array('provenance'=>$num_prov, 'replacement'=>$num_repl, 'done'=>$num_done);
+				$data['general'] = ($num_general != 0)?$general:null;
+				$data['num_avail'] = array('general'=>$num_general, 'provenance'=>$num_prov, 'replacement'=>$num_repl, 'done'=>$num_done);
 				$data['list'] = $this->ocw_utils->create_co_list($cid,$mid,$prov_objects);
 
 		} elseif ($questions_to=='dscribe2' || (($role=='dscribe1' || $role=='dscribe2') && $questions_to=='')) { // dscribes page info

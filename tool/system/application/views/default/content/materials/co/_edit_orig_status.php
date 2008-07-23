@@ -13,7 +13,7 @@
 
 				<div id="ask_yes" style="display: <?= ($obj['ask']=='yes') ? 'inline':'none'?>"> 
 							<br/><br/>
-							<a target="_new" href="<?=site_url("materials/askforms/$cid/$mid/provenance/instructor")?>">View ASK form</a> to see the default questions.
+							<a target="_new" href="<?=site_url("materials/askforms/$cid/$mid/general/instructor")?>">View ASK form</a> to see the default questions.
 							<br/><br/>
 							<a href="#orig_q_addpanel" onclick="orig_q_ap.setrole('instructor'); orig_q_ap.show();">Ask instructor additional questions</a>&nbsp;&raquo;
 							<br/><br/>
