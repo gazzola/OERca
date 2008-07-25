@@ -3,10 +3,12 @@
 * Visit DynamicDrive.com for hundreds of original DHTML scripts
 * This notice must stay intact for legal use
 ***********************************************/
-
 //Input the IDs of the IFRAMES you wish to dynamically resize to match its content height:
 //Separate each ID with a comma. Examples: ["myframe1", "myframe2"] or ["myframe"] or [] for none:
+
+
 var iframeids=["materialsframe","edit-co-frame"]
+//var iframeids=[];
 
 //Should script hide iframe from browsers that don't support this script (non IE5+/NS6+ browsers. Recommended):
 var iframehide="yes"
@@ -28,20 +30,27 @@ tempobj.style.display="block"
 }
 
 function resizeIframe(frameid){
-var currentfr=document.getElementById(frameid)
+
+var currentfr=document.getElementById(frameid);
+
 if (currentfr && !window.opera){
-currentfr.style.display="block"
-if (currentfr.contentDocument && currentfr.contentDocument.body.offsetHeight) //ns6 syntax
-currentfr.height = currentfr.contentDocument.body.offsetHeight+FFextraHeight+50; 
-else if (currentfr.Document && currentfr.Document.body.scrollHeight) //ie5+ syntax
-currentfr.height = currentfr.Document.body.scrollHeight+50;
-if (currentfr.addEventListener)
-currentfr.addEventListener("load", readjustIframe, false)
-else if (currentfr.attachEvent){
-currentfr.detachEvent("onload", readjustIframe) // Bug fix line
-currentfr.attachEvent("onload", readjustIframe)
+	currentfr.style.display="block"
+	if (currentfr.contentDocument && currentfr.contentDocument.body.offsetHeight) //ns6 syntax
+		currentfr.height = currentfr.contentDocument.body.offsetHeight+FFextraHeight+50; 
+	else if (currentfr.Document && currentfr.Document.body.scrollHeight) //ie5+ syntax
+	{
+		//var new_h = currentfr.contentWindow.document.body.scrollHeight+100;
+		//currentfr.style.height = new_h+"px";
+		currentfr.style.height = "1600px";
+	}
+	if (currentfr.addEventListener)
+		currentfr.addEventListener("load", readjustIframe, false)
+	else if (currentfr.attachEvent){
+		currentfr.detachEvent("onload", readjustIframe) // Bug fix line
+		currentfr.attachEvent("onload", readjustIframe)
+	}
 }
-}
+
 }
 
 
@@ -63,3 +72,4 @@ else if (window.attachEvent)
 window.attachEvent("onload", resizeCaller)
 else
 window.onload=resizeCaller
+
