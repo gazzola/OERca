@@ -18,7 +18,7 @@
 		$fairuse = 'Fair Use ('.$num_fairuse.')'; 
 		$permission = 'Permission ('.$num_permission.')';
 		$commission = 'Commission ('.$num_commission.')';
-		$retain = 'No Copyright ('.$num_retain.')';
+		$retain = 'Retain ('.$num_retain.')';
 		$aitems = 'Addressed Items ('.$num_done.')';
 	?>
    <div id="navlist">
