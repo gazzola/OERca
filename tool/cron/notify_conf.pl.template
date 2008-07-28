@@ -1,0 +1,27 @@
+#!/usr/bin/perl
+
+use strict;
+
+###
+### Change these values to match your server settings!
+###
+
+# database host name
+$notify_config::db_host = '';
+
+# database name
+$notify_config::db_name = '';
+
+# database user name
+$notify_config::db_user = '';
+
+# database password
+$notify_config::db_pass = '';
+
+# Base URL to be used in mail messages
+# e.g. http://bezak.umms.med.umich.edu/oer/
+$notify_config::site_url = '';
+
+# mail relay server to be used
+# e.g. mail-relay.itd.umich.edu
+$notify_config::mail_relay = '';

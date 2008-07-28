@@ -6,15 +6,18 @@ use Email::Valid;
 use Mail::Sendmail;
 use DBI;
 
-## --------- Change these values to match the server settings --
-my $db_name = '';  # database name
-my $db_host = '';  # database host name
-my $db_user = '';  # database user name
-my $db_pass = '';  # database password
-my $site_url = ''; # e.g. http://bezak.umms.med.umich.edu/oer/
-
-
 ## ----------- Do not edit below this line unless you know what you're doing --
+
+## --------- Obtain configuration information --
+do "notify_conf.pl" or die "Unable to obtain configuration information from notify_conf.pl";
+
+my $db_host = $notify_config::db_host;
+my $db_name = $notify_config::db_name;
+my $db_user = $notify_config::db_user;
+my $db_pass = $notify_config::db_pass;
+my $site_url = $notify_config::site_url;
+my $mail_smtp = $notify_config::mail_smtp;
+
 
 # check command line arguments 
 if (!check_args($ARGV[0])) { usage(); } 
@@ -214,7 +217,7 @@ sub email
 			Subject => $subject,
 			Message => $msg,
 		);
-  	$mail{Smtp} = 'mail-relay.itd.umich.edu';
+  	$mail{Smtp} = $mail_smtp;
 		sendmail(%mail) or die $Mail::Sendmail::error;
 	}
 	return 1;
@@ -233,6 +236,6 @@ sub check_args
 sub usage
 {
 	print "\nUSAGE: $0 <receiver role>\n\n";
-	print "<receiver role> = dscribe1|dscribe1|instructor\n\n";
+	print "<receiver role> = dscribe1|dscribe2|instructor\n\n";
 	exit(0);
 }
