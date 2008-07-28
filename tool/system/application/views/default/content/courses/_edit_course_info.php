@@ -1,17 +1,42 @@
 <?php	
 // TODO: Narrow down pulldown choices using on select events in previous
 // menu
-?>
+echo style('blueprint/screen.css',array('media'=>"screen, projection"));
+echo style('blueprint/print.css',array('media'=>"print"));
+echo '<!--[if IE]>'.style('blueprint/lib/ie.css',array('media'=>"screen, projection")).'<![endif]-->';
+echo style('style.css',array('media'=>"screen, projection"));
+echo style('mootabs1.2.css',array('media'=>"screen, projection"));
+echo '<style type="text/css">body { background-color: #222; padding: 15px; margin:auto; width: 800px; border:0px solid blue; height:450px; color:#999}</style>';
 
-<div id="pane_courseinfo" class="editpane">
-  <div class="column span-21 firstlast">
-    <?php echo form_open_multipart("courses/edit_course_info/$cid"); ?>
+echo script('mootools.js');
+echo script('mootabs1.2.js');
+echo script('event-selectors.js');
+echo script('event-rules.js');
+
+echo script('flash.js');
+
+$flash=$this->db_session->flashdata('flashMessage');
+if (isset($flash) AND $flash!='') {
+?>
+<!--START FLASH MESSAGE-->
+<div id="statusmsg" class="column span-20 first last">
+  <div id="flashMessage" style="display:none;"><?=$flash?></div>
+</div>
+<!--END FLASH-->
+<?php } ?>
+
+<h2>Edit Course</h2>
+
+<div class="column span-21 first last">
+    <?php echo form_open_multipart("courses/edit_course_info/$cid/edit"); ?>
       <div class="column span-6 colborder">
         <div class="formLabel">School:</div>
         <div class="formField">
           <?php echo form_dropdown('school_id', $school_id, 
           $coursedetails['school_id'], 'id="school_id"'); ?>
         </div>
+
+				<br/>
       
         <div class="formLabel">Course Subject:</div>
         <div class="formField">
@@ -20,36 +45,48 @@
            ?>
         </div>
       
+				<br/>
+      
         <div class="formLabel">Course Number:</div>
         <div class="formField">
           <input type="text" name="cnum" id ="cnum" 
           value="<?=$coursedetails['number'] ?>" class="input" />
         </div>
 
+				<br/>
+      
         <div class="formLabel">Title:</div>
         <div class="formField">
           <input type="text" name="title" id="title" 
           value="<?=$coursedetails['title'] ?>" class="input" />
         </div>
 
+				<br/>
+      
         <div class="formLabel">Level:</div>
         <div class="formField">
           <?php echo form_dropdown('courselevel', $courselevel, 
           $coursedetails['level'], 'id="courselevel"'); ?>
         </div>
 
+				<br/>
+      
         <div class="formLabel">Length:</div>
         <div class="formField">
           <?php echo form_dropdown('courselength', $courselength, 
           $coursedetails['length'], 'id="courselength"'); ?>
         </div>
         
+				<br/>
+      
         <div class="formLabel">Term:</div>
         <div class="formField">
           <?php echo form_dropdown('term', $term, $coursedetails['term'], 
           'id="term"'); ?>
         </div>
 
+				<br/>
+      
         <div class="formLabel">Year:</div>
         <div class="formField">
           <?php echo form_dropdown('year', $year, $curryear, 'id="year"'); ?>
@@ -63,24 +100,32 @@
          value="<?=$coursedetails['director'] ?>" class="input" />
        </div>
         
+				<br/>
+      
         <div class="formLabel">Creator:</div>
         <div class="formField">
           <input type="text" name="creator" id="creator" 
           value="<?=$instdetails['name'] ?>" class="input" />
         </div>
 
+				<br/>
+      
         <div class="formLabel">Collaborators:</div>
         <div class="formField">
           <input type="text" name="collaborators" id="collaborators"
           value="<?=$coursedetails['collaborators'] ?>" class="input" />
         </div>
         
+				<br/>
+      
         <!-- <div class="formLabel">Copyright Holder:</div>
         <div class="formField">
           <input type="text" name="copyright_holder" id="copyright_holder"
            class="input" />
         </div> -->
         
+				<br/>
+      
         <div class="formLabel">Language:</div>
         <div class="formField">
           <input type="text" name="language" id="language" 
@@ -92,10 +137,14 @@
           <input type="text" name="currinfo" id="currinfo" class="input" />
         </div> -->
         
+				<br/>
+      
         <!-- <div class="formLabel">Lifecycle Version:</div>
         <div class="formField">
           <input type="text" name="lcversion" id="lcversion" class="input" />
         </div> -->
+				<br/>
+      
         <!-- TODO: Enable image upload -->
         <!-- <div class="formLabel">Course Image/Icon:</div>
         <div class="formField">
@@ -118,17 +167,18 @@
         <div class="formField">
           <?php echo form_textarea($keywordbox); ?>
         </div>
+     </div>
         
-        <div class="formField">
-          <br />
-          <input type="submit" value="Save" />
-        </div>
-      </div>
-    </form>
-  </div>
-  
-  <div class="column span-21 firstlast" style="margin-top:50px; 
-  text-align:right;">
-    <input type="button" value="Close" id="do_close_courseinfo_pane"/>
-  </div>
+		<br style="clear:both"/><br/><br/>
+		<span style="text-align:center">
+			<input type="submit" value="Save" />&nbsp;&nbsp;
+			<input type="button" value="Cancel" onclick="parent.TB_remove();"/>
+		</span>
+  </form>
 </div>
+ 
+<div id="feedback" style="display:none"></div>
+<input type="hidden" id="cid" name="cid" value="<?=$cid?>" />
+<input type="hidden" id="imgurl" value="<?=property('app_img')?>" />
+<input type="hidden" id="server" value="<?=site_url();?>" />
+<script type="text/javascript">EventSelectors.start(Rules);</script>

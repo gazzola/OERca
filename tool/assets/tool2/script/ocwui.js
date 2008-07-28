@@ -1,7 +1,7 @@
 var orig_com_ap, orig_q_ap, repl_com_ap, repl_q_ap; // references for add panel divs
 
 // boolean values to determine if to open add pane - used in case of errors
-var open_uploadmat_pane, open_editcourse_pane, open_uploadco_pane, open_editinst_pane;
+var open_uploadco_pane, open_editinst_pane;
 
 // boolean value for edit co page
 var open_coinfo_pane;
@@ -55,9 +55,9 @@ var Site = {
     if($('filter-type')) Site.filtertype();
     if($('myTabs')) Site.setuptabs();
 
-    if ($('do_open_courseinfo_pane')) Site.course_page_setup();
+    //if ($('do_open_editinst_pane')) Site.course_page_setup();
 
-    if ($('do_open_matinfo_pane')) Site.co_page_setup();
+    if ($('do_open_uploadco_pane')) Site.co_page_setup();
     
     if ($('do_open_coinfo_pane')) Site.coinfo_page_setup();
 
@@ -99,64 +99,11 @@ var Site = {
   },
 
   course_page_setup: function() {
-    var edit_course = new Fx.Slide($('pane_courseinfo')).hide();
-    var upload_mat = new Fx.Slide($('pane_uploadmat')).hide();
     // var edit_inst = new Fx.Slide($('pane_instinfo')).hide();
-
-    $('do_open_courseinfo_pane').addEvent('click', function(e) {
-      e = new Event(e);
-
-      // hide other panes
-      upload_mat.hide();
-      // edit_inst.hide();
-      $('do_open_uploadmat_pane').parentNode.className= 'normal';
-      // $('do_open_instinfo_pane').parentNode.className= 'normal';
-
-      edit_course.toggle();
-      var addclass = ($('do_open_courseinfo_pane').parentNode.className=='active') ? 'normal' : 'active';
-      var rmvclass = ($('do_open_courseinfo_pane').parentNode.className=='active') ? 'active' : 'normal';
-      $(this.parentNode).removeClass(rmvclass).addClass(addclass);
-      e.stop(); 
-    });
-    $('do_close_courseinfo_pane').addEvent('click', function(e) {
-      e = new Event(e);
-      edit_course.toggle();
-      $('do_open_courseinfo_pane').parentNode.removeClass('active').addClass('normal');
-      e.stop(); 
-    });
-
-
-    $('do_open_uploadmat_pane').addEvent('click', function(e) {
-      e = new Event(e);
-
-      // hide other pains
-      edit_course.hide();
-      // edit_inst.hide();
-      $('do_open_courseinfo_pane').parentNode.className= 'normal';
-      // $('do_open_instinfo_pane').parentNode.className= 'normal';
-
-      upload_mat.toggle();
-      var addclass = ($('do_open_uploadmat_pane').parentNode.className=='active') ? 'normal' : 'active';
-      var rmvclass = ($('do_open_uploadmat_pane').parentNode.className=='active') ? 'active' : 'normal';
-      $(this.parentNode).removeClass(rmvclass).addClass(addclass);
-      e.stop(); 
-    });
-    $('do_close_uploadmat_pane').addEvent('click', function(e) {
-      e = new Event(e);
-      upload_mat.toggle();
-      $('do_open_uploadmat_pane').parentNode.removeClass('active').addClass('normal');
-      e.stop(); 
-    });
 
 		// if($('do_open_instinfo_pane')) {
 		  //   $('do_open_instinfo_pane').addEvent('click', function(e) {
 		    //   e = new Event(e);
-		
-		      //hide other panes
-	// 	      upload_mat.hide();
-// 		      edit_course.hide();
-// 		      $('do_open_uploadmat_pane').parentNode.className= 'normal';
-// 		      $('do_open_courseinfo_pane').parentNode.className= 'normal';
 		
 // 		      edit_inst.toggle();
 // 		      var addclass = ($('do_open_instinfo_pane').parentNode.className=='active') ? 'normal' : 'active';
@@ -172,16 +119,11 @@ var Site = {
 // 		    });
 // 		}
 
-    if (open_uploadmat_pane) { upload_mat.toggle();
-      $('do_open_uploadmat_pane').parentNode.removeClass('normal').addClass('active');
-    }		
-    if (open_editcourse_pane) { edit_course.toggle();
-      $('do_open_courseinfo_pane').parentNode.removeClass('normal').addClass('active');
-    }
     // if (open_editinst_pane) { edit_inst.toggle();
     //   $('do_open_instinfo_pane').parentNode.removeClass('normal').addClass('active');
     // }
   },
+
   // toggle the content object information panel
   coinfo_page_setup: function() {
  
@@ -212,71 +154,12 @@ var Site = {
 
   co_page_setup: function () {
     // toggle edit panes for material attributes
-    var edit_mat = new Fx.Slide($('pane_matinfo')).hide();
-    var view_comm = new Fx.Slide($('pane_matcomm')).hide();
     var upload_co = new Fx.Slide($('pane_uploadco')).hide();
-
-
-    $('do_open_matinfo_pane').addEvent('click', function(e) {
-      e = new Event(e);
-			var appv =  ($('snapper-form')) ? true : false;
-			var appletview = (appv)  ? document.clipboard : ''; 
-
-      // close other panes
-      view_comm.hide();
-			if (appv) appletview.style.display='none';
-      upload_co.hide();
-      $('do_open_matcomm_pane').parentNode.className= 'normal';
-      $('do_open_uploadco_pane').parentNode.className= 'normal';
-
-      edit_mat.toggle();
-      var addclass = ($('do_open_matinfo_pane').parentNode.className=='active') ? 'normal' : 'active';
-      var rmvclass = ($('do_open_matinfo_pane').parentNode.className=='active') ? 'active' : 'normal';
-      $(this.parentNode).removeClass(rmvclass).addClass(addclass);
-
-      e.stop(); 
-    });
-    $('do_close_matinfo_pane').addEvent('click', function(e) {
-      e = new Event(e);
-      edit_mat.toggle();
-      $('do_open_matinfo_pane').parentNode.removeClass('active').addClass('normal');
-      e.stop(); 
-    });
-
-    $('do_open_matcomm_pane').addEvent('click', function(e) {
-      e = new Event(e);
-			var appletview = document.clipboard;
-
-      // close other panes
-      edit_mat.hide();
-			appletview.style.display='none';
-      upload_co.hide();
-      $('do_open_matinfo_pane').parentNode.className= 'normal';
-      $('do_open_uploadco_pane').parentNode.className= 'normal';
-
-      view_comm.toggle();
-      var addclass = ($('do_open_matcomm_pane').parentNode.className=='active') ? 'normal' : 'active';
-      var rmvclass = ($('do_open_matcomm_pane').parentNode.className=='active') ? 'active' : 'normal';
-      $(this.parentNode).removeClass(rmvclass).addClass(addclass);
-      e.stop(); 
-    });
-    $('do_close_matcomm_pane').addEvent('click', function(e) {
-      e = new Event(e);
-      view_comm.toggle();
-      $('do_open_matcomm_pane').parentNode.removeClass('active').addClass('normal');
-      e.stop(); 
-    });
 
     $('do_open_uploadco_pane').addEvent('click', function(e) {
       e = new Event(e);
 			var appv =  ($('snapper-form')) ? true : false;
 			var appletview = (appv)  ? document.clipboard : ''; 
-
-      // close other panes
-      edit_mat.hide();
-      view_comm.hide();
-      $('do_open_matinfo_pane').parentNode.className= 'normal';
-      $('do_open_matcomm_pane').parentNode.className= 'normal';
 
 			if (appv) appletview.style.display='block';
       upload_co.toggle();

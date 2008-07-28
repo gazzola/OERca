@@ -54,7 +54,13 @@
   		</td>
 		
   		<td>
-  			<a href="<?php echo site_url()."materials/edit/$cid/".$material['id'].'/'.$caller?>"><?= $material['name']?>&nbsp;&nbsp;</a>
+  			<span style="font-size: 13px;"><a href="<?php echo site_url()."materials/edit/$cid/".$material['id'].'/'.$caller?>"><?= $material['name']?></a></span>
+				<br/>
+				<span style="font-size:9px; clear:both; margin-top:20px;">
+						<a href="<?=site_url("materials/editinfo/$cid/{$material['id']}")?>?TB_iframe=true&height=500&width=350" class="smoothbox tooltip" title="<b>Editing <?=$material['name']?> Info</b>">Edit</a>&nbsp;|&nbsp;
+						<a href="<?=site_url("materials/editcomments/$cid/{$material['id']}")?>?TB_iframe=true&height=500&width=350" class="smoothbox tooltip" title="<b>Comments for <?=$material['name']?></b>">Comments</a>&nbsp;|&nbsp;
+						<a href="<?=site_url("materials/askforms/$cid/{$material['id']}")?>" class="tooltip" title="View Material ASK forms">ASK Forms</a>
+				</span>
   		</td>
 
   		<?php if ($material['mimetype'] == 'folder') { ?>
@@ -117,4 +123,10 @@
   </div>
 </form>
 <?php }}  ?>
+
+<script type="text/javascript">
+window.addEvent('domready', function() {
+    var myTips = new MooTips($$('.tooltip'), { maxTitleChars: 50 });
+});
+</script>
 <?php $this->load->view(property('app_views_path').'/materials/materials_footer.php', $data); ?>

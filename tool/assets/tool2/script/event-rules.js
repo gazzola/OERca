@@ -123,7 +123,7 @@ var Rules = {
                      	onComplete:function() {
                         response = fb.innerHTML;
                         if (response=='success') {
-                            url = $('server').value+'materials/edit/'+course_id+'/'+material_id;
+                            url = $('server').value+'materials/editcomments/'+course_id+'/'+material_id;
                             window.location.replace(url);
                         } else {
                             alert(response);

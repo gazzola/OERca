@@ -62,115 +62,7 @@ class Materials extends Controller {
     $tags =  $this->tag->tags();
     $materials =  $this->material->materials($cid,'',true,true);
     $mimetypes =  $this->mimetype->mimetypes();
-    $school_id = $this->school->get_school_list();
-    $subj_id = $this->subject->get_subj_list();
     $coursedetails = $this->course->get_course($cid);
-    
-    // only get instructor details if an instructor is defined for the course
-    $instdetails = array(
-      "name" => NULL,
-      "title" => NULL,
-      "info" => NULL,
-      "uri" => NULL,
-      "imagefile" => NULL
-      );
-    if (isset($coursedetails['instructor_id'])) {
-       $instdetails = $this->instructors->
-       get_inst($coursedetails['instructor_id']);
-    }
-    
-    $missing_menu_val = "-- select --";
-    $school_id[0] = $missing_menu_val;
-    $subj_id[0] = $missing_menu_val;
-    // TODO: consider combining enum fetches into a single DB call since
-    //      DB queries are expensive operations
-    
-    // get the enum values for the pulldowns
-    $courselevel = NULL;
-    $clevelsindb = $this->dbmetadata->
-      get_enum_vals('ocw_courses', 'level');
-    foreach ($clevelsindb as $levelval) {
-      $courselevel[$levelval] = $levelval;
-    }
-
-    $courselength = NULL;
-    $clengthindb = $this->dbmetadata->
-      get_enum_vals('ocw_courses', 'length');
-    foreach ($clengthindb as $lengthval) {
-      $courselength[$lengthval] = $lengthval;
-    }
-
-    $term = NULL;
-    $termnamesindb = $this->dbmetadata->
-      get_enum_vals('ocw_courses', 'term');
-    foreach ($termnamesindb as $termname) {
-      $term[$termname] = $termname;
-    }
-
-    $curryear = mdate('%Y');
-
-    $year = array(
-      ($curryear + 2) => ($curryear + 2),
-      ($curryear + 1) => ($curryear + 1),
-      ($curryear) => ($curryear),
-      ($curryear - 1) => ($curryear - 1),
-      ($curryear - 2) => ($curryear - 2),
-      ($curryear - 3) => ($curryear - 3),
-      ($curryear - 4) => ($curryear - 4),
-      ($curryear - 5) => ($curryear - 5)
-      );
-
-    // form field attributes
-    $coursedescbox = array(
-      'name' => 'description',
-      'id' => 'description',
-      'wrap' => 'virtual',
-      'rows' => '20',
-      'cols' => '40',
-      'value' => $coursedetails['description']
-      );
-
-    $coursehighlightbox = array(
-      'name' => 'highlights',
-      'id' => 'highlights',
-      'wrap' => 'virtual',
-      'rows' => '5',
-      'cols' => '40',
-      'value' => $coursedetails['highlights']
-      );
-
-    $keywordbox = array(
-      'name' => 'keywords',
-      'id' => 'keywords',
-      'wrap' => 'virtual',
-      'rows' => '3',
-      'cols' => '40',
-      'value' => $coursedetails['keywords']
-      );
-      
-      
-    $titlebox = array(
-      'name' => 'title',
-      'id' => 'title',
-      'wrap' => 'virtual',
-      'rows' => '10',
-      'cols' => '40',
-      'value' => $instdetails['title']
-      );
-      
-    $inst_infobox = array(
-      'name' => 'info',
-      'id' => 'info',
-      'wrap' => 'virtual',
-      'rows' => '20',
-      'cols' => '40',
-      'value' => $instdetails['info']
-      );
-      
-    if ($coursedetails['year'] != 0000) {
-      $curryear = $coursedetails['year'];
-    }
-    
     
     $data = array('title'=>'Materials',
       'materials'=>$materials, 
@@ -180,20 +72,6 @@ class Materials extends Controller {
       'caller'=>$caller,
       'tags'=>$tags,
       'openpane'=>$openpane,
-      'courselevel' => $courselevel,
-      'courselength' => $courselength,
-      'coursedescbox' => $coursedescbox,
-      'coursehighlightbox' => $coursehighlightbox,
-      'keywordbox' => $keywordbox,
-      'term' => $term,
-      'curryear' => $curryear,
-      'year' => $year,
-      'school_id' => $school_id,
-      'subj_id' => $subj_id,
-      'coursedetails' => $coursedetails,
-      'titlebox' => $titlebox,
-      'inst_infobox' => $inst_infobox,
-      'instdetails' => $instdetails
       );
       
     $this->layout->buildPage('materials/index', $data);
@@ -212,6 +90,32 @@ class Materials extends Controller {
 		}
 	}
 
+	public function editinfo($cid, $mid)
+	{
+		$tags =  $this->tag->tags();
+		$mimetypes =  $this->mimetype->mimetypes();
+	  $course = $this->course->get_course($cid); 
+		$material =  $this->material->materials($cid,$mid,true);
+
+		$data = array(
+					  'material'=>$material[0], 
+					  'cid'=>$cid,
+					  'mid'=>$mid,
+	   				'course'=> $course,
+				  	'tags'=>$tags,
+				  	'mimetypes'=>$mimetypes,
+		);
+
+    $this->load->view(property('app_views_path').'/materials/_edit_material_info.php', $data);
+	}
+
+	public function editcomments($cid, $mid)
+	{
+		$material =  $this->material->materials($cid,$mid,true);
+		$data = array('material'=>$material[0], 'cid'=>$cid, 'mid'=>$mid);
+    $this->load->view(property('app_views_path').'/materials/_edit_material_comments.php', $data);
+	}
+
 	public function add_comment($cid,$mid)
 	{
 		 if (isset($_REQUEST['comments']) && $_REQUEST['comments']<>'') {
@@ -224,44 +128,52 @@ class Materials extends Controller {
      exit;
 	}
 
-	public function	add_material($cid,$type)
+	public function	add_material($cid,$type,$action='add')
 	{
-		$valid = true;
-		$errmsg = '';
-		#$this->ocw_utils->dump($_POST);
-		#$this->ocw_utils->dump($_FILES,true);
-
-		$idx = ($type=='bulk') ? 'zip_userfile' : 'single_userfile';
-		
-		if (!isset($_FILES[$idx]['name']) || $_FILES[$idx]['name']=='') {
-				$errmsg = 'Please specify a file to upload';
-				$valid = false;
-				
-		} elseif (isset($_FILES[$idx]['name']) && $type=='bulk' && !preg_match('/\.zip$/',$_FILES[$idx]['name'])) {
-				$errmsg .= (($errmsg=='') ? '':'<br/>')."Can only upload ZIP files for bulk uploads";
-				$valid = false;
+		if ($action == 'add') {
+					$valid = true;
+					$errmsg = '';
+					#$this->ocw_utils->dump($_POST);
+					#$this->ocw_utils->dump($_FILES,true);
+			
+					$idx = ($type=='bulk') ? 'zip_userfile' : 'single_userfile';
+					
+					if (!isset($_FILES[$idx]['name']) || $_FILES[$idx]['name']=='') {
+							$errmsg = 'Please specify a file to upload';
+							$valid = false;
+							
+					} elseif (isset($_FILES[$idx]['name']) && $type=='bulk' && !preg_match('/\.zip$/',$_FILES[$idx]['name'])) {
+							$errmsg .= (($errmsg=='') ? '':'<br/>')."Can only upload ZIP files for bulk uploads";
+							$valid = false;
+					}
+			
+					if ($_POST['author']=='') {
+							$errmsg .= (($errmsg=='') ? '':'<br/>')."Author field is required.";
+							$valid = false;
+					}
+					
+					$role = getUserProperty('role');
+					if ($valid == FALSE) {
+							flashMsg($errmsg);
+							redirect("materials/add_material/$cid/$type/view", 'location');
+					}	else {
+							$r = $this->material->manually_add_materials($cid, $type, $_POST,$_FILES);
+							if ($r !== true) {
+									flashMsg($r);
+									redirect("materials/add_material/$cid/$type/view", 'location');
+							} else {
+									$msg = ($type=='bulk') ? 'Materials have been added.':'Added material to course.';
+									flashMsg($msg);
+									redirect("materials/home/$cid", 'location');
+							}
+					}	
+		} else {
+				// show add form
+				$tags =  $this->tag->tags();
+				$mimetypes =  $this->mimetype->mimetypes();
+				$data = array('tags'=>$tags, 'mimetypes'=>$mimetypes, 'cid'=>$cid, 'view'=>$type);
+    		$this->load->view(property('app_views_path').'/materials/_add_materials.php', $data);
 		}
-
-		if ($_POST['author']=='') {
-				$errmsg .= (($errmsg=='') ? '':'<br/>')."Author field is required.";
-				$valid = false;
-		}
-		
-		$role = getUserProperty('role');
-		if ($valid == FALSE) {
-				flashMsg($errmsg);
-				redirect("materials/home/$cid/$role/uploadmat", 'location');
-		}	else {
-				$r = $this->material->manually_add_materials($cid, $type, $_POST,$_FILES);
-				if ($r !== true) {
-						flashMsg($r);
-						redirect("materials/home/$cid/$role/uploadmat", 'location');
-				} else {
-						$msg = ($type=='bulk') ? 'Materials have been added.' : 'Added material to course.';
-						flashMsg($msg);
-						redirect("materials/home/$cid", 'location');
-				}
-		}	
 	}
 
 	public function	remove_material($cid, $mid)
@@ -277,7 +189,7 @@ class Materials extends Controller {
 		$mimetypes =  $this->mimetype->mimetypes();
 		$objstats =  $this->coobject->object_stats($mid);
 		$subtypes =  $this->coobject->object_subtypes();
-	        $course = $this->course->get_course($cid); 
+	  $course = $this->course->get_course($cid); 
 		$material =  $this->material->materials($cid,$mid,true);
 		$numobjects =  $this->coobject->num_objects($mid,$filter);
 		$objects =  $this->coobject->coobjects($mid,'',$filter);
@@ -302,6 +214,7 @@ class Materials extends Controller {
 
     $this->layout->buildPage('materials/edit_material', $data);
 	}
+
 
 
 	// displays ask forms for dscribes, dscribes2, instructors && ip review team

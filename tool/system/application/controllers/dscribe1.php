@@ -8,201 +8,46 @@
  * @copyright Copyright (c) 2006, University of Michigan
  */
 
-class Dscribe1 extends Controller {
-
-	private $uid;
-	private $data;
-	private $coursedetails;
-
+class Dscribe1 extends Controller 
+{
 	public function __construct()
 	{
 		parent::Controller();
 
 		$this->freakauth_light->check('dscribe1');
 
-		$this->load->helper('form');
-		$this->load->helper('text');
-		$this->load->library('zip');
-
-		$this->load->model('tag');
-		$this->load->model('course');
-	
-		$this->uid = getUserProperty('id');	
-		$this->data = array();
+		$this->load->model('ocw_user');
+		$this->load->model('material');
 	}
 
-	public function index($cid)
+	public function index()
 	{
-		$this->home($cid);
+		$this->home();
 	}
 
 	/**
      * Display dScribe dashboard 
      *
      * @access  public
-     * @param   int	course id		
      * @return  void
      */
-	public function home($cid)
+	public function home()
 	{
-		if ($this->_isValidUser($cid)) {
-			// make sure user is allowed to access this course
-			$this->data['title'] = $this->lang->line('ocw_dscribe');
-       		$this->layout->buildPage('dscribe1/index', $this->data);
+    $data = array('title' => 'Progress', 
+                  'role' => getUserProperty('role'),
+                  'name' => getUserProperty('name'));
+
+    $data['id'] = getUserProperty('id');
+    $data['courses'] = $this->ocw_user->get_courses_simple($data['id']);
+		if (is_array($data['courses'])) {
+      			foreach ($data['courses'] as $key => &$value) {
+        				$value['num']['total'] = $this->material->get_co_count($value['id']);
+        				$value['num']['done'] = $this->material->get_done_count($value['id']);
+        				$value['num']['ask'] = $this->material->get_ask_count($value['id']);
+        				$value['num']['rem'] = $this->material->get_rem_count($value['id']);
+      			}
 		}
+   	$this->layout->buildpage('dscribe1/index', $data);
 	}
-
-	/**
-     * Manage course materials page 
-     *
-     * @access  public
-     * @param   int	course id		
-     * @param   string	task		
-     * @param   int	 material id		
-     * @param   string field name 
-     * @param   mixed update values		
-     * @return  void
-     */
-	public function materials($cid, $task='', $mid='', $field='', $val='') 
-	{
-		$this->_isValidUser($cid); 
-		$this->data['title'] = $this->lang->line('ocw_ds_pagetitle_material'); 
-       	$this->layout->buildPage('dscribe1/manage_materials', $this->data);
-	}
-
-	/**
-     * Set course & instructor profiles 
-     *
-     * @access  public
-     * @param   int	course id		
-     * @param   string	task		
-     * @return  void
-     */
-	public function profiles($cid, $task='') 
-	{
-		$this->_isValidUser($cid); 
-		$this->data['title'] = $this->lang->line('ocw_ds_pagetitle_profiles'); 
-		$courseDetails = $this->course->get_course($cid);
-		$this->data['courseTitle'] = $courseDetails['title'];
-		$this->data['courseId'] = $courseDetails['number'];
-       	$this->layout->buildPage('dscribe1/set_profiles', $this->data);
-	}
-
-	/**
-     * Set default copyright 
-     *
-     * @access  public
-     * @param   int	course id		
-     * @param   string	task		
-     * @return  void
-     */
-	public function copyright($cid, $task='') 
-	{
-		$this->_isValidUser($cid); 
-		$this->data['title'] = $this->lang->line('ocw_ds_pagetitle_copy'); 
-       	$this->layout->buildPage('dscribe1/set_copyright', $this->data);
-	}
-
-
-	/**
-     * Edit tags
-     *
-     * @access  public
-     * @param   int	course id		
-     * @param   string	task		
-     * @return  void
-     */
-	public function tags($cid, $task='') 
-	{
-		$this->_isValidUser($cid); 
-		$this->data['title'] = $this->lang->line('ocw_ds_pagetitle_tag'); 
-       	$this->layout->buildPage('dscribe1/edit_tags', $this->data);
-	}
-
-	/**
-     * Display review page 
-     *
-     * @access  public
-     * @param   int	course id		
-     * @param   string	task		
-     * @return  void
-     */
-	public function review($cid, $task='') 
-	{
-		$this->_isValidUser($cid); 
-		$this->data['title'] = $this->lang->line('ocw_ds_pagetitle_review'); 
-       	$this->layout->buildPage('dscribe1/review_course', $this->data);
-	}
-	
-	
-	/**
-     * Display the export page
-     *
-     * @access  public
-     * @param   int	course id		
-     * @param   string	task		
-     * @return  void
-     */
-	public function export($cid, $task='') 
-	{
-		$this->_isValidUser($cid); 
-		$this->data['title'] = $this->lang->line('ocw_ds_pagetitle_export');
-		$this->data['cid']=$cid; 
-       	$this->layout->buildPage('dscribe1/export', $this->data);
-	}
-	
-	/**
-     * generate the export zip file
-     *
-     * @access  public
-     * @param   int	course id		
-     * @param   string	task		
-     * @return  void
-     */
-	public function do_export() 
-	{
-		
-		$cid = $_POST['cid'];
-		$this->data['cid']=$cid;
-		$cname=$this->course->course_title($cid);
-		$this->data['cname'] = $cname;	
-		
-		$name = 'mydata1.txt';
-		$data = 'A Data String!';
-		
-		$this->zip->add_data($name, $data);
-		
-		// Download the file to your desktop. Name it "SITENAME_IMSCP.zip"
-		$this->zip->download($cname.'_IMSCP.zip');
-		
-		
-       	$this->layout->buildPage('dscribe1/export', $this->data);
-	}
-
-	/**
-     * Check to see if a user is an instructor or not 
-     *
-     * @access  private
-     * @param   int	course id		
-     * @return  boolean
-     */
-	private function _isValidUser($cid)
-	{
-		if ($this->course->has_access($this->uid, $cid)) {
-			$this->data['cid'] = $cid;
-			$this->coursedetails = $this->course->get_course($cid);
-			$this->data['course'] = $this->coursedetails;
-			$this->data['cname'] = $this->course->course_title($cid);			
-			return true;
-
-		} else {
-			$msg = preg_replace('/{NAME}/',getUserProperty('name'), 
-					$this->lang->line('ocw_ds_error_noaccess')); 
-			flashMsg($msg);
-       		redirect('home/', 'location');
-		}
-		return false;
-	} 
-
 }
 ?>

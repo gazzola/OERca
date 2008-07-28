@@ -38,31 +38,19 @@ class Home extends Controller {
   {
     $this->freakauth_light->check();
 
-    $data = array('title' => 'Progress', 
-                  'role' => getUserProperty('role'),
-                  'name' => getUserProperty('name'));
+    $role = getUserProperty('role');
 
-    if ($data['role'] == 'dscribe1') {
-      	$data['id'] = getUserProperty('id');
-      	$data['courses'] = $this->ocw_user->get_courses_simple($data['id']);
-				if (is_array($data['courses'])) {
-      			foreach ($data['courses'] as $key => &$value) {
-        				$value['num']['total'] = $this->material->get_co_count($value['id']);
-        				$value['num']['done'] = $this->material->get_done_count($value['id']);
-        				$value['num']['ask'] = $this->material->get_ask_count($value['id']);
-        				$value['num']['rem'] = $this->material->get_rem_count($value['id']);
-      			}
-				}
-      	$this->layout->buildpage('homedscribe1', $data);
+    if ($role == 'dscribe1') {
+        redirect('dscribe1/home/', 'location');
       
-    } elseif ($data['role'] == 'dscribe2') {
+    } elseif ($role == 'dscribe2') {
         redirect('dscribe2/home/', 'location');
 
-    } elseif ($data['role'] == 'instructor') {
+    } elseif ($role == 'instructor') {
         redirect('instructor/home/', 'location');
 
 		} else {
-      	$this->layout->buildPage('homeother', $data);
+        redirect('guest/home/', 'location');
     }
   }
 

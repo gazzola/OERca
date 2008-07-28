@@ -1,36 +1,67 @@
-<?php $this->load->view(property('app_views_path').'/dscribe1/dscribe1_header.php', $data); ?>
+<h1><?=$name . "'s"?> Content Object Clearance Status</h1><br />
 
-	<p class="error">Under construction: home/status/notification page for dScribe</p>
-
- <!--  <div id="boxes">
-        <div class="box">
-           	<p>
-              <a href="<?php echo site_url("dscribe1/materials/$cid") ?>"><img src="<?php echo property('app_img').'/materials.jpg' ?>" /><?php echo $this->lang->line('ocw_ds_menu_materials') ?></a><br/>
-			  <?php echo $this->lang->line('ocw_ds_home_materialstext') ?>
-			</p>
+  <?php
+  $printkey = FALSE; 
+  if ($courses) { 
+    foreach ($courses as $value) {
+      if ($value['num']['total'] > 0) {
+        $printkey = TRUE;
+        break;
+      }
+    }
+    if ($printkey == TRUE) { // print the key only if we have COs ?> 
+      <div class="column span-24 first last">
+        <h2>
+          <img src="<?= site_url("/home/make_stat_key/done") ?>" class="prog-key"> Cleared
+          &nbsp; &nbsp; &nbsp;
+          <img src="<?= site_url("/home/make_stat_key/ask") ?>" class="prog-key"> In Progress
+          &nbsp; &nbsp; &nbsp;
+          <img src="<?= site_url("/home/make_stat_key/rem") ?>" class="prog-key"> Not Cleared
+        </h2>  
+      </div>
+  <?php } ?>
+  <? foreach ($courses as $value) {
+        $params_url = $value['num']['total'].'/'.$value['num']['done']. 
+              '/'.$value['num']['ask'].'/'.$value['num']['rem'];
+      if ($value['num']['total'] > 0) { ?> 
+    <div class="column span-24 first last">     
+      <a class="prog-link" href="<?php echo site_url("materials/home/{$value['id']}"); ?>">       
+        <div class="column span-15 first">
+          Total Objects: <?=$value['num']['total'] ?>
+          &nbsp; &nbsp;
+          Cleared Objects: <?=$value['num']['done'] ?>
+          &nbsp; &nbsp;
+          Objects in progress: <?=$value['num']['ask'] ?>
+          &nbsp; &nbsp;
+          Remaining Objects: <?=$value['num']['rem'] ?>
+              <img src="<?= site_url("/home/make_bar/$params_url") ?>" 
+              alt="Progress Bar: 
+              Total Objects=<?=$value['num']['total'] ?>
+              Cleared Objects=<?=$value['num']['done'] ?> 
+              Objects in progress=<?=$value['num']['ask'] ?> 
+              Remaining Objects=<?=$value['num']['rem'] ?>"
+              class="prog-bar">
         </div>
-
-        <div class="box">
-           	<p>
-              <a href="<?php echo site_url("dscribe1/profiles/$cid") ?>"><img src="<?php echo property('app_img').'/dscribes.jpg' ?>" /><?php echo $this->lang->line('ocw_ds_menu_profiles') ?></a><br/>
-			  <?php echo $this->lang->line('ocw_ds_home_profilestext') ?>
-			</p>
+        <div class="column span-8 last prog-title">
+            <?=$value['number'] ?> <?=$value['title'] ?>
+			<span style="font-size:8px; clear:both; margin-top:10px;">
+			<?=
+				anchor(site_url("courses/edit_course_info/{$value['id']}").'?TB_iframe=true&height=600&width=850','Edit Info &raquo;',array('style'=>'font-size:10px','class'=>'smoothbox','title'=>'Edit Course'))
+			?>
+			</span>
         </div>
+      </a>
+    </div>
+  <?php } else { ?>
+  <div class="column span-24 first last prog-no-CO">
+    <h2><a href="<?php echo site_url("materials/home/{$value['id']}"); ?>" >
+        <?=$value['number'] ?> <?=$value['title'] ?>
+        </a> does not contain any content objects.<br />
+    </h2>
+  </div>
+  <?php  }}} else { ?>
+  <div class="column span-24 first last">
+    You have no courses at present. Ask one of the staff to assign a course.
+  </div>
+  <?php } ?>
 
-        <div class="box">
-           	<p>
-              <a href="<?php echo site_url("dscribe1/copyright/$cid") ?>"><img src="<?php echo property('app_img').'/set_copyright.jpg' ?>" /><?php echo $this->lang->line('ocw_ds_menu_copyright') ?></a><br/>
-			  <?php echo $this->lang->line('ocw_ds_home_copytext') ?>
-			</p>
-        </div>
-
-
-        <div class="box">
-           	<p>
-              <a href="<?php echo site_url("dscribe1/review/$cid") ?>"><img src="<?php echo property('app_img').'/export.jpg' ?>" /><?php echo $this->lang->line('ocw_ds_menu_review') ?></a><br/>
-			  <?php echo $this->lang->line('ocw_ds_home_reviewtext') ?>
-			</p>
-        </div>
-   </div>
--->
-<?php $this->load->view(property('app_views_path').'/dscribe1/dscribe1_footer.php', $data); ?>

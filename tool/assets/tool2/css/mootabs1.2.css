@@ -78,3 +78,19 @@
 	background-color: lightgreen;
 	color: darkgreen;
 }
+
+#Single.mootabs_panel.active h3 a,
+#Single.mootabs_panel.active { background-color: lightgreen; color:darkgreen}
+.mootabs_title li[title="Single"].active,
+.mootabs_title li[title="Single"].active h2 {
+	background-color: lightgreen;
+	color: darkgreen;
+}
+
+#Bulk.mootabs_panel.active h3 a,
+#Bulk.mootabs_panel.active { background-color: lightgreen; color:darkgreen}
+.mootabs_title li[title="Bulk"].active,
+.mootabs_title li[title="Bulk"].active h2 {
+	background-color: lightgreen;
+	color: darkgreen;
+}

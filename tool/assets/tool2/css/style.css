@@ -241,7 +241,7 @@ ul#navlist li#active a { background-color: #fff; color: #990033; }
 
 .editpane {
   padding: 20px;
-  border: 1px dotted #06030a;
+  border: 0px dotted #06030a;
   border-top: 0; 
   background-color: #222;
   min-height: 250px;

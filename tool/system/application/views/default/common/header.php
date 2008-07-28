@@ -58,12 +58,12 @@
     <?php if (getUserProperty('role') == 'dscribe1') { ?>
 
 	  <li<?= (preg_match('/^(home)|(dscribe\/home)|\s/', $ci_uri) > 0)? $att: ''?>><?=anchor("/home",$this->lang->line('ocw_ds_menu_home'))?></li>
-	  <li<?= (preg_match('/^(manage|materials)/', $ci_uri) > 0)? $att: ''?>><?=anchor("/manage",'Manage Courses')?></li>
+	  <li<?= (preg_match('/^(manage|materials|courses)/', $ci_uri) > 0)? $att: ''?>><?=anchor("/manage",'Manage Courses')?></li>
 		
     <?php } elseif (getUserProperty('role') == 'instructor') { ?>
 
 		  <li<?= (preg_match('/^(instructor|instructor\/home)/', $ci_uri) > 0)? $att: ''?>><?=anchor("/home",$this->lang->line('ocw_ds_menu_home'))?></li>
-      <li<?= (preg_match('/^(manage|materials)/', $ci_uri) > 0)? $att: ''?>><?=anchor("/manage",'Manage Courses')?></li>
+      <li<?= (preg_match('/^(manage|materials|courses)/', $ci_uri) > 0)? $att: ''?>><?=anchor("/manage",'Manage Courses')?></li>
 
 			<?php if (isset($cid)) { ?>
       <li<?= (preg_match('/^(instructor\/materials)/', $ci_uri) > 0)? $att: ''?>><?=anchor("/instructor/materials/$cid",$this->lang->line('ocw_ins_menu_materials'))?></li>
@@ -87,7 +87,7 @@
     <?php } elseif (getUserProperty('role') == 'dscribe2') { ?>
 
       <li<?= (preg_match('|^dscribe2/home|', $ci_uri) > 0)? $att: ''?>><?=anchor("/dscribe2/home/",'Home')?></li>
-      <li<?= (preg_match('/^(dscribe2\/courses)|(materials)/', $ci_uri) > 0)? $att: ''?>><?=anchor("/dscribe2/courses",'Manage Courses')?></li>
+      <li<?= (preg_match('/^(dscribe2\/courses)|(materials)|(courses)/', $ci_uri) > 0)? $att: ''?>><?=anchor("/dscribe2/courses",'Manage Courses')?></li>
       <li<?= (preg_match('|^dscribe2/dscribes|', $ci_uri) > 0)? $att: ''?>><?=anchor("/dscribe2/dscribes",'Manage dScribes')?></li>
 
 
@@ -112,7 +112,7 @@
   if (isset($flash) AND $flash!='') { 
 ?>
 
-<!--STAR FLASH MESSAGE-->
+<!--START FLASH MESSAGE-->
 <div id="statusmsg" class="column span-24 first last">
       <div id="flashMessage" style="display:none;"><?=$flash?></div>
       <br/>
