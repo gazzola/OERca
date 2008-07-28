@@ -112,16 +112,6 @@ foreach($repl_objects as  $obj) {
 
 </td>
 
-<!-- Replacement -->
-<td style="vertical-align:top">
-<div id="new-col3-<?=$obj['id']?>" style="display: <?=($obj['ask_status']=='in progress') ? 'none':'block'?>;">
-   		<?=$this->ocw_utils->create_corep_img($cid,$mid,$obj['object_id'],$obj['location'],false,false);?>
-</div>
-<div id="inprogress-col3-<?=$obj['id']?>" style="display: <?=($obj['ask_status']=='in progress') ? 'block':'none'?>;">
-		<?=$this->ocw_utils->create_corep_img($cid,$mid,$obj['object_id'],$obj['location'],false);?>
-</div>
-</td>
-
 <!-- Original -->
 <td style="vertical-align:top">
 <div id="new-col2-<?=$obj['id']?>" style="display: <?=($obj['ask_status']=='in progress') ? 'none':'block'?>;">
@@ -131,6 +121,16 @@ foreach($repl_objects as  $obj) {
 
 <?=$this->ocw_utils->create_co_img($cid,$mid,$obj['object_id'],$obj['location'],false,true);?><br/>
 
+</div>
+</td>
+
+<!-- Replacement -->
+<td style="vertical-align:top">
+<div id="new-col3-<?=$obj['id']?>" style="display: <?=($obj['ask_status']=='in progress') ? 'none':'block'?>;">
+   		<?=$this->ocw_utils->create_corep_img($cid,$mid,$obj['object_id'],$obj['location'],false,false);?>
+</div>
+<div id="inprogress-col3-<?=$obj['id']?>" style="display: <?=($obj['ask_status']=='in progress') ? 'block':'none'?>;">
+		<?=$this->ocw_utils->create_corep_img($cid,$mid,$obj['object_id'],$obj['location'],false);?>
 </div>
 </td>
 
