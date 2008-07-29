@@ -24,4 +24,4 @@ $notify_config::site_url = '';
 
 # mail relay server to be used
 # e.g. mail-relay.itd.umich.edu
-$notify_config::mail_relay = '';
+$notify_config::mail_smtp = '';
