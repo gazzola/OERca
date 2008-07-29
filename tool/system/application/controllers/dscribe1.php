@@ -61,7 +61,7 @@ class Dscribe1 extends Controller
   public function courses()
   {
       $this->data['title'] = 'dScribe1 &raquo; Manage Courses';
-      $this->data['courses'] = $this->course->get_courses();
+      $this->data['courses'] = $this->ocw_user->get_courses(getUserProperty('id'));
       $this->layout->buildPage('dscribe1/courses', $this->data);
 	}
 }
