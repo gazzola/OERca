@@ -25,8 +25,8 @@ if ($num_avail[$view] == 0) {
 	<?php } elseif ($view == 'replacement') { ?>
        	<th>&nbsp;</th>
 				<th>Questions</th>
-        <th>Replacement Object</th>
         <th>Original Object</th>
+        <th>Replacement Object</th>
 	<?php } else { ?>
         <th>&nbsp;</th>
 				<th>Questions</th>
