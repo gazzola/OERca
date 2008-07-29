@@ -49,5 +49,20 @@ class Dscribe1 extends Controller
 		}
    	$this->layout->buildpage('dscribe1/index', $data);
 	}
+
+  /**
+     * Display dScribe2 course dashboard 
+     *
+     * @access  public
+     * @param string task 
+     * @param int  course id 
+     * @return  void
+     */
+  public function courses()
+  {
+      $this->data['title'] = 'dScribe1 &raquo; Manage Courses';
+      $this->data['courses'] = $this->course->get_courses();
+      $this->layout->buildPage('dscribe1/courses', $this->data);
+	}
 }
 ?>

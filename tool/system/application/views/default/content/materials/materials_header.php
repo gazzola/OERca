@@ -1,8 +1,3 @@
-<script type="text/javascript">
-	<?php if ($openpane == 'uploadco') { ?>open_uploadco_pane = <?php echo ($openpane == 'uploadco') ? 'true;' : 'false;'; } ?>
-	<?php // if ($openpane == 'editinst') { ?> // open_editinst_pane = <?php echo ($openpane == 'editinst') ? 'true' : 'false;'; //} ?>
-</script>
-
 <?php
 	$data['loc_tip'] = "For textual materials like Powerpoints or PDFs, please enter the slide or page number. For videos, please enter a time stamp.";
 
@@ -28,7 +23,7 @@
     <?php if (isset($material['name'])) { ?>
     <div id="materials_nav" style="float: right">
 		  <ul>
-			  	<li class="normal"><a id="do_open_uploadco_pane">Add Content Objects</a></li>
+					<li class="normal"><a href="<?=site_url("materials/add_object/$cid/$mid/snapper")?>?TB_iframe=true&height=550&width=450" class="smoothbox" title="Add Content Objects">Add Content Objects</a></li>
 					<li class="normal"><a href="<?=site_url("materials/askforms/$cid/$mid")?>" target="_new">ASK Forms</a></li>
 			    <li class="normal"><a href="<?=site_url("materials/download_all_rcos/$cid/$mid/")?>">Download all Replacement COs</a></li>
       </ul>
@@ -38,9 +33,8 @@
 
     <div id="materials_nav" style="float: right">
 		  <ul>
-		      <!-- <li class="normal"><a id="do_open_instinfo_pane">Edit Instructor Info</a></li> -->
 			    <li class="normal">
-						<a href="<?=site_url("materials/add_material/$cid/single/view")?>?TB_iframe=true&height=500&width=350" class="smoothbox tooltip" title="Add Materials">Add Materials</a>
+						<a href="<?=site_url("materials/add_material/$cid/single/view")?>?TB_iframe=true&height=500&width=350" class="smoothbox" title="Add Materials">Add Materials</a>
 					</li>
       </ul>
     </div>
@@ -48,12 +42,4 @@
     <?php } ?>
     <div style="clear:both"></div>
 	</div>
-
-   <?php 
-      if (isset($material['name'])) { 
-          $this->load->view(property('app_views_path').'/materials/_add_content_objects.php', $data); 
-      } else {
-          // $this->load->view(property('app_views_path').'/materials/_edit_instructor_info.php', $data);
-      } 
-   ?>
 <br/>

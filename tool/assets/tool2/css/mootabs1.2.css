@@ -94,3 +94,11 @@
 	background-color: lightgreen;
 	color: darkgreen;
 }
+
+#Snapper.mootabs_panel.active h3 a,
+#Snapper.mootabs_panel.active { background-color: lightgreen; color:darkgreen}
+.mootabs_title li[title="Snapper"].active,
+.mootabs_title li[title="Snapper"].active h2 {
+	background-color: lightgreen;
+	color: darkgreen;
+}

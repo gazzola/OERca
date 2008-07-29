@@ -34,29 +34,9 @@ class Materials extends Controller {
 
   public function index($cid, $caller="") { $this->home($cid, $caller); }
 
-	/**
-	 * Process information coming from the snapper tool
-	 */
-  public function snapper($cid, $mid, $action='')
-  {
-      if ($action == 'submit') {
-          $res = $this->coobject->add_snapper_image($cid, $mid, getUserProperty('id'), $_REQUEST);
-          $success = ($res===true) ? 'true' : 'false';
-          $msg = ($success=='true') ? 'Image uploaded' : $res;
-          $value = array('success'=>$success, 'msg'=>$msg, 'url'=>site_url("materials/edit/$cid/$mid"));
-          $this->ocw_utils->send_response($value, 'json');
-      } else {
-          $data = array('cid'=>$cid, 'mid'=>$mid);
-          $data['select_subtypes'] =  $this->coobject->object_subtypes();
-          $data['objects'] =  $this->coobject->coobjects($mid);
-          $data['numobjects'] = count($data['objects']);
-          $this->load->view('default/content/materials/snapper/snapper', $data);
-      }
-  }
 
 
   // TODO: highlight the currently selected field
-  // TODO: move stuff into smaller functions, the home function is quite long
   public function home($cid, $caller='', $openpane=NULL)
   {
     $tags =  $this->tag->tags();
@@ -90,6 +70,7 @@ class Materials extends Controller {
 		}
 	}
 
+	// edit material information
 	public function editinfo($cid, $mid)
 	{
 		$tags =  $this->tag->tags();
@@ -109,6 +90,7 @@ class Materials extends Controller {
     $this->load->view(property('app_views_path').'/materials/_edit_material_info.php', $data);
 	}
 
+	// edit material comments
 	public function editcomments($cid, $mid)
 	{
 		$material =  $this->material->materials($cid,$mid,true);
@@ -116,6 +98,7 @@ class Materials extends Controller {
     $this->load->view(property('app_views_path').'/materials/_edit_material_comments.php', $data);
 	}
 
+	// add material comments
 	public function add_comment($cid,$mid)
 	{
 		 if (isset($_REQUEST['comments']) && $_REQUEST['comments']<>'') {
@@ -128,13 +111,12 @@ class Materials extends Controller {
      exit;
 	}
 
+	// add material 
 	public function	add_material($cid,$type,$action='add')
 	{
 		if ($action == 'add') {
 					$valid = true;
 					$errmsg = '';
-					#$this->ocw_utils->dump($_POST);
-					#$this->ocw_utils->dump($_FILES,true);
 			
 					$idx = ($type=='bulk') ? 'zip_userfile' : 'single_userfile';
 					
@@ -176,13 +158,16 @@ class Materials extends Controller {
 		}
 	}
 
+	// remove material
 	public function	remove_material($cid, $mid)
 	{
 		$this->material->remove_material($cid, $mid);
 		flashMsg('Material removed!');
 		redirect("materials/home/$cid", 'location');
 	}
-	
+
+
+	// edit content objects	
 	public function edit($cid, $mid, $caller='', $filter='Any', $openco=FALSE)
 	{
 		$tags =  $this->tag->tags();
@@ -381,6 +366,7 @@ class Materials extends Controller {
 		}
 	}
 
+	// display content objects
 	public function content_objects($cid, $mid,$filter='Any')
 	{
 		$objects =  $this->coobject->coobjects($mid,'',$filter);
@@ -408,61 +394,85 @@ class Materials extends Controller {
 	}
 	
 
-	public function add_object($cid, $mid) 
+	/**
+	 * Add content object information coming from the snapper tool
+	 */
+  public function snapper($cid, $mid, $action='')
+  {
+      if ($action == 'submit') {
+          $res = $this->coobject->add_snapper_image($cid, $mid, getUserProperty('id'), $_REQUEST);
+          $success = ($res===true) ? 'true' : 'false';
+          $msg = ($success=='true') ? 'Image uploaded' : $res;
+          $value = array('success'=>$success, 'msg'=>$msg, 
+												 'url'=>site_url("materials/add_object/$cid/$mid"));
+          $this->ocw_utils->send_response($value, 'json');
+      } else {
+          $data = array('cid'=>$cid, 'mid'=>$mid);
+          $data['select_subtypes'] =  $this->coobject->object_subtypes();
+          $data['objects'] =  $this->coobject->coobjects($mid);
+          $data['numobjects'] = count($data['objects']);
+          $this->load->view('default/content/materials/snapper/snapper', $data);
+      }
+  }
+
+	public function add_object($cid, $mid, $type='snapper', $action='view') 
  	{
-		$valid = true;
-		$errmsg = '';
+		if ($action == 'add') {
+					$valid = true;
+					$errmsg = '';
+			
+					$idx = ($type=='bulk') ? 'userfile' : 'userfile_0';
+					
+					$valid = true;
+					$errmsg = '';
+			
+					if (!isset($_FILES[$idx]['name']) || $_FILES[$idx]['name']=='') {
+							$errmsg = 'Please specify a file to upload';
+							$valid = false;			
+					}
 
-		if (!isset($_FILES['userfile_0']['name']) || $_FILES['userfile_0']['name']=='') {
-				$errmsg = 'Please specify a file to upload';
-				$valid = false;			
-		} 
-
-		if ($_POST['location']=='') {
-				$errmsg .= (($errmsg=='') ? '':'<br/>')."Location field is required.";
-				$valid = false;
-		}
-		if ($_POST['ask']=='') {
-				$errmsg .= (($errmsg=='') ? '':'<br/>')."Ask Instructor field is required.";
-				$valid = false;
-		}
+					if ($type=='bulk') {
+							if(isset($_FILES[$idx]['name'])  && !preg_match('/\.zip$/',$_FILES[$idx]['name'])) {
+								$errmsg .= (($errmsg=='') ? '':'<br/>')."Can only upload ZIP files for bulk uploads";
+								$valid = false;
+							}
+					}
 		
-		if ($valid == FALSE) {
-				flashMsg($errmsg);
-				$role = getUserProperty('role');
-				redirect("materials/edit/$cid/$mid/$role/Any/true", 'location');
-		}	else {
-			$this->coobject->add($cid, $mid,getUserProperty('id'),$_POST,$_FILES);
-			$this->update($cid,$mid,'embedded_co','1',false);
-			flashMsg('Content object added');
-			redirect("materials/edit/$cid/$mid/", 'location');
-		}
-		
-	}
+					if ($type=='single') {	
+							if ($_POST['location']=='') {
+									$errmsg .= (($errmsg=='') ? '':'<br/>')."Location field is required.";
+									$valid = false;
+							}
+							if ($_POST['ask']=='') {
+									$errmsg .= (($errmsg=='') ? '':'<br/>')."Ask Instructor field is required.";
+									$valid = false;
+							}
+					}
 
-	public function add_object_zip($cid, $mid) 
- 	{
-		$valid = true;
-		$errmsg = '';
-
-		if (!isset($_FILES['userfile']['name']) || $_FILES['userfile']['name']=='') {
-				$errmsg = 'Please specify a ZIP file to upload';
-				$valid = false;				
-		} elseif (isset($_FILES['userfile']['name'])  && !preg_match('/\.zip$/',$_FILES['userfile']['name'])) {
-				$errmsg .= (($errmsg=='') ? '':'<br/>')."Can only upload ZIP files for bulk uploads";
-				$valid = false;
-		}
-	
-		if ($valid == FALSE) {
-				flashMsg($errmsg);
-				$role = getUserProperty('role');
-				redirect("materials/edit/$cid/$mid/$role/Any/true", 'location');
-		}	else {
-				$res = $this->coobject->add_zip($cid, $mid,getUserProperty('id'),$_FILES);
-				$this->update($cid,$mid,'embedded_co','1',false);
-				flashMsg($res);
-				redirect("materials/edit/$cid/$mid/", 'location');
-		}
+					if ($valid == FALSE) {
+							flashMsg($errmsg);
+							redirect("materials/add_object/$cid/$mid/$type", 'location');
+					}	else {
+							if ($type=='bulk') {
+									$res = $this->coobject->add_zip($cid, $mid,getUserProperty('id'),$_FILES);
+									$this->update($cid,$mid,'embedded_co','1',false);
+									flashMsg($res);
+							} else {
+									$this->coobject->add($cid, $mid,getUserProperty('id'),$_POST,$_FILES);
+									$this->update($cid,$mid,'embedded_co','1',false);
+									flashMsg('Content object added');
+							}
+							redirect("materials/add_object/$cid/$mid/$type", 'location');
+					}
+		} else {
+				// show add form
+				$tags =  $this->tag->tags();
+				$subtypes =  $this->coobject->object_subtypes();
+				$mimetypes =  $this->mimetype->mimetypes();
+				$data = array('tags'=>$tags, 'mimetypes'=>$mimetypes, 'cid'=>$cid, 'mid'=>$mid, 
+										  'subtypes'=>$subtypes, 'view'=>$type);
+    		$this->load->view(property('app_views_path').'/materials/_add_content_objects.php', $data);
+		}	
 	}
 
 	public function update_object($cid, $mid, $oid, $field='', $val='') 

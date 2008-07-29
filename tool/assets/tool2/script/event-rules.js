@@ -16,15 +16,6 @@ var Rules = {
 		}
 	},
 
- '#snapper_button' : function(element) {
-    element.onclick = function(e) {
-        $('do_open_uploadco_pane').fireEvent('click',e);
-      	var rmvclass = ($('do_open_uploadco_pane').parentNode.className=='active') ? 'active' : 'normal';
-        var txt = (rmvclass=='active') ? 'Close Snapper': 'Use Snapper tool to capture Content Objects';
-        this.setHTML(txt);
-    }
-  },
-
 	// utilized on the dscribe manage materials page for updating tags
 	'.update_tag' : function(element) {
 		element.onchange = function () {

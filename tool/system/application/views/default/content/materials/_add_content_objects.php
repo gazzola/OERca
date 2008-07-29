@@ -1,28 +1,54 @@
 <?php
+echo style('blueprint/screen.css',array('media'=>"screen, projection"));
+echo style('blueprint/print.css',array('media'=>"print"));
+echo '<!--[if IE]>'.style('blueprint/lib/ie.css',array('media'=>"screen, projection")).'<![endif]-->';
+echo style('style.css',array('media'=>"screen, projection"));
+echo style('mootabs1.2.css',array('media'=>"screen, projection"));
+echo '<style type="text/css">body { background-color: #222; padding: 15px; margin:auto; width: 400px; border:0px solid blue; height:550px; color:#999}</style>';
+
+echo script('mootools.js');
+echo script('mootabs1.2.js');
+echo script('mootips.js');
+echo script('event-selectors.js');
+echo script('event-rules.js');
+
+echo script('snapper.js'); 
+
+echo script('flash.js');
+
 $types = '<select id="subtype_id" name="subtype_id" class="do_object_update">';
 foreach($subtypes as $type => $subtype) {
 		$types .= '<optgroup label="'.$type.'">';
-		foreach($subtype as $st) {
-			$types .= '<option value="'.$st['id'].'">'.$st['name'].'</option>';
-    }
+		foreach($subtype as $st) { $types .= '<option value="'.$st['id'].'">'.$st['name'].'</option>'; }
 		$types .= '</optgroup>';
 } 
 $types .= '</select>';
+$loc_tip = "For textual materials like Powerpoints or PDFs, please enter the slide or page number. For videos, please enter a time stamp.";
+
+$flash=$this->db_session->flashdata('flashMessage');
+if (isset($flash) AND $flash!='') {
 ?>
 
-<div id="pane_uploadco" class="editpane">
+<!--START FLASH MESSAGE-->
+<div id="statusmsg" class="column span-10 first last">
+  <div id="flashMessage" style="display:none;"><?=$flash?></div>
+</div>
+<!--END FLASH-->
 
-  <div class="column span-10 first colborder">
-     <h2>Snapper Upload</h2>
+<?php } ?>
+
+<div id="myTabs" class="column span-10 first last">
+
+  <ul class="mootabs_title">
+    <li title="Snapper" style="margin-left:0;"><h2>Snapper Upload</h2></li>
+    <li title="Single" style="margin-left:13px;"><h2>Single Upload</h2></li>
+    <li title="Bulk" style="margin-left: 13px;"><h2>Bulk Upload</h2></li>
+  </ul>
+
+
+  <div id="Snapper" class="mootabs_panel"> 
 			
 				<?php print form_open_multipart("materials/snapper/$cid/$mid/submit",array('id'=>'snapper-form')) ?>	
-				<!--<div id="controls">
-					<div>
-						<input id="snap_aCapture" type="checkbox" />
-						<label for="snap_aCapture">auto capture</label>
-					</div>
-				</div> -->
-				
 				<div id="capture">
 					<applet id="clipboard" width="200" height="200" archive="<?=site_url()?>snapper/Ssnapper.jar,<?=site_url()?>snapper/commons-codec-1.3.jar" code="org.muse.snapper.Snapper" codebase="<?=site_url()?>snapper/">
 					</applet>
@@ -50,9 +76,9 @@ $types .= '</select>';
 				
 					<div id="contentloc">
 						<br/>
-						<label for="snap_location" class="ine_tip" title="<?=$loc_tip?>">Location in material:</label>
+						<label for="snap_location" class="tooltip" title="<?=$loc_tip?>">Location in material:</label>
 						<input id="snap_location" name="location" type="text" width="30" />
-						&nbsp;<img src="<?=property('app_img')?>/info.gif" style="margin:0; padding:0" class="ine_tip" title="<?=$loc_tip?>" />
+						&nbsp;<img src="<?=property('app_img')?>/info.gif" style="margin:0; padding:0" class="tooltip" title="<?=$loc_tip?>" />
 					</div>
 				</div>
 				
@@ -62,10 +88,8 @@ $types .= '</select>';
 				<?php print form_close(); ?>
   </div>
 
-  <div class="column span-8">
-		<h2>Single File Upload</h2>
-		
-		<form action="<?=site_url("materials/add_object/$cid/$mid")?>" enctype="multipart/form-data" id="add_co_single" method="post">
+  <div id="Single" class="mootabs_panel"> 
+		<form action="<?=site_url("materials/add_object/$cid/$mid/single/add")?>" enctype="multipart/form-data" id="add_co_single" method="post">
 			<input type="hidden" name="citation" value="none" />
 			<input type="hidden" name="contributor" value="" />
 			<input type="hidden" name="question" value="" />
@@ -80,44 +104,61 @@ $types .= '</select>';
 				<input type="radio" name="ask" value="yes"/>&nbsp;Yes&nbsp;
 		  	<input type="radio" name="ask" value="no" checked="checked"/>&nbsp;No
 			</div>
-			
+	
+			<br/>		
+
 			<div class="formLabel">Content Type:</div>
     	<div class="formField"><?=$types?></div>
 		
-			<div class="formField" class="ine_tip" title="<?=$loc_tip?>">Location in material (required):</div>
+			<br/>		
+
+			<div class="formField" class="tooltip" title="<?=$loc_tip?>">Location in material (required):</div>
     	<div class="formField">
     			<input type="text" name="location" id="location" size="50" class="input" />
-&nbsp;<img src="<?=property('app_img')?>/info.gif" style="margin:0; padding:0" class="ine_tip" title="<?=$loc_tip?>" />
+&nbsp;<img src="<?=property('app_img')?>/info.gif" style="margin:0; padding:0" class="tooltip" title="<?=$loc_tip?>" />
 			</div>
 		
+			<br/>		
+
  			<div class="formField">Upload Content Object: (required)</div>
 			<div class="formField">
 	     	<input type="file" name="userfile_0" id="userfile_0" size="30" />
 			</div>
 			
-			<div class="formField">
-						<br/>
-						<input type="submit" value="Add" />
-			</div>
+			<div class="formField"><br/><input type="submit" value="Add" /></div>
 		</form>
+	</div>
+	
+  <div id="Bulk" class="mootabs_panel"> 
 
-    <br style="clear:both"/><br/><br/>
-	
-		<h2>Bulk Upload</h2>
-	
 		<div class="formField">
-			<form action="<?=site_url("materials/add_object_zip/$cid/$mid")?>" enctype="multipart/form-data" id="add_co_zip" method="post">
+			<form action="<?=site_url("materials/add_object/$cid/$mid/bulk/add")?>" enctype="multipart/form-data" id="add_co_zip" method="post">
 			  Upload Content Objects ZIP file: (required)
 	     	<input type="file" name="userfile" id="userfile" size="30" />
 	       <br/><br/>
 	     	<input type="submit" name="submit" id="submit" value="Add" />
 			</form>
 	  </div>
-
-    <br style="clear:both"/><br/>
-
-	  <div  style="margin-top:5px; margin-right: 10px; text-align:right;">
-		<input type="button" value="Close" id="do_close_uploadco_pane"/>
 	</div>
-	</div>
+
+<br style="clear:both"/><input type="button" style="float:right" value="Done" onclick="parent.window.location.reload(); parent.TB_remove();"/>
 </div>
+
+<div id="feedback" style="display:none"></div>
+<input type="hidden" id="cid" name="cid" value="<?=$cid?>" />
+<input type="hidden" id="mid" name="mid" value="<?=$mid?>" />
+<input type="hidden" id="imgurl" value="<?=property('app_img')?>" />
+<input type="hidden" id="server" value="<?=site_url();?>" />
+<script type="text/javascript">
+  EventSelectors.start(Rules);
+	window.addEvent('domready', function() {
+  		myCOTabs = new mootabs('myTabs',{height: '450px', width: '340px'});
+			var myTips1 = new MooTips($$('.tooltip'), { maxTitleChars: 100 });
+  		<?php if($view=='single') {?>myCOTabs.activate('Single');<?php }?>
+  		<?php if($view=='bulk') {?>myCOTabs.activate('Bulk');<?php }?>
+
+      var appv =  ($('snapper-form')) ? true : false;
+      var appletview = (appv)  ? document.clipboard : '';
+      if (appv) appletview.style.display='block';
+	});
+</script>

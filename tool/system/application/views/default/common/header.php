@@ -26,7 +26,6 @@
 	   echo script('ocwui.js');
      echo script('ocw_tool.js');
 	   echo script('multiupload.js'); 
-	   echo script('snapper.js'); 
 
 	   echo script('flash.js'); 
 
@@ -57,8 +56,8 @@
 
     <?php if (getUserProperty('role') == 'dscribe1') { ?>
 
-	  <li<?= (preg_match('/^(home)|(dscribe\/home)|\s/', $ci_uri) > 0)? $att: ''?>><?=anchor("/home",$this->lang->line('ocw_ds_menu_home'))?></li>
-	  <li<?= (preg_match('/^(manage|materials|courses)/', $ci_uri) > 0)? $att: ''?>><?=anchor("/manage",'Manage Courses')?></li>
+	  <li<?= (preg_match('/^(home)|(dscribe1\/home)|\s/', $ci_uri) > 0)? $att: ''?>><?=anchor("/home",$this->lang->line('ocw_ds_menu_home'))?></li>
+	  <li<?= (preg_match('/^(manage|materials|courses)/', $ci_uri) > 0)? $att: ''?>><?=anchor("/courses",'Manage Courses')?></li>
 		
     <?php } elseif (getUserProperty('role') == 'instructor') { ?>
 

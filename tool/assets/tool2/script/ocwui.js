@@ -1,8 +1,5 @@
 var orig_com_ap, orig_q_ap, repl_com_ap, repl_q_ap; // references for add panel divs
 
-// boolean values to determine if to open add pane - used in case of errors
-var open_uploadco_pane, open_editinst_pane;
-
 // boolean value for edit co page
 var open_coinfo_pane;
 var btn_up_active = false;
@@ -55,10 +52,6 @@ var Site = {
     if($('filter-type')) Site.filtertype();
     if($('myTabs')) Site.setuptabs();
 
-    //if ($('do_open_editinst_pane')) Site.course_page_setup();
-
-    if ($('do_open_uploadco_pane')) Site.co_page_setup();
-    
     if ($('do_open_coinfo_pane')) Site.coinfo_page_setup();
 
     if ($('orig_com_addpanel')) {
@@ -149,46 +142,6 @@ var Site = {
 	
     if (open_coinfo_pane) { co_info.toggle();
       $('do_open_coinfo_pane').parentNode.removeClass('normal').addClass('active');
-    }
-  },
-
-  co_page_setup: function () {
-    // toggle edit panes for material attributes
-    var upload_co = new Fx.Slide($('pane_uploadco')).hide();
-
-    $('do_open_uploadco_pane').addEvent('click', function(e) {
-      e = new Event(e);
-			var appv =  ($('snapper-form')) ? true : false;
-			var appletview = (appv)  ? document.clipboard : ''; 
-
-			if (appv) appletview.style.display='block';
-      upload_co.toggle();
-      var addclass = ($('do_open_uploadco_pane').parentNode.className=='active') ? 'normal' : 'active';
-      var rmvclass = ($('do_open_uploadco_pane').parentNode.className=='active') ? 'active' : 'normal';
-      $(this.parentNode).removeClass(rmvclass).addClass(addclass);
-
-			if ($('snapper_button')) {
-          var txt = (rmvclass!='active') ? 'Close Snapper': 'Use Snapper tool to capture Content Objects';
-					$('snapper_button').setHTML(txt);
-			}
-
-      e.stop(); 
-    });
-    $('do_close_uploadco_pane').addEvent('click', function(e) {
-      e = new Event(e);
-			var appv =  ($('snapper-form')) ? true : false;
-			var appletview = (appv)  ? document.clipboard : ''; 
-			if (appv) appletview.style.display='none';
-      upload_co.toggle();
-      $('do_open_uploadco_pane').parentNode.removeClass('active').addClass('normal');
-			if ($('snapper_button')) {
-					$('snapper_button').setHTML('Use Snapper tool to capture Content Objects');
-			}
-      e.stop(); 
-    });
-
-    if (open_uploadco_pane) { upload_co.toggle();
-      $('do_open_uploadco_pane').parentNode.removeClass('normal').addClass('active');
     }
   },
 

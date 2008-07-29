@@ -41,6 +41,7 @@ function TB_bind(event) {
 function TB_show(caption, url, rel) {
 
 	// create iframe, overlay and box if non-existent
+	var imgurl = $('imgurl').value+'/sm-loading.gif';
 
 	if ( !$("TB_overlay") )
 	{
@@ -50,7 +51,7 @@ function TB_show(caption, url, rel) {
 		$('TB_overlay').setOpacity(0);
 		TB_overlaySize();
 		new Element('div').setProperty('id', 'TB_load').injectInside(document.body);
-		$('TB_load').innerHTML = "<img src='assets/default/images/loading.gif' />";
+		$('TB_load').innerHTML = "<img src='"+imgurl+"' />";
 		TB_load_position();
 		new Fx.Style('TB_overlay', 'opacity',{duration: 400, transition: Fx.Transitions.sineInOut}).start(0,0.6);
 	}
@@ -58,7 +59,7 @@ function TB_show(caption, url, rel) {
 	if ( !$("TB_load") )
 	{		
 		new Element('div').setProperty('id', 'TB_load').injectInside(document.body);
-		$('TB_load').innerHTML = "<img src='assets/default/images/loading.gif' />";
+		$('TB_load').innerHTML = "<img src='"+imgurl+"' />";
 		TB_load_position();
 	}
 	
@@ -221,12 +222,13 @@ function TB_show(caption, url, rel) {
 		
 		if(url.indexOf('TB_iframe') != -1){				
 			urlNoQuery = url.split('TB_');		
-			$("TB_window").innerHTML += "<div id='TB_title'><div id='TB_ajaxWindowTitle'>"+caption+"</div><div id='TB_closeAjaxWindow'><a href='#' id='TB_closeWindowButton' title='Close'>close</a></div></div><iframe frameborder='0' hspace='0' src='"+urlNoQuery[0]+"' id='TB_iframeContent' name='TB_iframeContent' style='width:"+(ajaxContentW + 29)+"px;height:"+(ajaxContentH + 17)+"px;' onload='TB_showWindow()'> </iframe>";
+			//$("TB_window").innerHTML += "<div id='TB_title'><div id='TB_ajaxWindowTitle'>"+caption+"</div><div id='TB_closeAjaxWindow'><a href='#' id='TB_closeWindowButton' title='Close'>close</a></div></div><iframe frameborder='0' hspace='0' src='"+urlNoQuery[0]+"' id='TB_iframeContent' name='TB_iframeContent' style='width:"+(ajaxContentW + 29)+"px;height:"+(ajaxContentH + 17)+"px;' onload='TB_showWindow()'> </iframe>";
+			$("TB_window").innerHTML += "<div id='TB_title'><div id='TB_ajaxWindowTitle'>"+caption+"</div></div><iframe frameborder='0' hspace='0' src='"+urlNoQuery[0]+"' id='TB_iframeContent' name='TB_iframeContent' style='width:"+(ajaxContentW + 29)+"px;height:"+(ajaxContentH + 17)+"px;' onload='TB_showWindow()'> </iframe>";
 		} else {
 			$("TB_window").innerHTML += "<div id='TB_title'><div id='TB_ajaxWindowTitle'>"+caption+"</div><div id='TB_closeAjaxWindow'><a href='#' id='TB_closeWindowButton'>close</a></div></div><div id='TB_ajaxContent' style='width:"+ajaxContentW+"px;height:"+ajaxContentH+"px;'></div>";
 		}
 				
-		$("TB_closeWindowButton").onclick = TB_remove;
+		if($("TB_closeWindowButton")) { $("TB_closeWindowButton").onclick = TB_remove; }
 		
 			if(url.indexOf('TB_inline') != -1){	
 				$("TB_ajaxContent").innerHTML = ($(params['inlineId']).innerHTML);
