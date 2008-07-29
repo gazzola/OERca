@@ -54,7 +54,7 @@
   		</td>
 		
   		<td>
-  			<span style="font-size: 13px;"><a href="<?php echo site_url()."materials/edit/$cid/".$material['id'].'/'.$caller?>"><?= $material['name']?></a></span>
+  			<span style="font-size: 13px;"><a href="<?php echo site_url()."materials/edit/$cid/".$material['id']?>"><?= $material['name']?></a></span>
 				<br/>
 				<span style="font-size:9px; clear:both; margin-top:20px;">
 						<a href="<?=site_url("materials/editinfo/$cid/{$material['id']}")?>?TB_iframe=true&height=500&width=350" class="smoothbox tooltip" title="<b>Editing <?=$material['name']?> Info</b>">Edit</a>&nbsp;|&nbsp;

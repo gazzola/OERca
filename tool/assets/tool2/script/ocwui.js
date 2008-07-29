@@ -1,7 +1,6 @@
 var orig_com_ap, orig_q_ap, repl_com_ap, repl_q_ap; // references for add panel divs
 
 // boolean value for edit co page
-var open_coinfo_pane;
 var btn_up_active = false;
 var btn_down_active = true;
 
@@ -52,8 +51,6 @@ var Site = {
     if($('filter-type')) Site.filtertype();
     if($('myTabs')) Site.setuptabs();
 
-    if ($('do_open_coinfo_pane')) Site.coinfo_page_setup();
-
     if ($('orig_com_addpanel')) {
       orig_com_ap = new Fx.Slide($('orig_com_addpanel'), {duration: 500, transition: Fx.Transitions.linear });
       orig_com_ap.hide();
@@ -91,60 +88,6 @@ var Site = {
     }
   },
 
-  course_page_setup: function() {
-    // var edit_inst = new Fx.Slide($('pane_instinfo')).hide();
-
-		// if($('do_open_instinfo_pane')) {
-		  //   $('do_open_instinfo_pane').addEvent('click', function(e) {
-		    //   e = new Event(e);
-		
-// 		      edit_inst.toggle();
-// 		      var addclass = ($('do_open_instinfo_pane').parentNode.className=='active') ? 'normal' : 'active';
-// 		      var rmvclass = ($('do_open_instinfo_pane').parentNode.className=='active') ? 'active' : 'normal';
-// 		      $(this.parentNode).removeClass(rmvclass).addClass(addclass);
-// 		      e.stop();
-// 		    });
-// 		    $('do_close_instinfo_pane').addEvent('click', function(e) {
-// 		      e = new Event(e);
-// 		      edit_inst.toggle();
-// 		      $('do_open_instinfo_pane').parentNode.removeClass('active').addClass('normal');
-// 		      e.stop();
-// 		    });
-// 		}
-
-    // if (open_editinst_pane) { edit_inst.toggle();
-    //   $('do_open_instinfo_pane').parentNode.removeClass('normal').addClass('active');
-    // }
-  },
-
-  // toggle the content object information panel
-  coinfo_page_setup: function() {
- 
-      var co_info = new Fx.Slide($('pane_coinfo')).hide();
-
-    $('do_open_coinfo_pane').addEvent('click', function(e) {
-      e = new Event(e);
-
-	  // no other panels to hide
-
-      co_info.toggle();
-      var addclass = ($('do_open_coinfo_pane').parentNode.className=='active') ? 'normal' : 'active';
-      var rmvclass = ($('do_open_coinfo_pane').parentNode.className=='active') ? 'active' : 'normal';
-      $(this.parentNode).removeClass(rmvclass).addClass(addclass);
-      e.stop(); 
-    });
-    $('do_close_coinfo_pane').addEvent('click', function(e) {
-      e = new Event(e);
-      co_info.toggle();
-      $('do_open_coinfo_pane').parentNode.removeClass('active').addClass('normal');
-      e.stop(); 
-    });
-	
-    if (open_coinfo_pane) { co_info.toggle();
-      $('do_open_coinfo_pane').parentNode.removeClass('normal').addClass('active');
-    }
-  },
-
   setuptabs: function () {
     myCOTabs = new mootabs('myTabs',{height: '300px', width: '40%'});
     if (showreptab) { myCOTabs.activate('Replacement'); }
@@ -152,9 +95,8 @@ var Site = {
 
   filtertype: function() {
     $('filter-type').addEvent('change', function(e) {
-      var c = ($('caller').value=='') ? 'dscribe1' : $('caller').value;
       var url = $('server').value+'materials/edit/'+
-      $('cid').value+'/'+$('mid').value+'/'+c+'/'+this.value;
+      $('cid').value+'/'+$('mid').value+'/0/'+this.value;
       window.location.replace(url);
     });
   },

@@ -32,27 +32,24 @@ class Materials extends Controller {
     $this->freakauth_light->check();
   }
 
-  public function index($cid, $caller="") { $this->home($cid, $caller); }
+  public function index($cid) { $this->home($cid); }
 
 
 
   // TODO: highlight the currently selected field
-  public function home($cid, $caller='', $openpane=NULL)
+  public function home($cid)
   {
     $tags =  $this->tag->tags();
-    $materials =  $this->material->materials($cid,'',true,true);
     $mimetypes =  $this->mimetype->mimetypes();
-    $coursedetails = $this->course->get_course($cid);
+    $materials =  $this->material->materials($cid,'',true,true);
     
     $data = array('title'=>'Materials',
+      'cid'=>$cid,
+      'cname' => $this->course->course_title($cid), 
       'materials'=>$materials, 
       'mimetypes'=>$mimetypes,
-      'cname' => $this->course->course_title($cid), 
-      'cid'=>$cid,
-      'caller'=>$caller,
       'tags'=>$tags,
-      'openpane'=>$openpane,
-      );
+     );
       
     $this->layout->buildPage('materials/index', $data);
   }
@@ -168,36 +165,40 @@ class Materials extends Controller {
 
 
 	// edit content objects	
-	public function edit($cid, $mid, $caller='', $filter='Any', $openco=FALSE)
+	public function edit($cid, $mid, $oid=0, $filter='Any')
 	{
-		$tags =  $this->tag->tags();
-		$mimetypes =  $this->mimetype->mimetypes();
-		$objstats =  $this->coobject->object_stats($mid);
-		$subtypes =  $this->coobject->object_subtypes();
 	  $course = $this->course->get_course($cid); 
 		$material =  $this->material->materials($cid,$mid,true);
-		$numobjects =  $this->coobject->num_objects($mid,$filter);
 		$objects =  $this->coobject->coobjects($mid,'',$filter);
+		$numobjects =  $this->coobject->num_objects($mid,$filter);
+
+ 		$filter_types = array('Any'=>'Show All',
+            'Ask'=>'Ask Instructor (Original)',
+      			'AskRCO'=> 'Ask Instructor (Replacments)',
+            'Done'=>'Cleared',
+            'Fair Use'=>'Fair Use',
+            'Search'=>'Search',
+            'Commission'=>'Commission',
+            'Permission'=>'Permission',
+            'Retain'=>'Retain',
+            'Remove'=>'Remove',
+            'RCO'=>'Replace',
+            'Re-Create'=>'Re-Create');
 
 		$data = array('title'=>'Edit Material &raquo; '.$material[0]['name'],
+					  'cid'=>$cid,
+					  'mid'=>$mid,
+	   				'cname' => $course['number'].' '.$course['title'],
+						'director' => $course['director'],
 					  'material'=>$material[0], 
 					  'coobjects'=>$objects, 
 					  'numobjects'=>$numobjects, 
-					  'cid'=>$cid,
-					  'mid'=>$mid,
-	   				'course'=> $course,
-	   				'cname' => $course['number'].' '.$course['title'],
-				  	'tags'=>$tags,
-				  	'mimetypes'=>$mimetypes,
-				  	'subtypes'=>$subtypes,
-				  	'objstats'=>$objstats,
-				  	'caller'=>$caller,
 		        'list' => $this->ocw_utils->create_co_list($cid,$mid,$objects),
 		        'filter' => $filter, 
-						'openpane'=>$openco,
+		        'filter_types' => $filter_types, 
 		);
 
-    $this->layout->buildPage('materials/edit_material', $data);
+    $this->layout->buildPage('materials/_edit_material_cos', $data);
 	}
 
 
@@ -758,7 +759,7 @@ class Materials extends Controller {
 								
 			      );
 		$data = array_merge($data, $permission);
-   	$this->load->view('default/content/materials/edit_co', $data);
+   	$this->load->view('default/content/materials/co/index', $data);
 	}
 	
 	

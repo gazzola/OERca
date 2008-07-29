@@ -46,14 +46,14 @@
     {
       $tabs = array(
         array(
-          "arg" => array("home"),
+          "arg" => array("dscribe1/home"),
           "name" => "Home",
-          "url" => site_url("home")
+          "url" => site_url("dscribe1/home")
           ),
         array(
-          "arg" => array("manage"),
+          "arg" => array("dscribe1/courses"),
           "name" => "Manage Courses",
-          "url" => site_url("managecourses")
+          "url" => site_url("dscribe1/courses")
           )
         );
       
@@ -81,9 +81,9 @@
             "url" => site_url("instructor/materials/{$this->course_id}")
             ),
           array(
-            "arg" => array("manage"),
+            "arg" => array("instructor/courses"),
             "name" => "Manage Courses",
-            "url" => site_url("managecourses")
+            "url" => site_url("instructor/courses")
             ),
           array(
             "arg" => array("instructor/review"),

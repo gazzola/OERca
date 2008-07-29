@@ -3,7 +3,7 @@
 
 	$course_list_url = '';
    if (getUserProperty('role') == 'dscribe1') { 
-			$course_list_url = site_url('manage');
+			$course_list_url = site_url('home/courses');
    } elseif (getUserProperty('role') == 'dscribe2') { 
 			$course_list_url = site_url('dscribe2/courses');
    } elseif (getUserProperty('role') == 'instructor') { 
@@ -16,7 +16,7 @@
 	<div style="border-bottom: 1px solid #eee; margin-top: -10px; margin-left: 5px; padding-bottom: 5px;">
     <div style="float: left">
 		    <a href="<?=$course_list_url?>">Courses</a> &raquo; 
-        <?php echo (isset($material['name'])) ? '<a href="'.site_url('materials/home/'.$cid.'/'.$caller).'">'.$cname.'</a>' : $cname; ?> 
+        <?php echo (isset($material['name'])) ? '<a href="'.site_url('materials/home/'.$cid).'">'.$cname.'</a>' : $cname; ?> 
         <?php echo (isset($material['name']))?'&raquo; '.$material['name']:''?>
     </div>
 
