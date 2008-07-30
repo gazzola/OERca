@@ -1,3 +1,9 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>OER Work Tool &raquo; Edit <?php echo $obj['name'] ?></title>
 <?php	
 echo style('blueprint/screen.css',array('media'=>"screen, projection"));
 echo style('blueprint/print.css',array('media'=>"print"));
@@ -7,27 +13,44 @@ echo style('table.css',array('media'=>"screen, projection"));
 echo style('multiupload.css',array('media'=>"screen, projection"));
 echo style('mootabs1.2.css',array('media'=>"screen, projection"));
 echo style('sidetabs.css',array('media'=>"screen, projection"));
-echo '<style type="text/css">body { padding: 0; margin:0; width: 600px; border:0px solid blue}</style>';
+echo style('smoothbox.css',array('media'=>"screen, projection"));
+echo '<style type="text/css">body { background-color:white; padding:0; margin:auto; width:680px; height:550px; color:#999}</style>';
 
 echo script('mootools.js'); 
+echo script('smoothbox.js'); 
 echo script('tablesort.js');
 echo script('mootabs1.2.js');
- echo script('mootips.js'); 
+echo script('mootips.js'); 
 echo script('event-selectors.js');
 echo script('event-rules.js');
 echo script('ocwui.js');
 echo script('ocw_tool.js');
 ?>
+<script type="text/javascript">
+	var re = new RegExp(/\d+\/\d+\/0/);
+	var re2 = new RegExp(/askforms/);
+	var cpurl = parent.window.location.href; 
+	var purl  = (cpurl.match(re) || cpurl.match(re2)) ?  parent.window.location.href 
+																: '<?= site_url("materials/edit/$cid/$mid/0/all"); ?>';
+</script>
+</head>
 
-<div id="mainPage" class="container" style="margin:0; padding:0; width: 600px;">
+<body>
+
+<div id="mainPage" class="container" style="margin:0; padding:0; width:680px">
 
 <input type="hidden" id="cid" name="cid" value="<?=$cid?>" />
 <input type="hidden" id="mid" name="mid" value="<?=$mid?>" />
 <input type="hidden" id="oid" name="oid" value="<?=$obj['id']?>" />
 <input type="hidden" id="user" name="user" value="<?=$user?>" />
 
-<div class="column span-17 first last" style="text-align: left">
-  <h3 style="font-size: 1.5em; color:#666;">OER Content Object: <?=$obj['name']?></h3>
+<div class="column span-17 first last" style="text-align: left; margin-bottom: 10px; border: 0px solid red;">
+  <h3 style="display:inline; font-size: 1.5em; color:#666;">OER Content Object: <?=$obj['name']?></h3>
+	<span style="margin-left:280px;">
+			<a href="javascript:void(0)" onclick="parent.window.location.replace(purl); parent.TB_remove()">Done</a>
+			&nbsp;&nbsp;
+			<!--<a href="javascript:void(0)" onclick="parent.TB_remove()">Cancel</a>-->
+	</span>
 </div>
 
 <div id="myTabs" class="column span-17 first last">
@@ -35,21 +58,24 @@ echo script('ocw_tool.js');
 	<ul class="mootabs_title">
 
 		<li title="Original" style="padding-left:10px; margin-left:0;"><h2>Original</h2>
-	    <?=$this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],false,false,false);?>
-      <br/>
-      <a href="<?=site_url("materials/remove_object/$cid/$mid/{$obj['id']}/original")?>" title="delete content object" style="text-align: center" class="confirm" target="_top">Delete content object &raquo;</a>
+	    <?=$this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],'orig',true,false);?>
+      <br style="clear:both"/>
+			<small>
+      	<a href="<?=site_url("materials/remove_object/$cid/$mid/{$obj['id']}/original")?>" title="delete content object" style="text-align: center" class="confirm" target="_top">Delete content object &raquo;</a>
+			</small>
     </li>
 
 		<li title="Replacement" style="margin-left: 13px;"><h2>Replacement</h2>
       <?php 
 				$x = $this->coobject->replacement_exists($cid,$mid,$obj['id']);
         if ($x) {
-            echo $this->ocw_utils->create_corep_img($cid,$mid,$obj['id'],$obj['location'],false,false);
+            echo $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],'rep',true,false);
         } else {
-            echo '<img src="'.property('app_img').'/norep.png" width="300" height="300" />';
+            echo '<img src="'.property('app_img').'/norep.png" width="150px" height="150px" />';
         }
       ?>
-     	<br/>
+     	<br style="clear:both"/>
+			<small>
 			<?php if ($x) { 
 								$r = $this->coobject->replacements($mid,$obj['id']);
 			?>
@@ -60,6 +86,7 @@ echo script('ocw_tool.js');
 			?>
 				|&nbsp;&nbsp;<a href="<?=site_url("materials/download_rco/$cid/$mid/{$obj['id']}/{$r[0]['id']}")?>" style="text-align: center" title="download replacement object" >Download &raquo;</a>&nbsp;&nbsp;
 			<?php } ?>
+			</small>
     </li>
 
   </ul>
@@ -80,8 +107,14 @@ echo script('ocw_tool.js');
 <script type="text/javascript">
 	EventSelectors.start(Rules);
 	<?php if($viewing=='replacement') {?>showreptab = true;<?php }?>
-	window.addEvent('domready', function() { var myTips = new MooTips($$('.ine_tip'), { maxTitleChars: 50 }); });
+	window.addEvent('domready', function() { 
+			var myTips = new MooTips($$('.ine_tip'), { maxTitleChars: 50 }); 
+			var myTips2 = new MooTips($$('.tooltips'), { maxTitleChars: 50 }); 
+	});
 </script>
 <div id="feedback" style="display:none"></div>
 <input type="hidden" id="imgurl" value="<?=property('app_img')?>" />
 <input type="hidden" id="server" value="<?=site_url();?>" />
+
+</body>
+</html>

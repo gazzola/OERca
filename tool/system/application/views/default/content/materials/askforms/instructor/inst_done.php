@@ -9,7 +9,7 @@ if ($prov_objects != null) {
 
 <td style="vertical-align:top; width: 300px; padding: 10px;">
   <p>
-	<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],false,true);?>
+	<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],'orig',true);?>
   </p>
 
 	<!-- citation -->
@@ -50,7 +50,7 @@ if ($repl_objects != null) {
 <td style="vertical-align:top"><?=$count?></td>
 
 <td style="vertical-align:top">
-	<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['object_id'],$obj['location'],false,true);?>
+	<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['object_id'],$obj['location'],'orig',true);?>
 
 	<!-- citation -->
 	<br/><br/>

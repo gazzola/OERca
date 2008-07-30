@@ -366,5 +366,21 @@ class Instructor extends Controller {
         redirect("materials/home/$cid", "location");
 	    }
 	}
+
+  /**
+     * Display dScribe1 course dashboard 
+     *
+     * @access  public
+     * @param string task 
+     * @param int  course id 
+     * @return  void
+     */
+  public function courses()
+  {
+		  $data = array();
+      $data['title'] = 'Instructor &raquo; Manage Courses';
+      $data['courses'] = $this->ocw_user->get_courses(getUserProperty('id'));
+      $this->layout->buildPage('instructor/courses', $data);
+	}
 }
 ?>

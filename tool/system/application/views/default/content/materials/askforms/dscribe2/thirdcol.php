@@ -13,7 +13,8 @@
 											$types .= '</optgroup>';
 							} 
 							$types .= '</select>';
-							echo '<h3>Content-Type:</h3>'.$types.'<br/><br/>';
+							
+							echo '<br style="clear;:both"/><br/><h3>Content-Type:</h3>'.$types.'<br/><br/>';
 					}
 				?>
 

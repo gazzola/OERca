@@ -1,55 +1,19 @@
 var orig_com_ap, orig_q_ap, repl_com_ap, repl_q_ap; // references for add panel divs
 
-// boolean value for edit co page
-var btn_up_active = false;
-var btn_down_active = true;
-
 // for edit content object page: sets up the tabbing between original and replacement
 var myCOTabs;
 var showreptab = false;
 
-function update_edit_co_frame(id)
-{
-  // update frame url.
-	var oid = (id).replace(/objspan_/g,'');
-  var url = $('server').value+'materials/object_info/'+$('cid').value+'/'+$('mid').value+'/'+oid + '/status/status/' + $('filter').value;
-  $('edit-co-frame').src = url;
-}
-
-
-function update_prev_next() {
-  if (knobpos == 0) {
-    $('up-arrow').src = $('imgurl').value+'/up-disabled.gif';
-    $('down-arrow').src = $('imgurl').value+'/down-enabled.gif';
-    btn_up_active = false; btn_down_active = true;
-  }
-  if (knobpos >= (numsteps - 1)) {
-    $('up-arrow').src = $('imgurl').value+'/up-enabled.gif';
-    $('down-arrow').src = $('imgurl').value+'/down-disabled.gif';
-    btn_up_active = true; btn_down_active = false;
-  }
-  if (knobpos < (numsteps - 1) && knobpos > 0) {
-    $('up-arrow').src = $('imgurl').value+'/up-enabled.gif';
-    $('down-arrow').src = $('imgurl').value+'/down-enabled.gif';
-    btn_up_active = true; btn_down_active = true;
-  }
-}
-
-function scroll_dehighlight(item)
-{
-  var imgs = $$('.car-li');
-  imgs.each( function(img, i) {
-    img.style.border = 'none';
-    img.style.backgroundColor = '#f8f8f8';
-  });
-}
-
-
 var Site = {
   start: function(){
-    if($('imagebar')) Site.carousel();
-    if($('filter-type')) Site.filtertype();
     if($('myTabs')) Site.setuptabs();
+
+  	var myTips1 = new MooTips($$('.tooltip'), { maxTitleChars: 50 });
+
+		if ($('edit_mat_cos')) {
+				var cinfolist = $$('.coimginfo');
+    		cinfolist.each( function(litem, i) { var info = litem.setOpacity(0.5); });
+		}
 
     if ($('orig_com_addpanel')) {
       orig_com_ap = new Fx.Slide($('orig_com_addpanel'), {duration: 500, transition: Fx.Transitions.linear });
@@ -91,123 +55,6 @@ var Site = {
   setuptabs: function () {
     myCOTabs = new mootabs('myTabs',{height: '300px', width: '40%'});
     if (showreptab) { myCOTabs.activate('Replacement'); }
-  },
-
-  filtertype: function() {
-    $('filter-type').addEvent('change', function(e) {
-      var url = $('server').value+'materials/edit/'+
-      $('cid').value+'/'+$('mid').value+'/0/'+this.value;
-      window.location.replace(url);
-    });
-  },
-
-
-  carousel: function () {
-    var myScrollFx = new Fx.Scroll('imagebar', {
-      wait: false, transition: Fx.Transitions.Quad.easeInOut
-    });
-
-    var mySlide = new Slider($('area'), $('knob'), {	
-      steps: numsteps, 
-      mode: 'vertical',	
-      onChange: function(step){
-        knobpos = step;
-        myScrollFx.toElement($('carousel-item-'+step));
-        //update_prev_next();
-      }
-      }).set(0);
-
-      $('upd').setHTML('1 of '+numitems);
-      $('carousel-item-0').style.border='1px solid #222';
-      $('carousel-item-0').style.backgroundColor = '#222';
-
-      var imglist = $$('.car-li');
-      imglist.each( function(litem, i) {
-        litem.addEvent('click', function() {
-          obj_clicked = true;
-          update_edit_co_frame(this.parentNode.id);
-          mySlide.set(knobpos);
-
-          info = (i+1)+' of '+numitems;
-          $('upd').setHTML(info);
-          scroll_dehighlight(this.id);
-
-          this.style.border='1px solid #222';
-          this.style.backgroundColor = '#222';
-          this.oldborder = this.style.border; 
-          this.oldbgc = this.style.backgroundColor;
-        });
-
-        litem.oldborder = ''; 
-        litem.oldbgc = ''; 
-        litem.addEvent('mouseover', function() {
-          this.oldborder = this.style.border; 
-          this.oldbgc = this.style.backgroundColor; 
-          this.style.border='1px solid #ddd';
-          this.style.backgroundColor = '#ddd';
-        });
-        litem.addEvent('mouseout', function() {
-          this.style.border = this.oldborder;
-          this.style.backgroundColor = this.oldbgc; 
-        });
-      });
-
-      $('down-arrow').addEvent('click', function() {
-        if ((knobpos < numsteps) && btn_down_active) {
-          knobpos += 1;
-          mySlide.set(knobpos);
-          update_prev_next();
-        }
-      });
-      $('up-arrow').addEvent('click', function() {
-        if ((knobpos > 0) && btn_up_active) {
-          knobpos -= 1;
-          mySlide.set(knobpos);
-          update_prev_next();
-        }
-      });
-
-      Element.Events.extend({
-        'wheelup': {
-          type: Element.Events.mousewheel.type,
-          map: function(event){
-            event = new Event(event);
-            if (event.wheel >= 0) this.fireEvent('wheelup', event)
-          }
-        },
-
-        'wheeldown': {
-          type: Element.Events.mousewheel.type,
-          map: function(event){
-            event = new Event(event);
-            if (event.wheel <= 0) this.fireEvent('wheeldown', event)
-          }
-        }
-      });
-
-      $('ulu').addEvents({
-        'wheeldown': function(e) {
-          e = new Event(e).stop();
-          if ((knobpos < numsteps) && btn_down_active) {
-            knobpos += 1;
-            mySlide.set(knobpos);
-            update_prev_next();
-          }
-        },
-
-        'wheelup': function(e) {
-          e = new Event(e).stop();
-          if ((knobpos > 0) && btn_up_active) {
-            knobpos -= 1;
-            mySlide.set(knobpos);
-            update_prev_next();
-          }
-        }
-      });
-
-      var myTips1 = new MooTips($$('.tooltip'), {
-        maxTitleChars: 50// long caption
-      });
-    }
-  };
-  window.addEvent('domready', Site.start);
+  }
+};
+window.addEvent('domready', Site.start);

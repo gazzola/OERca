@@ -319,4 +319,38 @@ ul#topnavlist li#active a { background-color: #fff; color: #990033; }
             }
 a.prog-link:visited, a.prog-link:link {color: #555555;}
 
+/* CO Image */
+.coimginfo { float:left;  margin-top:0px; padding:0; max-width:100%; min-width: 152px; height:24px; background:#000; }
+.coimginfo p, .info h4 { color:#fff; padding:0px 5px; font-family:Arial; float: left; display:inline}
+.coimginfo p {  margin-top:7px; }
+.coimginfo h4 { font-size:14px; display: inline;}
+.coimginfo h4 a { float: left; background:#fff; color: black; font-size:10px; padding:0 3px; margin-top:7px; margin-left:15px; text-decoration:none }
+.coimginfo h4 a:hover {  background:#fff; color: blue; font-size:10px; text-decoration:none;}
+
+/* Edit CO page */
+a.smoothbox img { border:1px solid #dedede;} 
+div.dwrap {
+  margin-top: 10px;
+  max-height: 433px;
+  float:left;
+  overflow:auto;
+}
+div.dwrap div { margin-bottom: 15px; }
+div.dwrap div div.first { margin-left:0;}
+div.dcell {
+    margin: 0;
+    margin-left: 30px;
+    height: 175px;
+    width: 152px;
+    background-color: #222;
+}
+div.dcell img { border: 1px solid #dedede; }
+div.dwrap .coimginfo { float:left;  margin-top:-23px; padding:0; width:152px; height:24px; background:#000; }
+div.dwrap .coimginfo p, .info h4 { color:#fff; padding:0px 5px; font-family:Arial; float: left; display:inline}
+div.dwrap .coimginfo p {  margin-top:7px; }
+div.dwrap .coimginfo h4 { font-size:14px; display: inline;}
+div.dwrap .coimginfo h4 a { float: left; background:#fff; color: black; font-size:10px; padding:0 3px; margin-top:7px; margin-left:15px; text-decoration:none }
+div.dwrap .coimginfo h4 a:hover {  background:#fff; color: blue; font-size:10px; text-decoration:none;}
+/* end Edit CO  page */
+
 

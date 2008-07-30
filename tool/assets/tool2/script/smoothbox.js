@@ -69,7 +69,7 @@ function TB_show(caption, url, rel) {
 		$('TB_window').setOpacity(0);
 	}
 	
-	$("TB_overlay").onclick=TB_remove;
+	//$("TB_overlay").onclick=TB_remove;
 	window.onscroll=TB_positionEffect;
 
 	// check if a query string is involved

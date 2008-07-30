@@ -102,3 +102,10 @@
 	background-color: lightgreen;
 	color: darkgreen;
 }
+
+#ColistTabs.mootabs_title  { margin-left:15px;}
+#ColistOriginal.mootabs_panel.active, 
+#ColistReplacement.mootabs_panel.active,
+#ColistRetainPM.mootabs_panel.active,
+#ColistRetainPD.mootabs_panel.active,
+#ColistRetainNC.mootabs_panel.active { border: 1px solid #dedede; margin-left:15px; width:97%; background-color: white;}

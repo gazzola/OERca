@@ -169,105 +169,63 @@ class OCW_utils {
 			  $height.'" />';
 	}
 
-	function create_co_list($cid,$mid,$objs)
+	function create_co_list($cid,$mid,$objs,$cols=5)
 	{
-    $list = '';
-		$size = sizeof($objs);
-	
+    $list = "<div class='column first last'>\n";
+		$size = count($objs);
+		$cols = (($cols-1) <= 0) ? 1 : $cols;
+		$count = 1;	
+
 		for($i = 0; $i < $size; $i++) {
-			$y = $this->create_co_img($cid, $mid, 
+			  $class = (($count % $cols)==0 && ($count >= $cols)) 
+							 ? 'column span-4 last' 
+							 : ( ((($count % $cols)==1 && $count >= $cols) || $count==1) 
+									? 'column span-4 first': 'column span-4'); 
+	
+			  $break = (($count % $cols)==0 && ($count >= $cols) ) 
+							 ? "\n</div>\n<div class='column first last'>\n" : '';
+
+				$y = $this->create_co_img($cid, $mid, 
 									  $objs[$i]['id'],
-									  $objs[$i]['location'],false);
-		  $list .= '<span id="objspan_'.$objs[$i]['id'].'"><li class="car-li" id="carousel-item-'.$i.'">'.($i+1).'&nbsp;'.$y.'</li></span>';
+									  $objs[$i]['location'],true,true,true,true);
+
+		  	$list .= "\n<div id='box-{$objs[$i]['id']}' class='dcell $class'>\n$y\n</div>";
+
+				$list .= $break;
+
+				if ($count==$size) {  $list .= "\n</div>"; }
+			  $count++;
 		} 
 	
 		return $list;
 	}
 	
-	function create_co_img($cid, $mid, $oid, $loc, $linkable=true, $shrink=true, $show_ctx=true, $show_edit=false) 
+	function create_co_img($cid, $mid, $oid, $loc, $type='orig', $shrink=true, $show_ctx=true, $show_edit=false) 
 	{
 		 	$name = $this->object->coobject->object_filename($oid);
 		 	$path = $this->object->coobject->object_path($cid, $mid,$oid);
-
-	   	// $p_imgurl = property('app_uploads_url').$path.'/'.$name.'_grab.png';
-	   	// $p_imgpath = property('app_uploads_path').$path.'/'.$name.'_grab.png';
-	   	// $j_imgurl = property('app_uploads_url').$path.'/'.$name.'_grab.jpg';
-	   	// $j_imgpath = property('app_uploads_path').$path.'/'.$name.'_grab.jpg';
-	   	// $g_imgurl = property('app_uploads_url').$path.'/'.$name.'_grab.gif';
-	   	// $g_imgpath = property('app_uploads_path').$path.'/'.$name.'_grab.gif';
-	   	// $imgurl = '';
-      // 
-	   	// if (is_readable($p_imgpath) || is_readable($j_imgpath) || is_readable($g_imgpath)) {
-			// 	 	$thumb_found = true;	
-			// 	 	$imgurl = (is_readable($p_imgpath)) ? $p_imgurl : ((is_readable($j_imgpath)) ? $j_imgurl : $g_imgurl);
-	   	// } else {
-			// 		$thumb_found = false;	
-	   	// }
-      
-      $image_details = $this->_get_imgurl($path, $name, 'grab');
+			$defimg = ($type=='orig') ? 'noorig.png' : 'norep.png';
+			$dflag = ($type=='orig') ? 'grab' : 'rep';
+      $image_details = $this->_get_imgurl($path, $name, $dflag);
       
       $imgurl = $image_details['imgurl'];
       $thumb_found = $image_details['thumb_found'];
       
-	   	$imgUrl = ($thumb_found) ? $imgurl : property('app_img').'/noorig.png';
+	   	$imgurl = ($thumb_found) ? $imgurl : property('app_img').'/'.$defimg;
+	   	$editurl = site_url("materials/object_info/$cid/$mid/$oid").'?TB_iframe=true&height=630&width=800';
 
-	   	$aurl = '<a href="'.site_url("materials/object_info/$cid/$mid/$oid").'?TB_iframe=true&height=500&width=520" class="smoothbox">';
+			$size = ($shrink) ? 'width="150px" height="150px"':'width="300px" height="300px"';
+			$title = 'Content Object :: Location: Page '.$loc;
+			$slide = ($show_ctx) ? '<h4>'.($this->create_slide($cid, $mid, $loc)).'</h4>' : '';
+		  $editlnk = ($show_edit) ? '<h4>'.(anchor($editurl, 'Edit', array('class'=>'smoothbox','id'=>'edit-'.$oid))).'</h4>' :'';
+			$show = ($show_ctx || $show_edit) ? true : false;
 
-			$size = ($shrink) ? 'width="85" height="85"':'width="300" height="300"';
-			$title = 'title="Content Object :: Location: Page '.$loc.'<br>Click image to edit"';
-			$slide = ($show_ctx) ? $this->create_slide($cid, $mid, $loc) : '';
-		  $slide .= ($show_edit) ? '&nbsp;&nbsp;|&nbsp;&nbsp;'.anchor(site_url("/materials/edit/$cid/$mid"),'edit content object &raquo;'):'';
-
-	   	return ($linkable) 
-					? $aurl.'<img id="object-'.$oid.'" class="carousel-image tooltip" '.$title.' src="'.$imgUrl.'" '. $size .'"/></a>'.$slide
-					: '<img id="object-'.$oid.'" class="carousel-image tooltip" '.$title.' src="'.$imgUrl.'" '.$size.' />'.$slide;
+	   	return '<a href="'.$imgurl.'" class="smoothbox" rel="gallery-cos">'.
+	   				 '<img title="'.$title.'" src="'.$imgurl.'" '. $size .'/></a>'.
+							(($show) ?  '<div class="coimginfo"><p>'.$loc.'</p>'.$slide.$editlnk.'</div>' : '');
 	}
 
-	function create_corep_img($cid, $mid, $oid, $loc, $linkable=true, $shrink=true, $show_edit=false) 
-	{
-		 	$name = $this->object->coobject->object_filename($oid);
-		 	$path = $this->object->coobject->object_path($cid, $mid,$oid);
-
-     /* 
-	   	 $p_imgurl = property('app_uploads_url').$path.'/'.$name.'_rep.png';
-	   	 $p_imgpath = property('app_uploads_path').$path.'/'.$name.'_rep.png';
-	   	 $j_imgurl = property('app_uploads_url').$path.'/'.$name.'_rep.jpg';
-	   	 $j_imgpath = property('app_uploads_path').$path.'/'.$name.'_rep.jpg';
-	   	 $g_imgurl = property('app_uploads_url').$path.'/'.$name.'_rep.gif';
-	   	 $g_imgpath = property('app_uploads_path').$path.'/'.$name.'_rep.gif';
-	   	 $imgurl = '';
-       
-	   	 if (is_readable($p_imgpath) || is_readable($j_imgpath) || is_readable($g_imgpath)) {
-			 		$thumb_found = true;	
-			 	 	$imgurl = (is_readable($p_imgpath)) ? $p_imgurl : ((is_readable($j_imgpath)) ? $j_imgurl : $g_imgurl);
-	   	 } else {
-			 		$thumb_found = false;	
-			 		$name = "none";
-	   	 }
-		*/
-
-      $image_details = $this->_get_imgurl($path, $name, 'rep');
-      
-      $imgurl = $image_details['imgurl'];
-      $thumb_found = $image_details['thumb_found'];
-      
-      $name = ($thumb_found) ? $name : 'none';
-      
-	   	$imgUrl = ($thumb_found) ? $imgurl : property('app_img').'/norep.png';
-
-	   	$aurl = '<a href="'.site_url("materials/object_info/$cid/$mid/$oid").'?TB_iframe=true&height=500&width=520" class="smoothbox">';
-
-			$size = ($shrink) ? 'width="85" height="85"':'width="300" height="300"';
-			$title = 'title="Content Object :: Location: Page '.$loc.'<br>Click image to edit"';
-
-	   	return ($linkable) 
-					? $aurl.'<img id="object-'.$oid.'" class="carousel-image tooltip" '.$title.' src="'.$imgUrl.'" '.$size.'/></a>'.
-						$this->create_slide($cid, $mid, $loc).
-		        (($show_edit) ? '&nbsp;&nbsp;|&nbsp;&nbsp;'.anchor(site_url("/materials/edit/$cid/$mid"),'edit content object &raquo;'):'')
-					: '<img id="object-'.$oid.'" class="carousel-image" '.$title.' src="'.$imgUrl.'" '.$size.'/>';
-	}
-
-	function create_slide($cid,$mid,$loc,$text='view context image',$useimage=false)
+	function create_slide($cid,$mid,$loc,$text='View context',$useimage=false)
 	{
 			$name = $this->object->coobject->material_filename($mid);
 			$path = $this->object->coobject->material_path($cid, $mid);
@@ -275,7 +233,7 @@ class OCW_utils {
       $imgurl = '';
       $thumb_found = false;
 	   	      
-      $image_details = $this->_get_imgurl($path, $name, "slide", $loc);
+      $image_details = $this->_get_imgurl($path, $name, 'slide', $loc);
       // TODO: see if we can simply check for the 'thumb_found' array value
       if(array_key_exists('imgurl', $image_details)) {
         $imgurl = $image_details['imgurl'];
@@ -286,7 +244,7 @@ class OCW_utils {
 						?'<a href="'.$imgurl.'" class="smoothbox" title="" rel="gallery-slide">'.$img.'</a>'
 						:'<a href="'.$imgurl.'" class="smoothbox" title="" rel="gallery-slide">'.$text.'</a>';
 
-	   	return '<span style="clear:both"><br/>'.(($thumb_found) ? $aurl : '<small>no context view found</small>').'</span>';
+	   	return ($thumb_found) ? $aurl : '<a href="javascript:void(0)">No context</a>';
 	}
 
 	function remove_dir($dir)

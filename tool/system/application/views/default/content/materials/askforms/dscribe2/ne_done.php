@@ -18,9 +18,9 @@ foreach($cos as $type => $co) {
   <p>
 			<?php 
 				 if ($obj['otype']=='original') { 
-						 echo $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],false,true,true,true);
+						 echo $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],'orig',true,true,true);
 				 } else {
-   					 echo $this->ocw_utils->create_corep_img($cid,$mid,$obj['id'],$obj['location'],false,true,true,true);
+   					 echo $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],'rep',true,true,true);
 				 }
 			?>
   </p>

@@ -2001,7 +2001,7 @@ class Coobject extends Model
                 	$x = $this->replacement_exists($cid,$mid,$obj['id']);
                 	if ($x) {
                     	$html .= '<p>Provided Replacement: </p>'.
-															 $this->ocw_utils->create_corep_img($cid,$mid,$obj['id'],$obj['location'],false,true);
+															 $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],'rep',true);
                 }
             	} elseif ($item['have_replacement']=='no') {
                 	$html .= '<br>'.$uname.' could not provide the dScribe with a replacement<br/>';
@@ -2190,10 +2190,10 @@ class Coobject extends Model
 
 				if ($obj['suitable']=='yes') { 
     				$html .= '<h3>'.$uname.' approved this replacement:</h3>'.
-						$this->ocw_utils->create_corep_img($cid,$mid,$obj['object_id'],$obj['location'],false);
+						$this->ocw_utils->create_co_img($cid,$mid,$obj['object_id'],$obj['location'],'rep');
   			} else {
     				$html .= '<h3>'.$uname.' rejected replacement:</h3>'.
-    				$this->ocw_utils->create_corep_img($cid,$mid,$obj['object_id'],$obj['location'],false);
+    				$this->ocw_utils->create_co_img($cid,$mid,$obj['object_id'],$obj['location'],'rep');
     				$html .= '<br style="clear:both"/><br/><h3>Reason:</h3>'.
     				(($obj['unsuitable_reason']=='') ? 'No reason provided' : $obj['unsuitable_reason']); 
   			} 

@@ -3,11 +3,11 @@
 
 	$course_list_url = '';
    if (getUserProperty('role') == 'dscribe1') { 
-			$course_list_url = site_url('home/courses');
+			$course_list_url = site_url('dscribe1/courses');
    } elseif (getUserProperty('role') == 'dscribe2') { 
 			$course_list_url = site_url('dscribe2/courses');
    } elseif (getUserProperty('role') == 'instructor') { 
-			$course_list_url = site_url('manage');
+			$course_list_url = site_url('instructor/courses');
 	 }
 ?>
 

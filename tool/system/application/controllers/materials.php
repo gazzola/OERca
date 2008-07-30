@@ -165,38 +165,143 @@ class Materials extends Controller {
 
 
 	// edit content objects	
-	public function edit($cid, $mid, $oid=0, $filter='Any')
+	public function edit($cid, $mid, $oid=0, $view='new', $subtab='')
 	{
 	  $course = $this->course->get_course($cid); 
 		$material =  $this->material->materials($cid,$mid,true);
-		$objects =  $this->coobject->coobjects($mid,'',$filter);
-		$numobjects =  $this->coobject->num_objects($mid,$filter);
 
- 		$filter_types = array('Any'=>'Show All',
-            'Ask'=>'Ask Instructor (Original)',
-      			'AskRCO'=> 'Ask Instructor (Replacments)',
-            'Done'=>'Cleared',
-            'Fair Use'=>'Fair Use',
-            'Search'=>'Search',
-            'Commission'=>'Commission',
-            'Permission'=>'Permission',
-            'Retain'=>'Retain',
-            'Remove'=>'Remove',
-            'RCO'=>'Replace',
-            'Re-Create'=>'Re-Create');
+		$view = (!in_array($view, array('all','new','ask','fairuse','search',
+																		'permission','commission', 'retain','replace',
+																		'recreate','remove','cleared'))) ? 'new' : $view;
 
-		$data = array('title'=>'Edit Material &raquo; '.$material[0]['name'],
-					  'cid'=>$cid,
-					  'mid'=>$mid,
-	   				'cname' => $course['number'].' '.$course['title'],
+		// get correct view if an object id is provided
+		if ($oid != 0)  {
+				$obj =  $this->coobject->coobjects($mid,$oid); 
+				if ($obj != null) {
+								$obj =$obj[0];
+								if ($obj['done'] != 1) {
+										if ($obj['ask']=='yes' && $obj['action_type']=='') { $view='ask'; }
+
+										switch($obj['action_type']) {
+													case 'Search':     $view = 'search'; 			break;
+													case 'Fair Use':   $view = 'fairuse'; 		break;
+													case 'Permission': $view = 'permission'; 	break;
+													case 'Commission': $view = 'commission'; 	break;
+													case 'Re-Create':  $view = 'recreate'; 		break;
+													case 'Retain: Permission': 		$view = 'retain'; break;
+													case 'Retain: Public Domain': $view = 'retain'; break;
+													case 'Retain: No Copyright':  $view = 'retain'; break;
+													case 'Remove and Annotate':   $view = 'remove'; break;
+													default: $view = 'new';
+										}
+								} else {
+										 $view=='cleared';
+								}
+				} else {
+						$view = 'new';	
+						$oid = 0;
+				}
+		}
+
+		$data = array(
+						'cid'=>$cid,
+						'mid'=>$mid,
+						'oid'=>$oid,
+	 					'cname' => $course['number'].' '.$course['title'],
 						'director' => $course['director'],
-					  'material'=>$material[0], 
-					  'coobjects'=>$objects, 
-					  'numobjects'=>$numobjects, 
-		        'list' => $this->ocw_utils->create_co_list($cid,$mid,$objects),
-		        'filter' => $filter, 
-		        'filter_types' => $filter_types, 
+	  				'material' =>  $material[0], 
+		        'view' => $view, 
+		        'subtab' => $subtab, 
+						'title'=>'Edit Material &raquo; '.$material[0]['name'],
 		);
+
+		// get counts for display
+		$data['num_all'] = $data['num_new'] = $data['num_search'] = 
+		$data['num_ask_orig'] = $data['num_ask_repl'] = $data['num_fairuse'] = 
+		$data['num_permission'] = $data['num_commission'] = 
+		$data['num_retain_perm'] = $data['num_retain_nc'] = $data['num_retain_pd'] = 
+		$data['num_replace'] = $data['num_recreate'] = 
+		$data['num_remove'] = $data['num_cleared'] = $data['num_objects'] = 0; 
+		
+		$objects = array();
+		if ($view == 'ask') { $objects['orig'] = $objects['repl'] = array(); }
+		if ($view == 'retain') { $objects['perm'] = $objects['nc'] = $objects['pd'] = array(); }
+
+		$orig_objects =  $this->coobject->coobjects($mid); 
+		if ($orig_objects != null) {	
+				foreach ($orig_objects as $obj) {
+								if ($obj['done'] != 1) {
+										if ($obj['ask']=='yes' && $obj['action_type']=='') {
+												$data['num_ask_orig']++;
+										 		if($view=='ask') { array_push($objects['orig'], $obj); }
+										}
+										switch($obj['action_type']) {
+													case 'Search': 
+																if ($view=='search') {array_push($objects,$obj);} 
+																$data['num_search']++; break;
+													case 'Fair Use': 
+																if ($view=='fairuse') {array_push($objects,$obj);} 
+																$data['num_fairuse']++; break;
+													case 'Permission': 
+																if ($view=='permission') {array_push($objects,$obj); }
+																$data['num_permission']++; break;
+													case 'Commission': 
+																if ($view=='commission') {array_push($objects,$obj); }
+																$data['num_commission']++; break;
+													case 'Retain: Permission': 
+																if ($view=='retain') {array_push($objects['perm'],$obj); 	}
+																$data['num_retain_perm']++; break;
+													case 'Retain: Public Domain': 	
+																if ($view=='retain') {array_push($objects['pd'],$obj); }
+																$data['num_retain_pd']++; break;
+													case 'Retain: No Copyright': 
+																if ($view=='retain') {array_push($objects['nc'],$obj); }
+																$data['num_retain_nc']++; break;
+													case 'Re-Create': 
+																if ($view=='recreate') {array_push($objects,$obj); }
+																$data['num_recreate']++; break;
+													case 'Remove and Annotate': 
+																if ($view=='remove') {array_push($objects,$obj); }
+																$data['num_remove']++; break;
+													default: 
+																if ($obj['ask']=='no') {
+																		if ($view=='new') { array_push($objects,$obj); }
+																		$data['num_new']++;
+																}
+										}
+								} else {
+										 if($view=='cleared') { array_push($objects, $obj); }
+									 	 $data['num_cleared']++;
+								}
+
+								if ($view=='all') { array_push($objects, $obj); }
+
+								$data['num_all']++;
+				}
+		}
+
+		$repl_objects =  $this->coobject->replacements($mid); 
+		if ($repl_objects != null) {	
+				foreach ($repl_objects as $robj) {
+								$obj = $this->coobject->coobjects($mid,$robj['object_id']);
+								if ($obj[0]['done'] != 1) {
+										if ($robj['ask']=='yes' && $robj['ask_status']<>'done') {
+										 		if($view=='ask') { array_push($objects['repl'], $obj[0]); }
+												$data['num_ask_repl']++;
+										}
+								}
+				}
+		}
+
+		$data['objects'] = $objects;	
+		if ($view == 'ask') { 
+				$data['num_objects'] = sizeof($objects['orig']) + sizeof($objects['repl']); 
+		} elseif($view == 'retain') {
+				$data['num_objects'] = sizeof($objects['perm']) + sizeof($objects['nc']) +
+															 sizeof($objects['pd']);
+	  } else {
+				$data['num_objects'] = sizeof($objects);
+		}
 
     $this->layout->buildPage('materials/_edit_material_cos', $data);
 	}

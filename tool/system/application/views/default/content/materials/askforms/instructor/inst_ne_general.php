@@ -34,12 +34,12 @@ foreach($general as $obj) {
 		<div>
 			<?php 
 				 if ($obj['otype']=='original') { 
-						 echo $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],false,false,true,true);
+						 echo $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],'orig',false,true);
 				 } else {
-   					 echo $this->ocw_utils->create_corep_img($cid,$mid,$obj['id'],$obj['location'],false,false,true,true);
+   					 echo $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],'rep',false,true);
 				 }
 			?>
-			<br/><br/>
+			<br style="clear:both"/><br/><br/>
 				 
 				<?php if ($obj['otype']=='original') { ?>
 					<b>Content-Type:</b> <?=$this->coobject->get_subtype_name($obj['subtype_id'])?><br/><br/>

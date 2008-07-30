@@ -12,7 +12,6 @@
 	   echo style('style.css',array('media'=>"screen, projection"));
 	   echo style('table.css',array('media'=>"screen, projection"));
 	   echo style('multiupload.css',array('media'=>"screen, projection"));
-	   echo style('carousel.css',array('media'=>"screen, projection"));
 	   echo style('smoothbox.css',array('media'=>"screen, projection"));
 
 	   echo script('mootools.js'); 
@@ -30,13 +29,6 @@
 	   echo script('flash.js'); 
 
 	  $ci_uri = trim($this->uri->uri_string(), '/'); 
-    if (isset($material['name']) && preg_match('|^materials/edit/\d+/\d+|', $ci_uri)) { 
-        echo '<script type="text/javascript">';
-        echo 'var numitems = '.$numobjects.';';
-        echo 'var numsteps = numitems;';
-        echo 'var knobpos = 0;';
-        echo '</script>';
-    }
 	?>
 </head>
 
@@ -57,12 +49,12 @@
     <?php if (getUserProperty('role') == 'dscribe1') { ?>
 
 	  <li<?= (preg_match('/^(home)|(dscribe1\/home)|\s/', $ci_uri) > 0)? $att: ''?>><?=anchor("/home",$this->lang->line('ocw_ds_menu_home'))?></li>
-	  <li<?= (preg_match('/^(manage|materials|courses)/', $ci_uri) > 0)? $att: ''?>><?=anchor("/dscribe1/courses",'Manage Courses')?></li>
+	  <li<?= (preg_match('/^(dscribe1\/courses)/', $ci_uri) > 0)? $att: ''?>><?=anchor("/dscribe1/courses",'Manage Courses')?></li>
 		
     <?php } elseif (getUserProperty('role') == 'instructor') { ?>
 
 		  <li<?= (preg_match('/^(instructor|instructor\/home)/', $ci_uri) > 0)? $att: ''?>><?=anchor("/home",$this->lang->line('ocw_ds_menu_home'))?></li>
-      <li<?= (preg_match('/^(manage|materials|courses)/', $ci_uri) > 0)? $att: ''?>><?=anchor("/instructor/courses",'Manage Courses')?></li>
+	  	<li<?= (preg_match('/^(instructor\/courses)/', $ci_uri) > 0)? $att: ''?>><?=anchor("/instructor/courses",'Manage Courses')?></li>
 
 			<?php if (isset($cid)) { ?>
       <li<?= (preg_match('/^(instructor\/materials)/', $ci_uri) > 0)? $att: ''?>><?=anchor("/instructor/materials/$cid",$this->lang->line('ocw_ins_menu_materials'))?></li>
