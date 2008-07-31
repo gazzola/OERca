@@ -13,10 +13,8 @@
  foreach($materials as $category => $cmaterial) { 
 ?> 
 <h2 style="clear:both"><?=$category?></h2>
-<?php $mat_form_attr = array(
-  'id' => 'mat_form',
-  'name' => 'mat_form'
-  ); ?>
+<?php $mat_form_attr = array( 'id' => 'mat_form', 'name' => 'mat_form'); ?>
+
 <?php echo form_open("materials/manipulate/$cid", $mat_form_attr) ?>
   <div class="column span-7 firstlast">
     <input type="submit" name="delete" id="delete" value="Delete" class="confirm">
@@ -46,7 +44,9 @@
   	<tbody>
   <?php foreach($cmaterial as $material) { 
   	$objstats =  $this->coobject->object_stats($material['id']);
-
+		$numcomments = count($material['comments']);
+		$askcolor = ($this->material->status($material['id'],getUserProperty('id'),'askform')) 
+						  ? 'color:green;font-weight:bold' : '';
   ?>
   	<tr>
   	  <td>
@@ -57,9 +57,9 @@
   			<span style="font-size: 13px;"><a href="<?php echo site_url()."materials/edit/$cid/".$material['id']?>"><?= $material['name']?></a></span>
 				<br/>
 				<span style="font-size:9px; clear:both; margin-top:20px;">
-						<a href="<?=site_url("materials/editinfo/$cid/{$material['id']}")?>?TB_iframe=true&height=500&width=350" class="smoothbox tooltip" title="<b>Editing <?=$material['name']?> Info</b>">Edit</a>&nbsp;|&nbsp;
-						<a href="<?=site_url("materials/editcomments/$cid/{$material['id']}")?>?TB_iframe=true&height=500&width=350" class="smoothbox tooltip" title="<b>Comments for <?=$material['name']?></b>">Comments</a>&nbsp;|&nbsp;
-						<a href="<?=site_url("materials/askforms/$cid/{$material['id']}")?>" class="tooltip" title="View Material ASK forms">ASK Forms</a>
+						<a href="<?=site_url("materials/editinfo/$cid/{$material['id']}")?>?TB_iframe=true&height=500&width=350" class="smoothbox" title="Editing <?=$material['name']?> Info">Edit</a>&nbsp;|&nbsp;
+						<a href="<?=site_url("materials/editcomments/$cid/{$material['id']}")?>?TB_iframe=true&height=500&width=350" class="smoothbox" title="Comments for <?=$material['name']?>">Comments (<?=$numcomments?>)</a>&nbsp;|&nbsp;
+						<a href="<?=site_url("materials/askforms/$cid/{$material['id']}")?>" title="View Material ASK forms" style="<?=$askcolor?>">ASK Forms</a>
 				</span>
   		</td>
 

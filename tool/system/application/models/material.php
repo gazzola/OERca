@@ -18,6 +18,31 @@ class Material extends Model
 		$this->load->model('mimetype');
   }
 
+  /**
+    * Get status of a material for a particular user
+    *
+    * @access  public
+    * @param   int 		 mid 	material id	
+    * @param   int 		 uid  user id
+    * @param   string  type  type of status [askform]	
+    * @return  boolean true if there has been a change in status
+    * 											since the user's last login
+    */
+	public function status($mid, $uid, $type)
+	{
+			if (!in_array($type,array('askform'))) { return false; }	
+
+			if ($type=='askform') {
+					// check to see if there are any unsent emails for this user
+					// in the askforms
+					$sql = "SELECT COUNT(*) AS num 
+										FROM ocw_postoffice 
+									 WHERE material_id=$mid AND sent='no' AND to_id=$uid";
+    			$q = $this->db->query($sql);
+    			$r = $q->row();
+    			return ($r->num > 0) ? true : false;
+			}
+	}
 
   /**
     * add material based on information given

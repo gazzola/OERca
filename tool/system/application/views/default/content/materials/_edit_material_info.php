@@ -62,7 +62,7 @@ $copyholder = ($material['author']=='') ? $course['director'] : $material['autho
 		
 		<br/>
 
-  <input type="button" value="Done" onclick="parent.window.location.reload(); parent.TB_remove();"/>
+  <input type="button" value="Save" onclick="parent.window.location.reload(); parent.TB_remove();"/>
 	&nbsp; &nbsp; &nbsp; &nbsp;
   <input type="button" value="Cancel" onclick="parent.TB_remove();"/>
 

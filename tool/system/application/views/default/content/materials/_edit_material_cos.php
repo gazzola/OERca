@@ -35,18 +35,18 @@
 <div class="column span-24 first last" style="margin-bottom: 10px;">
    <div id="navlist">
       <ul id="navlist">
-      <li<?=($view=='all')?$att:''?>><?=anchor("/materials/edit/$cid/$mid/0/all/",$all)?></li>
-      <li<?=($view=='new')?$att:''?>><?=anchor("/materials/edit/$cid/$mid/0/new/",$new)?></li>
-      <li<?=($view=='search')?$att:''?>><?=anchor("/materials/edit/$cid/$mid/0/search/",$search)?></li>
-      <li<?=($view=='ask')?$att:''?>><?=anchor("/materials/edit/$cid/$mid/0/ask/",$ask)?></li>
-      <li<?=($view=='fairuse')?$att:''?>><?=anchor("/materials/edit/$cid/$mid/0/fairuse/",$fairuse)?></li>
-      <li<?=($view=='permission')?$att:''?>><?=anchor("/materials/edit/$cid/$mid/0/permission/",$permission)?></li>
-      <li<?=($view=='commission')?$att:''?>><?=anchor("/materials/edit/$cid/$mid/0/commission/",$commission)?></li>
-      <li<?=($view=='retain')?$att:''?>><?=anchor("/materials/edit/$cid/$mid/0/retain/",$retain)?></li>
-      <li<?=($view=='replace')?$att:''?>><?=anchor("/materials/edit/$cid/$mid/0/replace/",$replace)?></li>
-      <li<?=($view=='recreate')?$att:''?>><?=anchor("/materials/edit/$cid/$mid/0/recreate/",$recreate)?></li>
-      <li<?=($view=='remove')?$att:''?>><?=anchor("/materials/edit/$cid/$mid/0/remove/",$remove)?></li>
-      <li<?=($view=='cleared')?$att:''?>><?=anchor("/materials/edit/$cid/$mid/0/cleared/",$cleared)?></li>
+      <li<?=($view=='all')?$att:''?>><?=anchor("/materials/edit/$cid/$mid/0/all/",$all,array('id'=>'all','class'=>'codzone'))?></li>
+      <li<?=($view=='new')?$att:''?>><?=anchor("/materials/edit/$cid/$mid/0/new/",$new,array('id'=>'new','class'=>'codzone'))?></li>
+      <li<?=($view=='search')?$att:''?>><?=anchor("/materials/edit/$cid/$mid/0/search/",$search,array('id'=>'search','class'=>'codzone'))?></li>
+      <li<?=($view=='ask')?$att:''?>><?=anchor("/materials/edit/$cid/$mid/0/ask/",$ask,array('id'=>'ask','class'=>'codzone'))?></li>
+      <li<?=($view=='fairuse')?$att:''?>><?=anchor("/materials/edit/$cid/$mid/0/fairuse/",$fairuse,array('id'=>'fairuse','class'=>'codzone'))?></li>
+      <li<?=($view=='permission')?$att:''?>><?=anchor("/materials/edit/$cid/$mid/0/permission/",$permission,array('id'=>'permission','class'=>'codzone'))?></li>
+      <li<?=($view=='commission')?$att:''?>><?=anchor("/materials/edit/$cid/$mid/0/commission/",$commission,array('id'=>'commission','class'=>'codzone'))?></li>
+      <li<?=($view=='retain')?$att:''?>><?=anchor("/materials/edit/$cid/$mid/0/retain/",$retain,array('id'=>'retain','class'=>'codzone'))?></li>
+      <li<?=($view=='replace')?$att:''?>><?=anchor("/materials/edit/$cid/$mid/0/replace/",$replace,array('id'=>'replace','class'=>'codzone'))?></li>
+      <li<?=($view=='recreate')?$att:''?>><?=anchor("/materials/edit/$cid/$mid/0/recreate/",$recreate,array('id'=>'recreate','class'=>'codzone'))?></li>
+      <li<?=($view=='remove')?$att:''?>><?=anchor("/materials/edit/$cid/$mid/0/remove/",$remove,array('id'=>'remove','class'=>'codzone'))?></li>
+      <li<?=($view=='cleared')?$att:''?>><?=anchor("/materials/edit/$cid/$mid/0/cleared/",$cleared,array('id'=>'cleared','class'=>'codzone'))?></li>
     </ul>
    </div>
 </div>
