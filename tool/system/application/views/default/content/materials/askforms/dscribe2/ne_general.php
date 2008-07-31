@@ -72,8 +72,10 @@ foreach($cos as $obj) {
 
 				<br/><br/>
 
+				<?php if ($obj['otype']=='original') { ?>
 				<b>dScribe Recommended Action:</b>
 						<?php echo ($obj['action_taken']=='') ? '<span style="color:red">No action recommended</span>':$obj['action_taken']; ?>
+				<?php } ?>
 				<br/><br/>	
 
 		</div>
