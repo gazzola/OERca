@@ -1621,35 +1621,6 @@ class Coobject extends Model
 			return ($name=='') ? 'Could not find type' : $name;
 	}
 
-	//public function prev_next($cid, $mid, $oid)
-	//{
-	//	$next = '';
-	//	$prev = '';
-  //
-	//	$this->db->select('id, name')->from('objects')->where('material_id',$mid)->orderby('id');
-	//	$q = $this->db->get();
-	//	$num = $q->num_rows();
-	//	$thisnum = $count = 0;
-	//
-	//	if ($num > 0) {
-	//		foreach($q->result_array() as $row) {
-	//			$count++;
-	//			if ($row['id'] == ($oid - 1)) {
-	//				$prev = '<a href="'.site_url("materials/object_info/$cid/$mid/{$row['id']}").'">&laquo;&nbsp;Previous</a>';
-	//			}
-	//			if ($row['id'] == ($oid + 1)) {
-	//				$next = '<a href="'.site_url("materials/object_info/$cid/$mid/{$row['id']}").'">Next&nbsp;&raquo;</a>';
-	//			}
-	//			if ($row['id'] == $oid) { $thisnum = $count; }
-	//		}
-	//	}
-	//	
-	//	$prev = ($prev=='') ? '&laquo;&nbsp;Previous' : $prev;
-	//	$next = ($next=='') ? 'Next&nbsp;&raquo;' : $next;
-	//	$mid = ($num > 1) ? "$thisnum of $num" : '';
-	//	return $prev.'&nbsp;&nbsp;-&nbsp;'.$mid.'&nbsp;-&nbsp;&nbsp;'.$next; 
-	//}
-	
 	/**
     * Generate the previous, next navigation arrows at the bottom of
     * the CO display pages. Arrows are only clickable if in fact that
@@ -1660,10 +1631,13 @@ class Coobject extends Model
     * @param    int the course id
     * @param    int the material id
     * @param    int the content object id
+    * @param    string search filter 
+    * @param    string  which [prev|next|both] 
+    * @param    string  type  [text|image] 
     *
     * @return   string the html source for the navigation links
     */
-  public function prev_next($cid, $mid, $oid, $filter="")
+  public function prev_next($cid, $mid, $oid, $filter="", $which='both',$type='text')
 	{
 		$prev_obj = NULL;
 		$curr_num = NULL;
@@ -1689,17 +1663,40 @@ class Coobject extends Model
 		     }
 		   }
 		 } 
-		
+	
 		/* make buttons active if the respective values are defined,
 		 * plain text otherwise */
-		$prev_nav = ($prev_obj) ? '<a href="'.site_url("materials/object_info/$cid/$mid/$prev_obj/status/status/$filter").'">&laquo;&nbsp;Previous</a>' : 
-		  '&laquo;&nbsp;Previous';
 		$curr_nav = ($curr_num) ? "$curr_num of $total_num" : "";
-		$next_nav = ($next_obj) ? '<a href="'.site_url("materials/object_info/$cid/$mid/$next_obj/status/status/$filter").'">Next&nbsp;&raquo;</a>' :
-		  'Next&nbsp;&raquo;';
+		if ($type=='image') {
+				$prev_txt = 'View '.($curr_num-1).' of '.$total_num;
+				$prev_img = ($prev_obj) 
+							? '<img title="'.$prev_txt.'" id="pyes" class="parrow" src="'.property('app_img').'/coedit-1.png" />'
+							: '<img id="pno" class="parrow" src="'.property('app_img').'/coedit-1.png" />';	
+
+				$next_txt = 'View '.($curr_num+1).' of '.$total_num;
+				$next_img = ($next_obj) 
+							? '<img title="'.$next_txt.'" id="pyes" class="parrow" src="'.property('app_img').'/coedit-2.png" />'
+							: '<img id="pno" class="parrow" src="'.property('app_img').'/coedit-2.png" />';	
+
+				$prev_nav = ($prev_obj) 
+							? '<a href="'.site_url("materials/object_info/$cid/$mid/$prev_obj/status/status/$filter").'">'.$prev_img.'</a>' : $prev_img; 
+
+				$next_nav = ($next_obj) ? '<a href="'.site_url("materials/object_info/$cid/$mid/$next_obj/status/status/$filter").'">'.$next_img.'</a>' : $next_img;
+
+		} else {
+				$prev_nav = ($prev_obj) ? '<a href="'.site_url("materials/object_info/$cid/$mid/$prev_obj/status/status/$filter").'">&laquo;&nbsp;Previous</a>' : '&laquo;&nbsp;Previous';
+				$next_nav = ($next_obj) ? '<a href="'.site_url("materials/object_info/$cid/$mid/$next_obj/status/status/$filter").'">Next&nbsp;&raquo;</a>' : 'Next&nbsp;&raquo;';
+		}
 		
-		return $prev_nav.'&nbsp;&nbsp;-&nbsp;'.
-		  $curr_nav.'&nbsp;-&nbsp;&nbsp;'.$next_nav;	
+		$prev_next = '';
+		switch($which) {
+				case 'prev': $prev_next = $prev_nav ; break;
+				case 'next': $prev_next = $next_nav ; break;
+				default: $prev_next = $prev_nav.'&nbsp;&nbsp;-&nbsp;'.$curr_nav.
+															'&nbsp;-&nbsp;&nbsp;'.$next_nav;	
+		}
+		
+		return $prev_next; 
 	}
 
 	public function prep_path($name, $slide=false)

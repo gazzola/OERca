@@ -170,8 +170,9 @@ class Materials extends Controller {
 	  $course = $this->course->get_course($cid); 
 		$material =  $this->material->materials($cid,$mid,true);
 
-		$view = (!in_array($view, array('all','new','ask','fairuse','search',
-																		'permission','commission', 'retain','replace',
+		$view = (!in_array($view, array('all','new','ask:orig','fairuse','search','retain:pd',
+																		'retain:perm','ask:rco','uncleared',
+																		'permission','commission', 'retain:nc','replace',
 																		'recreate','remove','cleared'))) ? 'new' : $view;
 
 		// get correct view if an object id is provided
@@ -180,7 +181,7 @@ class Materials extends Controller {
 				if ($obj != null) {
 								$obj =$obj[0];
 								if ($obj['done'] != 1) {
-										if ($obj['ask']=='yes' && $obj['action_type']=='') { $view='ask'; }
+										if ($obj['ask']=='yes' && $obj['action_type']=='') { $view='ask:orig'; }
 
 										switch($obj['action_type']) {
 													case 'Search':     $view = 'search'; 			break;
@@ -188,9 +189,9 @@ class Materials extends Controller {
 													case 'Permission': $view = 'permission'; 	break;
 													case 'Commission': $view = 'commission'; 	break;
 													case 'Re-Create':  $view = 'recreate'; 		break;
-													case 'Retain: Permission': 		$view = 'retain'; break;
-													case 'Retain: Public Domain': $view = 'retain'; break;
-													case 'Retain: No Copyright':  $view = 'retain'; break;
+													case 'Retain: Permission': 		$view = 'retain:perm'; break;
+													case 'Retain: Public Domain': $view = 'retain:pd'; break;
+													case 'Retain: No Copyright':  $view = 'retain:nc'; break;
 													case 'Remove and Annotate':   $view = 'remove'; break;
 													default: $view = 'new';
 										}
@@ -220,21 +221,24 @@ class Materials extends Controller {
 		$data['num_ask_orig'] = $data['num_ask_repl'] = $data['num_fairuse'] = 
 		$data['num_permission'] = $data['num_commission'] = 
 		$data['num_retain_perm'] = $data['num_retain_nc'] = $data['num_retain_pd'] = 
-		$data['num_replace'] = $data['num_recreate'] = 
+		$data['num_replace'] = $data['num_recreate'] = $data['num_uncleared'] = 
 		$data['num_remove'] = $data['num_cleared'] = $data['num_objects'] = 0; 
 		
 		$objects = array();
-		if ($view == 'ask') { $objects['orig'] = $objects['repl'] = array(); }
-		if ($view == 'retain') { $objects['perm'] = $objects['nc'] = $objects['pd'] = array(); }
 
 		$orig_objects =  $this->coobject->coobjects($mid); 
 		if ($orig_objects != null) {	
 				foreach ($orig_objects as $obj) {
 								if ($obj['done'] != 1) {
+
+										$data['num_uncleared']++;
+										if($view=='uncleared') { array_push($objects, $obj); }
+
 										if ($obj['ask']=='yes' && $obj['action_type']=='') {
 												$data['num_ask_orig']++;
-										 		if($view=='ask') { array_push($objects['orig'], $obj); }
+										 		if($view=='ask:orig') { array_push($objects, $obj); }
 										}
+
 										switch($obj['action_type']) {
 													case 'Search': 
 																if ($view=='search') {array_push($objects,$obj);} 
@@ -249,13 +253,13 @@ class Materials extends Controller {
 																if ($view=='commission') {array_push($objects,$obj); }
 																$data['num_commission']++; break;
 													case 'Retain: Permission': 
-																if ($view=='retain') {array_push($objects['perm'],$obj); 	}
+																if ($view=='retain:perm') {array_push($objects,$obj);}
 																$data['num_retain_perm']++; break;
 													case 'Retain: Public Domain': 	
-																if ($view=='retain') {array_push($objects['pd'],$obj); }
+																if ($view=='retain:pd') {array_push($objects,$obj); }
 																$data['num_retain_pd']++; break;
 													case 'Retain: No Copyright': 
-																if ($view=='retain') {array_push($objects['nc'],$obj); }
+																if ($view=='retain:nc') {array_push($objects,$obj); }
 																$data['num_retain_nc']++; break;
 													case 'Re-Create': 
 																if ($view=='recreate') {array_push($objects,$obj); }
@@ -275,7 +279,6 @@ class Materials extends Controller {
 								}
 
 								if ($view=='all') { array_push($objects, $obj); }
-
 								$data['num_all']++;
 				}
 		}
@@ -284,24 +287,40 @@ class Materials extends Controller {
 		if ($repl_objects != null) {	
 				foreach ($repl_objects as $robj) {
 								$obj = $this->coobject->coobjects($mid,$robj['object_id']);
+
+								if($view=='replace') { array_push($objects, $obj[0]); }
+								$data['num_replace']++;
+
 								if ($obj[0]['done'] != 1) {
 										if ($robj['ask']=='yes' && $robj['ask_status']<>'done') {
-										 		if($view=='ask') { array_push($objects['repl'], $obj[0]); }
+										 		if($view=='ask:rco') { array_push($objects, $obj[0]); }
 												$data['num_ask_repl']++;
 										}
 								}
 				}
 		}
 
+		$data['select_filter'] = array(
+				'all' => 'All ('.$data['num_all'].')',
+				'new' => 'New ('.$data['num_new'].')',
+				'replace' => 'Replacements ('.$data['num_replace'].')',
+				'cleared' => 'Cleared ('.$data['num_cleared'].')',
+				'uncleared' => 'Un-Cleared ('.$data['num_uncleared'].')',
+				'ask:orig' => 'Ask Instructor: Originals ('.$data['num_ask_orig'].')',
+				'ask:rco' => 'Ask Instructor: Replacements ('.$data['num_ask_repl'].')',
+				'permission' => 'Permission ('.$data['num_permission'].')',
+				'search' => 'Search ('.$data['num_search'].')',
+				'retain:perm' => 'Retain: Permission ('.$data['num_retain_perm'].')',
+				'retain:nc' => 'Retain: No Copyright ('.$data['num_retain_nc'].')',
+				'retain:pd' => 'Retain: Public Domain ('.$data['num_retain_pd'].')',
+				'recreate' => 'Re-Create ('.$data['num_recreate'].')',
+				'commission' => 'Commission ('.$data['num_commission'].')',
+				'fairuse' => 'Fair Use ('.$data['num_fairuse'].')',
+				'remove' => 'Remove ('.$data['num_remove'].')',
+		);
+
 		$data['objects'] = $objects;	
-		if ($view == 'ask') { 
-				$data['num_objects'] = sizeof($objects['orig']) + sizeof($objects['repl']); 
-		} elseif($view == 'retain') {
-				$data['num_objects'] = sizeof($objects['perm']) + sizeof($objects['nc']) +
-															 sizeof($objects['pd']);
-	  } else {
-				$data['num_objects'] = sizeof($objects);
-		}
+		$data['num_objects'] = sizeof($objects);
 
     $this->layout->buildPage('materials/_edit_material_cos', $data);
 	}

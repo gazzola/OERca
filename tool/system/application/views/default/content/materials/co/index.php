@@ -14,7 +14,7 @@ echo style('multiupload.css',array('media'=>"screen, projection"));
 echo style('mootabs1.2.css',array('media'=>"screen, projection"));
 echo style('sidetabs.css',array('media'=>"screen, projection"));
 echo style('smoothbox.css',array('media'=>"screen, projection"));
-echo '<style type="text/css">body { background-color:white; padding:0; margin:auto; width:680px; height:550px; color:#999}</style>';
+echo '<style type="text/css">body { background-color:white; padding:0; margin:auto; width:800px; height:550px; color:#999}</style>';
 
 echo script('mootools.js'); 
 echo script('smoothbox.js'); 
@@ -37,69 +37,76 @@ echo script('ocw_tool.js');
 
 <body>
 
-<div id="mainPage" class="container" style="margin:0; padding:0; width:680px">
+<div id="mainPage" class="container" style="margin:0; padding:0;">
 
 <input type="hidden" id="cid" name="cid" value="<?=$cid?>" />
 <input type="hidden" id="mid" name="mid" value="<?=$mid?>" />
 <input type="hidden" id="oid" name="oid" value="<?=$obj['id']?>" />
 <input type="hidden" id="user" name="user" value="<?=$user?>" />
+	
+<button id="donetop" onclick="parent.window.location.replace(purl); parent.TB_remove()">Done</button>
 
-<div class="column span-17 first last" style="text-align: left; margin-bottom: 10px; border: 0px solid red;">
-  <h3 style="display:inline; font-size: 1.5em; color:#666;">OER Content Object: <?=$obj['name']?></h3>
-	<span style="margin-left:280px;">
-			<a href="javascript:void(0)" onclick="parent.window.location.replace(purl); parent.TB_remove()">Done</a>
-			&nbsp;&nbsp;
-			<!--<a href="javascript:void(0)" onclick="parent.TB_remove()">Cancel</a>-->
-	</span>
+<div class="column span-24 first last" style="text-align:left; margin-bottom:10px;">
+  <h3 style="font-size: 1.5em; color:#666;">OER Content Object: <?=$obj['name']?></h3>
 </div>
 
-<div id="myTabs" class="column span-17 first last">
+<div id="myTabs" class="column span-24 first last">
 
-	<ul class="mootabs_title">
+	<div id="leftarrow" class="column span-1 first">
+			<?= $this->coobject->prev_next($cid, $mid, $obj['id'], $filter,'prev','image');?>
+	</div>
 
-		<li title="Original" style="padding-left:10px; margin-left:0;"><h2>Original</h2>
-	    <?=$this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],'orig',true,false);?>
-      <br style="clear:both"/>
-			<small>
-      	<a href="<?=site_url("materials/remove_object/$cid/$mid/{$obj['id']}/original")?>" title="delete content object" style="text-align: center" class="confirm" target="_top">Delete content object &raquo;</a>
-			</small>
-    </li>
+	<div id="edit-co-content" class="column span-18">
+				<ul class="mootabs_title">
+					<li title="Original" style="padding-left:10px; margin-left:0;"><h2>Original</h2>
+						<center>
+				    	<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],'orig',true,false);?>
+						</center>
+			      <br style="clear:both"/>
+						<small>
+			      	<a href="<?=site_url("materials/remove_object/$cid/$mid/{$obj['id']}/original")?>" title="delete content object" style="text-align: center" class="confirm" target="_top">Delete content object &raquo;</a>
+						</small>
+			    </li>
+			
+					<li title="Replacement" style="margin-left: 13px;"><h2>Replacement</h2>
+						<center>
+			      <?php 
+							$x = $this->coobject->replacement_exists($cid,$mid,$obj['id']);
+			        if ($x) {
+			            echo $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],'rep',true,false);
+			        } else {
+			            echo '<img src="'.property('app_img').'/norep.png" width="150px" height="150px" />';
+			        }
+			      ?>
+						</center>
+			     	<br style="clear:both"/>
+						<small>
+						<?php if ($x) { $r = $this->coobject->replacements($mid,$obj['id']); ?>
+							<a href="<?=site_url("materials/remove_object/$cid/$mid/{$obj['id']}/replacement/{$r[0]['id']}")?>" style="text-align: center" title="delete replacement objects" class="confirm" target="_top">Delete &raquo;</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+						<?php } ?>
+			      		<a href="#upload" style="text-align: center" title="upload replacements">Upload &raquo;</a>&nbsp;&nbsp;
+			      		<?php if ($x) { ?>
+							|&nbsp;&nbsp;<a href="<?=site_url("materials/download_rco/$cid/$mid/{$obj['id']}/{$r[0]['id']}")?>" style="text-align: center" title="download replacement object" >Download &raquo;</a>&nbsp;&nbsp;
+						<?php } ?>
+						</small>
+			    </li>
+			 </ul>
+			
+			 <!-- original form -->
+			 <?php $this->load->view(property('app_views_path').'/materials/co/edit_orig.php', $data); ?>
+			
+			 <!-- replacement form -->
+			 <?php $this->load->view(property('app_views_path').'/materials/co/edit_repl.php', $data); ?>
+  </div>
 
-		<li title="Replacement" style="margin-left: 13px;"><h2>Replacement</h2>
-      <?php 
-				$x = $this->coobject->replacement_exists($cid,$mid,$obj['id']);
-        if ($x) {
-            echo $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],'rep',true,false);
-        } else {
-            echo '<img src="'.property('app_img').'/norep.png" width="150px" height="150px" />';
-        }
-      ?>
-     	<br style="clear:both"/>
-			<small>
-			<?php if ($x) { 
-								$r = $this->coobject->replacements($mid,$obj['id']);
-			?>
-				<a href="<?=site_url("materials/remove_object/$cid/$mid/{$obj['id']}/replacement/{$r[0]['id']}")?>" style="text-align: center" title="delete replacement objects" class="confirm" target="_top">Delete &raquo;</a>&nbsp;&nbsp;|&nbsp;&nbsp;
-			<?php } ?>
-      		<a href="#upload" style="text-align: center" title="upload replacements">Upload &raquo;</a>&nbsp;&nbsp;
-      		<?php if ($x) { 
-			?>
-				|&nbsp;&nbsp;<a href="<?=site_url("materials/download_rco/$cid/$mid/{$obj['id']}/{$r[0]['id']}")?>" style="text-align: center" title="download replacement object" >Download &raquo;</a>&nbsp;&nbsp;
-			<?php } ?>
-			</small>
-    </li>
+	<div id="rightarrow" class="column span-1 last">
+			<?= $this->coobject->prev_next($cid, $mid, $obj['id'], $filter,'next','image');?>
+	</div>
 
-  </ul>
-
-  <!-- original form -->
-  <?php $this->load->view(property('app_views_path').'/materials/co/edit_orig.php', $data); ?>
-
-  <!-- replacement form -->
-  <?php $this->load->view(property('app_views_path').'/materials/co/edit_repl.php', $data); ?>
 </div>
 
 <div class="column span-17 first last" style="text-align: center">
- <br/><?= $this->coobject->prev_next($cid, $mid, $obj['id'], $filter);?>
+	<button id="donebot" onclick="parent.window.location.replace(purl); parent.TB_remove()">Done</button>
 </div>
 
 </div>

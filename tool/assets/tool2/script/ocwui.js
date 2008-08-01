@@ -10,11 +10,16 @@ var Site = {
 
   	var myTips1 = new MooTips($$('.tooltip'), { maxTitleChars: 50 });
 
-		if ($('edit_mat_cos')) {
-				var cinfolist = $$('.coimginfo');
-    		cinfolist.each( function(litem, i) { var info = litem.setOpacity(0.5); });
-		}
-
+		var cinfolist = $$('.coimginfo');
+   	cinfolist.each( function(litem, i) { var info = litem.setOpacity(0.5); });
+		
+		var arrowlist = $$('.parrow');
+   	arrowlist.each( function(item, i) { 
+				if (item.id=='pno') { item.setOpacity(0.3); } else { item.setOpacity(0.8); }
+				item.addEvent('mouseover',function() { if (this.id=='pyes') { this.setOpacity(1); } });
+				item.addEvent('mouseout',function() {  if (this.id=='pyes') { this.setOpacity(0.8); }  });
+		});
+	
     if ($('orig_com_addpanel')) {
       orig_com_ap = new Fx.Slide($('orig_com_addpanel'), {duration: 500, transition: Fx.Transitions.linear });
       orig_com_ap.hide();

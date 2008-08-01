@@ -43,7 +43,6 @@
 
   	<tbody>
   <?php foreach($cmaterial as $material) { 
-  	$objstats =  $this->coobject->object_stats($material['id']);
 		$numcomments = count($material['comments']);
 		$askcolor = ($this->material->status($material['id'],getUserProperty('id'),'askform')) 
 						  ? 'color:green;font-weight:bold' : '';
@@ -92,12 +91,6 @@
   		<?php echo ($material['embedded_co']==0) ? '(no CO)' : "&nbsp;({$material['statcount']})"; ?>
   		</td>
 		
-  		<!-- <td>
-  			<b>
-  			 <?php 
-  				if ($objstats['ask'] > 0) { echo '<small>Yes&nbsp;(<a href="'.site_url("materials/askforms/$cid/".$material['id']).'">view ASK form</a>)</small>'; } else { echo 'no ask items'; }?> 
-  			</b>
-  		</td> -->
   		<?php } ?>
   	</tr>
   	<?php 

@@ -169,9 +169,10 @@ class OCW_utils {
 			  $height.'" />';
 	}
 
-	function create_co_list($cid,$mid,$objs,$cols=5)
+	function create_co_list($cid,$mid,$objs,$inclrep=false,$cols=5)
 	{
-    $list = "<div class='column first last'>\n";
+		$id = ($inclrep) ? 'id="edrepl"' : '';
+    $list = "<div $id class='column first last'>\n";
 		$size = count($objs);
 		$cols = (($cols-1) <= 0) ? 1 : $cols;
 		$count = 1;	
@@ -183,13 +184,19 @@ class OCW_utils {
 									? 'column span-4 first': 'column span-4'); 
 	
 			  $break = (($count % $cols)==0 && ($count >= $cols) ) 
-							 ? "\n</div>\n<div class='column first last'>\n" : '';
+							 ? "\n</div>\n<div $id class='column first last'>\n" : '';
 
-				$y = $this->create_co_img($cid, $mid, 
-									  $objs[$i]['id'],
-									  $objs[$i]['location'],true,true,true,true);
+				$y = $this->create_co_img($cid, $mid, $objs[$i]['id'], $objs[$i]['location'],
+																	'orig',true,true,true,true,
+																	$class.(($inclrep)?' edrepl1' : ''));
+		  	$list .= "\n$y\n";
 
-		  	$list .= "\n<div id='box-{$objs[$i]['id']}' class='dcell $class'>\n$y\n</div>";
+				if ($inclrep) {
+						$class .= ' edrepl2';
+						$y = $this->create_co_img($cid, $mid, 
+									  $objs[$i]['id'], $objs[$i]['location'],'repl',true,false,false,false,$class);
+		  			$list .= "\n$y\n";
+				}
 
 				$list .= $break;
 
@@ -200,7 +207,7 @@ class OCW_utils {
 		return $list;
 	}
 	
-	function create_co_img($cid, $mid, $oid, $loc, $type='orig', $shrink=true, $show_ctx=true, $show_edit=false) 
+	function create_co_img($cid, $mid, $oid, $loc, $type='orig', $shrink=true, $show_ctx=true, $show_edit=false, $showinfo=true,$optclass='') 
 	{
 		 	$name = $this->object->coobject->object_filename($oid);
 		 	$path = $this->object->coobject->object_path($cid, $mid,$oid);
@@ -212,17 +219,29 @@ class OCW_utils {
       $thumb_found = $image_details['thumb_found'];
       
 	   	$imgurl = ($thumb_found) ? $imgurl : property('app_img').'/'.$defimg;
-	   	$editurl = site_url("materials/object_info/$cid/$mid/$oid").'?TB_iframe=true&height=630&width=800';
+	   	$editurl = site_url("materials/object_info/$cid/$mid/$oid").
+								 '?TB_iframe=true&height=630&width=800';
 
-			$size = ($shrink) ? 'width="150px" height="150px"':'width="300px" height="300px"';
+		  $locbar = '<p id="ciloc">'.$loc.'</p>';
+			$size = ($shrink) ? 'width:150px; height:150px;':'width::300px; height:300px;';
 			$title = 'Content Object :: Location: Page '.$loc;
-			$slide = ($show_ctx) ? '<h4>'.($this->create_slide($cid, $mid, $loc)).'</h4>' : '';
-		  $editlnk = ($show_edit) ? '<h4>'.(anchor($editurl, 'Edit', array('class'=>'smoothbox','id'=>'edit-'.$oid))).'</h4>' :'';
-			$show = ($show_ctx || $show_edit) ? true : false;
+			$slide=($show_ctx) ? '<p id="cislide">'.($this->create_slide($cid, $mid, $loc)).'</p>' : '';
+			$magnify = '<p id="cimagnify"><a href="'.$imgurl.'" class="smoothbox" rel="gallery-cos">'.
+	   				 		 '<img title="'.$title.'" src="'.property('app_img').'/search_16.gif" /></a></p>';
 
-	   	return '<a href="'.$imgurl.'" class="smoothbox" rel="gallery-cos">'.
-	   				 '<img title="'.$title.'" src="'.$imgurl.'" '. $size .'/></a>'.
-							(($show) ?  '<div class="coimginfo"><p>'.$loc.'</p>'.$slide.$editlnk.'</div>' : '');
+		  $editlnk=($show_edit) 
+							? '<p id="ciedit">'.
+								(anchor($editurl, 'Edit', array('class'=>'smoothbox','id'=>'edit-'.$oid))).'</p>' 
+						  :'';
+			$imglnk= ($show_edit) 
+							?	 '<a href="'.$editurl.'" class="smoothbox">'.
+						 		 '<img title="'.$title.'" src="'.$imgurl.'" style="'. $size .'" /></a>'
+							:	 '<img title="'.$title.'" src="'.$imgurl.'" style="'. $size .'" />';
+
+			$dcell = ($shrink) ? 'dcell':'dcellbig';
+	   	return '<div class="'.$dcell.' '.$optclass.'">'.$imglnk.
+						 '<div class="coimginfo">'.(($showinfo) ? $locbar.$slide.$editlnk.$magnify:
+																									  '<p>&nbsp;</p>').'</div></div>';
 	}
 
 	function create_slide($cid,$mid,$loc,$text='View context',$useimage=false)
@@ -244,7 +263,7 @@ class OCW_utils {
 						?'<a href="'.$imgurl.'" class="smoothbox" title="" rel="gallery-slide">'.$img.'</a>'
 						:'<a href="'.$imgurl.'" class="smoothbox" title="" rel="gallery-slide">'.$text.'</a>';
 
-	   	return ($thumb_found) ? $aurl : '<a href="javascript:void(0)">No context</a>';
+	   	return ($thumb_found) ? $aurl : '<a href="javascript:void(0)">&nbsp;No context&nbsp;&nbsp;</a>';
 	}
 
 	function remove_dir($dir)
