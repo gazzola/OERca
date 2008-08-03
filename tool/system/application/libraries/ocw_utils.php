@@ -223,7 +223,7 @@ class OCW_utils {
 								 '?TB_iframe=true&height=630&width=800';
 
 		  $locbar = '<p id="ciloc">'.$loc.'</p>';
-			$size = ($shrink) ? 'width:150px; height:150px;':'width::300px; height:300px;';
+			$size = ($shrink) ? 'width:150px; height:150px;':'width:300px; height:300px;';
 			$title = 'Content Object :: Location: Page '.$loc;
 			$slide=($show_ctx) ? '<p id="cislide">'.($this->create_slide($cid, $mid, $loc)).'</p>' : '';
 			$magnify = '<p id="cimagnify"><a href="'.$imgurl.'" class="smoothbox" rel="gallery-cos">'.
