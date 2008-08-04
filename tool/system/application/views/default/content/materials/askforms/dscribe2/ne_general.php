@@ -34,9 +34,9 @@ foreach($cos as $obj) {
 		<div>
 			<?php 
 				 if ($obj['otype']=='original') { 
-						 echo $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],'orig',false,true,true);
+						 echo $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],'general','orig',false,true,true);
 				 } else {
-   					 echo $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],'rep',false,true,true);
+   					 echo $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],'general','rep',false,true,true);
 				 }
 			?>
 			<br style="clear:both"/><br/>

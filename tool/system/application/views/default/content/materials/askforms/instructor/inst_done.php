@@ -9,7 +9,7 @@ if ($prov_objects != null) {
 
 <td style="vertical-align:top; width: 300px; padding: 10px;">
   <p>
-	<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],'orig',true);?>
+	<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],'done','orig',true);?>
   </p>
 
 	<!-- citation -->
@@ -35,7 +35,7 @@ if ($prov_objects != null) {
 
 <td style="vertical-align: top">
 	<p><h3>Actions Taken:</h3>                
-	<?php echo $this->coobject->ask_instructor_report($cid, $mid, $obj, 'original');	?>
+	<?php echo $this->coobject->ask_instructor_report($cid, $mid, $obj, 'original','done');	?>
   </p>
 </td>
 </tr>	
@@ -50,7 +50,7 @@ if ($repl_objects != null) {
 <td style="vertical-align:top"><?=$count?></td>
 
 <td style="vertical-align:top">
-	<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['object_id'],$obj['location'],'orig',true);?>
+	<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['object_id'],$obj['location'],'done','orig',true);?>
 
 	<!-- citation -->
 	<br/><br/>
@@ -74,7 +74,7 @@ if ($repl_objects != null) {
 </td>
 
 <td style="vertical-align:top">
-	<?php echo $this->coobject->ask_instructor_report($cid, $mid, $obj, 'replacement');	?>
+	<?php echo $this->coobject->ask_instructor_report($cid, $mid, $obj, 'replacement','done');	?>
 </td>
 </tr>
 

@@ -93,13 +93,6 @@
 		
   		<?php } ?>
   	</tr>
-  	<?php 
-  		if (@is_array($material['childitems'])) { 
-  			$childitems = $material['childitems'];
-  			$depth = 1;
-  			include property('app_views_abspath').'/materials/_childitems.php';
-  	    } 
-  	 ?>
   <?php }?>
   	</tbody>
   </table>

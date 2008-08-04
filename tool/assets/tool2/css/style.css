@@ -321,6 +321,8 @@ a.prog-link:visited, a.prog-link:link {color: #555555;}
 
 /* CO Image */
 a.smoothbox img { border:1px solid #dedede;} 
+a.smootbox,
+a.smoothbox:hover { text-decoration:none; }
 
 .coimginfo { float:left;  padding:0; margin-top:-4px; max-width:300px; min-width:152px; height:24px; background-color:#000; }
 .coimginfo p { float:left; margin:0; padding:0; color:#fff; font-family:Arial; display:inline; margin-top:7px;}

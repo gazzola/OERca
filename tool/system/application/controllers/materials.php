@@ -169,41 +169,19 @@ class Materials extends Controller {
 	{
 	  $course = $this->course->get_course($cid); 
 		$material =  $this->material->materials($cid,$mid,true);
+		$stats = $this->coobject->object_stats($cid, $mid);
 
 		$view = (!in_array($view, array('all','new','ask:orig','fairuse','search','retain:pd',
-																		'retain:perm','ask:rco','uncleared',
-																		'permission','commission', 'retain:nc','replace',
-																		'recreate','remove','cleared'))) ? 'new' : $view;
+											'retain:perm','ask:rco','uncleared', 'permission','commission', 'retain:nc','replace',
+											'recreate','remove','cleared'))) ? 'new' : $view;
 
 		// get correct view if an object id is provided
 		if ($oid != 0)  {
-				$obj =  $this->coobject->coobjects($mid,$oid); 
-				if ($obj != null) {
-								$obj =$obj[0];
-								if ($obj['done'] != 1) {
-										if ($obj['ask']=='yes' && $obj['action_type']=='') { $view='ask:orig'; }
-
-										switch($obj['action_type']) {
-													case 'Search':     $view = 'search'; 			break;
-													case 'Fair Use':   $view = 'fairuse'; 		break;
-													case 'Permission': $view = 'permission'; 	break;
-													case 'Commission': $view = 'commission'; 	break;
-													case 'Re-Create':  $view = 'recreate'; 		break;
-													case 'Retain: Permission': 		$view = 'retain:perm'; break;
-													case 'Retain: Public Domain': $view = 'retain:pd'; break;
-													case 'Retain: No Copyright':  $view = 'retain:nc'; break;
-													case 'Remove and Annotate':   $view = 'remove'; break;
-													default: $view = 'new';
-										}
-								} else {
-										 $view=='cleared';
-								}
-				} else {
-						$view = 'new';	
-						$oid = 0;
-				}
+				$view = $this->coobject->object_status($cid,$mid,$oid); 
+				$oid = ($view=='new') ? 0 : $oid;
 		}
 
+		// get values for display
 		$data = array(
 						'cid'=>$cid,
 						'mid'=>$mid,
@@ -211,94 +189,14 @@ class Materials extends Controller {
 	 					'cname' => $course['number'].' '.$course['title'],
 						'director' => $course['director'],
 	  				'material' =>  $material[0], 
+						'objects' => $stats['objects'][$view],	
+						'num_objects' => sizeof($stats['objects'][$view]),
 		        'view' => $view, 
 		        'subtab' => $subtab, 
 						'title'=>'Edit Material &raquo; '.$material[0]['name'],
 		);
 
-		// get counts for display
-		$data['num_all'] = $data['num_new'] = $data['num_search'] = 
-		$data['num_ask_orig'] = $data['num_ask_repl'] = $data['num_fairuse'] = 
-		$data['num_permission'] = $data['num_commission'] = 
-		$data['num_retain_perm'] = $data['num_retain_nc'] = $data['num_retain_pd'] = 
-		$data['num_replace'] = $data['num_recreate'] = $data['num_uncleared'] = 
-		$data['num_remove'] = $data['num_cleared'] = $data['num_objects'] = 0; 
-		
-		$objects = array();
-
-		$orig_objects =  $this->coobject->coobjects($mid); 
-		if ($orig_objects != null) {	
-				foreach ($orig_objects as $obj) {
-								if ($obj['done'] != 1) {
-
-										$data['num_uncleared']++;
-										if($view=='uncleared') { array_push($objects, $obj); }
-
-										if ($obj['ask']=='yes' && $obj['action_type']=='') {
-												$data['num_ask_orig']++;
-										 		if($view=='ask:orig') { array_push($objects, $obj); }
-										}
-
-										switch($obj['action_type']) {
-													case 'Search': 
-																if ($view=='search') {array_push($objects,$obj);} 
-																$data['num_search']++; break;
-													case 'Fair Use': 
-																if ($view=='fairuse') {array_push($objects,$obj);} 
-																$data['num_fairuse']++; break;
-													case 'Permission': 
-																if ($view=='permission') {array_push($objects,$obj); }
-																$data['num_permission']++; break;
-													case 'Commission': 
-																if ($view=='commission') {array_push($objects,$obj); }
-																$data['num_commission']++; break;
-													case 'Retain: Permission': 
-																if ($view=='retain:perm') {array_push($objects,$obj);}
-																$data['num_retain_perm']++; break;
-													case 'Retain: Public Domain': 	
-																if ($view=='retain:pd') {array_push($objects,$obj); }
-																$data['num_retain_pd']++; break;
-													case 'Retain: No Copyright': 
-																if ($view=='retain:nc') {array_push($objects,$obj); }
-																$data['num_retain_nc']++; break;
-													case 'Re-Create': 
-																if ($view=='recreate') {array_push($objects,$obj); }
-																$data['num_recreate']++; break;
-													case 'Remove and Annotate': 
-																if ($view=='remove') {array_push($objects,$obj); }
-																$data['num_remove']++; break;
-													default: 
-																if ($obj['ask']=='no') {
-																		if ($view=='new') { array_push($objects,$obj); }
-																		$data['num_new']++;
-																}
-										}
-								} else {
-										 if($view=='cleared') { array_push($objects, $obj); }
-									 	 $data['num_cleared']++;
-								}
-
-								if ($view=='all') { array_push($objects, $obj); }
-								$data['num_all']++;
-				}
-		}
-
-		$repl_objects =  $this->coobject->replacements($mid); 
-		if ($repl_objects != null) {	
-				foreach ($repl_objects as $robj) {
-								$obj = $this->coobject->coobjects($mid,$robj['object_id']);
-
-								if($view=='replace') { array_push($objects, $obj[0]); }
-								$data['num_replace']++;
-
-								if ($obj[0]['done'] != 1) {
-										if ($robj['ask']=='yes' && $robj['ask_status']<>'done') {
-										 		if($view=='ask:rco') { array_push($objects, $obj[0]); }
-												$data['num_ask_repl']++;
-										}
-								}
-				}
-		}
+		$data = array_merge($data, $stats['data']);
 
 		$data['select_filter'] = array(
 				'all' => 'All ('.$data['num_all'].')',
@@ -307,7 +205,7 @@ class Materials extends Controller {
 				'cleared' => 'Cleared ('.$data['num_cleared'].')',
 				'uncleared' => 'Un-Cleared ('.$data['num_uncleared'].')',
 				'ask:orig' => 'Ask Instructor: Originals ('.$data['num_ask_orig'].')',
-				'ask:rco' => 'Ask Instructor: Replacements ('.$data['num_ask_repl'].')',
+				'ask:rco' => 'Ask Instructor: Replacements ('.$data['num_ask_rco'].')',
 				'permission' => 'Permission ('.$data['num_permission'].')',
 				'search' => 'Search ('.$data['num_search'].')',
 				'retain:perm' => 'Retain: Permission ('.$data['num_retain_perm'].')',
@@ -318,9 +216,6 @@ class Materials extends Controller {
 				'fairuse' => 'Fair Use ('.$data['num_fairuse'].')',
 				'remove' => 'Remove ('.$data['num_remove'].')',
 		);
-
-		$data['objects'] = $objects;	
-		$data['num_objects'] = sizeof($objects);
 
     $this->layout->buildPage('materials/_edit_material_cos', $data);
 	}
@@ -430,7 +325,6 @@ class Materials extends Controller {
 				$data['repl_objects'] = $repl_objects; 
 				$data['general'] = ($num_general != 0)?$general:null;
 				$data['num_avail'] = array('general'=>$num_general, 'provenance'=>$num_prov, 'replacement'=>$num_repl, 'done'=>$num_done);
-				$data['list'] = $this->ocw_utils->create_co_list($cid,$mid,$prov_objects);
 
 		} elseif ($questions_to=='dscribe2' || (($role=='dscribe1' || $role=='dscribe2') && $questions_to=='')) { // dscribes page info
 				$view = ($view=='') ? 'general' : $view;
@@ -491,21 +385,6 @@ class Materials extends Controller {
 		}
 	}
 
-	// display content objects
-	public function content_objects($cid, $mid,$filter='Any')
-	{
-		$objects =  $this->coobject->coobjects($mid,'',$filter);
-		$data['numobjects'] = count($objects);
-		$data['list'] = $this->ocw_utils->create_co_list($cid,$mid,$objects);
-		$data['css'] = property('app_css');
-		$data['script'] = property('app_js');
-		$data['img'] = property('app_img');
-		$data['cid'] = $cid; 
-		$data['mid'] = $mid; 
-		$data['filter'] = $filter; 
-		$this->load->view('default/content/materials/co', $data);
-	}
-
 	public function	remove_object($cid, $mid, $oid, $type='original', $rid='')
 	{
 		if ($type=='original') {
@@ -517,7 +396,6 @@ class Materials extends Controller {
 		}
 		redirect("materials/edit/$cid/$mid", 'location');
 	}
-	
 
 	/**
 	 * Add content object information coming from the snapper tool
@@ -628,7 +506,7 @@ class Materials extends Controller {
 			}
 			
 			if ($field == 'rep') {
-				redirect("materials/object_info/$cid/$mid/$oid/upload/$wrong_type", 'location');
+				redirect("materials/object_info/$cid/$mid/$oid/all/upload/$wrong_type", 'location');
 			} elseif($field=='irep') {
 					$rnd = time().rand(10,10000); // used to overcome caching problem
 					if (isset($_POST['view'])) { $rnd = $_POST['view']; }
@@ -839,12 +717,11 @@ class Materials extends Controller {
      $this->ocw_utils->send_response('success');
 	}
 
-	public function object_info($cid,$mid,$oid,$tab='', $alert_wrong_mimetype='', $filter='')
+	public function object_info($cid,$mid,$oid,$filter='all',$tab='status',$alert_wrong_mimetype='')
 	{
-		$subtypes =  $this->coobject->object_subtypes();
 		$obj = $this->coobject->coobjects($mid,$oid);
-		$repl_objects =  $this->coobject->replacements($mid,$oid); 
-		$objstats =  $this->coobject->object_stats($mid);
+		$repl_object =  $this->coobject->replacements($mid,$oid); 
+		$subtypes =  $this->coobject->object_subtypes();
 		
 		// get the fairuse retional
 		$fairuse_rationale = $this->coobject->getRationale($oid, "claims_fairuse");
@@ -858,29 +735,26 @@ class Materials extends Controller {
 		// get the permission contact
 		$permission = $this->coobject->getClaimsPermission($oid);
 
-	$tab = $this->db_session->userdata('tab_name');
+		$tab = $this->db_session->userdata('tab_name');
     if (isset($_REQUEST['tab'])) { $tab = $_REQUEST['tab'][0]; }
     if ($tab=='upload') { $_REQUEST['viewing'] = 'replacement'; }
-	$this->db_session->set_userdata('tab_name', $tab);
-		//$this->ocw_utils->dump($obj[0],true);
+		$this->db_session->set_userdata('tab_name', $tab);
 
 		$data = array(
-								'obj'=>$obj[0],
 								'cid'=>$cid,
 								'mid'=>$mid,
-								'user'=>getUserProperty('user_name'),
-								'subtypes'=>$subtypes,
-							 	'objstats' => $objstats,
-								'repl_obj'=>$repl_objects[0],
+								'obj'=>$obj[0],
+								'repl_obj'=>$repl_object[0],
 								'fairuse_rationale' => $fairuse_rationale,
 								'commission_rationale' => $commission_rationale,
 								'retain_rationale' => $retain_rationale,
+								'user'=>getUserProperty('user_name'),
 				        'tab'=> (($tab<>'') ? array(ucfirst($tab)) : array('Status')),
 				        'viewing' => ((isset($_REQUEST['viewing'])) ? $_REQUEST['viewing']: ''),
+								'filter'=>$filter,
+								'subtypes'=>$subtypes,
 								'action_types' => $this->coobject->enum2array('objects','action_type'), 
-								'alert_wrong_mimetype' => $alert_wrong_mimetype,
-								'filter' => $filter,
-								
+								'alert_wrong_mimetype' => $alert_wrong_mimetype
 			      );
 		$data = array_merge($data, $permission);
    	$this->load->view('default/content/materials/co/index', $data);

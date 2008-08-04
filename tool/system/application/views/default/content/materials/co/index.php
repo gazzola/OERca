@@ -60,7 +60,7 @@ echo script('ocw_tool.js');
 				<ul class="mootabs_title">
 					<li title="Original" style="padding-left:10px; margin-left:0;"><h2>Original</h2>
 						<center>
-				    	<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],'orig',true,false);?>
+				    	<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],$filter,'orig',true,false);?>
 						</center>
 			      <br style="clear:both"/>
 						<small>
@@ -73,7 +73,7 @@ echo script('ocw_tool.js');
 			      <?php 
 							$x = $this->coobject->replacement_exists($cid,$mid,$obj['id']);
 			        if ($x) {
-			            echo $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],'rep',true,false);
+			            echo $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],$filter,'rep',true,false);
 			        } else {
 			            echo '<img src="'.property('app_img').'/norep.png" width="150px" height="150px" />';
 			        }

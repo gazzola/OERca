@@ -169,7 +169,7 @@ class OCW_utils {
 			  $height.'" />';
 	}
 
-	function create_co_list($cid,$mid,$objs,$inclrep=false,$cols=5)
+	function create_co_list($cid,$mid,$objs,$filter,$inclrep=false,$cols=5)
 	{
 		$id = ($inclrep) ? 'id="edrepl"' : '';
     $list = "<div $id class='column first last'>\n";
@@ -187,14 +187,14 @@ class OCW_utils {
 							 ? "\n</div>\n<div $id class='column first last'>\n" : '';
 
 				$y = $this->create_co_img($cid, $mid, $objs[$i]['id'], $objs[$i]['location'],
-																	'orig',true,true,true,true,
+																	$filter,'orig',true,true,true,true,
 																	$class.(($inclrep)?' edrepl1' : ''));
 		  	$list .= "\n$y\n";
 
 				if ($inclrep) {
 						$class .= ' edrepl2';
 						$y = $this->create_co_img($cid, $mid, 
-									  $objs[$i]['id'], $objs[$i]['location'],'repl',true,false,false,false,$class);
+									  $objs[$i]['id'], $objs[$i]['location'],$filter,'repl',true,false,false,false,$class);
 		  			$list .= "\n$y\n";
 				}
 
@@ -207,7 +207,7 @@ class OCW_utils {
 		return $list;
 	}
 	
-	function create_co_img($cid, $mid, $oid, $loc, $type='orig', $shrink=true, $show_ctx=true, $show_edit=false, $showinfo=true,$optclass='') 
+	function create_co_img($cid, $mid, $oid, $loc, $filter,$type='orig', $shrink=true, $show_ctx=true, $show_edit=false, $showinfo=true,$optclass='') 
 	{
 		 	$name = $this->object->coobject->object_filename($oid);
 		 	$path = $this->object->coobject->object_path($cid, $mid,$oid);
@@ -219,7 +219,7 @@ class OCW_utils {
       $thumb_found = $image_details['thumb_found'];
       
 	   	$imgurl = ($thumb_found) ? $imgurl : property('app_img').'/'.$defimg;
-	   	$editurl = site_url("materials/object_info/$cid/$mid/$oid").
+	   	$editurl = site_url("materials/object_info/$cid/$mid/$oid/$filter").
 								 '?TB_iframe=true&height=630&width=800';
 
 		  $locbar = '<p id="ciloc">'.$loc.'</p>';

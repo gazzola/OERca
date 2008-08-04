@@ -114,7 +114,7 @@ foreach($cos as $obj) {
 	<!-- third column -->
 	<td style="vertical-align:top">
 		<div> 
-			<?php echo $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],'orig',false,true,true); ?>
+			<?php echo $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],'permission','orig',false,true,true); ?>
 			<br style="clear:both"/><br/>
 
 				<b>Content-Type:</b> <?=$this->coobject->get_subtype_name($obj['subtype_id'])?><br/><br/>

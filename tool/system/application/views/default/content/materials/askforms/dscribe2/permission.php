@@ -119,7 +119,7 @@ foreach($cos as $obj) {
 	<!-- third column -->
 	<td style="vertical-align:top">
 		<div id="new-col2-<?=$item['id']?>" style="display: <?=($item['status']=='in progress') ? 'none':'block'?>;">
-			<?php echo $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],'orig',false,true,true); ?>
+			<?php echo $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],'permission','orig',false,true,true); ?>
 			<br/><br/>
 
 			<?php 
@@ -130,7 +130,7 @@ foreach($cos as $obj) {
 
 		<!-- saved for later -->
 		<div id="inprogress-col2-<?=$item['id']?>" style="display:<?=($item['status']=='in progress')?'block':'none'?>;">
-			<?php echo $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],'orig',true,true,true); ?>
+			<?php echo $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],'permission','orig',true,true,true); ?>
   		<br/>
 		</div>
 	</td>

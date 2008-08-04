@@ -57,7 +57,7 @@ foreach($cos as $obj) {
 				<?php	
 						$x = $this->coobject->replacement_exists($cid,$mid,$obj['id']);
         		if ($x) {
-            		echo $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],'rep',true,true,true);
+            		echo $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],'commission','rep',true,true,true);
         		} else {
             		echo '<img src="'.property('app_img').'/norep.png" width="85" height="85" />';
         		}
@@ -129,7 +129,7 @@ foreach($cos as $obj) {
 	<td style="vertical-align:top">
 		<!-- new/unseen questions -->
 		<div id="new-col2-<?=$item['id']?>" style="display: <?=($item['status']=='in progress') ? 'none':'block'?>;">
-			<?php echo $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],'orig',false,true,true); ?>
+			<?php echo $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],'commission','orig',false,true,true); ?>
 			<br/><br/>
 			<?php 
 				$data['obj'] = $obj;
@@ -139,7 +139,7 @@ foreach($cos as $obj) {
 
 		<!-- saved for later -->
 		<div id="inprogress-col2-<?=$item['id']?>" style="display:<?=($item['status']=='in progress')?'block':'none'?>;">
-			<?php echo $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],'orig',true,true,true); ?>
+			<?php echo $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],'commission','orig',true,true,true); ?>
   		<br/>
 		</div>
 	</td>

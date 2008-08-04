@@ -284,6 +284,8 @@ class Coobject extends Model
 
 		if (!is_null($orig_objs)) {
 		foreach ($orig_objs as $obj) { 
+			 if ($obj['done'] != 1) {
+
 						/* get general question info for dscribe2 */
 						if (!is_null($obj['questions'])) { 
 								$questions = (isset($obj['questions']['dscribe2']) && sizeof($obj['questions']['dscribe2'])>0)	
@@ -309,6 +311,38 @@ class Coobject extends Model
 										if ($notalldone) { array_push($general, $obj); $num_general++; } 
 										else { array_push($done['general'],$obj); $num_done++; }
 								}
+						} 
+
+						/* get general question info for replacements as well */
+            if ($this->replacement_exists($cid,$mid,$obj['id'])) {
+                $robj = $this->replacements($mid, $obj['id']);
+								$robj = $robj[0];
+
+								if (!is_null($robj['questions'])) { 
+										$questions = (isset($robj['questions']['dscribe2']) && sizeof($robj['questions']['dscribe2'])>0)	
+															 ? $robj['questions']['dscribe2'] : null;
+				
+										if (!is_null($questions)) {
+												$robj['otype'] = 'replacement';
+												$notalldone = false;
+												foreach ($questions as $k => $q) { 
+														 		if($q['status']<>'done') { $notalldone = true; } 
+												 		 		$q['ta_data'] = array('name'=>$robj['otype'].'_'.$robj['id'].'_'.$q['id'],
+																													   	'value'=>$q['answer'],
+																													   	'class'=>'do_d2_question_update',
+																													   	'rows'=>'10', 'cols'=>'60');
+												 		 		$q['save_data'] = array('name'=>$robj['otype'].'_status_'.$robj['id'],
+																											   	  	  'id'=>'close_'.$robj['id'],
+																												        'value'=>'Save for later',
+																												        'class'=>'do_d2_question_update');
+												 		 		$q['send_data'] = array('name'=>$robj['otype'].'_status_'.$robj['id'],
+																															  'value'=>'Send to dScribe', 'class'=>'do_d2_question_update');
+												 		 		$obj['questions']['dscribe2'][$k] = $q;
+												}
+												if ($notalldone) { array_push($general, $robj); $num_general++; } 
+												else { array_push($done['general'],$obj); $num_done++; }
+										}
+								} 
 						} 
 
 						/* get objects with fair use claims */
@@ -530,37 +564,7 @@ class Coobject extends Model
 								 }	
 								 if ($notalldone) { array_push($retain, $obj); $num_retain++;}
 						}
-		}} 
-	
-		/* get general question info for replacements as well */
-		if (!is_null($repl_objs)) {
-		foreach ($repl_objs as $obj) { 
-						if (!is_null($obj['questions'])) { 
-								$questions = (isset($obj['questions']['dscribe2']) && sizeof($obj['questions']['dscribe2'])>0)	
-													 ? $obj['questions']['dscribe2'] : null;
-
-								if (!is_null($questions)) {
-										$obj['otype'] = 'replacement';
-										$notalldone = false;
-										foreach ($questions as $k => $q) { 
-														 		if($q['status']<>'done') { $notalldone = true; } 
-												 		 		$q['ta_data'] = array('name'=>$obj['otype'].'_'.$obj['id'].'_'.$q['id'],
-																									   	'value'=>$q['answer'],
-																									   	'class'=>'do_d2_question_update',
-																									   	'rows'=>'10', 'cols'=>'60');
-												 		 		$q['save_data'] = array('name'=>$obj['otype'].'_status_'.$obj['id'],
-																							   	  	  'id'=>'close_'.$obj['id'],
-																								        'value'=>'Save for later',
-																								        'class'=>'do_d2_question_update');
-												 		 		$q['send_data'] = array('name'=>$obj['otype'].'_status_'.$obj['id'],
-																											  'value'=>'Send to dScribe', 'class'=>'do_d2_question_update');
-												 		 		$obj['questions']['dscribe2'][$k] = $q;
-										}
-										if ($notalldone) { array_push($general, $obj); $num_general++; } 
-										else { array_push($done['general'],$obj); $num_done++; }
-								}
-						} 
-		}} 
+		}}} 
 	
 		/* add information to return array */	
 		if ($num_done>0) { $done['all']=$num_done; }
@@ -664,36 +668,214 @@ class Coobject extends Model
 		}
 	}
 
-
-	public function object_stats($mid)
+	/** 
+	 * return the current status of an object (which "bins" is it in)
+   *
+	 * status is determined in this order:
+   *     0) It's in the cleared bin if it's 'done' field is set to true
+   *     1) it's in replacement bin if there exists a replacement with pending instructor questions 
+   *     2) Otherwise, in the ask bin if there it is an ask item that has not been answered and has no action associated with it.   
+   *     3) Otherwise, it's in the bin specified by it's action type 
+   *     4) Otherwise, it's in the new bin if no action type has been set. 
+   *     5) All items not in the cleared bin are in the uncleared bin by default
+   *    
+   * @param int cid course id
+   * @param int mid material id
+	 * @param int oid object id
+   * @return string status [new|ask:orig|ask:rco|fairuse|search|retain:perm|
+	 *											  retain:nc|retain:pd|uncleared|cleared|permission|
+	 *										    commission|replace|remove|recreate]
+	 */
+	public function object_status($cid, $mid, $oid) 
 	{
-		$stats = array();
-		$stats['total'] = $this->num_objects($mid);
-		$stats['ask'] = 0;
-		$stats['cleared'] = 0;
-		
-		$q = $this->db->query("SELECT COUNT(*) AS c FROM ocw_objects WHERE material_id=$mid AND ask='yes'");
-		$row = $q->result_array();
-		$stats['ask'] = $row[0]['c'];
-		
-		$q = $this->db->query("SELECT COUNT(*) AS c FROM ocw_object_replacements WHERE material_id=$mid AND ask='yes'");
-		$row = $q->result_array();
-		$stats['ask'] += $row[0]['c'];
+			 $status = 'unknown';
 
-		$q = $this->db->query("SELECT COUNT(*) AS c FROM ocw_objects WHERE material_id=$mid AND done='1'");
-		$row = $q->result_array();
-		$stats['cleared'] = $row[0]['c'];
-		
-		$q = $this->db->query("SELECT COUNT(*) AS c FROM ocw_object_replacements WHERE material_id=$mid AND ask_status='done'");
-		$row = $q->result_array();
-		$stats['cleared'] += $row[0]['c'];
+       $obj =  $this->coobject->coobjects($mid, $oid);
 
-		$q = $this->db->query("SELECT action_type, COUNT(*) AS c FROM ocw_objects WHERE material_id=$mid GROUP BY action_type");
-		if ($q->num_rows() > 0) {
-			foreach($q->result_array() as $row) { $stats[$row['action_type']] = $row['c']; }
-		} 
+       if ($obj != null) {
+           $obj = $obj[0];
+
+           if ($obj['done'] != 1) {
+               if ($this->replacement_exists($cid, $mid, $oid)) { 
+							 		 $robj = $this->replacements($mid, $oid);
+                   $status = ($robj[0]['ask']=='yes' && $robj[0]['ask_status']<>'done') 
+													 ? 'ask:rco' : $status;
+							 }
+
+							 if ($status=='unknown') {
+               		if ($obj['ask']=='yes' && ($obj['ask_status']<>'done' || $obj['action_type']=='')) {
+                   		$status='ask:orig';
+
+               		} else {
+                    	switch($obj['action_type']) {
+                              case 'Search':     $status = 'search';      break;
+                              case 'Fair Use':   $status = 'fairuse';     break;
+                              case 'Permission': $status = 'permission';  break;
+                              case 'Commission': $status = 'commission';  break;
+                              case 'Re-Create':  $status = 'recreate';    break;
+                              case 'Retain: Permission':    $status = 'retain:perm'; break;
+                              case 'Retain: Public Domain': $status = 'retain:pd'; break;
+                              case 'Retain: No Copyright':  $status = 'retain:nc'; break;
+                              case 'Remove and Annotate':   $status = 'remove'; break;
+                              default: $status = 'new';
+                     	}
+                	}
+							 }
+            } else { 
+							$status = 'cleared'; 
+						}
+				}
+
+				return $status;
+	}
+
+
+	/** 
+	 * return an array which contains information on how many objects are 
+   * in each "bin" and the content objects sorted into their bins. Note 
+   * that content objects that fall into multiple bins will appear in 
+   * each bin they qualify for.
+   *
+   * @param int cid course id
+   * @param int mid material id
+   * @return array stats  array('data'=>array, 'objects'=>array);
+	 */
+	public function object_stats($cid,$mid)
+	{
+			    $orig_objects =  $this->coobjects($mid);
+					$askinfo = $this->ask_form_info($cid, $mid);
+
+			    // get counts for different status 
+			    $data['num_all'] = $data['num_new'] = $data['num_search'] =
+			    $data['num_ask_orig'] = $data['num_ask_rco'] = $data['num_ask_generalinst'] = 
+				  $data['num_ask_general'] = $data['num_ask_done'] = $data['num_ask_aitems'] = $data['num_fairuse'] =
+			    $data['num_permission'] = $data['num_commission'] =
+			    $data['num_retain_perm'] = $data['num_retain_nc'] = $data['num_retain_pd'] =
+			    $data['num_replace'] = $data['num_recreate'] = $data['num_uncleared'] =
+			    $data['num_remove'] = $data['num_cleared'] = 0;
+			
+					$objects = array();
+			    $objects['all'] = $objects['new'] = $objects['search'] =
+			    $objects['ask:orig'] = $objects['ask:rco'] = $objects['done'] = $objects['aitems'] = 
+			    $objects['generalinst'] = $objects['general'] = $objects['fairuse'] =
+			    $objects['permission'] = $objects['commission'] =
+			    $objects['retain:perm'] = $objects['retain:nc'] = $objects['retain:pd'] =
+			    $objects['replace'] = $objects['recreate'] = $objects['uncleared'] =
+			    $objects['remove'] = $objects['cleared'] = array();
 	
-		return $stats;
+					// use information from ask form status	
+					$objects['general'] = $askinfo['general'];	$data['num_ask_general'] = $askinfo['num_avail']['general'];	
+					$objects['aitems'] = $askinfo['aitems'];	$data['num_ask_aitems'] = $askinfo['num_avail']['aitems'];	
+					$objects['fairuse'] = $askinfo['fairuse'];	$data['num_fairuse'] = $askinfo['num_avail']['fairuse'];	
+					$objects['permission'] = $askinfo['permission'];	$data['num_permission'] = $askinfo['num_avail']['permission'];	
+					$objects['commission'] = $askinfo['commission'];	$data['num_commission'] = $askinfo['num_avail']['commission'];	
+					$objects['retain:nc'] = $askinfo['retain'];	$data['num_retain_nc'] = $askinfo['num_avail']['retain'];	
+
+			    if ($orig_objects != null) {
+			        foreach ($orig_objects as $obj) {
+											 $obj['otype']='original';
+
+			                if ($obj['done'] != 1) {
+
+                    			if (!is_null($obj['questions']) && $obj['ask_status']<>'done') {
+															// get general question info for instructors 
+                        			$questions = (isset($obj['questions']['instructor']) && sizeof($obj['questions']['instructor'])>0)
+                                   			 ? $obj['questions']['instructor'] : null;
+ 
+                        			if (!is_null($questions)) {
+                            			$notalldone = false;
+                            			foreach ($questions as $k => $q) { if($q['status']<>'done') { $notalldone = true; } }
+                            			if ($notalldone) { array_push($objects['generalinst'], $obj); $data['num_ask_general']++;}
+                        			}
+                    			}
+
+													// uncleared	
+			                    $data['num_uncleared']++;
+			                    array_push($objects['uncleared'], $obj); 
+			
+													// replacements	
+               						if ($this->replacement_exists($cid,$mid,$obj['id'])) { 
+															array_push($objects['replace'], $obj);
+			                				$data['num_replace']++;
+	
+															// replacement with ask questions
+							 		 						$robj = $this->replacements($mid, $obj['id']);
+			                    		if ($robj[0]['ask']=='yes' && $robj[0]['ask_status']<>'done') {
+																	$robj[0]['otype']='replacement';
+
+			                        		array_push($objects['ask:rco'], $obj);
+			                        		$data['num_ask_rco']++;
+
+                    							if (!is_null($robj[0]['questions']) && $robj[0]['ask_status']<>'done') {
+
+																			// get general question info for instructors 
+                              				$questions = (isset($robj[0]['questions']['instructor'])&&sizeof($robj[0]['questions']['instructor'])>0)
+                                         		 ? $robj[0]['questions']['instructor'] : null;
+                          
+                              				if (!is_null($questions)) {
+                                  				$notalldone = false;
+                                  				foreach ($questions as $k => $q) { if($q['status']<>'done') { $notalldone = true; } }
+                                  				if ($notalldone) { array_push($objects['generalinst'], $robj[0]); $data['num_ask_general']++;}
+																			}
+                              		}
+															} else { 
+			                     	  		$data['num_ask_done']++;
+			                     	  		array_push($objects['done'], $robj[0]); 
+															}
+													}
+		
+													// instructor ask items	
+			                    if ($obj['ask']=='yes' && ($obj['action_type']=='' || $obj['ask_status']<>'done')) {
+			                     	  $data['num_ask_orig']++;
+			                     	  array_push($objects['ask:orig'], $obj); 
+			                    }
+	
+													if ($obj['ask']=='yes' && $obj['ask_status']=='done') {
+			                     	  $data['num_ask_done']++;
+			                     	  array_push($objects['done'], $obj); 
+													}	
+
+													// claim items	
+			                    switch($obj['action_type']) {
+			                          case 'Search':
+			                                array_push($objects['search'],$obj);
+			                                $data['num_search']++; break;
+			                          case 'Fair Use': // used data from $askinfo above 
+																			break;
+			                          case 'Permission': // used data from $askinfo above 
+																			break;
+			                          case 'Commission': // used data from $askinfo above 
+																			break;
+			                          case 'Retain: No Copyright': // used data from $askinfo above 
+																			break;
+			                          case 'Retain: Permission':
+			                                array_push($objects['retain:perm'],$obj);
+			                                $data['num_retain_perm']++; break;
+			                          case 'Retain: Public Domain':
+			                                array_push($objects['retain:pd'],$obj);
+			                                $data['num_retain_pd']++; break;
+			                          case 'Re-Create':
+			                                array_push($objects['recreate'],$obj); 
+			                                $data['num_recreate']++; break;
+			                          case 'Remove and Annotate':
+			                                array_push($objects['remove'],$obj);
+			                                $data['num_remove']++; break;
+			                          default:
+			                                if ($obj['ask']=='no') {
+			                                    array_push($objects['new'], $obj); 
+			                                    $data['num_new']++;
+			                                }
+			                    	}
+			                } else {
+			                     array_push($objects['cleared'], $obj);
+			                     $data['num_cleared']++;
+			                }
+			                array_push($objects['all'], $obj);
+			                $data['num_all']++;
+			        }
+			    }
+			
+					return array('data'=>$data, 'objects'=>$objects, 'askinfo'=>$askinfo);
 	}
 
 	/**
@@ -1637,29 +1819,36 @@ class Coobject extends Model
     *
     * @return   string the html source for the navigation links
     */
-  public function prev_next($cid, $mid, $oid, $filter="", $which='both',$type='text')
+  public function prev_next($cid, $mid, $oid, $filter, $which='both', $type='text')
 	{
-		$prev_obj = NULL;
-		$curr_num = NULL;
-		$next_obj = NULL;
-		
-		$q_results =  $this->coobject->coobjects($mid,'',$filter);
-		$total_num = sizeOf($q_results);
-	
+		$s =  $this->object_stats($cid, $mid);
+
+		// filter results
+		$q_results = array();
+
+		if (preg_match('/(fairuse|general|permission|commission|retain):all/',$filter,$m)) {
+				$claims = split('\|','fairuse|general|permission|commission|retain');
+				foreach($claims as $cl) {	$q_results = array_merge($q_results, $s['askinfo']['aitems'][$cl]); }
+
+		} elseif (preg_match("/(fairuse|general|permission|commission|retain):\w+/",$filter,$m)) {
+				$q_results = $s['objects'][$m[1]];
+		} else {
+				if ($filter=='retain') { $filter = 'retain:nc'; }
+				$q_results = $s['objects'][$filter]; 
+		}
+
+		$total_num = sizeof($q_results);
+		$prev_obj = $curr_num = $next_obj = null;
+
 		/* content object ID's for previous and next items if any and get
 		 * the number of the current content object $oid for the current
 		 * material $mid nothing happens if no content objects are found */
 		if ($total_num > 0) {
 		   for ($i = 0; $i < $total_num; $i++) {
-		     // $this->ocw_utils->dump($q_results[$i]);
 		     if ($q_results[$i]['id'] == $oid) {
-		       $curr_num = ($i + 1);
-		       if ($i > 0) {
-		         $prev_obj = $q_results[$i - 1]['id'];
-		       }
-		       if ($i < ($total_num - 1)) {
-		         $next_obj = $q_results[$i + 1]['id'];
-		       }
+		       	$curr_num = ($i + 1);
+		       	if ($i > 0) { $prev_obj = $q_results[$i - 1]['id']; }
+		       	if ($i < ($total_num - 1)) { $next_obj = $q_results[$i + 1]['id']; }
 		     }
 		   }
 		 } 
@@ -1679,13 +1868,13 @@ class Coobject extends Model
 							: '<img id="pno" class="parrow" src="'.property('app_img').'/coedit-2.png" />';	
 
 				$prev_nav = ($prev_obj) 
-							? '<a href="'.site_url("materials/object_info/$cid/$mid/$prev_obj/status/status/$filter").'">'.$prev_img.'</a>' : $prev_img; 
+							? '<a href="'.site_url("materials/object_info/$cid/$mid/$prev_obj/$filter").'">'.$prev_img.'</a>' : $prev_img; 
 
-				$next_nav = ($next_obj) ? '<a href="'.site_url("materials/object_info/$cid/$mid/$next_obj/status/status/$filter").'">'.$next_img.'</a>' : $next_img;
+				$next_nav = ($next_obj) ? '<a href="'.site_url("materials/object_info/$cid/$mid/$next_obj/$filter").'">'.$next_img.'</a>' : $next_img;
 
 		} else {
-				$prev_nav = ($prev_obj) ? '<a href="'.site_url("materials/object_info/$cid/$mid/$prev_obj/status/status/$filter").'">&laquo;&nbsp;Previous</a>' : '&laquo;&nbsp;Previous';
-				$next_nav = ($next_obj) ? '<a href="'.site_url("materials/object_info/$cid/$mid/$next_obj/status/status/$filter").'">Next&nbsp;&raquo;</a>' : 'Next&nbsp;&raquo;';
+				$prev_nav = ($prev_obj) ? '<a href="'.site_url("materials/object_info/$cid/$mid/$prev_obj/$filter").'">&laquo;&nbsp;Previous</a>' : '&laquo;&nbsp;Previous';
+				$next_nav = ($next_obj) ? '<a href="'.site_url("materials/object_info/$cid/$mid/$next_obj/$filter").'">Next&nbsp;&raquo;</a>' : 'Next&nbsp;&raquo;';
 		}
 		
 		$prev_next = '';
@@ -1973,7 +2162,7 @@ class Coobject extends Model
      * @param   string	claim type  (commission | permission | retain | fairuse) 
      * @return  string
      */
-  public function claim_report($cid, $mid, $obj, $item_id, $type)
+  public function claim_report($cid, $mid, $obj, $item_id, $type, $filter)
 	{
 			$html = '';
 
@@ -1998,7 +2187,7 @@ class Coobject extends Model
                 	$x = $this->replacement_exists($cid,$mid,$obj['id']);
                 	if ($x) {
                     	$html .= '<p>Provided Replacement: </p>'.
-															 $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],'rep',true);
+															 $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],$filter,'rep',true);
                 }
             	} elseif ($item['have_replacement']=='no') {
                 	$html .= '<br>'.$uname.' could not provide the dScribe with a replacement<br/>';
@@ -2139,9 +2328,10 @@ class Coobject extends Model
      * @param   int			material id		
      * @param   object	object 
      * @param   string	type  (original | replacement) 
+     * @param   string	filter 
      * @return  string
      */
-  public function ask_instructor_report($cid, $mid, $obj, $type)
+  public function ask_instructor_report($cid, $mid, $obj, $type, $filter)
   {
 			$html = '';
 
@@ -2187,10 +2377,10 @@ class Coobject extends Model
 
 				if ($obj['suitable']=='yes') { 
     				$html .= '<h3>'.$uname.' approved this replacement:</h3>'.
-						$this->ocw_utils->create_co_img($cid,$mid,$obj['object_id'],$obj['location'],'rep');
+						$this->ocw_utils->create_co_img($cid,$mid,$obj['object_id'],$obj['location'],$filter,'rep');
   			} else {
     				$html .= '<h3>'.$uname.' rejected replacement:</h3>'.
-    				$this->ocw_utils->create_co_img($cid,$mid,$obj['object_id'],$obj['location'],'rep');
+    				$this->ocw_utils->create_co_img($cid,$mid,$obj['object_id'],$obj['location'],$filter,'rep');
     				$html .= '<br style="clear:both"/><br/><h3>Reason:</h3>'.
     				(($obj['unsuitable_reason']=='') ? 'No reason provided' : $obj['unsuitable_reason']); 
   			} 

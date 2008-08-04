@@ -18,9 +18,9 @@ foreach($cos as $type => $co) {
   <p>
 			<?php 
 				 if ($obj['otype']=='original') { 
-						 echo $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],'orig',true,true,true);
+						 echo $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],$type.':'.$response_type,'orig',true,true,true);
 				 } else {
-   					 echo $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],'rep',true,true,true);
+   					 echo $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],$type.':'.$response_type,'rep',true,true,true);
 				 }
 			?>
   </p>
@@ -112,7 +112,7 @@ foreach($cos as $type => $co) {
 					</p>
 
 					<p><h3>Actions Taken:</h3>                
-					<?php echo $this->coobject->claim_report($cid,$mid,$obj,$item['id'],'commission'); ?>
+					<?php echo $this->coobject->claim_report($cid,$mid,$obj,$item['id'],'commission',$type.':'.$response_type); ?>
 				</fieldset>
 
        	<p><hr style="border: 1px solid #eee"/></p>
@@ -137,7 +137,7 @@ foreach($cos as $type => $co) {
 					</p>
 
 					<p><h3>Actions Taken:</h3>                
-					<?php echo $this->coobject->claim_report($cid,$mid,$obj,$item['id'],'retain'); ?>
+					<?php echo $this->coobject->claim_report($cid,$mid,$obj,$item['id'],'retain',$type.':'.$response_type); ?>
 				</fieldset>
 
        	<p><hr style="border: 1px solid #eee"/></p>
@@ -169,7 +169,7 @@ foreach($cos as $type => $co) {
 					</p>
 
 					<p><h3>Actions Taken:</h3>                
-					<?php echo $this->coobject->claim_report($cid,$mid,$obj,$item['id'],'permission'); ?>
+					<?php echo $this->coobject->claim_report($cid,$mid,$obj,$item['id'],'permission',$type.':'.$response_type); ?>
 			</fieldset>
       <p><hr style="border: 1px solid #eee"/></p>
 			<?php }} ?>	
@@ -190,7 +190,7 @@ foreach($cos as $type => $co) {
 					</p>
 
 					<p><h3>Actions Taken:</h3>                
-					<?php echo $this->coobject->claim_report($cid,$mid,$obj,$item['id'],'fairuse'); ?>
+					<?php echo $this->coobject->claim_report($cid,$mid,$obj,$item['id'],'fairuse',$type.':'.$response_type); ?>
 				</fieldset>
        	<p><hr style="border: 1px solid #eee"/></p>
 				<?php }} ?>

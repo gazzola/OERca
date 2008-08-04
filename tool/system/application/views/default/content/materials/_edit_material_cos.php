@@ -27,7 +27,7 @@
 <?php } else { ?>
 
 		<div class="dwrap span-24 first last"> 
-				<?= $this->ocw_utils->create_co_list($cid,$mid,$objects,$inclrep,$numcols); ?>
+				<?= $this->ocw_utils->create_co_list($cid,$mid,$objects,$view,$inclrep,$numcols); ?>
 		</div>
 
 <?php }} else { ?>

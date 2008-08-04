@@ -19,7 +19,6 @@
 							<br/><br/>
 							<a href="#origquestions">View answers</a>&nbsp;&raquo;
 							<br/><br/>
-							<?php echo $this->coobject->ask_instructor_report($cid,$mid,$obj,'original'); ?>
 				</div>
  	  </td>
 	</tr>
