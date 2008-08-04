@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 -- 
 -- Host: localhost
--- Generation Time: Jun 07, 2008 at 02:16 PM
+-- Generation Time: Aug 04, 2008 at 04:28 PM
 -- Server version: 5.0.45
 -- PHP Version: 5.2.3-1ubuntu6.3
 
@@ -707,6 +707,34 @@ CREATE TABLE `ocw_object_types` (
 -- --------------------------------------------------------
 
 -- 
+-- Table structure for table `ocw_postoffice`
+-- 
+
+DROP TABLE IF EXISTS `ocw_postoffice`;
+CREATE TABLE `ocw_postoffice` (
+  `id` bigint(20) NOT NULL auto_increment,
+  `from_id` int(11) NOT NULL,
+  `to_id` int(11) NOT NULL,
+  `msg_type` enum('dscribe1_to_dscribe2','dscribe1_to_instructor','dscribe2_to_dscribe1','instructor_to_dscribe1') collate utf8_unicode_ci NOT NULL,
+  `sent` enum('yes','no') collate utf8_unicode_ci NOT NULL default 'no',
+  `course_id` bigint(20) NOT NULL,
+  `material_id` bigint(20) NOT NULL,
+  `object_id` bigint(20) NOT NULL,
+  `object_type` enum('original','replacement') collate utf8_unicode_ci NOT NULL,
+  `created_at` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `modified_on` timestamp NOT NULL default '0000-00-00 00:00:00',
+  PRIMARY KEY  (`id`),
+  KEY `from_id` (`from_id`),
+  KEY `to_id` (`to_id`),
+  KEY `sent` (`sent`),
+  KEY `course_id` (`course_id`),
+  KEY `material_id` (`material_id`),
+  KEY `object_id` (`object_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+-- 
 -- Table structure for table `ocw_schools`
 -- 
 
@@ -951,17 +979,27 @@ ALTER TABLE `ocw_object_replacement_log`
 -- Constraints for table `ocw_object_replacement_questions`
 -- 
 ALTER TABLE `ocw_object_replacement_questions`
-  ADD CONSTRAINT `ocw_object_replacement_questions_ibfk_9` FOREIGN KEY (`object_id`) REFERENCES `ocw_object_replacements` (`id`),
   ADD CONSTRAINT `ocw_object_replacement_questions_ibfk_4` FOREIGN KEY (`object_id`) REFERENCES `ocw_object_replacements` (`id`),
   ADD CONSTRAINT `ocw_object_replacement_questions_ibfk_5` FOREIGN KEY (`user_id`) REFERENCES `ocw_users` (`id`),
   ADD CONSTRAINT `ocw_object_replacement_questions_ibfk_6` FOREIGN KEY (`modified_by`) REFERENCES `ocw_users` (`id`),
-  ADD CONSTRAINT `ocw_object_replacement_questions_ibfk_8` FOREIGN KEY (`modified_by`) REFERENCES `ocw_users` (`id`);
+  ADD CONSTRAINT `ocw_object_replacement_questions_ibfk_8` FOREIGN KEY (`modified_by`) REFERENCES `ocw_users` (`id`),
+  ADD CONSTRAINT `ocw_object_replacement_questions_ibfk_9` FOREIGN KEY (`object_id`) REFERENCES `ocw_object_replacements` (`id`);
 
 -- 
 -- Constraints for table `ocw_object_subtypes`
 -- 
 ALTER TABLE `ocw_object_subtypes`
   ADD CONSTRAINT `ocw_object_subtypes_ibfk_1` FOREIGN KEY (`type_id`) REFERENCES `ocw_object_types` (`id`);
+
+-- 
+-- Constraints for table `ocw_postoffice`
+-- 
+ALTER TABLE `ocw_postoffice`
+  ADD CONSTRAINT `ocw_postoffice_ibfk_1` FOREIGN KEY (`from_id`) REFERENCES `ocw_users` (`id`),
+  ADD CONSTRAINT `ocw_postoffice_ibfk_2` FOREIGN KEY (`to_id`) REFERENCES `ocw_users` (`id`),
+  ADD CONSTRAINT `ocw_postoffice_ibfk_3` FOREIGN KEY (`course_id`) REFERENCES `ocw_courses` (`id`),
+  ADD CONSTRAINT `ocw_postoffice_ibfk_4` FOREIGN KEY (`material_id`) REFERENCES `ocw_materials` (`id`),
+  ADD CONSTRAINT `ocw_postoffice_ibfk_5` FOREIGN KEY (`object_id`) REFERENCES `ocw_objects` (`id`);
 
 -- 
 -- Constraints for table `ocw_subjects`
