@@ -139,12 +139,11 @@ class Materials extends Controller {
 							$r = $this->material->manually_add_materials($cid, $type, $_POST,$_FILES);
 							if ($r !== true) {
 									flashMsg($r);
-									redirect("materials/add_material/$cid/$type/view", 'location');
 							} else {
 									$msg = ($type=='bulk') ? 'Materials have been added.':'Added material to course.';
 									flashMsg($msg);
-									redirect("materials/home/$cid", 'location');
 							}
+							redirect("materials/add_material/$cid/$type/view", 'location');
 					}	
 		} else {
 				// show add form
