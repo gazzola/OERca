@@ -3,7 +3,7 @@
 <script type="text/javascript">
 window.addEvent('domready', function() { 
 	var myTips = new MooTips($$('.ine_tip'), { maxTitleChars: 50 }); 
-	<?php if ($oid != 0) { ?>
+	<?php if ($oid) { ?>
 	// open window to edit CO information
 	$('edit-<?=$oid?>').addEvent('openeditor', function() {
   		this.blur();
