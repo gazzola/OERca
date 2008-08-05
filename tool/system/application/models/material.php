@@ -348,7 +348,7 @@ class Material extends Model
       if ($nodetype != 0) continue;
 
       if (!in_array($id, $done)) {
-        	array_push($done, $id);
+        array_push($done, $id);
 
         // find children
         list($children, $done) = 
@@ -358,9 +358,22 @@ class Material extends Model
         $status = $this->is_cleared($id, $cm['embedded_co']); 
         $cm['validated'] = ($status['notdone'] > 0) ? 0 : 1;  
         $cm['statcount'] = $status['done'] .'/'.($status['done']+$status['notdone']); 
+
+        // bdr OERDEV-146: let's try to figure out if all CO's have a Recommended Action
+	$cm['recaction'] = 0;
+	$cm['actaken'] = 0;
+        if ($status['recaction'] > 0) {
+            if ($status['recaction'] == ($status['done']+$status['notdone']))
+                $cm['recaction'] = 1;
+        } 
+
+        if ($status['notdone'] == 0)  // if all marked for final action & marked done
+             if ($status['actaken'] == $status['done']) $cm['actaken'] = 1;
+
         if ($status['done'] == 0 && $status['notdone'] == 0 && $cm['embedded_co'] != 0) 
-        {
-        	// if both done and notdone object are equal to 0, mark the validated attribute to be false, in order to force dscribes to do content object capture
+        {       // if both done and notdone object are equal to 0,
+        	// mark the validated attribute to be false, in order 
+                // to force dscribes to do content object capture
         	$cm['validated'] = 0;
         }
 
@@ -396,8 +409,13 @@ class Material extends Model
           $tmp[$order]['statcount'] = $status['done'] .'/'.($status['done']+$status['notdone']);
           if ($status['done'] == 0 && $status['notdone'] == 0 && $cm['embedded_co'] != 0) 
 	      {
-	      		// if both done and notdone object are equal to 0, mark the validated attribute to be false, in order to force dscribes to do content object capture
-	        	$cm['validated'] = 0;
+	      // if both done and notdone object are equal to 0, 
+              //  mark the validated attribute to be false, in order i
+              //  to force dscribes to do content object capture
+			//  bdr OERDEV146 the following line is wrong, copied from as_list
+			//      ...  so I fixed it
+	        	//  $cm['validated'] = 0;
+			$tmp[$order]['validated'] = 0;
 	      }
 
           // find more children if necessary
@@ -418,19 +436,26 @@ class Material extends Model
   // check to see if material is free of ip voilations
   private function is_cleared($mid, $has_ip)
   {
-    $status = array('done'=>0,'notdone'=>0);
-
-    if ($has_ip==0) return $status;
+    // bdr OERDEV146:  add "recaction" to count CO's with a Recommended Action
+    $status = array('done'=>0,'notdone'=>0,'recaction'=>0,'actaken'=>0);
+    if ($has_ip==0) return $status;    // bdr - means no embedded CO in this material
 
     $where = array('material_id'=>$mid);
-    $this->db->select('done')->from('objects')->where($where);
-    $q = $this->db->get();
-
+    // bdr OERDEV146:  let's also ask DB for action_type so we can figure out Recommend Action
+    $q = $this->db->query("SELECT done, action_type, 
+                action_taken FROM ocw_objects WHERE material_id=$mid");
+    // $this->ocw_utils->dump($where);
     foreach($q->result_array() as $row) { 
       if ($row['done']=='1') { $status['done']++; }
       else { $status['notdone']++; }
+          // bdr OERDEV-146: let's count number of "recommended actions that are not NULL
+          if ($row['action_type'] == NULL) { $row['action_type'] = 'NULL'; }
+          else { $status['recaction']++; }
+          if ($row['action_taken'] == NULL) { $row['action_taken'] = 'NULL'; }
+          else { $status['actaken']++; }
+          // $this->ocw_utils->dump($row);
     }
-
+    // $this->ocw_utils->dump($status);
     return $status; 
   }
 
