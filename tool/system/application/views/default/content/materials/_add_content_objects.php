@@ -23,6 +23,7 @@ foreach($subtypes as $type => $subtype) {
 		$types .= '</optgroup>';
 } 
 $types .= '</select>';
+$snapper_tip = "Copy any image to the clipboard using a screen capture program, Control+C (Windows)/Command+C (Mac), Edit and then Copy, or right-click and Copy. Once the image is on the clipboard, click Capture in the Snapper uploader to see the image.";
 $loc_tip = "For textual materials like Powerpoints or PDFs, please enter the slide or page number. For videos, please enter a time stamp.";
 
 $flash=$this->db_session->flashdata('flashMessage');
@@ -53,7 +54,7 @@ if (isset($flash) AND $flash!='') {
 					<applet id="clipboard" width="200" height="200" archive="<?=site_url()?>snapper/Ssnapper.jar,<?=site_url()?>snapper/commons-codec-1.3.jar" code="org.muse.snapper.Snapper" codebase="<?=site_url()?>snapper/">
 					</applet>
 					<br />
-					<input id="snap" type="button" value="Capture" />
+					<input id="snap" type="button" value="Capture" />&nbsp;<img src="<?=property('app_img')?>/info.gif" style="margin:0; padding:0" class="tooltip" title="<?=$snapper_tip?>" />
 					<div id="snap_status" style="margin-top: 5px;"></div>
 					<input id="snap_image" type="hidden" name="image"/>
 					<input id="snap_st" type="hidden" name="subtype_id" value="6"/>
