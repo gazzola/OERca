@@ -49,6 +49,9 @@ class Home extends Controller {
     } elseif ($role == 'instructor') {
         redirect('instructor/home/', 'location');
 
+    } elseif ($role == 'admin') {
+        redirect('admin/home/', 'location');
+
 		} else {
         redirect('guest/home/', 'location');
     }

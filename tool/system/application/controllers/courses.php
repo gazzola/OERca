@@ -18,9 +18,7 @@ class Courses extends Controller {
 		$this->load->model('course');
 		$this->load->model('material');
 		$this->load->model('coobject');
-
 		$this->load->model('ocw_user');
-		$this->load->model('instructors');
 
     $this->load->model('dbmetadata');
 	}
@@ -153,7 +151,7 @@ class Courses extends Controller {
 		      "imagefile" => NULL
 		      );
 		    if (isset($coursedetails['instructor_id'])) {
-		       $instdetails = $this->instructors->
+		       $instdetails = $this->ocw_user->
 		       get_inst($coursedetails['instructor_id']);
 		    }
 		   
