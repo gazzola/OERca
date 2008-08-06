@@ -375,6 +375,7 @@ class Material extends Model
         	// mark the validated attribute to be false, in order 
                 // to force dscribes to do content object capture
         	$cm['validated'] = 0;
+		$cm['actaken'] = 0; // per Piet comment on OERDEV146
         }
 
         if (sizeof($children) > 0) {

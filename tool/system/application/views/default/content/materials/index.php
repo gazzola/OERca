@@ -83,10 +83,10 @@
       </td>
     
   		<td class="options">
-			<?php if ($material['recaction']) { ?>
-				<img src="<?=property('app_img')?>/recball.gif" title="ready" />
-                        <?php } elseif ($material['actaken']) { ?>
-                                <img src="<?=property('app_img')?>/validated.gif" title="publish" />
+			<?php if ($material['actaken']) { ?>
+				<img src="<?=property('app_img')?>/validated.gif" title="ready" />
+                        <?php } elseif ($material['recaction']) { ?>
+                                <img src="<?=property('app_img')?>/recball.gif" title="publish" />
   			<?php } else { ?>
   				<img src="<?=property('app_img')?>/required.gif" title="not ready" />
   			<?php } ?>
