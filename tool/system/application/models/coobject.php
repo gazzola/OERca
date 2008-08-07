@@ -1928,7 +1928,7 @@ class Coobject extends Model
 	public function add_slide($cid, $mid, $slidefile,$pathtofile)
 	{
 			preg_match('/\.(\w+)$/', $slidefile, $matches);
-			$ext = strtolower($matches[1]);
+			$ext = (isset($matches[1])) ? '.'.$matches[1]:'';
 
 			if (preg_match('/Slide(\d+)\.\w+/i',$slidefile,$matches)) { // powerpoint 
 					$loc = intval($matches[1]);
@@ -1945,7 +1945,7 @@ class Coobject extends Model
 			if (!is_null($path)) {
 					$newpath = $this->prep_path($path, true); 
 					$search_path = $newpath."/{$this->material_filename($mid)}_slide_$loc.*";
-					$newpath = $newpath."/{$this->material_filename($mid)}_slide_$loc.$ext";
+					$newpath = $newpath."/{$this->material_filename($mid)}_slide_$loc$ext";
 					// remove all old copies of this slide
 					foreach (glob($search_path) as $filename) { @unlink($filename); }	
 					@copy($pathtofile, $newpath); 
