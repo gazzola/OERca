@@ -19,6 +19,11 @@
         <th class="sortable-sortEnglishLonghandDateFormat">End Date</th>
         <th class="sortable">Curriculum</th>
         <th class="sortable">Director</th>
+	<!-- bdr OERDEV140 - add CO status to CourseListing   -->
+        <?php if ((getUserProperty('role') != 'dscribe1')) { ?>
+        <th>    CO Status    &nbsp;</th>
+        <?php }?>
+
 		<!--
 		<th>Edit&nbsp;</th>
 		-->
@@ -42,6 +47,14 @@
     <td><?=mdate('%d %M, %Y',mysql_to_unix($c['end_date']))?></td>
     <td width="40px"><?=ucfirst($c['cname'])?></td>
     <td><?=ucfirst($c['director'])?></td>
+    <?php if ((getUserProperty('role') !== 'dscribe1')) { ?>
+    <td>
+	<span style="color:green"> <?=ucfirst($c['done'])?>/
+	<span style="color:orange"> <?=ucfirst($c['inprogress'])?>/
+	<span style="color:red"> <?=ucfirst($c['notdone'])?>=
+	<span style="color:black"> <?=ucfirst($c['total'])?>
+   </td>
+    <?php }?>
 	</tr>	
 	<?php }} ?>
 	</tbody>

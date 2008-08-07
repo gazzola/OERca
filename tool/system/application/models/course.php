@@ -13,6 +13,7 @@ class Course extends Model
 	public function __construct()
 	{
 		parent::Model();
+                $this->load->model('material');
 	}
 	
 	/**
@@ -110,7 +111,9 @@ class Course extends Model
     public function get_courses()
     {
         $courses = array();
-		    $sql = 'SELECT ocw_courses. *, ocw_curriculums.name AS cname, ocw_schools.name AS sname
+		    $sql = 'SELECT ocw_courses. *, ocw_curriculums.name AS cname, 
+                                   ocw_schools.name AS sname,
+				   ocw_courses.id AS cid
 				  FROM ocw_courses, ocw_curriculums, ocw_schools
 				 WHERE ocw_curriculums.id = ocw_courses.curriculum_id
 				   AND ocw_schools.id = ocw_curriculums.school_id
@@ -119,14 +122,27 @@ class Course extends Model
 
         if ($q->num_rows() > 0) {
             foreach($q->result_array() as $row) { 
-					$courses[$row['sname']][$row['cname']][] = $row; 
-			  }
-      }
+		 // bdr OERDEV-140 (which looks similiar to OERDEV-118
+                 $uprop = getUserProperty('role');
+                 if (($uprop != 'dscribe1')) { // && ($row['cid'] == 35)) 
+                     $row['total'] = $this->material->get_co_count($row['cid']);
+                     $row['done'] = $this->material->get_done_count($row['cid']);
+                     $row['ask'] = $this->material->get_ask_count($row['cid']);
+                     $row['rem'] = $this->material->get_rem_count($row['cid']);
+		     $row['statcount'] = $row['total'].'/'.$row['done'].'/'.$row['ask'].'/'.$row['rem'];
+		     $row['inprogress'] = $row['ask'] + $row['rem'];
+		     $row['notdone'] = $row['total'] - $row['done'];
+		     //  $this->ocw_utils->dump($row);
+		 }
+	         $courses[$row['sname']][$row['cname']][] = $row; 
+            }
+        }
       
       // get the courses that have NULL curriculum ids
       $sql_no_curr_id = "SELECT ocw_courses.*,
-        ocw_courses.curriculum_id AS cname,
-        ocw_courses.curriculum_id AS sname
+          ocw_courses.curriculum_id AS cname,
+          ocw_courses.curriculum_id AS sname,
+          ocw_courses.id AS cid
         FROM ocw_courses
         WHERE ocw_courses.curriculum_id IS NULL
         ORDER BY ocw_courses.start_date DESC";
@@ -135,8 +151,19 @@ class Course extends Model
 
       if ($q_no_curr_id->num_rows() > 0) {
         foreach ($q_no_curr_id->result_array() as $row) {
-          $courses['No School Specified']['No Curriculum Specified'][]
-           = $row;
+                 // bdr OERDEV-140 (which looks similiar to OERDEV-118
+                 $uprop = getUserProperty('role');
+                 if (($uprop != 'dscribe1')) { // && ($row['cid'] == 35)) 
+                     $row['total'] = $this->material->get_co_count($row['cid']);
+                     $row['done'] = $this->material->get_done_count($row['cid']);
+                     $row['ask'] = $this->material->get_ask_count($row['cid']);
+                     $row['rem'] = $this->material->get_rem_count($row['cid']);
+                     $row['statcount'] = $row['total'].'/'.$row['done'].'/'.$row['ask'].'/'.$row['rem'];
+		     $row['inprogress'] = $row['ask'] + $row['rem'];
+		     $row['notdone'] = $row['total'] - $row['done'];
+                     //   $this->ocw_utils->dump($row);
+                 }
+          $courses['No School Specified']['No Curriculum Specified'][] = $row;
         }
       }
       
