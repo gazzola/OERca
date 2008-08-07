@@ -1006,3 +1006,64 @@ ALTER TABLE `ocw_postoffice`
 -- 
 ALTER TABLE `ocw_subjects`
   ADD CONSTRAINT `ocw_subjects_ibfk_1` FOREIGN KEY (`school_id`) REFERENCES `ocw_schools` (`id`);
+
+CREATE TABLE `ocw_postoffice` (
+`id` BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+`from_id` INT( 11 ) NOT NULL ,
+`to_id` INT( 11 ) NOT NULL ,
+`sent` ENUM( 'yes', 'no' ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'no',
+`course_id` BIGINT( 20 ) NOT NULL ,
+`material_id` BIGINT( 20 ) NOT NULL ,
+`object_id` BIGINT( 20 ) NOT NULL ,
+`object_type` ENUM('original','replacement' ) NOT NULL ,
+`created_at` TIMESTAMP NOT NULL ,
+`modified_on` TIMESTAMP NOT NULL
+) ENGINE = innodb CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+ ALTER TABLE `ocw_postoffice` ADD INDEX ( `from_id` ) ; 
+ ALTER TABLE `ocw_postoffice` ADD INDEX ( `to_id` ) ; 
+ ALTER TABLE `ocw_postoffice` ADD INDEX ( `sent` ) ; 
+ ALTER TABLE `ocw_postoffice` ADD INDEX ( `course_id` ) ; 
+ ALTER TABLE `ocw_postoffice` ADD INDEX ( `material_id` ) ; 
+ ALTER TABLE `ocw_postoffice` ADD INDEX ( `object_id` ) ; 
+ALTER TABLE `ocw_postoffice` ADD FOREIGN KEY ( `from_id` ) REFERENCES `ocw`.`ocw_users` (
+`id`
+);
+
+ALTER TABLE `ocw_postoffice` ADD FOREIGN KEY ( `to_id` ) REFERENCES `ocw`.`ocw_users` (
+`id`
+);
+
+ALTER TABLE `ocw_postoffice` ADD FOREIGN KEY ( `course_id` ) REFERENCES `ocw`.`ocw_courses` (
+`id`
+);
+
+ALTER TABLE `ocw_postoffice` ADD FOREIGN KEY ( `material_id` ) REFERENCES `ocw`.`ocw_materials` (
+`id`
+);
+
+ALTER TABLE `ocw_postoffice` ADD FOREIGN KEY ( `object_id` ) REFERENCES `ocw`.`ocw_objects` (
+`id`
+);
+ALTER TABLE `ocw_postoffice` ADD `msg_type` ENUM( 'dscribe1_to_dscribe2', 'dscribe1_to_instructor', 'dscribe2_to_dscribe1', 'instructor_to_dscribe1' ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL AFTER `to_id` ;
+
+
+-- 
+-- Table structure for table `ocw_user_profiles`
+-- 
+
+CREATE TABLE `ocw_user_profiles` (
+  `id` int(10) unsigned NOT NULL auto_increment,
+  `user_id` int(11) NOT NULL,
+  `title` text collate utf8_unicode_ci NOT NULL,
+  `info` text collate utf8_unicode_ci NOT NULL,
+  `uri` varchar(255) collate utf8_unicode_ci default NULL,
+  `imagefile` blob NOT NULL,
+  PRIMARY KEY  (`id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- 
+-- Constraints for table `ocw_user_profiles`
+-- 
+ALTER TABLE `ocw_user_profiles`
+  ADD CONSTRAINT `ocw_user_profiles_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `ocw_users` (`id`);
