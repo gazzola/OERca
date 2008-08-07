@@ -635,13 +635,13 @@ class Material extends Model
 
 		# get file extension
 		preg_match('/\.(\w+)$/',$file['name'],$match);
-		$ext = $match[1];
+		$ext = (isset($match[1])) ? '.'.$match[1]:'';
 		
 		// move file to new location
 		if (is_uploaded_file($tmpname)) {
-				move_uploaded_file($tmpname, $path.'/'.$name.'.'.$ext);
+				move_uploaded_file($tmpname, $path.'/'.$name.$ext);
 		} else {
-				copy($tmpname, $path.'/'.$name.'.'.$ext);
+				copy($tmpname, $path.'/'.$name.$ext);
 				unlink($tmpname);
 		}
 
