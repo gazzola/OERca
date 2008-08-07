@@ -559,7 +559,7 @@ class Material extends Model
 		
 		if ($type=='single') {
 				preg_match('/(\.\w+)$/',$files[$idx]['name'],$match);
-				$details['name'] = basename($files[$idx]['name'],$match[1]);
+				$details['name'] = (isset($match[1])) ? basename($files[$idx]['name'],$match[1]):basename($files[$idx]['name']);
 				$details['`order`'] = $this->get_nextorder_pos($cid);
 				$this->db->insert('materials',$details);
 				$mid = $this->db->insert_id();
@@ -573,7 +573,7 @@ class Material extends Model
 		            foreach($files as $newfile) {
 									if (is_file($newfile) && !preg_match('/^\./',basename($newfile))) {
 											preg_match('/(\.\w+)$/',$newfile,$match);
-											$details['name'] = basename($newfile,$match[1]);
+											$details['name'] = (isset($match[1])) ? basename($newfile,$match[1]):basename($newfile);
 											$details['`order`'] = $this->get_nextorder_pos($cid);
 											$details['mimetype_id'] = $this->mimetype->get_mimetype_id_from_filename($newfile);
 											$this->db->insert('materials',$details);
