@@ -130,9 +130,8 @@ class Course extends Model
                      $row['ask'] = $this->material->get_ask_count($row['cid']);
                      $row['rem'] = $this->material->get_rem_count($row['cid']);
 		     $row['statcount'] = $row['total'].'/'.$row['done'].'/'.$row['ask'].'/'.$row['rem'];
-		     $row['inprogress'] = $row['ask'] + $row['rem'];
 		     $row['notdone'] = $row['total'] - $row['done'];
-		     //  $this->ocw_utils->dump($row);
+		     //$this->ocw_utils->dump($row);
 		 }
 	         $courses[$row['sname']][$row['cname']][] = $row; 
             }
@@ -159,7 +158,6 @@ class Course extends Model
                      $row['ask'] = $this->material->get_ask_count($row['cid']);
                      $row['rem'] = $this->material->get_rem_count($row['cid']);
                      $row['statcount'] = $row['total'].'/'.$row['done'].'/'.$row['ask'].'/'.$row['rem'];
-		     $row['inprogress'] = $row['ask'] + $row['rem'];
 		     $row['notdone'] = $row['total'] - $row['done'];
                      //   $this->ocw_utils->dump($row);
                  }

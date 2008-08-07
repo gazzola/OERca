@@ -50,7 +50,7 @@
     <?php if ((getUserProperty('role') !== 'dscribe1')) { ?>
     <td>
 	<span style="color:green"> <?=ucfirst($c['done'])?>/
-	<span style="color:orange"> <?=ucfirst($c['inprogress'])?>/
+	<span style="color:orange"> <?=ucfirst($c['rem'])?>/
 	<span style="color:red"> <?=ucfirst($c['notdone'])?>=
 	<span style="color:black"> <?=ucfirst($c['total'])?>
    </td>
