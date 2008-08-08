@@ -94,7 +94,8 @@ class Courses extends Controller {
 			      if ($_POST['director']) {
 			        $data['director'] = $_POST['director'];
 			      } else $data['director'] = '';
-			      
+			     
+						/* 
 			      // check if an instructor has been assigned to the course
 			      $has_inst = $this->course->get_course_by_number($cid, 'instructor_id');
 			      // update the instructor name if specified
@@ -109,6 +110,7 @@ class Courses extends Controller {
 			          $this->instructors->add_inst_to_course($_POST['creator'], $cid);
 			        }
 			      }
+						*/
 			      if ($_POST['collaborators']) {
 			        $data['collaborators'] = $_POST['collaborators'];
 			      } else $data['collaborators'] = '';
@@ -151,8 +153,7 @@ class Courses extends Controller {
 		      "imagefile" => NULL
 		      );
 		    if (isset($coursedetails['instructor_id'])) {
-		       $instdetails = $this->ocw_user->
-		       get_inst($coursedetails['instructor_id']);
+		       $instdetails = $this->ocw_user->profile($coursedetails['instructor_id']);
 		    }
 		   
 		    $missing_menu_val = "-- select --";

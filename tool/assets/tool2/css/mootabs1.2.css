@@ -108,4 +108,21 @@
 #ColistReplacement.mootabs_panel.active,
 #ColistRetainPM.mootabs_panel.active,
 #ColistRetainPD.mootabs_panel.active,
-#ColistRetainNC.mootabs_panel.active { border: 1px solid #dedede; margin-left:15px; width:97%; background-color: white;}
+#ColistRetainNC.mootabs_panel.active
+{ border: 1px solid #dedede; margin-left:15px; width:97%; background-color: white;}
+
+#Course.mootabs_panel.active,
+#Dscribe.mootabs_panel.active 
+{ border: 1px solid #dedede;  background-color: white; color: black;}
+#Dscribe.mootabs_panel.active h3 a,
+.mootabs_title li[title="Dscribe"].active,
+.mootabs_title li[title="Dscribe"].active h2 {
+	background-color: #dedede;
+	color: black;
+}
+#Course.mootabs_panel.active h3 a,
+.mootabs_title li[title="Course"].active,
+.mootabs_title li[title="Course"].active h2 {
+	background-color: #dedede;
+	color: black;
+}

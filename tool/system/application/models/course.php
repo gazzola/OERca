@@ -51,9 +51,26 @@ class Course extends Model
 	 * @access  public
 	 * @return  array
 	 */
-    public function add_user($details)
-    {
+  public function add_user($details)
+  {
 		$this->db->insert('acl', $details);
+		return true;
+	}
+
+  /**
+    * remove a user from a course 
+    *
+    * @access  public
+    * @param   int	course id 
+    * @param   int	user id 
+    * @param   string user role 
+    * @return  string | boolean
+    */
+  public function remove_user($cid, $did, $role)
+  {
+		$d = array('user_id'=>$uid, 'course_id'=>$cid, 'role'=>$role);
+		$this->db->delete('acl',$d);
+		return true;
 	}
 
 	/**

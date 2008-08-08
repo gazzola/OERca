@@ -81,14 +81,17 @@
       <li<?= (preg_match('/^(dscribe2\/courses)|(materials)|(courses)/', $ci_uri) > 0)? $att: ''?>><?=anchor("/dscribe2/courses",'Manage Courses')?></li>
       <li<?= (preg_match('|^dscribe2/dscribes|', $ci_uri) > 0)? $att: ''?>><?=anchor("/dscribe2/dscribes",'Manage dScribes')?></li>
 
+    <?php } elseif (getUserProperty('role') == 'admin') { ?>
+
+		  <li<?= (preg_match('/^(admin\/home)|(admin)$/', $ci_uri) > 0)? $att: ''?>><?=anchor("/admin/home",'Home')?></li>
+      <li<?= (preg_match('|^admin/users|', $ci_uri) > 0)? $att: ''?>><?=anchor("/admin/users",'Manage Users')?></li>
+      <li<?= (preg_match('/^(admin\/courses)|(courses)/', $ci_uri) > 0)? $att: ''?>><?=anchor("/admin/courses",'Manage Courses')?></li>
 
     <?php } ?>
 	  </ul>
 
 	  <div style="text-align: right; margin-top: -20px;">
          <?php echo  'Welcome&nbsp;&nbsp;<b>'.getUserProperty('user_name').' ('.getUserProperty('role').')</b> | '.
-                     ((isAdmin())    ?
-         anchor($this->config->item('FAL_admin_uri'), 'Admin Panel').' | ' : '').
          anchor_popup(site_url('helpfaq'), 'Help/FAQ'). ' | '.
          anchor($this->config->item('FAL_logout_uri'), 'Logout'); ?>
 	  </div>

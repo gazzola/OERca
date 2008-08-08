@@ -18,76 +18,6 @@ class Instructors extends Model
     parent::Model();
   }
   
-  
-  /**
-   * get the current instructor/creator values for a specified instructor id
-   *
-   * @access  public
-   * @param   int instructor id
-   * @return  array that that contains the current instructor details
-   */
-  public function get_inst($inst_id, $details='*')
-  {
-    $this->db->select($details)->from('instructors')->
-    where('id',$inst_id);
-    $query = $this->db->get();
-    $inst_info = $query->row_array();
-    return ($query->num_rows() > 0) ? $inst_info : NULL;
-  }
-  
-  
-  /**
-   * get the instructor name for a specified instructor id
-   *
-   * @access  public
-   * @param   int instructor id
-   * @return  void
-   */
-  public function get_inst_name($inst_id)
-  {
-    $inst_info = $this->get_inst($inst_id,'name');
-    return ($inst_info==NULL) ? NULL : $inst_info['name'];
-  }
-  
-  
-  /**
-	 * Update instructor info
-	 *
-	 * @access  public
-	 * @param   int instructor id
-	 * @param   array containing the values to be inserted into the table
-	 * @return  void
-	 */
-	public function update_inst($inst_id, $data)
-	{
-	  $this->db->update('instructors',$data,"id=$inst_id");
-	}
-	
-	
-	/**
-	 * Get instructor ID for supplied name
-	 * TODO: The current data model is VERY broken. It will not find multiple
-	 *      instructors with the same name. Fix it ASAP!
-	 *
-	 * @access  public
-	 * @param   string name of instructor
-	 * @param   int number of results
-	 * @return  int id of instructor or NULL
-	 */
-	public function get_inst_id($inst_name, $num_results = 1)
-	{
-	  $trimmed_name = trim($inst_name);
-	  $this->db->select('id')->where('name', $trimmed_name)->
-	  limit($num_results);
-	  $query = $this->db->get('instructors');
-	  if ($query->num_rows() > 0) {
-	    foreach ($query->result() as $row) {
-	      return $row->id;
-	    }
-	  } else return NULL;
-	}
-	
-	
 	/**
 	 * Add instructor to course
 	 *
@@ -126,4 +56,3 @@ class Instructors extends Model
 	}
 }
 
-?>
