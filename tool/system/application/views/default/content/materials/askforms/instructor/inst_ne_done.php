@@ -2,6 +2,8 @@
  $count = 1;
 if ($prov_objects != null) {
  foreach($prov_objects as  $obj) {
+ 	$questions = $obj['questions'];
+ 	$questions = (!is_null($questions) && isset($questions['instructor']) && sizeof($questions['instructor'])>0) ? $questions['instructor'] : null;
 	if ($obj['ask_status'] == 'done') {
 ?>
 <tr>
@@ -71,6 +73,25 @@ if ($repl_objects != null) {
 
 <td style="vertical-align:top">
 	<?php echo $this->coobject->ask_instructor_report($cid, $mid, $obj, 'replacement','done');	?>
+	<!-- dScribe questions -->
+	<br/><br/>
+	<p style="clear:both"><h3>dScribe Questions:</h3>
+		<b>The following are specific questions the dScribe has about this object:</b>
+		<br/><br/>
+		<?php if ($questions == null) { ?> 
+		
+				<p>No questions at this time.</p>
+		
+		<?php } else { foreach($questions as $question) { ?>
+		
+		      	<p><b><?=$question['question']?></b></p>
+		    		<p style="margin-bottom:15px;border:1px solid #ccc; padding:5px; background-color:#eee">
+							<?= ($question['answer']=='') ? 'No answer provided yet' : $question['answer'] ?>
+						</p>
+		       	<p><hr style="border: 1px solid #eee"/></p>
+		
+		<?php }} ?>
+	</p>
 </td>
 </tr>
 

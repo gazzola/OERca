@@ -10,7 +10,6 @@
 	?>
   <div id="navlist">
 		<ul id="navlist">
-			<li<?=($view=='generalinst')?$att:''?>><?=anchor("/materials/askforms/$cid/$mid/generalinst/instructor",$general)?></li>
 			<li<?=($view=='provenance')?$att:''?>><?=anchor("/materials/askforms/$cid/$mid/provenance/instructor",$iprov)?></li>
 			<li<?=($view=='replacement')?$att:''?>><?=anchor("/materials/askforms/$cid/$mid/replacement/instructor",$irep)?></li>
 			<li<?=($view=='done')?$att:''?>><?=anchor("/materials/askforms/$cid/$mid/done/instructor",$dn)?></li>
