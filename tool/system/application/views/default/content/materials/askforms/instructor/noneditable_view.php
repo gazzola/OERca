@@ -44,7 +44,7 @@ if ($num_avail[$view] == 0) {
 				$this->load->view(property('app_views_path').'/materials/askforms/instructor/inst_ne_repl.php', $data); 
 
 			} else {
-				$this->load->view(property('app_views_path').'/materials/askforms/instructor/inst_ne_done.php', $data); 
+				$this->load->view(property('app_views_path').'/materials/askforms/instructor/inst_done.php', $data); 
 		  }
 		?>
 	</tbody>
