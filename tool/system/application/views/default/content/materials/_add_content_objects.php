@@ -23,7 +23,7 @@ foreach($subtypes as $type => $subtype) {
 		$types .= '</optgroup>';
 } 
 $types .= '</select>';
-$snapper_tip = "Copy any image to the clipboard using a screen capture program, Control+C (Windows)/Command+C (Mac), Edit and then Copy, or right-click and Copy. Once the image is on the clipboard, click Capture in the Snapper uploader to see the image.";
+$snapper_tip = "Copy any image to the clipboard using a screen capture application of copy command. Once the image is on the clipboard, click Capture in the Snapper uploader to see the image.";
 $loc_tip = "For textual materials like Powerpoints or PDFs, please enter the slide or page number. For videos, please enter a time stamp.";
 
 $flash=$this->db_session->flashdata('flashMessage');
