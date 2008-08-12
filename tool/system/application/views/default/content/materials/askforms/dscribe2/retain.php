@@ -2,13 +2,13 @@
 $count = 1;
 $yes = $accept = $sliders = array();
 				
-$accept['Retain: No Copyright'] = "Do you accept the dScribe's action recommendation to retain this content object because it has no copyright?";
-$accept['Retain: Permission'] = "Do you accept the dScribe's action recommendation to retain this content object because OER has permission?";
-$accept['Retain: Public Domain'] = "Do you accept the dScribe's action recommendation to retain this content object because it is in the public domain?";
+$accept['Retain: No Copyright'] = "Do you accept the dScribe's action recommendation to retain this content object because it has <em>no copyright</em>?";
+$accept['Retain: Permission'] = "Do you accept the dScribe's action recommendation to retain this content object because OER has <em>permission</em>?";
+$accept['Retain: Public Domain'] = "Do you accept the dScribe's action recommendation to retain this content object because it is in the <em>public domain</em>?";
 
-$yes['Retain: No Copyright'] = "Please provide additional rationale for why this object has no copyright:";
-$yes['Retain: Permission'] = "Please provide additional rationale for why OER has permission for this object:";
-$yes['Retain: Public Domain'] = "Please provide additional rationale for why this object is in the public domain:";
+$yes['Retain: No Copyright'] = "Please provide additional rationale for why this object has <em>no copyright</em>:";
+$yes['Retain: Permission'] = "Please provide additional rationale for why OER has <em>permission</em> for this object:";
+$yes['Retain: Public Domain'] = "Please provide additional rationale for why this object is in the <em>public domain</em>:";
 
 foreach($cos as $obj) {
   			$items = $obj['retain'];
