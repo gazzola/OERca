@@ -1,6 +1,14 @@
 <?php 
 $count = 1;
-$sliders = array();
+$yes = $accept = $sliders = array();
+				
+$accept['Retain: No Copyright'] = "Do you accept the dScribe's action recommendation to retain this content object because it has no copyright?";
+$accept['Retain: Permission'] = "Do you accept the dScribe's action recommendation to retain this content object because OER has permission?";
+$accept['Retain: Public Domain'] = "Do you accept the dScribe's action recommendation to retain this content object because it is in the public domain?";
+
+$yes['Retain: No Copyright'] = "Please provide additional rationale for why this object has no copyright:";
+$yes['Retain: Permission'] = "Please provide additional rationale for why OER has permission for this object:";
+$yes['Retain: Public Domain'] = "Please provide additional rationale for why this object is in the public domain:";
 
 foreach($cos as $obj) {
   			$items = $obj['retain'];
@@ -26,10 +34,7 @@ foreach($cos as $obj) {
 			<!-- accept rationale? -->
 			<p>
 				<br/><br/>
-				<strong>
-				Do you accept the dScribe's action recommendation to retain this content object because it has no
-				copyright?
-				</strong><br/>
+				<strong><?=$accept[$item['action']]?></strong><br/>
 				<?= form_radio($item['yes_rationale_data']) ?>	&nbsp; Yes&nbsp;
 				<?= form_radio($item['no_rationale_data']) ?>	&nbsp; No&nbsp;
 				<?= form_radio($item['unsure_rationale_data']) ?>	&nbsp; Unsure - send to Legal and Policy Review&nbsp;
@@ -39,7 +44,7 @@ foreach($cos as $obj) {
 			<div id="accept_rationale_yes_<?=$item['id']?>" style="display: <?= ($item['accept_rationale']=='yes') ? 'block':'none'?>"> 
 				<br/><br/>
 				<p>
-					<strong>Please provide additional rationale for why this object has no copyright:</strong><br/><br/>
+					<strong><?=$yes[$item['action']]?></strong><br/><br/>
 							<?= form_textarea($item['comments_ta_data']); ?><br/>
 						<?php if ($item['comments']<>'' && $item['modified_by']<>'') { ?>
 							<small>Last modified by: <?=$this->ocw_user->username($item['modified_by'])?></small><br/>

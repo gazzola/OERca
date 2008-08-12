@@ -1,6 +1,14 @@
 <?php 
 $count = 1;
 
+$accept['Retain: No Copyright'] = "Do you accept the dScribe's action recommendation to retain this content object because it has no copyright?";
+$accept['Retain: Permission'] = "Do you accept the dScribe's action recommendation to retain this content object because OER has permission?";
+$accept['Retain: Public Domain'] = "Do you accept the dScribe's action recommendation to retain this content object because it is in the public domain?";
+
+$yes['Retain: No Copyright'] = "Please provide additional rationale for why this object has no copyright:";
+$yes['Retain: Permission'] = "Please provide additional rationale for why OER has permission for this object:";
+$yes['Retain: Public Domain'] = "Please provide additional rationale for why this object is in the public domain:";
+
 foreach($cos as $obj) {
   			$items = $obj['retain'];
 			
@@ -23,10 +31,7 @@ foreach($cos as $obj) {
 			<!-- accept rationale? -->
 			<p>
 				<br/><br/>
-				<strong>
-				Do you accept the dScribe's action recommendation to retain this content object because it has no
-				copyright?
-				</strong><br/>
+				<strong><?=$accept[$item['action']]?></strong><br/>
     		<p style="margin-bottom:15px;border:1px solid #ccc; padding:5px; background-color:#eee">
 					<?= ($item['accept_rationale']=='pending') ? 'No answer provided yet' : $item['accept_rationale'] ?>
 				</p>
@@ -36,7 +41,7 @@ foreach($cos as $obj) {
 			<div style="display: <?= ($item['accept_rationale']=='yes') ? 'block':'none'?>"> 
 				<br/><br/>
 				<p>
-					<strong>Please provide your rationale for why this object has no copyrights:</strong><br/><br/>
+					<strong><?=$accept[$item['action']]?></strong><br/></br/>
     			<p style="margin-bottom:15px;border:1px solid #ccc; padding:5px; background-color:#eee">
 							<?= ($item['comments']=='') ? 'No rationale provided yet' : $item['comments'] ?><br/><br/>
 						<?php if ($item['comments']<>'' && $item['modified_by']<>'') { ?>
