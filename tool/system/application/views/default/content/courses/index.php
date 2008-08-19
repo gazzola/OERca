@@ -49,10 +49,16 @@
     <td><?=ucfirst($c['director'])?></td>
     <?php if ((getUserProperty('role') !== 'dscribe1')) { ?>
     <td>
-	<span style="color:green"> <?=ucfirst($c['done'])?>/
-	<span style="color:orange"> <?=ucfirst($c['rem'])?>/
-	<span style="color:red"> <?=ucfirst($c['notdone'])?>=
-	<span style="color:black"> <?=ucfirst($c['total'])?>
+    <? $params_url = $c['total'].'/'.$c['done'].'/'.$c['ask'].'/'.$c['rem'];
+      if ($c['total'] > 0) { ?>
+          <img src="<?= site_url("/home/course_bar/$params_url") ?>" 
+              alt="Progress Bar: 
+              Total Objects=<?=$c['total'] ?>
+              Cleared Objects=<?=$c['done'] ?> 
+              Objects in progress=<?=$c['ask'] ?> 
+              Remaining Objects=<?=$c['rem'] ?>"
+              class="prog-bar">
+	<? }?>
    </td>
     <?php }?>
 	</tr>	

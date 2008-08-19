@@ -67,11 +67,13 @@ class Home extends Controller {
     * @param    int number of content objects that have associated 
     *            questions
     * @param    int number of content objects that need to be checked
+    * @param    int - font size for text to be displayed in box
     * @return   void
     */  
   public function make_bar($total,$done,$ask,$rem)
   {
-    $this->oer_progbar->build_prog_bar($total,$done,$ask,$rem);
+    $font_file = "./assets/tool2/fonts/aadrv.ttf";
+    $this->oer_progbar->build_prog_bar($total,$done,$ask,$rem, 600, 20, 13);
     $this->oer_progbar->get_prog_bar();
   }
 
@@ -88,5 +90,17 @@ class Home extends Controller {
     $this->oer_progbar->build_stat_key($status);
     $this->oer_progbar->get_stat_key();
   }
+
+  /**
+    * bdr - this is for CO status display on the listing 
+    *       or course for a dscribe2, admin, etc.   
+    *       (this calls the same routing as make_bar)
+    */
+  public function course_bar($total,$done,$ask,$rem)
+  {
+    $this->oer_progbar->build_prog_bar($total,$done,$ask,$rem, 120, 20, 10);
+    $this->oer_progbar->get_prog_bar();
+  }
+
 }
 ?>

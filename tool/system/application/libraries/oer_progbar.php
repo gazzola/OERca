@@ -32,13 +32,13 @@ class OER_progbar {
   
   // TODO: provide a way for the user to reset the colors
   // the color values of the bars
-  private $done_rgb = array(68, 146, 34);
-  private $ask_rgb = array(241, 191, 36);
+  private $done_rgb = array(68, 246, 34);
+  private $ask_rgb = array(50,200,255);  // OERDEV-146/140 change to blue per Pieter
   private $rem_rgb = array(224, 41, 29);
   private $border = array(85, 85, 85);
+  private $tot_rgb = array(255,255,255);  // white for the total amount
   
   private $total_objects = NULL;
-
 
   /**
    * Constructor
@@ -224,11 +224,12 @@ class OER_progbar {
    * @return  void
    */
   public function build_prog_bar($total_objects, $done_objects, $ask_objects,
-    $rem_objects)
+    $rem_objects, $my_width, $my_height, $font_size)
   { 
     // TODO: build in dynamic borders, currently they are fixed.
-    
     $this->total_objects = $total_objects;
+    $this->width = $my_width;
+    $this->height = $my_height;
     
     /* create the canvas and allocate the colors. the canvas is padded
      * to allow for borders etc. which take up space */
@@ -241,6 +242,8 @@ class OER_progbar {
       $this->border[1], $this->border[2]);
       
     $text_color = imagecolorallocate($this->im, 0, 0, 0);
+    $pointsize = $font_size;     // font size of text displayed in rectangular box
+    $fontfile = "./assets/tool2/fonts/collegec.ttf";
     
     $done_color = imagecolorallocate($this->im, $this->done_rgb[0], 
       $this->done_rgb[1], $this->done_rgb[2]);
@@ -248,6 +251,9 @@ class OER_progbar {
       $this->ask_rgb[1], $this->ask_rgb[2]);
     $rem_color = imagecolorallocate($this->im, $this->rem_rgb[0],
       $this->rem_rgb[1], $this->rem_rgb[2]);
+    $tot_color = imagecolorallocate($this->im, $this->tot_rgb[0],
+      $this->tot_rgb[1], $this->tot_rgb[2]);
+
       
     // fill the canvas with the border color
     imagefill ($this->im, 0, 0, $border_color);
@@ -255,18 +261,18 @@ class OER_progbar {
     /* TODO: prevent rounding from making combined width > than total
      * width of image */
     // calculate the coordinates of the status displays
-    
-    // assume that all counts are 0 and set same starting point for all
-    $done_x1 = 2;
-    $ask_x1 = $done_x1;
-    $rem_x1 = $done_x1;
+    $rem_x1  = 2;
+    $ask_x1  = $rem_x1;
+    $done_x1 = $rem_x1;
+    $tot_x1  = $rem_x1;
     
     // set all ending points to the initial starting point
-    $done_x2 = $done_x1;
-    $ask_x2 = $done_x1;
-    $rem_x2 = $done_x1;
-    
-    $y1 = $done_x1;
+    $rem_x2  = $rem_x1;
+    $ask_x2  = $rem_x1;
+    $done_x2 = $rem_x1;
+    $tot_x2  = $rem_x1;
+
+    $y1 = $rem_x1;
     $y2 = $this->height;
     
     /* if there are COs of a particular type:
@@ -276,29 +282,46 @@ class OER_progbar {
      *  print the number of objects
      *  and change the starting point for the next C0 types */
     // TODO: change the text placement stuff so it is less hackishly done
-    if ($done_objects > 0) {
-      $done_x2 = ($this->_set_prog_width($done_objects));
-      imagefilledrectangle($this->im, $done_x1, $y1, $done_x2, $y2,
-        $done_color);
-      $ask_x1 = $done_x2 + 1;
-      $rem_x1 = $ask_x1;
-      
+    if ($rem_objects > 0) {
+      $rem_x2 = ($this->_set_prog_width($rem_objects));
+      imagefilledrectangle($this->im, $rem_x1, $y1, $rem_x2, $y2, $rem_color);
+      $ask_x1 = $rem_x2;
+      $done_x1 = $rem_x2;
+      $tot_x1  = $rem_x2;
     }
     
     if ($ask_objects > 0) {
       $ask_x2 = $ask_x1 + ($this->_set_prog_width($ask_objects));
-      imagefilledrectangle($this->im, $ask_x1, $y1, $ask_x2, $y2,
-        $ask_color);
-      $rem_x1 = $ask_x2 + 1;
+      imagefilledrectangle($this->im, $ask_x1, $y1, $ask_x2, $y2, $ask_color);
+      $done_x1 = $ask_x2;
+      $tot_x1  = $ask_x2;
     }
-    
-    if ($rem_objects > 0) {
-      $rem_x2 = $rem_x1 + ($this->_set_prog_width($rem_objects));
-      imagefilledrectangle($this->im, $rem_x1, $y1, $rem_x2, $y2,
-        $rem_color);
-    }
-  }
 
+    if ($done_objects > 0) {
+      $done_x2 = $done_x1 + ($this->_set_prog_width($done_objects));
+      imagefilledrectangle($this->im, $done_x1, $y1, $done_x2, $y2, $done_color);
+      $tot_x1 = $done_x2;
+    }
+
+    $tot_x1 = $tot_x1 + 2;
+    $tot_x2 = $tot_x1 + 20;
+    imagefilledrectangle($this->im, $tot_x1, $y1 - 2, $tot_x2, $y2 + 2, $tot_color);
+
+    // write the "counts" on top of their colored rectangular box  -  bdr
+    if ($rem_objects > 0)
+        imagettftext($this->im,$pointsize,0,$rem_x1+(($rem_x2-$rem_x1)/2),$y2-3, $text_color, $fontfile, $rem_objects);
+
+    if ($ask_objects > 0) 
+        imagettftext($this->im,$pointsize,0,$ask_x1+(($ask_x2-$ask_x1)/2),$y2-3, $text_color, $fontfile, $ask_objects);
+
+    if ($rem_objects > 0)
+        imagettftext($this->im,$pointsize,0,$rem_x1+(($rem_x2-$rem_x1)/2),$y2-3, $text_color, $fontfile, $rem_objects);
+
+    if ($done_objects > 0)
+        imagettftext($this->im,$pointsize,0,$done_x1+(($done_x2-$done_x1)/2),$y2-3, $text_color, $fontfile, $done_objects);
+
+    imagettftext($this->im,$pointsize+2,0,$tot_x1+(($tot_x2-$tot_x1-12)/2),$y2-3, $text_color, $fontfile, $total_objects);
+  }
 
   /**
    * Outputs the created image
@@ -376,7 +399,8 @@ class OER_progbar {
    */
   private function _set_prog_width($num_objects)
   {
-    return(round($this->width * ($num_objects / $this->total_objects)));
+	// leave "20" to show total objects on a white background  - bdr
+    return(round(($this->width - 20) * ($num_objects / $this->total_objects)));
   }
 
 
