@@ -325,7 +325,6 @@ class OER_progbar {
     
     if ($ask_objects > 0) {
       if (($ask_fudge) && ($ask_objects != $this->total_objects)) {
-		// $ask_x2 = $ask_x1 + 10;
 		$cal1 = $sludge / $fudge;
 		$cal2 = $cal1 / 100;
 		$cal3 = $this->width * $cal2;
