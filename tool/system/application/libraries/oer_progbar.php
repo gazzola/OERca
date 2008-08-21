@@ -231,14 +231,18 @@ class OER_progbar {
     $this->width = $my_width;
     $this->height = $my_height;
     $fudge = 0;
-    
+   
+ 
     /* create the canvas and allocate the colors. the canvas is padded
      * to allow for borders etc. which take up space */
     $canv_pad = 3; 
     
     $this->im = imagecreatetruecolor(($this->width + $canv_pad),
       ($this->height + $canv_pad));
-    
+   
+    //  save room to show total objects - bdr
+    $this->width = $my_width - 20;
+ 
     $text_color = imagecolorallocate($this->im, 0, 0, 0);
     $pointsize = $font_size;     // font size of text displayed in rectangular box
     $fontfile = "./assets/tool2/fonts/collegec.ttf";
@@ -259,7 +263,7 @@ class OER_progbar {
     /* TODO: prevent rounding from making combined width > than total
      * width of image */
     // calculate the coordinates of the status displays
-    $rem_x1  = 2;
+    $rem_x1  = 0;
     $ask_x1  = $rem_x1;
     $done_x1 = $rem_x1;
     $tot_x1  = $rem_x1;
@@ -289,9 +293,11 @@ class OER_progbar {
         $fudge = $fudge + $done_fudge;
     }
 
+    // figure out whther we nedd to save 10% or 20 % of width for small count
+    $sludge = round((($fudge * 10) * $total_objects) / 100) -2;
+
     $y1 = $rem_x1;
     $y2 = $this->height;
-    $f1 = 20;
     
     /* if there are COs of a particular type:
      *  calculate horizontal end point
@@ -301,10 +307,15 @@ class OER_progbar {
      *  and change the starting point for the next C0 types */
     // TODO: change the text placement stuff so it is less hackishly done
     if ($rem_objects > 0) {
-      $rem_x2 = ($this->_set_prog_width($rem_objects, $fudge));
       if (($rem_fudge) && ($rem_objects != $this->total_objects)) {
-		$rem_x2 = $rem_x1 + 4;
-                $f1 = $f1 + 10;
+		// $rem_x2 = $rem_x1 + 10;
+                // $ask_x2 = $ask_x1 + 10;
+                $cal1 = $sludge / $fudge;
+                $cal2 = $cal1 / 100;
+                $cal3 = $this->width * $cal2;
+                $rem_x2 = $rem_x1 + $cal3;
+      } else {
+          $rem_x2 = ($this->_set_prog_width($rem_objects, $sludge));
       }
       imagefilledrectangle($this->im, $rem_x1, $y1, $rem_x2, $y2, $rem_color);
       $ask_x1 = $rem_x2;
@@ -313,10 +324,14 @@ class OER_progbar {
     } 
     
     if ($ask_objects > 0) {
-      $ask_x2 = $ask_x1 + ($this->_set_prog_width($ask_objects, $fudge));
       if (($ask_fudge) && ($ask_objects != $this->total_objects)) {
-		$ask_x2 = $ask_x1 + 4;
-                $f1 = $f1 + 10;
+		// $ask_x2 = $ask_x1 + 10;
+		$cal1 = $sludge / $fudge;
+		$cal2 = $cal1 / 100;
+		$cal3 = $this->width * $cal2;
+		$ask_x2 = $ask_x1 + $cal3;
+      } else {
+          $ask_x2 = $ask_x1 + ($this->_set_prog_width($ask_objects, $sludge));
       }
       imagefilledrectangle($this->im, $ask_x1, $y1, $ask_x2, $y2, $ask_color);
       $done_x1 = $ask_x2;
@@ -324,24 +339,17 @@ class OER_progbar {
     } 
 
     if ($done_objects > 0) {
-      $done_x2 = $done_x1 + ($this->_set_prog_width($done_objects, $fudge));
       if (($done_fudge) && ($done_objects != $this->total_objects)) {
-		$done_x2 = $done_x1 + 4;
-		$f1 = $f1 + 10;
+                $cal1 = $sludge / $fudge;
+                $cal2 = $cal1 / 100;
+                $cal3 = $this->width * $cal2;
+                $done_x2 = $done_x1 + $cal3;
+      } else {
+          $done_x2 = $done_x1 + ($this->_set_prog_width($done_objects, $sludge));
       }	
       imagefilledrectangle($this->im, $done_x1, $y1, $done_x2, $y2, $done_color);
       $tot_x1 = $done_x2;
     } 
-
-    if ($rem_objects == 0) $f1 = $f1 +10;
-    if ($ask_objects == 0) $f1 = $f1 +10;
-    if ($done_objects == 0) $f1 = $f1 +10;
-
-    $tot_x1 = $tot_x1 + 2;
-//    $tot_x2 = $tot_x1 + $f1;
-    $tot_x2 = $tot_x1 + 20;
-
-    imagefilledrectangle($this->im, $tot_x1, $y1 - 2, $tot_x2, $y2 + 2, $tot_color);
 
     // write the "counts" on top of their colored rectangular box  -  bdr
     if ($rem_objects > 0)
@@ -353,6 +361,9 @@ class OER_progbar {
     if ($done_objects > 0)
         imagettftext($this->im,$pointsize,0,$done_x1+(($done_x2-$done_x1-4)/2),$y2-3, $text_color, $fontfile, $done_objects);
 
+    $tot_x1 = $tot_x1 + 2;
+    $tot_x2 = $tot_x1 + 20;
+    imagefilledrectangle($this->im, $tot_x1, $y1 - 2, $tot_x2, $y2 + 2, $tot_color);
     imagettftext($this->im,$pointsize+2,0,$tot_x1+(($tot_x2-$tot_x1-16)/2),$y2-3, $text_color, $fontfile, $total_objects);
   }
 
@@ -366,7 +377,7 @@ class OER_progbar {
   {
     header("Content-type: image/png\n\n");
     imagepng($this->im);
-    imagedestroy($this->im);
+    imagepng($this->imtot);
   }
 
 
@@ -430,10 +441,9 @@ class OER_progbar {
    * @param   int total number of objects, int number of objects 
    * @return  int width of the progress bar
    */
-  private function _set_prog_width($num_objects, $fudge)
+  private function _set_prog_width($num_objects, $sludge)
   {
-        // leave "20" to show total objects on a white background  - bdr
-        return(round(($this->width - 20 - ($fudge * 10)) * ($num_objects / $this->total_objects)));
+        return(round(($this->width - 0)  * ($num_objects / $this->total_objects)));
   }
 
 

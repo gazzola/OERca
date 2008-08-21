@@ -98,7 +98,7 @@ class Home extends Controller {
     */
   public function course_bar($total,$done,$ask,$rem)
   {
-    $this->oer_progbar->build_prog_bar($total,$done,$ask,$rem, 120, 20, 10);
+    $this->oer_progbar->build_prog_bar($total,$done,$ask,$rem, 150, 20, 10);
     $this->oer_progbar->get_prog_bar();
   }
 
