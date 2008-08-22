@@ -65,6 +65,11 @@ class OCW_user extends Model
     if ($details['title']=='') { return "Please specify the user's title."; }
     if ($details['info']=='') { return "Please specify the user's information."; }
 
+    /*
+    $this->db->select('users.*');
+    $this->db->from('acl')->where("acl.course_id='$cid'")->where("acl.role = 'dscribe1'");
+    $this->db->join('users','acl.user_id=users.id');
+    */
 
 		// make sure user does not exist
 		if ($this->profile_exists($uid)) {
@@ -512,9 +517,9 @@ class OCW_user extends Model
     $this->db->
       join('acl', 'acl.course_id = courses.id', 'inner')->
       join('users', 'users.id = acl.user_id', 'inner');
-    $this->db->where('ocw_users.id', $uid);
-    $this->db->select('ocw_courses.id, ocw_courses.number, 
-      ocw_courses.title');
+    $this->db->where('users.id', $uid);
+    $this->db->select('courses.id, courses.number, 
+      courses.title');
     $q = $this->db->get();
     if ($q->num_rows() > 0) {
       foreach ($q->result() as $row) {

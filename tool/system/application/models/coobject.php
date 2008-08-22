@@ -2347,17 +2347,8 @@ class Coobject extends Model
 					return 'This request is still under review by the instructor';
 			}
 
-  		$instructors = $this->ocw_user->get_users_by_relationship($obj['modified_by'],'instructor', $cid);
-			if (is_array($instructors)) {
-					 $uid = '';
-					 foreach($instructors as $i) { if ($obj['modified_by']==$i) {$uid=$i;} }
-					 if ($uid=='') { $uid = $instructors[0]; }
-					 $uname = ($uid<>'') ? $this->ocw_user->username($uid) : 'Instructor';
-					$uname = '<b>'.$uname.'</b>';
-			} else {
-					$uname = '<b>Instructor</b>';
-			}
-		
+			$uname = ($obj['modified_by']<>'') ? $this->ocw_user->username($obj['modified_by']) : 'Instructor';
+			$uname = '<b>'.$uname.'</b>';
 
 			if ($type=='original') {
 		    	if ($obj['description']) {

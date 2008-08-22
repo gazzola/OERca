@@ -498,16 +498,16 @@ class Material extends Model
       join('materials', 'materials.id = objects.material_id', 'inner')->
       join('courses', 'courses.id = materials.course_id', 'inner');
 
-    $passedParams = array('ocw_courses.id' => $cid);
+    $passedParams = array('courses.id' => $cid);
 
     if ($isAsk == 'yes') {
-      $passedParams['ocw_objects.ask'] = $isAsk;
-      $passedParams['ocw_objects.done'] = $isDone;
+      $passedParams['objects.ask'] = $isAsk;
+      $passedParams['objects.done'] = $isDone;
     } elseif ($isAsk == 'no') {
-      $passedParams['ocw_objects.ask'] = $isAsk;
-      $passedParams['ocw_objects.done'] = $isDone; 
+      $passedParams['objects.ask'] = $isAsk;
+      $passedParams['objects.done'] = $isDone; 
     } elseif ($isDone == '1') {
-      $passedParams['ocw_objects.done'] = $isDone;
+      $passedParams['objects.done'] = $isDone;
     }
 
     $this->db->where($passedParams);

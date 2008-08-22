@@ -1,14 +1,14 @@
-<?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * CodeIgniter
  *
  * An open source application development framework for PHP 4.3.2 or newer
  *
  * @package		CodeIgniter
- * @author		Rick Ellis
+ * @author		ExpressionEngine Dev Team
  * @copyright	Copyright (c) 2006, EllisLab, Inc.
- * @license		http://www.codeignitor.com/user_guide/license.html
- * @link		http://www.codeigniter.com
+ * @license		http://codeigniter.com/user_guide/license.html
+ * @link		http://codeigniter.com
  * @since		Version 1.0
  * @filesource
  */
@@ -23,12 +23,12 @@
  * @package		CodeIgniter
  * @subpackage	codeigniter
  * @category	Front-controller
- * @author		Rick Ellis
- * @link		http://www.codeigniter.com/user_guide/
+ * @author		ExpressionEngine Dev Team
+ * @link		http://codeigniter.com/user_guide/
  */
 
 // CI Version
-define('CI_VERSION',	'1.5.4');
+define('CI_VERSION',	'1.6.3');
 
 /*
  * ------------------------------------------------------
@@ -36,6 +36,20 @@ define('CI_VERSION',	'1.5.4');
  * ------------------------------------------------------
  */
 require(BASEPATH.'codeigniter/Common'.EXT);
+
+/*
+ * ------------------------------------------------------
+ *  Load the compatibility override functions
+ * ------------------------------------------------------
+ */
+require(BASEPATH.'codeigniter/Compat'.EXT);
+
+/*
+ * ------------------------------------------------------
+ *  Load the framework constants
+ * ------------------------------------------------------
+ */
+require(APPPATH.'config/constants'.EXT);
 
 /*
  * ------------------------------------------------------
@@ -77,6 +91,7 @@ $EXT->_call_hook('pre_system');
  */
 
 $CFG =& load_class('Config');
+$URI =& load_class('URI');
 $RTR =& load_class('Router');
 $OUT =& load_class('Output');
 
@@ -88,7 +103,7 @@ $OUT =& load_class('Output');
 
 if ($EXT->_call_hook('cache_override') === FALSE)
 {
-	if ($OUT->_display_cache($CFG, $RTR) == TRUE)
+	if ($OUT->_display_cache($CFG, $URI) == TRUE)
 	{
 		exit;
 	}
@@ -101,7 +116,6 @@ if ($EXT->_call_hook('cache_override') === FALSE)
  */
 
 $IN		=& load_class('Input');
-$URI	=& load_class('URI');
 $LANG	=& load_class('Language');
 
 /*
@@ -132,10 +146,12 @@ load_class('Controller', FALSE);
 // Load the local application controller
 // Note: The Router class automatically validates the controller path.  If this include fails it 
 // means that the default controller in the Routes.php file is not resolving to something valid.
-if ( ! include(APPPATH.'controllers/'.$RTR->fetch_directory().$RTR->fetch_class().EXT))
+if ( ! file_exists(APPPATH.'controllers/'.$RTR->fetch_directory().$RTR->fetch_class().EXT))
 {
 	show_error('Unable to load your default controller.  Please make sure the controller specified in your Routes.php file is valid.');
 }
+
+include(APPPATH.'controllers/'.$RTR->fetch_directory().$RTR->fetch_class().EXT);
 
 // Set a mark point for benchmarking
 $BM->mark('loading_time_base_classes_end');
@@ -156,11 +172,11 @@ $method = $RTR->fetch_method();
 
 if ( ! class_exists($class)
 	OR $method == 'controller'
-	OR substr($method, 0, 1) == '_'
+	OR strncmp($method, '_', 1) == 0
 	OR in_array($method, get_class_methods('Controller'), TRUE)
 	)
 {
-	show_404();
+	show_404("{$class}/{$method}");
 }
 
 /*
@@ -179,7 +195,6 @@ $EXT->_call_hook('pre_controller');
 // Mark a start point so we can benchmark the controller
 $BM->mark('controller_execution_time_( '.$class.' / '.$method.' )_start');
 
-// Instantiate the Controller
 $CI = new $class();
 
 // Is this a scaffolding request?
@@ -206,14 +221,16 @@ else
 	}
 	else
 	{
-		if ( ! method_exists($CI, $method))
+		// is_callable() returns TRUE on some versions of PHP 5 for private and protected
+		// methods, so we'll use this workaround for consistent behavior
+		if ( ! in_array(strtolower($method), array_map('strtolower', get_class_methods($CI))))
 		{
-			show_404();
+			show_404("{$class}/{$method}");
 		}
 
 		// Call the requested method.
-		// Any URI segments present (besides the class/function) will be passed to the method for convenience		
-		call_user_func_array(array(&$CI, $method), array_slice($RTR->rsegments, (($RTR->fetch_directory() == '') ? 2 : 3)));		
+		// Any URI segments present (besides the class/function) will be passed to the method for convenience
+		call_user_func_array(array(&$CI, $method), array_slice($URI->rsegments, 2));
 	}
 }
 
@@ -256,4 +273,5 @@ if (class_exists('CI_DB') AND isset($CI->db))
 }
 
 
-?>
+/* End of file CodeIgniter.php */
+/* Location: ./system/codeigniter/CodeIgniter.php */

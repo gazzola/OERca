@@ -217,6 +217,7 @@ class Materials extends Controller {
 		);
 
     $this->layout->buildPage('materials/_edit_material_cos', $data);
+    // echo $this->ocw_utils->dump($data);
 	}
 
 
@@ -756,6 +757,8 @@ class Materials extends Controller {
 								'alert_wrong_mimetype' => $alert_wrong_mimetype
 			      );
 		$data = array_merge($data, $permission);
+		$data_2 = $data;
+		$data['data'] = $data_2;
    	$this->load->view('default/content/materials/co/index', $data);
 	}
 	

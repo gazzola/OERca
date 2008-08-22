@@ -129,7 +129,7 @@ if (isset($flash) AND $flash!='') {
         <div class="formLabel">Language:</div>
         <div class="formField">
           <input type="text" name="language" id="language" 
-          value="<? $coursedetails['language'] ?>" class="input" />
+          value="<?=$coursedetails['language'] ?>" class="input" />
         </div>
         
         <!-- <div class="formLabel">Curricular Information:</div>

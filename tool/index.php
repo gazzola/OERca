@@ -1,5 +1,4 @@
 <?php
-
 /*
 |---------------------------------------------------------------
 | PHP ERROR REPORTING LEVEL
@@ -35,14 +34,13 @@
 | folder then the default one you can set its name here. The folder 
 | can also be renamed or relocated anywhere on your server.
 | For more info please see the user guide:
-| http://www.codeigniter.com/user_guide/general/managing_apps.html
+| http://codeigniter.com/user_guide/general/managing_apps.html
 |
 |
 | NO TRAILING SLASH!
 |
 */
 	$application_folder = "application";
-
 
 /*
 |===============================================================
@@ -108,21 +106,6 @@ else
 
 /*
 |---------------------------------------------------------------
-| DEFINE E_STRICT
-|---------------------------------------------------------------
-|
-| Some older versions of PHP don't support the E_STRICT constant
-| so we need to explicitly define it otherwise the Exception class 
-| will generate errors.
-|
-*/
-if ( ! defined('E_STRICT'))
-{
-	define('E_STRICT', 2048);
-}
-
-/*
-|---------------------------------------------------------------
 | LOAD THE FRONT CONTROLLER
 |---------------------------------------------------------------
 |
@@ -130,4 +113,6 @@ if ( ! defined('E_STRICT'))
 |
 */
 require_once BASEPATH.'codeigniter/CodeIgniter'.EXT;
-?>
+
+/* End of file index.php */
+/* Location: ./index.php */

@@ -1,14 +1,14 @@
-<?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * CodeIgniter
  *
  * An open source application development framework for PHP 4.3.2 or newer
  *
  * @package		CodeIgniter
- * @author		Rick Ellis
+ * @author		ExpressionEngine Dev Team
  * @copyright	Copyright (c) 2006, EllisLab, Inc.
- * @license		http://www.codeignitor.com/user_guide/license.html
- * @link		http://www.codeigniter.com
+ * @license		http://codeigniter.com/user_guide/license.html
+ * @link		http://codeigniter.com
  * @since		Version 1.0
  * @filesource
  */
@@ -23,8 +23,8 @@
  * @package		CodeIgniter
  * @subpackage	Libraries
  * @category	Output
- * @author		Rick Ellis
- * @link		http://www.codeigniter.com/user_guide/libraries/output.html
+ * @author		ExpressionEngine Dev Team
+ * @link		http://codeigniter.com/user_guide/libraries/output.html
  */
 class CI_Output {
 
@@ -71,7 +71,30 @@ class CI_Output {
 	}
 
 	// --------------------------------------------------------------------
-	
+
+	/**
+	 * Append Output
+	 *
+	 * Appends data onto the output string
+	 *
+	 * @access	public
+	 * @param	string
+	 * @return	void
+	 */	
+	function append_output($output)
+	{
+		if ($this->final_output == '')
+		{
+			$this->final_output = $output;
+		}
+		else
+		{
+			$this->final_output .= $output;
+		}
+	}
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Set Header
 	 *
@@ -262,7 +285,7 @@ class CI_Output {
 	
 		$cache_path = ($path == '') ? BASEPATH.'cache/' : $path;
 		
-		if ( ! is_dir($cache_path) OR ! is_writable($cache_path))
+		if ( ! is_dir($cache_path) OR ! is_really_writable($cache_path))
 		{
 			return;
 		}
@@ -285,7 +308,7 @@ class CI_Output {
 		fwrite($fp, $expire.'TS--->'.$output);
 		flock($fp, LOCK_UN);
 		fclose($fp);
-		@chmod($cache_path, 0777);
+		@chmod($cache_path, DIR_WRITE_MODE);
 
 		log_message('debug', "Cache file written: ".$cache_path);
 	}
@@ -298,14 +321,11 @@ class CI_Output {
 	 * @access	public
 	 * @return	void
 	 */	
-	function _display_cache(&$CFG, &$RTR)
+	function _display_cache(&$CFG, &$URI)
 	{
-		$CFG =& load_class('Config');
-		$RTR =& load_class('Router');
-	
 		$cache_path = ($CFG->item('cache_path') == '') ? BASEPATH.'cache/' : $CFG->item('cache_path');
 			
-		if ( ! is_dir($cache_path) OR ! is_writable($cache_path))
+		if ( ! is_dir($cache_path) OR ! is_really_writable($cache_path))
 		{
 			return FALSE;
 		}
@@ -313,7 +333,7 @@ class CI_Output {
 		// Build the file path.  The file name is an MD5 hash of the full URI
 		$uri =	$CFG->item('base_url').
 				$CFG->item('index_page').
-				$RTR->uri_string;
+				$URI->uri_string;
 				
 		$filepath = $cache_path.md5($uri);
 		
@@ -361,4 +381,6 @@ class CI_Output {
 
 }
 // END Output Class
-?>
+
+/* End of file Output.php */
+/* Location: ./system/libraries/Output.php */

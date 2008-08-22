@@ -1,14 +1,14 @@
-<?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * CodeIgniter
  *
  * An open source application development framework for PHP 4.3.2 or newer
  *
  * @package		CodeIgniter
- * @author		Rick Ellis
+ * @author		ExpressionEngine Dev Team
  * @copyright	Copyright (c) 2006, EllisLab, Inc.
- * @license		http://www.codeignitor.com/user_guide/license.html
- * @link		http://www.codeigniter.com
+ * @license		http://codeigniter.com/user_guide/license.html
+ * @link		http://codeigniter.com
  * @since		Version 1.0
  * @filesource
  */
@@ -23,9 +23,47 @@
  * @package		CodeIgniter
  * @subpackage	codeigniter
  * @category	Common Functions
- * @author		Rick Ellis
- * @link		http://www.codeigniter.com/user_guide/
+ * @author		ExpressionEngine Dev Team
+ * @link		http://codeigniter.com/user_guide/
  */
+
+// ------------------------------------------------------------------------
+
+/**
+ * Tests for file writability
+ *
+ * is_writable() returns TRUE on Windows servers
+ * when you really can't write to the file
+ * as the OS reports to PHP as FALSE only if the
+ * read-only attribute is marked.  Ugh?
+ *
+ * @access	private
+ * @return	void
+ */
+function is_really_writable($file)
+{
+	if (is_dir($file))
+	{
+		$file = rtrim($file, '/').'/'.md5(rand(1,100));
+
+		if (($fp = @fopen($file, FOPEN_WRITE_CREATE)) === FALSE)
+		{
+			return FALSE;
+		}
+
+		fclose($fp);
+		@chmod($file, DIR_WRITE_MODE);
+		@unlink($file);
+		return TRUE;
+	}
+	elseif (($fp = @fopen($file, FOPEN_WRITE_CREATE)) === FALSE)
+	{
+		return FALSE;
+	}
+
+	fclose($fp);
+	return TRUE;
+}
 
 // ------------------------------------------------------------------------
 
@@ -50,7 +88,7 @@ function &load_class($class, $instantiate = TRUE)
 	{
 		return $objects[$class];
 	}
-			
+
 	// If the requested class does not exist in the application/libraries
 	// folder we'll load the native class from the system/libraries folder.	
 	if (file_exists(APPPATH.'libraries/'.config_item('subclass_prefix').$class.EXT))
@@ -78,7 +116,7 @@ function &load_class($class, $instantiate = TRUE)
 		$objects[$class] = TRUE;
 		return $objects[$class];
 	}
-		
+
 	if ($is_subclass == TRUE)
 	{
 		$name = config_item('subclass_prefix').$class;
@@ -101,16 +139,16 @@ function &load_class($class, $instantiate = TRUE)
 function &get_config()
 {
 	static $main_conf;
-		
+
 	if ( ! isset($main_conf))
 	{
 		if ( ! file_exists(APPPATH.'config/config'.EXT))
 		{
 			exit('The configuration file config'.EXT.' does not exist.');
 		}
-		
+
 		require(APPPATH.'config/config'.EXT);
-		
+
 		if ( ! isset($config) OR ! is_array($config))
 		{
 			exit('Your config file does not appear to be formatted correctly.');
@@ -134,7 +172,7 @@ function config_item($item)
 	if ( ! isset($config_item[$item]))
 	{
 		$config =& get_config();
-		
+
 		if ( ! isset($config[$item]))
 		{
 			return FALSE;
@@ -257,4 +295,6 @@ function _exception_handler($severity, $message, $filepath, $line)
 }
 
 
-?>
+
+/* End of file Common.php */
+/* Location: ./system/codeigniter/Common.php */

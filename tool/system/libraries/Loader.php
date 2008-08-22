@@ -1,14 +1,14 @@
-<?php  if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
  * CodeIgniter
  *
  * An open source application development framework for PHP 4.3.2 or newer
  *
  * @package		CodeIgniter
- * @author		Rick Ellis
+ * @author		ExpressionEngine Dev Team
  * @copyright	Copyright (c) 2006, EllisLab, Inc.
- * @license		http://www.codeignitor.com/user_guide/license.html
- * @link		http://www.codeigniter.com
+ * @license		http://codeigniter.com/user_guide/license.html
+ * @link		http://codeigniter.com
  * @since		Version 1.0
  * @filesource
  */
@@ -22,9 +22,9 @@
  *
  * @package		CodeIgniter
  * @subpackage	Libraries
- * @author		Rick Ellis
+ * @author		ExpressionEngine Dev Team
  * @category	Loader
- * @link		http://www.codeigniter.com/user_guide/libraries/loader.html
+ * @link		http://codeigniter.com/user_guide/libraries/loader.html
  */
 class CI_Loader {
 
@@ -100,15 +100,26 @@ class CI_Loader {
 	 *
 	 * This function lets users load and instantiate models.
 	 *
-	 * @access	public
 	 * @param	string	the name of the class
-	 * @param	mixed	any initialization parameters
+	 * @param	string	name for the model
+	 * @param	bool	database connection
 	 * @return	void
 	 */	
 	function model($model, $name = '', $db_conn = FALSE)
 	{		
-		if ($model == '')
+		if (is_array($model))
+		{
+			foreach($model as $babe)
+			{
+				$this->model($babe);	
+			}
 			return;
+		}
+
+		if ($model == '')
+		{
+			return;
+		}
 	
 		// Is the model in a sub-folder? If so, parse out the filename and path.
 		if (strpos($model, '/') === FALSE)
@@ -156,7 +167,7 @@ class CI_Loader {
 	
 		if ( ! class_exists('Model'))
 		{
-			require_once(BASEPATH.'libraries/Model'.EXT);
+			load_class('Model', FALSE);
 		}
 
 		require_once(APPPATH.'models/'.$path.$model.EXT);
@@ -182,8 +193,11 @@ class CI_Loader {
 	 */	
 	function database($params = '', $return = FALSE, $active_record = FALSE)
 	{
+		// Grab the super object
+		$CI =& get_instance();
+		
 		// Do we even need to load the database class?
-		if (class_exists('CI_DB') AND $return == FALSE AND $active_record == FALSE)
+		if (class_exists('CI_DB') AND $return == FALSE AND $active_record == FALSE AND isset($CI->db) AND is_object($CI->db))
 		{
 			return FALSE;
 		}	
@@ -194,9 +208,6 @@ class CI_Loader {
 		{
 			return DB($params, $active_record);
 		}
-
-		// Grab the super object
-		$CI =& get_instance();
 		
 		// Initialize the db variable.  Needed to prevent   
 		// reference errors with some configurations
@@ -225,12 +236,43 @@ class CI_Loader {
 		}
 		
 		$CI =& get_instance();
+
+		// for backwards compatibility, load dbforge so we can extend dbutils off it
+		// this use is deprecated and strongly discouraged
+		$CI->load->dbforge();
 	
 		require_once(BASEPATH.'database/DB_utility'.EXT);
 		require_once(BASEPATH.'database/drivers/'.$CI->db->dbdriver.'/'.$CI->db->dbdriver.'_utility'.EXT);
 		$class = 'CI_DB_'.$CI->db->dbdriver.'_utility';
 
-		$CI->dbutil = new $class();
+		$CI->dbutil =& new $class();
+
+		$CI->load->_ci_assign_to_models();
+	}
+	
+	// --------------------------------------------------------------------
+
+	/**
+	 * Load the Database Forge Class
+	 *
+	 * @access	public
+	 * @return	string		
+	 */		
+	function dbforge()
+	{
+		if ( ! class_exists('CI_DB'))
+		{
+			$this->database();
+		}
+		
+		$CI =& get_instance();
+	
+		require_once(BASEPATH.'database/DB_forge'.EXT);
+		require_once(BASEPATH.'database/drivers/'.$CI->db->dbdriver.'/'.$CI->db->dbdriver.'_forge'.EXT);
+		$class = 'CI_DB_'.$CI->db->dbdriver.'_forge';
+
+		$CI->dbforge = new $class();
+		
 		$CI->load->_ci_assign_to_models();
 	}
 	
@@ -255,7 +297,7 @@ class CI_Loader {
 	 */
 	function view($view, $vars = array(), $return = FALSE)
 	{
-		return $this->_ci_load(array('view' => $view, 'vars' => $this->_ci_object_to_array($vars), 'return' => $return));
+		return $this->_ci_load(array('_ci_view' => $view, '_ci_vars' => $this->_ci_object_to_array($vars), '_ci_return' => $return));
 	}
 	
 	// --------------------------------------------------------------------
@@ -272,7 +314,7 @@ class CI_Loader {
 	 */
 	function file($path, $return = FALSE)
 	{
-		return $this->_ci_load(array('path' => $path, 'return' => $return));
+		return $this->_ci_load(array('_ci_path' => $path, '_ci_return' => $return));
 	}
 	
 	// --------------------------------------------------------------------
@@ -326,8 +368,23 @@ class CI_Loader {
 			{
 				continue;
 			}
+			
+			$ext_helper = APPPATH.'helpers/'.config_item('subclass_prefix').$helper.EXT;
 
-			if (file_exists(APPPATH.'helpers/'.$helper.EXT))
+			// Is this a helper extension request?			
+			if (file_exists($ext_helper))
+			{
+				$base_helper = BASEPATH.'helpers/'.$helper.EXT;
+				
+				if ( ! file_exists($base_helper))
+				{
+					show_error('Unable to load the requested file: helpers/'.$helper.EXT);
+				}
+				
+				include_once($ext_helper);
+				include_once($base_helper);
+			}
+			elseif (file_exists(APPPATH.'helpers/'.$helper.EXT))
 			{ 
 				include_once(APPPATH.'helpers/'.$helper.EXT);
 			}
@@ -335,7 +392,7 @@ class CI_Loader {
 			{		
 				if (file_exists(BASEPATH.'helpers/'.$helper.EXT))
 				{
-					include(BASEPATH.'helpers/'.$helper.EXT);
+					include_once(BASEPATH.'helpers/'.$helper.EXT);
 				}
 				else
 				{
@@ -387,7 +444,7 @@ class CI_Loader {
 	
 		foreach ($plugins as $plugin)
 		{	
-			$plugin = strtolower(str_replace(EXT, '', str_replace('_plugin.', '', $plugin)).'_pi');		
+			$plugin = strtolower(str_replace(EXT, '', str_replace('_pi', '', $plugin)).'_pi');		
 
 			if (isset($this->_ci_plugins[$plugin]))
 			{
@@ -396,13 +453,13 @@ class CI_Loader {
 
 			if (file_exists(APPPATH.'plugins/'.$plugin.EXT))
 			{
-				include(APPPATH.'plugins/'.$plugin.EXT);	
+				include_once(APPPATH.'plugins/'.$plugin.EXT);	
 			}
 			else
 			{
 				if (file_exists(BASEPATH.'plugins/'.$plugin.EXT))
 				{
-					include(BASEPATH.'plugins/'.$plugin.EXT);	
+					include_once(BASEPATH.'plugins/'.$plugin.EXT);	
 				}
 				else
 				{
@@ -469,7 +526,7 @@ class CI_Loader {
 				show_error('Unable to load the requested script: scripts/'.$script.EXT);
 			}
 			
-			include(APPPATH.'scripts/'.$script.EXT);
+			include_once(APPPATH.'scripts/'.$script.EXT);
 		}
 		
 		log_message('debug', 'Scripts loaded: '.implode(', ', $scripts));
@@ -563,35 +620,37 @@ class CI_Loader {
 	 * Loader
 	 *
 	 * This function is used to load views and files.
+	 * Variables are prefixed with _ci_ to avoid symbol collision with
+	 * variables made available to view files
 	 *
 	 * @access	private
 	 * @param	array
 	 * @return	void
 	 */
-	function _ci_load($data)
+	function _ci_load($_ci_data)
 	{
 		// Set the default data variables
-		foreach (array('view', 'vars', 'path', 'return') as $val)
+		foreach (array('_ci_view', '_ci_vars', '_ci_path', '_ci_return') as $_ci_val)
 		{
-			$$val = ( ! isset($data[$val])) ? FALSE : $data[$val];
+			$$_ci_val = ( ! isset($_ci_data[$_ci_val])) ? FALSE : $_ci_data[$_ci_val];
 		}
 
 		// Set the path to the requested file
-		if ($path == '')
+		if ($_ci_path == '')
 		{
-			$ext = pathinfo($view, PATHINFO_EXTENSION);
-			$file = ($ext == '') ? $view.EXT : $view;
-			$path = $this->_ci_view_path.$file;
+			$_ci_ext = pathinfo($_ci_view, PATHINFO_EXTENSION);
+			$_ci_file = ($_ci_ext == '') ? $_ci_view.EXT : $_ci_view;
+			$_ci_path = $this->_ci_view_path.$_ci_file;
 		}
 		else
 		{
-			$x = explode('/', $path);
-			$file = end($x);
+			$_ci_x = explode('/', $_ci_path);
+			$_ci_file = end($_ci_x);
 		}
 		
-		if ( ! file_exists($path))
+		if ( ! file_exists($_ci_path))
 		{
-			show_error('Unable to load the requested file: '.$file);
+			show_error('Unable to load the requested file: '.$_ci_file);
 		}
 	
 		// This allows anything loaded using $this->load (views, files, etc.)
@@ -600,16 +659,16 @@ class CI_Loader {
 		
 		if ($this->_ci_is_instance())
 		{
-			$CI =& get_instance();
-			foreach (get_object_vars($CI) as $key => $var)
+			$_ci_CI =& get_instance();
+			foreach (get_object_vars($_ci_CI) as $_ci_key => $_ci_var)
 			{
-				if ( ! isset($this->$key))
+				if ( ! isset($this->$_ci_key))
 				{
-					$this->$key =& $CI->$key;
+					$this->$_ci_key =& $_ci_CI->$_ci_key;
 				}
 			}
 		}
-		
+
 		/*
 		 * Extract and cache variables
 		 *
@@ -618,9 +677,9 @@ class CI_Loader {
 		 * the two types and cache them so that views that are embedded within
 		 * other views can have access to these variables.
 		 */	
-		if (is_array($vars))
+		if (is_array($_ci_vars))
 		{
-			$this->_ci_cached_vars = array_merge($this->_ci_cached_vars, $vars);
+			$this->_ci_cached_vars = array_merge($this->_ci_cached_vars, $_ci_vars);
 		}
 		extract($this->_ci_cached_vars);
 				
@@ -644,17 +703,17 @@ class CI_Loader {
 		
 		if ((bool) @ini_get('short_open_tag') === FALSE AND config_item('rewrite_short_tags') == TRUE)
 		{
-			echo eval('?>'.preg_replace("/;*\s*\?>/", "; ?>", str_replace('<?=', '<?php echo ', file_get_contents($path))).'<?php ');
+			echo eval('?>'.preg_replace("/;*\s*\?>/", "; ?>", str_replace('<?=', '<?php echo ', file_get_contents($_ci_path))));
 		}
 		else
 		{
-			include($path);
+			include($_ci_path); // include() vs include_once() allows for multiple views with the same name
 		}
 		
-		log_message('debug', 'File loaded: '.$path);
+		log_message('debug', 'File loaded: '.$_ci_path);
 		
 		// Return the file data if requested
-		if ($return === TRUE)
+		if ($_ci_return === TRUE)
 		{		
 			$buffer = ob_get_contents();
 			@ob_end_clean();
@@ -679,7 +738,7 @@ class CI_Loader {
 		{
 			// PHP 4 requires that we use a global
 			global $OUT;
-			$OUT->set_output(ob_get_contents());
+			$OUT->append_output(ob_get_contents());
 			@ob_end_clean();
 		}
 	}
@@ -725,8 +784,8 @@ class CI_Loader {
 					return;
 				}
 	
-				include($baseclass);				
-				include($subclass);
+				include_once($baseclass);				
+				include_once($subclass);
 				$this->_ci_classes[] = $subclass;
 	
 				return $this->_ci_init_class($class, config_item('subclass_prefix'), $params);			
@@ -753,7 +812,7 @@ class CI_Loader {
 					return;
 				}
 				
-				include($filepath);
+				include_once($filepath);
 				$this->_ci_classes[] = $filepath;
 				return $this->_ci_init_class($class, '', $params);
 			}
@@ -780,13 +839,14 @@ class CI_Loader {
 	 */
 	function _ci_init_class($class, $prefix = '', $config = FALSE)
 	{	
+		$class = strtolower($class);
+		
 		// Is there an associated config file for this class?
 		if ($config === NULL)
 		{
-			$config = NULL;
 			if (file_exists(APPPATH.'config/'.$class.EXT))
 			{
-				include(APPPATH.'config/'.$class.EXT);
+				include_once(APPPATH.'config/'.$class.EXT);
 			}
 		}
 		
@@ -799,8 +859,7 @@ class CI_Loader {
 			$name = $prefix.$class;
 		}
 		
-		// Set the variable name we will assign the class to
-		$class = strtolower($class);			
+		// Set the variable name we will assign the class to	
 		$classvar = ( ! isset($this->_ci_varmap[$class])) ? $class : $this->_ci_varmap[$class];
 				
 		// Instantiate the class		
@@ -829,7 +888,7 @@ class CI_Loader {
 	 */
 	function _ci_autoloader()
 	{	
-		include(APPPATH.'config/autoload'.EXT);
+		include_once(APPPATH.'config/autoload'.EXT);
 		
 		if ( ! isset($autoload))
 		{
@@ -846,14 +905,16 @@ class CI_Loader {
 			}
 		}		
 
-		// Autoload plugins, helpers, scripts and languages
-		foreach (array('helper', 'plugin', 'script', 'language') as $type)
+		// Autoload plugins, helpers and languages
+		foreach (array('helper', 'plugin', 'language') as $type)
 		{			
 			if (isset($autoload[$type]) AND count($autoload[$type]) > 0)
 			{
 				$this->$type($autoload[$type]);
 			}		
 		}
+
+
 
 		// A little tweak to remain backward compatible
 		// The $autoload['core'] item was deprecated
@@ -872,13 +933,6 @@ class CI_Loader {
 				$autoload['libraries'] = array_diff($autoload['libraries'], array('database'));
 			}
 
-			// Load the model class.
-			if (in_array('model', $autoload['libraries']))
-			{
-				$this->model();
-				$autoload['libraries'] = array_diff($autoload['libraries'], array('model'));
-			}
-
 			// Load scaffolding
 			if (in_array('scaffolding', $autoload['libraries']))
 			{
@@ -892,6 +946,13 @@ class CI_Loader {
 				$this->library($item);
 			}
 		}		
+
+		// Autoload models
+		if (isset($autoload['model']))
+		{
+			$this->model($autoload['model']);
+		}
+
 	}
 	
 	// --------------------------------------------------------------------
@@ -966,4 +1027,6 @@ class CI_Loader {
 	}
 	
 }
-?>
+
+/* End of file Loader.php */
+/* Location: ./system/libraries/Loader.php */
