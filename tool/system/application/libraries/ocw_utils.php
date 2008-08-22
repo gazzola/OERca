@@ -147,6 +147,7 @@ class OCW_utils {
     		case 'image/jpeg': $file = ''; break;
     		case 'image/png': $file = ''; break;
     		case 'image/tiff': $file = ''; break;
+    		case 'image/svg+xml': $file = ''; break;
     		case 'image/x-xbitmap': $file = ''; break;
     		case 'model/vrml': $file = ''; break;
     		case 'text/css': $file = 'page.png'; break;
@@ -214,7 +215,6 @@ class OCW_utils {
 			$defimg = ($type=='orig') ? 'noorig.png' : 'norep.png';
 			$dflag = ($type=='orig') ? 'grab' : 'rep';
       $image_details = $this->_get_imgurl($path, $name, $dflag);
-      
       $imgurl = $image_details['imgurl'];
       $thumb_found = $image_details['thumb_found'];
       
@@ -488,6 +488,14 @@ class OCW_utils {
    	$g_imgurl_upper = $base_url . ".GIF";
    	$g_imgpath = $base_path . ".gif";
    	$g_imgpath_upper = $base_path . ".GIF";
+   	$t_imgurl = $base_url . ".tiff";
+   	$t_imgurl_upper = $base_url . ".TIFF";
+   	$t_imgpath = $base_path . ".tiff";
+   	$t_imgpath_upper = $base_path . ".TIFF";
+   	$s_imgurl = $base_url . ".svg";
+   	$s_imgurl_upper = $base_url . ".SVG";
+   	$s_imgpath = $base_path . ".svg";
+   	$s_imgpath_upper = $base_path . ".SVG";
    	
    	if (is_readable($p_imgpath)) {
    	  $file_details['imgurl'] = $p_imgurl;
@@ -498,7 +506,13 @@ class OCW_utils {
    	} elseif (is_readable($g_imgpath)) {
    	  $file_details['imgurl'] = $g_imgurl;
    	  $file_details['thumb_found'] = true;
-   	} elseif (is_readable($p_imgpath_upper)) {
+   	} elseif (is_readable($t_imgpath)) {
+   	  $file_details['imgurl'] = $t_imgurl;
+   	  $file_details['thumb_found'] = true;
+   	} elseif (is_readable($s_imgpath)) {
+   	  $file_details['imgurl'] = $s_imgurl;
+   	  $file_details['thumb_found'] = true;
+   	}  elseif (is_readable($p_imgpath_upper)) {
    	  $file_details['imgurl'] = $p_imgurl_upper;
    	  $file_details['thumb_found'] = true;
    	} elseif (is_readable($j_imgpath_upper)) {
@@ -507,11 +521,16 @@ class OCW_utils {
    	} elseif (is_readable($g_imgpath_upper)) {
 			$file_details['imgurl'] = $g_imgurl_upper;
 			$file_details['thumb_found'] = true;
+   	} elseif (is_readable($t_imgpath_upper)) {
+			$file_details['imgurl'] = $t_imgurl_upper;
+			$file_details['thumb_found'] = true;
+   	} elseif (is_readable($s_imgpath_upper)) {
+			$file_details['imgurl'] = $s_imgurl_upper;
+			$file_details['thumb_found'] = true;
    	} else {
 			$file_details['imgurl'] = '';
 			$file_details['thumb_found'] = false;
    	}
-   	
    	return $file_details;
   }
 }

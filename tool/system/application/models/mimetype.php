@@ -85,6 +85,8 @@ class Mimetype extends Model
         case "js": return "application/javascript";
         case "json": return "application/json";
         case "jpg": case "jpeg": case "jpe": return "image/jpeg";
+        case "tif": case "tiff": return "image/tiff";
+        case "svg": case "svgz": return "image/svg+xml";
         case "png": case "gif": case "bmp": return "image/".strtolower($m[1]);
         case "css": return "text/css";
         case "pdf": return "application/pdf";

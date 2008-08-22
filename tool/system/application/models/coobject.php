@@ -1289,6 +1289,7 @@ class Coobject extends Model
         	{
                 case 'image/gif':  $ext= '.gif'; break;
                 case 'image/tiff':  $ext= '.tiff'; break;
+                case 'image/svg+xml': $ext='.svg';break;
                 case 'jpg':
                 case 'image/jpeg': $ext= '.jpg'; break;
                 case 'image/png':  $ext= '.png'; break;
@@ -1418,6 +1419,7 @@ class Coobject extends Model
        	{
                case 'image/gif':  $ext= '.gif'; break;
                case 'image/tiff':  $ext= '.tiff'; break;
+               case 'image/svg+xml': $ext='.svg';break;
                case 'jpg':
                case 'image/jpeg': $ext= '.jpg'; break;
                case 'image/png':  $ext= '.png'; break;
@@ -1467,6 +1469,7 @@ class Coobject extends Model
 							        	{
 							                case 'gif':  $type = 'image/gif'; break;
 							                case 'tiff': $type = 'image/tiff'; break;
+                							case 'image/svg+xml': $ext='.svg';break;
 							                case 'jpg':
 							                case 'jpeg': $type = 'image/jpeg'; break;
 							                case 'png':  $type = 'image/png'; break;
@@ -1735,6 +1738,7 @@ class Coobject extends Model
         	{
                 case 'image/gif':  $ext= '.gif'; break;
                 case 'image/tiff':  $ext= '.tiff'; break;
+                case 'image/svg+xml': $ext='.svg';break;
                 case 'jpg':
                 case 'image/jpeg': $ext= '.jpg'; break;
                 case 'image/png':  $ext= '.png'; break;
@@ -1758,8 +1762,12 @@ class Coobject extends Model
 	   $j_imgpath = property('app_uploads_path').$path.'/'.$name.'_rep.jpg';
 	   $g_imgurl = property('app_uploads_url').$path.'/'.$name.'_rep.gif';
 	   $g_imgpath = property('app_uploads_path').$path.'/'.$name.'_rep.gif';
+	   $t_imgurl = property('app_uploads_url').$path.'/'.$name.'_rep.tiff';
+	   $t_imgpath = property('app_uploads_path').$path.'/'.$name.'_rep.tiff';
+	   $s_imgurl = property('app_uploads_url').$path.'/'.$name.'_rep.svg';
+	   $s_imgpath = property('app_uploads_path').$path.'/'.$name.'_rep.svg';
 
-	   if (is_readable($p_imgpath) || is_readable($j_imgpath) || is_readable($g_imgpath)) {
+	   if (is_readable($p_imgpath) || is_readable($j_imgpath) || is_readable($g_imgpath) || is_readable($t_imgpath) || is_readable($s_imgpath)) {
 				 $thumb_found = true;	
 	   } else {
 				 $thumb_found = false;	

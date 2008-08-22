@@ -301,6 +301,10 @@ class Admin extends Controller {
                 case 'jpeg': $content= 'image/jpeg'; break;
                 case 'gif':  $content= 'image/gif'; break;
                 case 'png': $content= 'image/png'; break;
+                case 'tiff': 
+                case 'tif':$content= 'image/tiff'; break;
+                case 'svg':
+                case 'svgz':$content='image/svg+xml';break;
                 default: $content='image/jpeg';
         }
 
