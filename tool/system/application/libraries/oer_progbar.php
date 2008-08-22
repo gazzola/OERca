@@ -231,7 +231,6 @@ class OER_progbar {
     $this->width = $my_width;
     $this->height = $my_height;
     $fudge = 0;
-   
  
     /* create the canvas and allocate the colors. the canvas is padded
      * to allow for borders etc. which take up space */
@@ -245,7 +244,7 @@ class OER_progbar {
  
     $text_color = imagecolorallocate($this->im, 0, 0, 0);
     $pointsize = $font_size;     // font size of text displayed in rectangular box
-    $fontfile = "./assets/tool2/fonts/collegec.ttf";
+    $fontfile = "./assets/tool2/fonts/TimesNewRoman.ttf";
     
     $done_color = imagecolorallocate($this->im, $this->done_rgb[0], 
       $this->done_rgb[1], $this->done_rgb[2]);

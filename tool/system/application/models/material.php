@@ -362,6 +362,8 @@ class Material extends Model
         // bdr OERDEV-146: let's try to figure out if all CO's have a Recommended Action
 	$cm['recaction'] = 0;
 	$cm['actaken'] = 0;
+        $cm['dashes'] = 0;     //  if date modified is NULL, show dashes   OERDEV-147
+
         if ($status['recaction'] > 0) {
             if ($status['recaction'] == ($status['done']+$status['notdone']))
                 $cm['recaction'] = 1;
@@ -377,6 +379,8 @@ class Material extends Model
         	$cm['validated'] = 0;
 		$cm['actaken'] = 0; // per Piet comment on OERDEV146
         }
+
+        
 
         if (sizeof($children) > 0) {
           $cm['show'] = ($this->child_not_in_ocw($children))?1:0;
