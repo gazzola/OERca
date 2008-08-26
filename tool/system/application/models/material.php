@@ -26,22 +26,21 @@ class Material extends Model
     * @param   int 		 uid  user id
     * @param   string  type  type of status [askform]	
     * @return  boolean true if there has been a change in status
-    * 											since the user's last login
+    * 	       since the user's last login
     */
 	public function status($mid, $uid, $type)
 	{
-			if (!in_array($type,array('askform'))) { return false; }	
-
-			if ($type=='askform') {
-					// check to see if there are any unsent emails for this user
-					// in the askforms
-					$sql = "SELECT COUNT(*) AS num 
-										FROM ocw_postoffice 
-									 WHERE material_id=$mid AND sent='no' AND to_id=$uid";
-    			$q = $this->db->query($sql);
-    			$r = $q->row();
-    			return ($r->num > 0) ? true : false;
-			}
+	  if (!in_array($type,array('askform'))) { return false; }	
+          if ($type=='askform') {
+	  // check to see if there are any unsent emails for this user
+	  // in the askforms
+	  	$sql = "SELECT COUNT(*) AS num 
+	                 FROM ocw_postoffice 
+			 WHERE material_id=$mid AND sent='no' AND to_id=$uid";
+    	  	$q = $this->db->query($sql);
+    	  	$r = $q->row();
+    	  	return ($r->num > 0) ? true : false;
+	  }
 	}
 
   /**
@@ -157,7 +156,7 @@ class Material extends Model
     if ($q->num_rows() > 0) {
       foreach($q->result_array() as $row) {
         $row['display_date'] = $this->ocw_utils->calc_later_date(
-          $row['created_on'], $row['modified_on'],'d M, Y H:i:s'); // define the display date
+                      $row['created_on'], $row['modified_on'],'d M, Y H:i:s'); // define the display date
         $row['comments'] = $this->comments($row['id'],'user_id,comments,modified_on');
         $row['files'] = $this->material_files($cid, $row['id']);
         if ($in_ocw) {
@@ -358,11 +357,20 @@ class Material extends Model
         $status = $this->is_cleared($id, $cm['embedded_co']); 
         $cm['validated'] = ($status['notdone'] > 0) ? 0 : 1;  
         $cm['statcount'] = $status['done'] .'/'.($status['done']+$status['notdone']); 
+	
+	$cm['mdone'] = $status['done'];
+        $cm['mrem'] = $status['notdone'];
+        $cm['mask'] = $status['recaction'] + $status['actaken'];
+        $cm['mtotal'] = $status['done']  + $status['notdone'] + $status['recaction'] + $status['actaken'];
+        $cm['mdash'] = 0;     //  if date modified is NULL, show dashes   OERDEV-147
+        if ($cm['modified_on'] == 0 && $cm['embedded_co'] != 0) $cm['mdash'] = 1;
+
+        //  OERDEV-140 - let's see if we can make a progress bar green with no CO's
+	if ($cm['embedded_co'] == 0) $cm['mtotal'] = 1000000;
 
         // bdr OERDEV-146: let's try to figure out if all CO's have a Recommended Action
 	$cm['recaction'] = 0;
 	$cm['actaken'] = 0;
-        $cm['dashes'] = 0;     //  if date modified is NULL, show dashes   OERDEV-147
 
         if ($status['recaction'] > 0) {
             if ($status['recaction'] == ($status['done']+$status['notdone']))
@@ -380,13 +388,12 @@ class Material extends Model
 		$cm['actaken'] = 0; // per Piet comment on OERDEV146
         }
 
-        
-
         if (sizeof($children) > 0) {
           $cm['show'] = ($this->child_not_in_ocw($children))?1:0;
           $cm['childitems'] = $children;
         }
       }
+      // $this->ocw_utils->dump($cm);
       $course_materials[$category][$cm['order']] = $cm;
     }
 
@@ -452,12 +459,20 @@ class Material extends Model
     // $this->ocw_utils->dump($where);
     foreach($q->result_array() as $row) { 
       if ($row['done']=='1') { $status['done']++; }
-      else { $status['notdone']++; }
+      else { 
           // bdr OERDEV-146: let's count number of "recommended actions that are not NULL
-          if ($row['action_type'] == NULL) { $row['action_type'] = 'NULL'; }
-          else { $status['recaction']++; }
-          if ($row['action_taken'] == NULL) { $row['action_taken'] = 'NULL'; }
-          else { $status['actaken']++; }
+          if ($row['action_type'] !== NULL) { 
+		$row['action_type'] = 'NULL'; 
+          	$status['recaction']++; 
+          }
+          elseif ($row['action_taken'] !== NULL) { 
+                $row['action_taken'] = 'NULL'; 
+          	$status['actaken']++; 
+          }
+          else { 
+                $status['notdone']++; 
+          }
+      }
           // $this->ocw_utils->dump($row);
     }
     // $this->ocw_utils->dump($status);
@@ -511,9 +526,7 @@ class Material extends Model
     }
 
     $this->db->where($passedParams);
-
     $q = $this->db->get();
-    
     //return the number of results
     return($q->num_rows());
   }
@@ -623,12 +636,12 @@ class Material extends Model
 			$dirname = property('app_uploads_path') . 'cdir_' . $filename;
 			$this->oer_filename->mkdir($dirname);
 			$this->db->insert('course_files',
-											array('filename' => $filename,
-											      'modified_on' => $curr_mysql_time, 
-												    'created_on' => $curr_mysql_time,
-												    'course_id'=>$cdata['id']));
-      $path = $dirname;
-	  }
+                                   array('filename' => $filename,
+		                         'modified_on' => $curr_mysql_time, 
+				         'created_on' => $curr_mysql_time,
+				         'course_id'=>$cdata['id']));
+               $path = $dirname;
+	    }
 		
 		$this->oer_filename->mkdir($path);
 
@@ -651,9 +664,9 @@ class Material extends Model
 
 		# store new filename
 		$this->db->insert('material_files', array('material_id'=>$mid,
-																							'filename'=>$name,
-																							'modified_on'=>date('Y-m-d h:i:s'),
-																							'created_on'=>date('Y-m-d h:i:s')));
+			          'filename'=>$name,
+				  'modified_on'=>date('Y-m-d h:i:s'),
+			          'created_on'=>date('Y-m-d h:i:s')));
 	}
 
 	/* return the path to a material on the file system 
@@ -739,7 +752,7 @@ class Material extends Model
 	public function get_material_paths($cid, $material_ids)
 	{
 	  // format for constructing filename timestamps as YYYY-MM-DD-HHMMSS
-    $download_date_format = "Y-m-d-His";
+          $download_date_format = "Y-m-d-His";
 	  $materials = array();
 	  $last_mat_id = $material_ids[(count($material_ids) - 1)];
 	  // TODO: Change this SQL to active record queries

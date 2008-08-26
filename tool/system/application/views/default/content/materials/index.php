@@ -83,14 +83,20 @@
       </td>
     
   		<td class="options">
-			<?php if ($material['actaken']) { ?>
-				<img src="<?=property('app_img')?>/validated.gif" title="ready" />
-                        <?php } elseif ($material['recaction']) { ?>
-                                <img src="<?=property('app_img')?>/recball.gif" title="publish" />
-  			<?php } else { ?>
-  				<img src="<?=property('app_img')?>/required.gif" title="not ready" />
-  			<?php } ?>
-  		<?php echo ($material['embedded_co']==0) ? '(no CO)' : "&nbsp;({$material['statcount']})"; ?>
+    		<? $params_url = $material['mtotal'].'/'.$material['mdone'].'/'.$material['mask'].'/'.$material['mrem'].'/'.$material['mdash'];
+		if ($material['mdash'] > 0) { ?>
+			<span style="font-size: 13px;"><center>--</center></span>
+		<?}
+
+      		elseif ($material['mtotal'] > 0) { ?>
+          		<img src="<?= site_url("/home/material_bar/$params_url") ?>" 
+              	alt="Progress Bar: 
+              		Total Objects=<?=$material['mtotal'] ?>
+              		Cleared Objects=<?=$material['mdone'] ?> 
+              		Objects in progress=<?=$material['mask'] ?> 
+              		Remaining Objects=<?=$material['mrem'] ?>"
+              	class="prog-bar">
+        	<? }?>
   		</td>
 		
   		<?php } ?>

@@ -102,5 +102,18 @@ class Home extends Controller {
     $this->oer_progbar->get_prog_bar();
   }
 
+  /**
+    * bdr - this is for CO status display on the listing 
+    *       or course for a dscribe2, admin, etc.   
+    *       (this calls the same routing as make_bar)
+    */
+  public function material_bar($total,$done,$ask,$rem,$dash)
+  {
+	if ($dash == 0 ) {
+            $this->oer_progbar->build_prog_bar($total,$done,$ask,$rem, 150, 20, 8);
+            $this->oer_progbar->get_prog_bar();
+        }
+  }
+
 }
 ?>

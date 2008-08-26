@@ -13,6 +13,8 @@ class OCW_user extends Model
   public function __construct()
   {
     parent::Model();
+    // the following line causes thingg not to work ....
+    //  $this->load->model('material');
   }
 
 	/**
@@ -436,7 +438,6 @@ class OCW_user extends Model
 	
 
 	// ----- Courses related functions -----
-	
   /**
     * Get a user's courses 
     *
@@ -451,7 +452,8 @@ class OCW_user extends Model
     
     $sql = "SELECT ocw_courses.*, 
       ocw_curriculums.name AS cname, 
-      ocw_schools.name AS sname
+      ocw_schools.name AS sname,
+      ocw_courses.id AS cid
       FROM ocw_courses, ocw_curriculums, ocw_schools, ocw_acl
       WHERE ocw_curriculums.id = ocw_courses.curriculum_id
       AND ocw_schools.id = ocw_curriculums.school_id
@@ -463,6 +465,14 @@ class OCW_user extends Model
 
     if ($q->num_rows() > 0) {
       foreach($q->result_array() as $row) { 
+        // bdr OERDEV-140 (which looks similiar to OERDEV-118
+        $row['total'] = $this->get_co_count($row['cid']);
+        $row['done'] = $this->get_done_count($row['cid']);
+        $row['ask'] = $this->get_ask_count($row['cid']);
+        $row['rem'] = $this->get_rem_count($row['cid']);
+        $row['statcount'] = $row['total'].'/'.$row['done'].'/'.$row['ask'].'/'.$row['rem'];
+        $row['notdone'] = $row['total'] - $row['done'];
+        //$this->ocw_utils->dump($row);
         $courses[$row['sname']][$row['cname']][] = $row; 
       }
     }
@@ -470,7 +480,8 @@ class OCW_user extends Model
     // get the courses that have NULL curriculum ids
     $sql_no_curr_id = "SELECT ocw_courses.*,
       ocw_courses.curriculum_id AS cname,
-      ocw_courses.curriculum_id AS sname
+      ocw_courses.curriculum_id AS sname,
+      ocw_courses.id AS cid
       FROM ocw_courses, ocw_acl
       WHERE ocw_courses.curriculum_id IS NULL
       AND ocw_acl.course_id = ocw_courses.id
@@ -481,8 +492,15 @@ class OCW_user extends Model
     
     if ($q_no_curr_id->num_rows() > 0) {
       foreach ($q_no_curr_id->result_array() as $row) {
-        $courses['No School Specified']['No Curriculum Specified'][]
-         = $row;
+        // bdr OERDEV-140 (which looks similiar to OERDEV-118
+        $row['total'] = $this->get_co_count($row['cid']);
+        $row['done'] = $this->get_done_count($row['cid']);
+        $row['ask'] = $this->get_ask_count($row['cid']);
+        $row['rem'] = $this->get_rem_count($row['cid']);
+        $row['statcount'] = $row['total'].'/'.$row['done'].'/'.$row['ask'].'/'.$row['rem'];
+        $row['notdone'] = $row['total'] - $row['done'];
+        //$this->ocw_utils->dump($row);
+        $courses['No School Specified']['No Curriculum Specified'][] = $row;
       }
     }
     
@@ -680,5 +698,50 @@ class OCW_user extends Model
   {
     $this->update_profile($inst_id, $data);
   }
+
+  public function get_co_count($cid, $isAsk = NULL, $isDone = '0')
+  {
+    $this->db->from('objects');
+    $this->db->
+      join('materials', 'materials.id = objects.material_id', 'inner')->
+      join('courses', 'courses.id = materials.course_id', 'inner');
+
+    $passedParams = array('courses.id' => $cid);
+
+    if ($isAsk == 'yes') {
+      $passedParams['objects.ask'] = $isAsk;
+      $passedParams['objects.done'] = $isDone;
+    } elseif ($isAsk == 'no') {
+      $passedParams['objects.ask'] = $isAsk;
+      $passedParams['objects.done'] = $isDone;
+    } elseif ($isDone == '1') {
+      $passedParams['objects.done'] = $isDone;
+    }
+
+    $this->db->where($passedParams);
+    $q = $this->db->get();
+    //return the number of results
+    return($q->num_rows());
+  }
+
+
+
+  public function get_done_count($cid)
+  {
+    return($this->get_co_count($cid, NULL, '1'));
+  }
+
+  public function get_ask_count($cid)
+  {
+    return($this->get_co_count($cid, 'yes'));
+  }
+
+  public function get_rem_count($cid)
+  {
+    return($this->get_co_count($cid, 'no'));
+  }
+
+
+
 }
 ?>
