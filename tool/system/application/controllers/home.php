@@ -72,7 +72,6 @@ class Home extends Controller {
     */  
   public function make_bar($total,$done,$ask,$rem)
   {
-    $font_file = "./assets/tool2/fonts/aadrv.ttf";
     $this->oer_progbar->build_prog_bar($total,$done,$ask,$rem, 600, 20, 10);
     $this->oer_progbar->get_prog_bar();
   }

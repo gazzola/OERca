@@ -23,45 +23,36 @@
   <? foreach ($courses as $value) {
         $params_url = $value['num']['total'].'/'.$value['num']['done']. 
               '/'.$value['num']['ask'].'/'.$value['num']['rem'];
-      if ($value['num']['total'] > 0) { ?> 
-    <div class="column span-24 first last">     
-      <a class="prog-link" href="<?php echo site_url("materials/home/{$value['id']}"); ?>">       
-        <div class="column span-15 first">
-          Total Objects: <?=$value['num']['total'] ?>
-          &nbsp; &nbsp;
-          Cleared Objects: <?=$value['num']['done'] ?>
-          &nbsp; &nbsp;
-          Objects in progress: <?=$value['num']['ask'] ?>
-          &nbsp; &nbsp;
-          Remaining Objects: <?=$value['num']['rem'] ?>
-              <img src="<?= site_url("/home/make_bar/$params_url") ?>" 
+        if ($value['num']['total'] > 0) { ?> 
+        <div class="column span-24 first last">     
+        <a class="prog-link" href="<?php echo site_url("materials/home/{$value['id']}"); ?>">
+          <div class="column span-15 first">
+	    <span style="font-size:16px; font-weight:bold; clear:both; margin-top:10px;">
+            <?=$value['number'] ?> <?=$value['title'] ?>
+            </span>
+            <span style="font-size:8px; clear:both; margin-top:10px;">
+            <?=   anchor(site_url("courses/edit_course_info/{$value['id']}").'?TB_iframe=true&height=600&width=850','Edit Info &raquo;',array('style'=>'font-size:10px','class'=>'smoothbox','title'=>'Edit Course')) ?>
+            </span>
+            <img src="<?= site_url("/home/make_bar/$params_url") ?>" 
               alt="Progress Bar: 
               Total Objects=<?=$value['num']['total'] ?>
               Cleared Objects=<?=$value['num']['done'] ?> 
               Objects in progress=<?=$value['num']['ask'] ?> 
               Remaining Objects=<?=$value['num']['rem'] ?>"
               class="prog-bar">
-        </div>
-        <div class="column span-8 last prog-title">
-            <?=$value['number'] ?> <?=$value['title'] ?>
-			<span style="font-size:8px; clear:both; margin-top:10px;">
-			<?=
-				anchor(site_url("courses/edit_course_info/{$value['id']}").'?TB_iframe=true&height=600&width=850','Edit Info &raquo;',array('style'=>'font-size:10px','class'=>'smoothbox','title'=>'Edit Course'))
-			?>
-			</span>
-        </div>
-      </a>
-    </div>
+           </div>
+         </a>
+         </div>
   <?php } else { ?>
-  <div class="column span-24 first last prog-no-CO">
-    <h2><a href="<?php echo site_url("materials/home/{$value['id']}"); ?>" >
-        <?=$value['number'] ?> <?=$value['title'] ?>
-        </a> does not contain any content objects.<br />
-    </h2>
-  </div>
+            <div class="column span-24 first last prog-no-CO">
+            <h2><a href="<?php echo site_url("materials/home/{$value['id']}"); ?>" >
+            <?=$value['number'] ?> <?=$value['title'] ?>
+            </a> does not contain any content objects.<br />
+            </h2>
+            </div>
   <?php  }}} else { ?>
-  <div class="column span-24 first last">
-    You have no courses at present. Ask one of the staff to assign a course.
-  </div>
+                 <div class="column span-24 first last">
+                 You have no courses at present. Ask one of the staff to assign a course.
+                 </div>
   <?php } ?>
 
