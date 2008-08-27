@@ -417,18 +417,39 @@ class Material extends Model
 
           $tmp[$order] = $ccm;
           $status = $this->is_cleared($cid, $ccm['embedded_co']); 
-          $tmp[$order]['validated'] = ($status['notdone'] > 0) ? 0 : 1;  
+
+          $tmp[$order]['validated'] = ($status['notdone'] > 0) ? 0 : 1;
           $tmp[$order]['statcount'] = $status['done'] .'/'.($status['done']+$status['notdone']);
-          if ($status['done'] == 0 && $status['notdone'] == 0 && $cm['embedded_co'] != 0) 
-	      {
-	      // if both done and notdone object are equal to 0, 
-              //  mark the validated attribute to be false, in order i
-              //  to force dscribes to do content object capture
-			//  bdr OERDEV146 the following line is wrong, copied from as_list
-			//      ...  so I fixed it
-	        	//  $cm['validated'] = 0;
-			$tmp[$order]['validated'] = 0;
-	      }
+
+          $tmp[$order]['mdone'] = $status['done'];
+          $tmp[$order]['mrem'] = $status['notdone'];
+          $tmp[$order]['mask'] = $status['recaction'] + $status['actaken'];
+          $tmp[$order]['mtotal'] = $status['done']  + $status['notdone'] + $status['recaction'] + $status['actaken'];
+          $tmp[$order]['mdash'] = 0;     //  if date modified is NULL, show dashes   OERDEV-147
+          if ($tmp[$order]['modified_on'] == 0 && $cm['embedded_co'] != 0) $tmp[$order]['mdash'] = 1;
+
+          //  OERDEV-140 - let's see if we can make a progress bar green with no CO's
+          if ($cm['embedded_co'] == 0) $tmp[$order]['mtotal'] = 1000000;
+
+          // bdr OERDEV-146: let's try to figure out if all CO's have a Recommended Action
+          $tmp[$order]['recaction'] = 0;
+          $tmp[$order]['actaken'] = 0;
+
+          if ($status['recaction'] > 0) {
+              if ($status['recaction'] == ($status['done']+$status['notdone']))
+                  $tmp[$order]['recaction'] = 1;
+          }
+
+          if ($status['notdone'] == 0)  // if all marked for final action & marked done
+               if ($status['actaken'] == $status['done']) $tmp[$order]['actaken'] = 1;
+
+          if ($status['done'] == 0 && $status['notdone'] == 0 && $cm['embedded_co'] != 0)
+          {       // if both done and notdone object are equal to 0,
+                  // mark the validated attribute to be false, in order 
+                  // to force dscribes to do content object capture
+                  $tmp[$order]['validated'] = 0;
+                  $tmp[$order]['actaken'] = 0; // per Piet comment on OERDEV146
+          }
 
           // find more children if necessary
           list($children, $done) = 
@@ -461,21 +482,17 @@ class Material extends Model
       if ($row['done']=='1') { $status['done']++; }
       else { 
           // bdr OERDEV-146: let's count number of "recommended actions that are not NULL
-          if ($row['action_type'] !== NULL) { 
-		$row['action_type'] = 'NULL'; 
+          if ($row['action_type'] != NULL) { 
           	$status['recaction']++; 
           }
-          elseif ($row['action_taken'] !== NULL) { 
-                $row['action_taken'] = 'NULL'; 
+          elseif ($row['action_taken'] != NULL) { 
           	$status['actaken']++; 
           }
           else { 
                 $status['notdone']++; 
           }
       }
-          // $this->ocw_utils->dump($row);
     }
-    // $this->ocw_utils->dump($status);
     return $status; 
   }
 
@@ -516,12 +533,15 @@ class Material extends Model
     $passedParams = array('courses.id' => $cid);
 
     if ($isAsk == 'yes') {
+	// this is the "in-progress" count
       $passedParams['objects.ask'] = $isAsk;
       $passedParams['objects.done'] = $isDone;
     } elseif ($isAsk == 'no') {
+	// this should be the "not cleared" count
       $passedParams['objects.ask'] = $isAsk;
-      $passedParams['objects.done'] = $isDone; 
+      $passedParams['objects.done'] = $isDone;
     } elseif ($isDone == '1') {
+	// this is collecting the "cleared" count
       $passedParams['objects.done'] = $isDone;
     }
 
