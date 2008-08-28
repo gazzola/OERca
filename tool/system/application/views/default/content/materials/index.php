@@ -37,7 +37,7 @@
   		<th class="sortable"><strong>Material Type</strong></th>
   		<th class="sortable-sortEnglishDateTime"><strong>Date Modified</strong></th>
   		<th class="sortable"><strong>Author</strong></th>
-  		<th class="sortable-sortImage, sortable-sortAlphaNumeric"><strong>CO Status</strong></th>
+  		<th class=""><strong>CO Status</strong></th>
   	</tr>
   	</thead>
 
@@ -89,14 +89,16 @@
 		<?}
 
       		elseif ($material['mtotal'] > 0) { ?>
-          		<img src="<?= site_url("/home/material_bar/$params_url") ?>" 
-              	alt="Progress Bar: 
+                   <a href="<?php echo site_url()."materials/edit/$cid/".$material['id']?>">
+		   <img src="<?= site_url("/home/material_bar/$params_url") ?>" 
+              	   alt="Progress Bar: 
               		Total Objects=<?=$material['mtotal'] ?>
               		Cleared Objects=<?=$material['mdone'] ?> 
               		Objects in progress=<?=$material['mask'] ?> 
               		Remaining Objects=<?=$material['mrem'] ?>"
-              	class="prog-bar">
-        	<? }?>
+              	   class="prog-bar">
+        	   <? }?>
+		   </a>
   		</td>
 		
   		<?php } ?>
