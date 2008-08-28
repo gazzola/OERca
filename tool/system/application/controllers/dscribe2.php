@@ -110,6 +110,8 @@ class Dscribe2 extends Controller {
 
 		// add dScribe
    	if ($task=='add_dscribe' and $cid<>'none') {
+			if (isset($_POST['ds']))
+				unset($_POST['ds']);
 			 	$r = $this->ocw_user->add_dscribe($cid, $_POST);
 			 	if ($r!==true) {
 			 			flashMsg($r);

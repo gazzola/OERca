@@ -19,14 +19,17 @@ class School extends Model
      * @access  public
      * @param   string name 
      * @param   string description 
-     * @return  void
+     * @return  boolean
      */
 	public function add($name, $description)
 	{
-		if (!$this->exists($name)) {
+		if ($this->exists($name)) {
+			return "School with name '" . $name . "' already exists!";
+		} else {
 			$data = array('name'=>$name,'description'=>$description);
 			$this->db->insert('schools',$data);
 		}
+		return true;
 	}
 
 	/**
@@ -35,11 +38,11 @@ class School extends Model
      * @access  public
      * @param   int	sid school id		
      * @param   array data 
-     * @return  void
+     * @return  boolean
      */
 	public function update($sid, $data)
 	{
-		$this->db->update('schools',$data,"id=$sid");
+		return $this->db->update('schools',$data,"id=$sid");
 	}
 
 
@@ -48,12 +51,23 @@ class School extends Model
      *
      * @access  public
      * @param   int school id
-     * @return  void
+     * @return  boolean
      */
 	public function remove($sid)
 	{
+		if (!$this->exists($this->name($sid)))
+			return "The school does not exist!";
+		
+		// Delete associated curriculum
+		$this->db->delete('curriculums', array('school_id' => $sid));
+		// Delete associated subjects
+		$this->db->delete('subjects', array('school_id' => $sid));
+		
+		// Now delete the school
 		$data = array('id'=>$sid);
 		$this->db->delete('schools',$data);
+		
+		return true;
 	}
 
 	/**
@@ -62,7 +76,7 @@ class School extends Model
      * @access  public
      * @param   int	sid school id		
      * @param   string	details 
-     * @return  string
+     * @return  string | boolean
      */
 	public function get_school($sid, $details='*')
 	{
@@ -117,6 +131,25 @@ class School extends Model
 	  }
 	  
 	  return $school_list;
+	}
+	
+	/**
+	 * Get all the school info (including the description)
+	 *
+	 * @access public
+	 * @return array composed of all school information
+	 */
+	public function get_schools()
+	{
+	  $school_array = NULL;
+	  $this->db->select('id, name, description')->order_by('name');
+	  $query = $this->db->get('schools');
+	  
+	  foreach ($query->result() as $row) {
+	    $school_array[] = $row;
+	  }
+	  
+	  return $school_array;
 	}
 }
 ?>

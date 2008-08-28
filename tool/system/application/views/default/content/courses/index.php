@@ -1,6 +1,6 @@
 <div class="column span-24 first last">
 
-<?php if ($courses == null) { ?>
+<?php if (!isset($courses) || $courses == null) { ?>
 
 <p class="error">We did not find any courses for you to process yet.</p>
 
@@ -8,6 +8,7 @@
 	} else { 
 		foreach($courses as $school => $curriculum) {
 ?>
+
 
 <h2><?= $school ?></h2>
 <p><em>Note: Hold down the shift key to select multiple columns to sort</em></p>
@@ -47,6 +48,7 @@
     <td><?=mdate('%d %M, %Y',mysql_to_unix($c['end_date']))?></td>
     <td width="40px"><?=ucfirst($c['cname'])?></td>
     <td><?=ucfirst($c['director'])?></td>
+    
     <?php if ((getUserProperty('role') !== 'dscribe1')) { ?>
     <td>
     <? $params_url = $c['total'].'/'.$c['done'].'/'.$c['ask'].'/'.$c['rem'];

@@ -1025,6 +1025,70 @@ var Rules = {
 																} }).request();
 							}
 			} 
+	},
+
+	'.do_curriculum_subject_update' : function(element) {
+			element.onchange = function () {
+            	var fb = $('feedback');
+							var url = $('server').value+'courses/';
+							var school_id = this.value;
+							var currbox = document.getElementById("curriculum_id");
+							var subjbox = document.getElementById("subj_id");
+							var once = true;
+							
+							// If they change back to nothing, (re-)disable the other boxes
+							if (school_id == 0) {
+								currbox.disabled = true;
+								subjbox.disabled = true;
+								return;
+							}
+							url += 'return_values_for_school/' + school_id;
+							new Ajax(url,
+												{
+												method: 'post', 
+												postBody: 'sid='+school_id,
+												update: fb,
+												onComplete:function(jsonObj, xml) {
+													response = Json.evaluate(jsonObj);
+													if (once) {						
+														if (response.success == true) {
+																var options;
+																var newstate;
+
+																// Set up curriculum selection
+																options = '';
+																for (c in response.curriculum_data) {
+																	options += '<option value="' + c + '">' + response.curriculum_data[c] + '</option>';
+																}
+																if (options == '') {
+																	options = "<option value=\"\">Add a curriculum first</option>";
+																	newstate = true;
+																} else {
+																	newstate = false;
+																}
+																currbox.setHTML(options);
+																currbox.disabled = newstate;
+																
+																// Set up subject selection
+																options = '';
+																for (s in response.subject_data) {
+																	options += '<option value="' + s + '">' + response.subject_data[s] + '</option>';
+																}
+																if (options == '') {
+																	options = "<option value=\"\">Add a subject first</option>";
+																	newstate = true;
+																} else {
+																	newstate = false;
+																}
+																subjbox.setHTML(options);
+																subjbox.disabled = newstate;
+		                        } else {
+		                            alert(response.error_message);
+		                       	}
+														once = false;
+							  					}
+		           }}).request();
+			}
 	}
 }
 

@@ -4,8 +4,9 @@
  *
  * @package	OCW Tool		
  * @author David Hutchful <dkhutch@umich.edu>
+ * @author Kevin Coffman <kwc@umich.edu>
  * @date 1 September 2007
- * @copyright Copyright (c) 2006, University of Michigan
+ * @copyright Copyright (c) 2008, University of Michigan
  */
 
 class Admin extends Controller {
@@ -16,6 +17,9 @@ class Admin extends Controller {
 
 		$this->freakauth_light->check('admin');
 
+		$this->load->model('school');
+		$this->load->model('curriculum');
+		$this->load->model('subject');
 		$this->load->model('course');
 		$this->load->model('ocw_user');
 	}
@@ -264,15 +268,266 @@ class Admin extends Controller {
 	}
 
 	/**
-    * Display courses dashboard 
+    * manage schools in the system
     *
     * @access  public
     * @return  void
     */
-	public function courses()
+	public function schools($action='view', $sid='')
 	{
-		$data = array('title'=>'Admin: Manage Courses'); 
-   	$this->layout->buildPage('admin/courses/index', $data);
+		if ($action=='add_school') {
+			// add a new school
+			if (isset($_POST['submit'])) {
+				if (isset($_POST['name']) && $_POST['name'] <> '') {
+					$description = (isset($_POST['description']) && trim($_POST['description']) <> '') ? trim($_POST['description']) : '';
+	 				$r = $this->school->add($_POST['name'], $description);
+				} else
+					$r = "The school name is required";
+
+	 			if ($r===true)
+					$r = "Successfully added '" . $_POST['name'] ."'";
+
+				flashMsg($r);
+   			redirect('admin/schools/add_school/', 'location');
+			}
+
+			// show add school form
+			$data = array('title'=>'Admin: Manage Courses &rqauo; Add a School');
+			$this->load->view(property('app_views_path').'/admin/schools/_add_school',$data); 
+
+		} else if ($action=='edit_school') {
+			// edit a school
+			if (isset($_POST['submit'])) {
+				unset($_POST['submit']);
+				if (isset($_POST['name']) && trim($_POST['name']) <> '') {
+					if (isset($_POST['description']))
+						$_POST['description'] = trim($_POST['description']);
+ 					$r = $this->school->update($sid, $_POST);
+				} else
+					$r = "The school name is required";
+
+ 				if ($r===true)
+					$r = "Successfully modified '" . $_POST['name'] ."'";
+
+				flashMsg($r);
+				redirect('admin/schools/edit_school/' . $sid, 'location');
+			}
+
+			// show edit school form
+			$data = array('title'=>'Admin: Manage Courses &rqauo; Edit a School',
+										'school' => $this->school->get_school($sid));
+			$this->load->view(property('app_views_path').'/admin/schools/_edit_school', $data); 
+			
+		} else if ($action=='remove_school') {
+			// remove a school
+			$sname = $this->school->name($sid);
+			
+			$r = $this->school->remove($sid);
+			if ($r === true) { $r = "Successfully deleted '" . $sname . "'"; }
+			flashMsg($r);
+			redirect('admin/schools/view', 'location');
+
+		} else {
+			// view all schools
+			$schools = $this->school->get_schools();
+			$select_box = '<select id="sid" name="sid" width="200px">';
+			$select_box .= '<option value="none">Choose a school</option>';
+			foreach($schools as $s) {
+							$select_box .= '<optgroup label="'.$s->name.'">';
+			}
+			$select_box .= '</select>';
+
+
+			$data = array('title'=>'Admin: Manage Schools ',
+										'section'=>'schools',
+										'tab'=>'',
+										'schools' => $schools);	
+			$data['select_school'] = $select_box;
+
+   		$this->layout->buildPage('admin/schools/schools', $data);
+		}
+	}
+
+	/**
+    * manage curriculum in the system
+    *
+    * @access  public
+    * @return  void
+    */
+	public function curriculum($action='view', $sid, $currid='')
+	{
+		if ($action=='add_curriculum') {
+
+			// add a curriculum
+
+			if (isset($_POST['submit'])) {
+				if (isset($_POST['name']) && $_POST['name'] <> '') {
+					$description = (isset($_POST['description']) && $_POST['description'] <> '') ? $_POST['description'] : '';
+	 				$r = $this->curriculum->add($sid, $_POST['name'], $description);
+				} else
+					$r = "The curriculum name is required";
+
+	 			if ($r===true)
+					$r = "Successfully added '" . $_POST['name'] ."'";
+
+				flashMsg($r);
+   			redirect('admin/curriculum/add_curriculum/' . $sid, 'location');
+			}
+
+			// show add school form
+			$data = array('title'=>'Admin: Manage Schools &rqauo; Add a Curriculum',
+										'sid' => $sid,
+										'sname' => $this->school->name($sid));
+			$this->load->view(property('app_views_path').'/admin/schools/_add_curriculum',$data); 
+
+		} else if ($action=='edit_curriculum') {
+
+			// edit a curriculum
+
+			if (isset($_POST['submit'])) {
+				unset($_POST['submit']);
+				if (isset($_POST['name']) && trim($_POST['name']) <> '') {
+					if (isset($_POST['description']))
+						$_POST['description'] = trim($_POST['description']);
+ 					$r = $this->curriculum->update($currid, $_POST);
+				} else
+					$r = "The curriculum name is required";
+
+ 				if ($r===true)
+					$r = "Successfully modified '" . $_POST['name'] ."'";
+
+				flashMsg($r);
+				redirect('admin/curriculum/edit_curriculum/' . $sid .'/' . $currid, 'location');
+			}
+
+			// show edit curriculum form
+			$data = array('title'=>'Admin: Manage Courses &rqauo; Edit a School',
+										'sid' => $sid,
+										'curr' => $this->curriculum->get_curriculum($currid));
+			$this->load->view(property('app_views_path').'/admin/schools/_edit_curriculum', $data);
+ 
+		} else if ($action=='remove_curriculum') {
+
+			// remove a curriculum
+			
+			$r = $this->curriculum->remove($currid);
+			$r = ($r===true) ? 'Removed curriculum' : $r;
+			flashMsg($r);
+			redirect('admin/curriculum/view/' . $sid, 'location');
+
+		} else {
+
+			// view school's subjects and curriculum
+
+			$sname = $this->school->name($sid);
+			$currlist = $this->curriculum->get_curriculum_list($sid);
+			$subjlist = $this->subject->get_subjects($sid);
+			
+			$data = array('title'=>'Admin: Manage Schools ',
+										'section'=>'schools',
+										'tab'=>'',
+										'sid' => $sid,
+										'sname' => $sname,
+										'currlist' => $currlist,
+										'subjlist' => $subjlist );
+			$this->layout->buildPage('admin/schools/curriculum', $data);
+		}
+  }
+	
+	/**
+		* manage subjects in the system
+		*
+		* @access  public
+		* @return  void
+		*/
+	public function subjects($action, $sid, $subjid='')
+	{
+		if ($action=='add_subject') {
+
+			// add a subject
+
+			if (isset($_POST['submit'])) {
+				$r = "Error adding Subject!";
+				if (!isset($_POST['subj_code']) || $_POST['subj_code'] == '') {
+					$r = "The subject code is required";
+				} else if (!isset($_POST['subj_desc']) || $_POST['subj_desc'] == '') {
+					$r = "The subject description is required";
+				} else {
+	 				$r = $this->subject->add($sid, $_POST['subj_code'], $_POST['subj_desc']);
+				}
+
+	 			if ($r===true)
+					$r = "Successfully added '" . $_POST['subj_code'] . ":" . $_POST['subj_desc'] . "'";
+
+				flashMsg($r);
+   			redirect('admin/subjects/add_subject/' . $sid, 'location');
+			}
+
+			// show add subject form
+			$data = array('title'=>'Admin: Manage Schools &rqauo; Add a Subject',
+										'sid' => $sid,
+										'sname' => $this->school->name($sid));
+			$this->load->view(property('app_views_path').'/admin/schools/_add_subject',$data); 
+
+		} else if ($action=='edit_subject') {
+
+			// edit a subject
+
+			if (isset($_POST['submit'])) {
+				unset($_POST['submit']);
+				$r = "Error updating Subject!";
+				if (!isset($_POST['subj_code']) || trim($_POST['subj_code']) == '') {
+					$r = "The subject code is required";
+				} else	if (!isset($_POST['subj_desc']) || trim($_POST['subj_desc']) == '') {
+					$r = "The subject description is required";
+				} else {
+ 					$r = $this->subject->update($subjid, $_POST);						
+				}
+
+ 				if ($r===true)
+					$r = "Successfully modified '" . $_POST['subj_code'] . ":" . $_POST['subj_desc'] . "'";
+
+				flashMsg($r);
+				redirect('admin/subjects/edit_subject/' . $sid .'/' . $subjid, 'location');
+			}
+
+			// show edit subject form
+			$data = array('title'=>'Admin: Manage Courses &rqauo; Edit a Subject',
+										'sid' => $sid,
+										'subj' => $this->subject->get_subject($subjid));
+			$this->load->view(property('app_views_path').'/admin/schools/_edit_subject', $data);
+
+		} else if ($action=='remove_subject') {
+
+			// remove a subject
+
+			$r = $this->subject->remove($subjid);
+			$r = ($r===true) ? 'Removed subject' : $r;
+			flashMsg($r);
+			redirect('admin/curriculum/view/' . $sid, 'location');
+
+		}
+  }
+
+	/**
+		* manage courses in the system
+		*
+		* @access  public
+		* @return  void
+		*/
+	public function courses($action='view', $sid=NULL, $cid='')
+	{
+
+		// get all courses
+		$courses = $this->course->get_courses();
+
+		$data = array('title'=>'Admin: Manage Courses ',
+									'section'=>'courses',
+									'tab'=>'',
+									'courses' => $courses);	
+		$data['defuser'] = '';
+
+		$this->layout->buildPage('admin/courses/index', $data);
 	}
 
 	/**

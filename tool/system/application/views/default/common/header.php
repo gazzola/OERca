@@ -83,9 +83,10 @@
 
     <?php } elseif (getUserProperty('role') == 'admin') { ?>
 
-		  <li<?= (preg_match('/^(admin\/home)|(admin)$/', $ci_uri) > 0)? $att: ''?>><?=anchor("/admin/home",'Home')?></li>
+		  <li<?= (preg_match('|^admin/home|', $ci_uri) > 0)? $att: ''?>><?=anchor("/admin/home/",'Home')?></li>
       <li<?= (preg_match('|^admin/users|', $ci_uri) > 0)? $att: ''?>><?=anchor("/admin/users",'Manage Users')?></li>
-      <li<?= (preg_match('/^(admin\/courses)|(courses)/', $ci_uri) > 0)? $att: ''?>><?=anchor("/admin/courses",'Manage Courses')?></li>
+			<li<?= (preg_match('/^(admin\/schools)|(schools)|(curriculum)|(subjects)/', $ci_uri) > 0)? $att: ''?>><?=anchor("/admin/schools",'Manage Schools')?></li>
+      <li<?= (preg_match('/^(admin\/courses)|(materials)|(courses)/', $ci_uri) > 0)? $att: ''?>><?=anchor("/admin/courses",'Manage Courses')?></li>
 
     <?php } ?>
 	  </ul>

@@ -30,14 +30,21 @@ if (isset($flash) AND $flash!='') {
 <div class="column span-21 first last">
     <?php echo form_open_multipart("courses/edit_course_info/$cid/edit"); ?>
       <div class="column span-6 colborder">
-        <div class="formLabel">School:</div>
+        <div class="formLabel"><span style="color:red">*</span>School:</div>
         <div class="formField">
           <?php echo form_dropdown('school_id', $school_id, 
-          $coursedetails['school_id'], 'id="school_id"'); ?>
+          $coursedetails['school_id'], 'id="school_id" class="do_curriculum_subject_update"'); ?>
         </div>
 
 				<br/>
       
+				<div class="formLabel"><span style="color:red">*</span>Curriculum:</div>
+				<div class="formField">
+					<?php echo form_dropdown('curriculum_id', $curriculum_list, 
+					$coursedetails['curriculum_id'], 'id="curriculum_id"'); ?>
+				</div>
+				<br/>
+
         <div class="formLabel">Course Subject:</div>
         <div class="formField">
           <?php echo form_dropdown('subj_id', $subj_id, 
@@ -55,7 +62,7 @@ if (isset($flash) AND $flash!='') {
 
 				<br/>
       
-        <div class="formLabel">Title:</div>
+        <div class="formLabel"><span style="color:red">*</span>Title:</div>
         <div class="formField">
           <input type="text" name="title" id="title" 
           value="<?=$coursedetails['title'] ?>" class="input" />
@@ -63,7 +70,7 @@ if (isset($flash) AND $flash!='') {
 
 				<br/>
       
-        <div class="formLabel">Level:</div>
+        <div class="formLabel"><span style="color:red">*</span>Level:</div>
         <div class="formField">
           <?php echo form_dropdown('courselevel', $courselevel, 
           $coursedetails['level'], 'id="courselevel"'); ?>
@@ -71,7 +78,7 @@ if (isset($flash) AND $flash!='') {
 
 				<br/>
       
-        <div class="formLabel">Length:</div>
+        <div class="formLabel"><span style="color:red">*</span>Length:</div>
         <div class="formField">
           <?php echo form_dropdown('courselength', $courselength, 
           $coursedetails['length'], 'id="courselength"'); ?>
@@ -79,7 +86,7 @@ if (isset($flash) AND $flash!='') {
         
 				<br/>
       
-        <div class="formLabel">Term:</div>
+        <div class="formLabel"><span style="color:red">*</span>Term:</div>
         <div class="formField">
           <?php echo form_dropdown('term', $term, $coursedetails['term'], 
           'id="term"'); ?>
@@ -87,13 +94,28 @@ if (isset($flash) AND $flash!='') {
 
 				<br/>
       
-        <div class="formLabel">Year:</div>
+        <div class="formLabel"><span style="color:red">*</span>Year:</div>
         <div class="formField">
           <?php echo form_dropdown('year', $year, $curryear, 'id="year"'); ?>
         </div>
       </div>
       
       <div class="column span-6 colborder">
+
+			<div class="formLabel"><span style="color:red">*</span>Start Date:</div>
+			<div class="formField">
+				<input type="text" name="start_date" id="start_date"
+				value="<?=$coursedetails['start_date'] ?>" class="input" tabindex="10" />
+			</div>
+			<br>
+				
+			<div class="formLabel"><span style="color:red">*</span>End Date:</div>
+			<div class="formField">
+				<input type="text" name="end_date" id="end_date"
+				value="<?=$coursedetails['end_date'] ?>" class="input" tabindex="11" />
+			</div>
+			<br>
+
        <div class="formLabel">Director (Med School Only):</div>
        <div class="formField">
          <input type="text" name="director" id="director" 

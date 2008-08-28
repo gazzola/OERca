@@ -20,14 +20,16 @@ class Curriculum extends Model
      * @param   int school id 
      * @param   string name 
      * @param   string description 
-     * @return  void
+     * @return  string | boolean
      */
 	public function add($sid, $name, $description)
 	{
-		if (!$this->exists($name)) {
-			$data = array('school_id'=>$sid,'name'=>$name,'description'=>$description);
-			$this->db->insert('curriculum',$data);
-		}
+		if ($this->exists($sid, $name))
+			return "A curriculum with name $name already exists!";
+			
+		$data = array('school_id'=>$sid,'name'=>$name,'description'=>$description);
+		return $this->db->insert('curriculums',$data);
+
 	}
 
 	/**
@@ -36,11 +38,11 @@ class Curriculum extends Model
      * @access  public
      * @param   int	cid curriculum id		
      * @param   array data 
-     * @return  void
+     * @return  boolean
      */
 	public function update($cid, $data)
 	{
-		$this->db->update('curriculum',$data,"id=$cid");
+		return $this->db->update('curriculums',$data,"id=$cid");
 	}
 
 
@@ -49,12 +51,12 @@ class Curriculum extends Model
      *
      * @access  public
      * @param   int curriculum id
-     * @return  void
+     * @return  boolean
      */
 	public function remove($cid)
 	{
 		$data = array('id'=>$cid);
-		$this->db->delete('curriculum',$data);
+		return $this->db->delete('curriculums',$data);
 	}
 
 	/**
@@ -67,7 +69,7 @@ class Curriculum extends Model
      */
 	public function get_curriculum($cid, $details='*')
 	{
-		$this->db->select($details)->from('curriculum')->where('id',$cid);
+		$this->db->select($details)->from('curriculums')->where('id', $cid);
 		$q = $this->db->get();
 		$curriculum = $q->row_array();
 		return ($q->num_rows() > 0) ? $curriculum : null;
@@ -97,8 +99,59 @@ class Curriculum extends Model
 	public function exists($sid, $name)
 	{
 		$this->db->where('school_id="'.$sid.'" AND LOWER(name)="'.strtolower($name).'"');
-		$query = $this->db->get('curriculum'); 
+		$query = $this->db->get('curriculums'); 
 		return ($query->num_rows() > 0) ? true : false;
 	}
+
+	/**
+     * Get curriculum list (all curriculum, or all curriculum for optionally specified school_id)
+     *
+     * @access  public
+     * @param   int	cid curriculum id		
+     * @param   string	details 
+     * @return  string
+     */
+	public function get_curriculum_list($school_id=NULL)
+	{
+		$curr_list = NULL;
+		if ($school_id) {
+			$this->db->where('school_id', $school_id);
+		}
+		$this->db->order_by('name');
+		
+		$q = $this->db->get('curriculums');
+		
+		foreach ($q->result() as $row) {
+			$curr_list[] = $row;
+		}
+		
+		return $curr_list;
+	}
+
+	/**
+     * Get curriculum id->name list (all curriculum, or all curriculum for optionally specified school_id)
+     *
+     * @access  public
+     * @param   int	cid curriculum id		
+     * @param   string	details 
+     * @return  string
+     */
+	public function get_curriculum_id_list($school_id=NULL)
+	{
+		$curr_list = NULL;
+		if ($school_id) {
+			$this->db->where('school_id', $school_id);
+		}
+		$this->db->order_by('name');
+		
+		$q = $this->db->get('curriculums');
+		
+		foreach ($q->result() as $row) {
+			$curr_list[$row->id] = $row->name;
+		}
+		
+		return $curr_list;
+	}
+
 }
 ?>

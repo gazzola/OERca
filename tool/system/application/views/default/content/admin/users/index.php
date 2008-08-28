@@ -7,9 +7,6 @@
       <li <?=($tab=='dscribe1')  ? 'id="active"':''?>><?=anchor("/admin/users/view/dscribe1/",$d1_title)?></li>
       <li <?=($tab=='dscribe2')  ? 'id="active"':''?>><?=anchor("/admin/users/view/dscribe2/",$d2_title)?></li>
       <li <?=($tab=='admin')  	 ? 'id="active"':''?>><?=anchor("/admin/users/view/admin/",$admin_title)?></li>
-      <li style="float:right">
-					<a href="<?=site_url("admin/users/add_user/$tab")?>?TB_iframe=true&height=650&width=550" class="smoothbox" title="Add User">Add User</a>
-			</li>
     </ul>
   </div>
 </div>

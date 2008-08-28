@@ -602,8 +602,9 @@ class OCW_user extends Model
   {
     $dscribes = array();
 
-    $this->db->select('ocw_users.*');
-    $this->db->from('acl')->where("course_id='$cid' AND ocw_acl.role = 'dscribe1'");
+    $this->db->select('users.*');
+    $this->db->from('acl')->where("acl.course_id='$cid'");
+    $this->db->from('acl')->where("acl.role = 'dscribe1'");
     $this->db->join('users','acl.user_id=users.id');
 
     $q = $this->db->get();
