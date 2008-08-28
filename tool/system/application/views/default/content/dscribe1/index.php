@@ -44,15 +44,21 @@
          </a>
          </div>
   <?php } else { ?>
-            <div class="column span-24 first last prog-no-CO">
-            <h2><a href="<?php echo site_url("materials/home/{$value['id']}"); ?>" >
+        <div class="column span-24 first last">
+        <a class="prog-link" href="<?php echo site_url("materials/home/{$value['id']}"); ?>">
+          <div class="column span-15 first">
+            <span style="font-size:16px; font-weight:bold; clear:both; margin-top:10px;">
             <?=$value['number'] ?> <?=$value['title'] ?>
-            </a> does not contain any content objects.<br />
-            </h2>
+            </span>
+            <span style="font-size:8px; clear:both; margin-top:10px;">
+            <?=   anchor(site_url("courses/edit_course_info/{$value['id']}").'?TB_iframe=true&height=600&width=850','Edit Info &raquo;',array('style'=>'font-size:10px','class'=>'smoothbox','title'=>'Edit Course')) ?>
+            <p class="error">No content objects recorded for this course.</p>
+	    </span>
             </div>
+          </div>
   <?php  }}} else { ?>
                  <div class="column span-24 first last">
-                 You have no courses at present. Ask one of the staff to assign a course.
+            <p class="error">You have no courses at present. Ask one of the staff to assign a course.</p>
                  </div>
   <?php } ?>
 
