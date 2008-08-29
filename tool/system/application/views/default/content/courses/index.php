@@ -20,6 +20,7 @@
         <th class="sortable-sortEnglishLonghandDateFormat">End Date</th>
         <th class="sortable">Curriculum</th>
         <th class="sortable">Director</th>
+        <th class="sortable">Instructor(s)</th>
 	<!-- bdr OERDEV140 - add CO status to CourseListing   -->
         <?php if ((getUserProperty('role') != 'dscribe1')) { ?>
         <th>    CO Status    &nbsp;</th>
@@ -40,7 +41,7 @@
 			<br/>
 			<span style="font-size:9px; clear:both; margin-top:20px;">
 			<?=
-				anchor(site_url("courses/edit_course_info/{$c['id']}").'?TB_iframe=true&height=675&width=875','Edit Info &raquo;',array('class'=>'smoothbox','title'=>'Edit Course'))
+				anchor(site_url("courses/edit_course_info/{$c['id']}").'?TB_iframe=true&height=600&width=850','Edit Info &raquo;',array('class'=>'smoothbox','title'=>'Edit Course'))
 			?>
 			</span>
 		</td>
@@ -48,6 +49,7 @@
     <td><?=mdate('%d %M, %Y',mysql_to_unix($c['end_date']))?></td>
     <td width="40px"><?=ucfirst($c['cname'])?></td>
     <td><?=ucfirst($c['director'])?></td>
+    <td><?=ucfirst($c['instructors'])?></td>
     
     <?php if ((getUserProperty('role') !== 'dscribe1')) { ?>
     <td>

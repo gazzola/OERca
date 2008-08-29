@@ -66,7 +66,7 @@ class Course extends Model
     * @param   string user role 
     * @return  string | boolean
     */
-  public function remove_user($cid, $uid, $role)
+  public function remove_user($cid, $did, $role)
   {
 		$d = array('user_id'=>$uid, 'course_id'=>$cid, 'role'=>$role);
 		$this->db->delete('acl',$d);
@@ -119,6 +119,31 @@ class Course extends Model
 		return ($q->num_rows() > 0) ? $course : null;
 	}
 	
+		/**
+     * Get instructor of a course by course id
+     *  mbleed 08/29/08
+     * @access  public
+     * @param   string number
+     * @return  string
+     */
+	public function get_course_instructor_by_id($id)
+	{
+		$sql = "SELECT ocw_instructors.name AS iname
+				FROM ocw_courses, ocw_instructors, ocw_acl
+				WHERE ocw_courses.id = ocw_acl.course_id
+				AND ocw_acl.user_id = ocw_instructors.user_id
+				AND ocw_courses.id = $id
+				ORDER BY ocw_instructors.name ASC";
+		$q = $this->db->query($sql);
+        if ($q->num_rows() > 0) {
+        	$course_instructors = array();
+            foreach($q->result_array() as $row) { 
+        		$course_instructors[] = $row['iname'];    	
+            }
+        }
+		return ($q->num_rows() > 0) ? implode("<br>", $course_instructors) : '';
+	}
+	
     /**
      * Get all courses 
      *
@@ -146,6 +171,7 @@ class Course extends Model
                      $row['done'] = $this->material->get_done_count($row['cid']);
                      $row['ask'] = $this->material->get_ask_count($row['cid']);
                      $row['rem'] = $this->material->get_rem_count($row['cid']);
+                     $row['instructors'] = $this->get_course_instructor_by_id($row['cid']);
 		     $row['statcount'] = $row['total'].'/'.$row['done'].'/'.$row['ask'].'/'.$row['rem'];
 		     $row['notdone'] = $row['total'] - $row['done'];
 		     //$this->ocw_utils->dump($row);
@@ -174,6 +200,7 @@ class Course extends Model
                      $row['done'] = $this->material->get_done_count($row['cid']);
                      $row['ask'] = $this->material->get_ask_count($row['cid']);
                      $row['rem'] = $this->material->get_rem_count($row['cid']);
+                     $row['instructors'] = $this->get_course_instructor_by_id($row['cid']);
                      $row['statcount'] = $row['total'].'/'.$row['done'].'/'.$row['ask'].'/'.$row['rem'];
 		     $row['notdone'] = $row['total'] - $row['done'];
                      //   $this->ocw_utils->dump($row);
