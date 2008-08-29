@@ -227,6 +227,8 @@ function TB_show(caption, url, rel) {
 		} else {
 			$("TB_window").innerHTML += "<div id='TB_title'><div id='TB_ajaxWindowTitle'>"+caption+"</div><div id='TB_closeAjaxWindow'><a href='#' id='TB_closeWindowButton'>close</a></div></div><div id='TB_ajaxContent' style='width:"+ajaxContentW+"px;height:"+ajaxContentH+"px;'></div>";
 		}
+		
+		if (window.webkit) $("TB_iframeContent").src = urlNoQuery; //mbleed 08/28/08 Safari caching bug fix
 				
 		if($("TB_closeWindowButton")) { $("TB_closeWindowButton").onclick = TB_remove; }
 		
