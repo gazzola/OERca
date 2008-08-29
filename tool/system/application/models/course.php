@@ -134,7 +134,7 @@ class Course extends Model
 				AND ocw_acl.user_id = ocw_users.id
 				AND ocw_acl.role = 'instructor'
 				AND ocw_courses.id = $id
-				ORDER BY ocw_instructors.name ASC";
+				ORDER BY ocw_users.name ASC";
 		$q = $this->db->query($sql);
         if ($q->num_rows() > 0) {
         	$course_instructors = array();
