@@ -33,6 +33,7 @@
             <span style="font-size:8px; clear:both; margin-top:10px;">
             <?=   anchor(site_url("courses/edit_course_info/{$value['id']}").'?TB_iframe=true&height=600&width=850','Edit Info &raquo;',array('style'=>'font-size:10px','class'=>'smoothbox','title'=>'Edit Course')) ?>
             </span>
+	    <br>
             <img src="<?= site_url("/home/make_bar/$params_url") ?>" 
               alt="Progress Bar: 
               Total Objects=<?=$value['num']['total'] ?>

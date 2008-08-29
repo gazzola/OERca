@@ -67,6 +67,7 @@ class Home extends Controller {
     * @param    int number of content objects that have associated 
     *            questions
     * @param    int number of content objects that need to be checked
+    * @param    int width of the progress bar (in pixels)
     * @param    int - font size for text to be displayed in box
     * @return   void
     */  

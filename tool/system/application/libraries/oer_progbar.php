@@ -33,7 +33,7 @@ class OER_progbar {
   // TODO: provide a way for the user to reset the colors
   // the color values of the bars
   private $done_rgb = array(68, 246, 34);
-  private $ask_rgb = array(50,200,255);  // OERDEV-146/140 change to blue per Pieter
+  private $ask_rgb = array(51,153,204);  // OERDEV-146/140 change to blue per Pieter
   private $rem_rgb = array(224, 41, 29);
   private $border = array(85, 85, 85);
   private $tot_rgb = array(255,255,255);  // white for the total amount
@@ -312,7 +312,7 @@ class OER_progbar {
                   $fudge = $fudge + 1;
               }
 
-           // figure out whther we nedd to save 10% or 20 % of width for small count
+           // figure out whether we nedd to save 10% or 20 % of width for small count
            $sludge = $fudge * 10;
 
            /* if there are COs of a particular type:
@@ -322,11 +322,16 @@ class OER_progbar {
             *  and change the starting point for the next C0 types */
            if ($rem_objects > 0) {
              if (($rem_fudge) && ($rem_objects != $this->total_objects)) {
-                if ($rem_fudge == $fudge) $cal1 = $fudge * 10;
-                else $cal1 = $rem_fudge * 10;
-                $cal2 = $cal1 / 100;
-                $cal3 = $this->width * $cal2;
-                $rem_x2 = $rem_x1 + $cal3;
+                // $cal1 = $rem_fudge * 10;
+                // $cal2 = $cal1 / 100;
+                // $cal3 = $this->width * $cal2;
+		// $cal3 = round($this->width * .10);
+                // $rem_x2 = $rem_x1 + $cal3;
+                if ($this->width > 500 ) {
+                        $rem_x2 = $rem_x1 + ($this->_set_prog_width($rem_objects, $sludge));
+                } else {
+                        $rem_x2 = ($rem_x1 + round($this->width * .10));
+                }
              } else {
                 $rem_x2 = $rem_x1 + ($this->_set_prog_width($rem_objects, $sludge));
              }
@@ -338,13 +343,19 @@ class OER_progbar {
     
            if ($ask_objects > 0) {
              if (($ask_fudge) && ($ask_objects != $this->total_objects)) {
-                if ($ask_fudge == $fudge) $cal1 = $fudge * 10;
-                else $cal1 = $ask_fudge * 10;
-		$cal2 = $cal1 / 100;
-		$cal3 = $this->width * $cal2;
-		$ask_x2 = $ask_x1 + $cal3;
+                // $cal1 = $ask_fudge * 10;
+		// $cal2 = $cal1 / 100;
+		// $cal3 = $this->width * $cal2;
+		// $cal3 = round($this->width * .10);
+		// $ask_x2 = $ask_x1 + $cal3;
+                if ($this->width > 500 ) {
+                        $ask_x2 = $ask_x1 + ($this->_set_prog_width($ask_objects, $sludge));
+                } else {
+                        $ask_x2 = ($ask_x1 + round($this->width * .10));
+                }
+
              } else {
-                     $ask_x2 = $ask_x1 + ($this->_set_prog_width($ask_objects, $sludge));
+                 $ask_x2 = $ask_x1 + ($this->_set_prog_width($ask_objects, $sludge));
              }
              imagefilledrectangle($this->im, $ask_x1, $y1, $ask_x2, $y2, $ask_color);
              $done_x1 = $ask_x2;
@@ -353,11 +364,16 @@ class OER_progbar {
 
            if ($done_objects > 0) {
              if (($done_fudge) && ($done_objects != $this->total_objects)) {
-		if ($done_fudge == $fudge) $cal1 = $fudge * 10;
-		else $cal1 = $done_fudge * 10;
-                $cal2 = $cal1 / 100;
-                $cal3 = $this->width * $cal2;
-                $done_x2 = $done_x1 + $cal3;
+		// $cal1 = $done_fudge * 10;
+                // $cal2 = $cal1 / 100;
+                // $cal3 = $this->width * $cal2;
+                // $cal3 = round($this->width * .10);
+                // $done_x2 = $done_x1 + $cal3;
+                if ($this->width > 500 ) {
+			$done_x2 = $done_x1 + ($this->_set_prog_width($done_objects, $sludge));
+		} else {
+		       $done_x2 = ($done_x1 + round($this->width * .10));
+                }
              } else {
                  $done_x2 = $done_x1 + ($this->_set_prog_width($done_objects, $sludge));
                }	
