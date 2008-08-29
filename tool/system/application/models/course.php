@@ -128,10 +128,11 @@ class Course extends Model
      */
 	public function get_course_instructor_by_id($id)
 	{
-		$sql = "SELECT ocw_instructors.name AS iname
-				FROM ocw_courses, ocw_instructors, ocw_acl
+		$sql = "SELECT ocw_users.name AS iname
+				FROM ocw_courses, ocw_acl, ocw_users
 				WHERE ocw_courses.id = ocw_acl.course_id
-				AND ocw_acl.user_id = ocw_instructors.user_id
+				AND ocw_acl.user_id = ocw_users.id
+				AND ocw_acl.role = 'instructor'
 				AND ocw_courses.id = $id
 				ORDER BY ocw_instructors.name ASC";
 		$q = $this->db->query($sql);
