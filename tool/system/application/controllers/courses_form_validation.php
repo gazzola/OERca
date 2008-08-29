@@ -51,9 +51,11 @@
 
 		$data['school_id'] = $_POST['school_id'];
 		$data['curriculum_id'] = $_POST['curriculum_id'];
-		if (isset($_POST['subj_id'])) {
+		if (!isset($_POST['subj_id']) || $_POST['subj_id'] == 0) {
+			$data['subject_id'] = NULL;
+		} else {
 			$data['subject_id'] = $_POST['subj_id'];
-		} else $data['subject_id'] = NULL;
+		}
 		$data['level'] = $_POST['courselevel'];
 		$data['length'] = $_POST['courselength'];
 		$data['term'] = $_POST['term'];
@@ -71,10 +73,12 @@
 			$validation_error = 1;
 		}
 
-		$subj = $this->subject->get_subject($data['subject_id']);
-		if (isset($subj['school_id']) && $subj['school_id'] != $s['id']) {
-			$msg = "Subject " . $subj['subj_code'] . ":" . $subj['subj_desc'] . " does not belong to school " . $s['name'];
-			$validation_error = 1;
+		if ($data['subject_id']) {
+			$subj = $this->subject->get_subject($data['subject_id']);
+			if (isset($subj['school_id']) && $subj['school_id'] != $s['id']) {
+				$msg = "Subject " . $subj['subj_code'] . ":" . $subj['subj_desc'] . " does not belong to school " . $s['name'];
+				$validation_error = 1;
+			}
 		}
 
 ?>

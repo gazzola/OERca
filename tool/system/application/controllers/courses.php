@@ -58,19 +58,6 @@ class Courses extends Controller {
 	}
 
 	/**
-	 * validation check to make sure a subject was selected
-	 *
-	 */
-	public function subject_check($subj_id)
-	{
-		if ($subj_id == 0) {
-			$this->validation->set_message('subject_check', 'Please select a Subject');
-			return FALSE;			
-		}
-		return TRUE;
-	}
-
-	/**
 	 * return curriculum and subject information for a given school
 	 * to populate the curriculum and subject select boxes with only
 	 * the curriculum and subjects for the selected school

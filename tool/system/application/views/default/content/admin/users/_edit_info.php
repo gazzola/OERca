@@ -69,5 +69,6 @@ if (isset($flash) AND $flash!='') {
 <br style="clear:both"/>
 
 <div class="column span-5 first last">
-<input type="button" style="float:left" onclick="parent.window.location.reload(); parent.TB_remove();" value="Done" />
+	<input type="button" style="float:right" onclick="parent.window.location.reload(); parent.TB_remove();" value="Cancel" />
+	<input type="button" style="float:left" onclick="parent.window.location.reload(); parent.TB_remove();" value="Done" />
 </div>

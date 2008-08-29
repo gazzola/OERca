@@ -16,11 +16,11 @@
 		<?php } elseif ($section=='courses') { ?>
 
 			<div style="float: right"> 
-				<?=anchor(site_url("courses/add_new_course/").'?TB_iframe=true&height=600&width=850', 'Add a Course', array('class'=>'smoothbox', 'title'=>'Add a new course')) ?>
+				<?=anchor(site_url("courses/add_new_course/").'?TB_iframe=true&height=675&width=875', 'Add a Course', array('class'=>'smoothbox', 'title'=>'Add a new course')) ?>
 			</div>
 	    <div style="float: left">
 		    <a href="<?=site_url('admin/home');?>">Admin</a> &raquo;
-				<a href="<?=site_url('admin/courses/');?>">Courses</a> &raquo; <?php if (isset($cname)) echo $cname; ?>
+				<a href="<?=site_url('admin/courses/');?>">Courses</a><?php if (isset($cname)) echo " &raquo; $cname"; ?>
     	</div>
 
 		<?php } elseif ($section=='schools') { ?>
@@ -35,7 +35,7 @@
 			</div>
 			<div style="float: left">
 		    <a href="<?=site_url('admin/home');?>">Admin</a> &raquo;
-				<a href="<?=site_url('admin/schools/');?>">Schools</a> &raquo; <?php if (isset($sname)) echo $sname; ?>
+				<a href="<?=site_url('admin/schools/');?>">Schools</a><?php if (isset($sname)) echo " &raquo; $sname"; ?>
 			</div>
 			<? } ?>
 

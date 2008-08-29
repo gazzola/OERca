@@ -27,15 +27,14 @@ if (isset($flash) AND $flash!='') {
 
 <h2>Edit Course</h2>
 
-<div class="column span-21 first last">
+<div style="border: 1px solid #888; margin-top: 10px; margin-bottom: 10px; margin-left: -10px; padding: 5px;" class="column span-21 first last">
     <?php echo form_open_multipart("courses/edit_course_info/$cid/edit"); ?>
-      <div class="column span-6 colborder">
+		<div class="column span-6 colborder">
         <div class="formLabel"><span style="color:red">*</span>School:</div>
         <div class="formField">
           <?php echo form_dropdown('school_id', $school_id, 
           $coursedetails['school_id'], 'id="school_id" class="do_curriculum_subject_update"'); ?>
         </div>
-
 				<br/>
       
 				<div class="formLabel"><span style="color:red">*</span>Curriculum:</div>
@@ -51,7 +50,6 @@ if (isset($flash) AND $flash!='') {
           $coursedetails['subject_id'], 'id="subj_id"');
            ?>
         </div>
-      
 				<br/>
       
         <div class="formLabel">Course Number:</div>
@@ -59,7 +57,6 @@ if (isset($flash) AND $flash!='') {
           <input type="text" name="cnum" id ="cnum" 
           value="<?=$coursedetails['number'] ?>" class="input" />
         </div>
-
 				<br/>
       
         <div class="formLabel"><span style="color:red">*</span>Title:</div>
@@ -67,7 +64,6 @@ if (isset($flash) AND $flash!='') {
           <input type="text" name="title" id="title" 
           value="<?=$coursedetails['title'] ?>" class="input" />
         </div>
-
 				<br/>
       
         <div class="formLabel"><span style="color:red">*</span>Level:</div>
@@ -75,7 +71,6 @@ if (isset($flash) AND $flash!='') {
           <?php echo form_dropdown('courselevel', $courselevel, 
           $coursedetails['level'], 'id="courselevel"'); ?>
         </div>
-
 				<br/>
       
         <div class="formLabel"><span style="color:red">*</span>Length:</div>
@@ -83,7 +78,6 @@ if (isset($flash) AND $flash!='') {
           <?php echo form_dropdown('courselength', $courselength, 
           $coursedetails['length'], 'id="courselength"'); ?>
         </div>
-        
 				<br/>
       
         <div class="formLabel"><span style="color:red">*</span>Term:</div>
@@ -91,7 +85,6 @@ if (isset($flash) AND $flash!='') {
           <?php echo form_dropdown('term', $term, $coursedetails['term'], 
           'id="term"'); ?>
         </div>
-
 				<br/>
       
         <div class="formLabel"><span style="color:red">*</span>Year:</div>
@@ -116,86 +109,84 @@ if (isset($flash) AND $flash!='') {
 			</div>
 			<br>
 
-       <div class="formLabel">Director (Med School Only):</div>
-       <div class="formField">
-         <input type="text" name="director" id="director" 
-         value="<?=$coursedetails['director'] ?>" class="input" />
-       </div>
-        
-				<br/>
+      <div class="formLabel">Director (Med School Only):</div>
+      <div class="formField">
+				<input type="text" name="director" id="director" 
+					value="<?=$coursedetails['director'] ?>" class="input" />
+			</div>
+			<br/>
       
-        <div class="formLabel">Creator:</div>
-        <div class="formField">
-          <input type="text" name="creator" id="creator" 
-          value="<?=$instdetails['name'] ?>" class="input" />
-        </div>
+			<div class="formLabel">Creator:</div>
+			<div class="formField">
+				<input type="text" name="creator" id="creator" 
+					value="<?=$instdetails['name'] ?>" class="input" />
+			</div>
+			<br/>
+      
+			<div class="formLabel">Collaborators:</div>
+			<div class="formField">
+				<input type="text" name="collaborators" id="collaborators"
+					value="<?=$coursedetails['collaborators'] ?>" class="input" />
+			</div>
+			<br/>
+      
+			<!-- <div class="formLabel">Copyright Holder:</div>
+			<div class="formField">
+				<input type="text" name="copyright_holder" id="copyright_holder"
+					class="input" />
+			</div>
+			<br/> -->
 
-				<br/>
+			<div class="formLabel">Language:</div>
+			<div class="formField">
+				<input type="text" name="language" id="language" 
+					value="<?=$coursedetails['language'] ?>" class="input" />
+			</div>
+        
+			<!-- <div class="formLabel">Curricular Information:</div>
+			<div class="formField">
+				<input type="text" name="currinfo" id="currinfo" class="input" />
+			</div>
+			<br/> -->
       
-        <div class="formLabel">Collaborators:</div>
-        <div class="formField">
-          <input type="text" name="collaborators" id="collaborators"
-          value="<?=$coursedetails['collaborators'] ?>" class="input" />
-        </div>
-        
-				<br/>
+			<!-- <div class="formLabel">Lifecycle Version:</div>
+			<div class="formField">
+				<input type="text" name="lcversion" id="lcversion" class="input" />
+			</div>
+			<br/> -->
       
-        <!-- <div class="formLabel">Copyright Holder:</div>
-        <div class="formField">
-          <input type="text" name="copyright_holder" id="copyright_holder"
-           class="input" />
-        </div> -->
-        
-				<br/>
+			<!-- TODO: Enable image upload -->
+			<!-- <div class="formLabel">Course Image/Icon:</div>
+			<div class="formField">
+				<input type="file" name="icon" id="icon">
+			</div> -->
+		</div>
       
-        <div class="formLabel">Language:</div>
-        <div class="formField">
-          <input type="text" name="language" id="language" 
-          value="<?=$coursedetails['language'] ?>" class="input" />
-        </div>
+		<div class="column span-6 last">  
+			<div class="formLabel">Highlights:</div>
+			<div class="formField">
+				<?php echo form_textarea($coursehighlightbox); ?>
+			</div>
         
-        <!-- <div class="formLabel">Curricular Information:</div>
-        <div class="formField">
-          <input type="text" name="currinfo" id="currinfo" class="input" />
-        </div> -->
+			<div class="formLabel">Description:</div>
+			<div class="formField">
+				<?php echo form_textarea($coursedescbox); ?>
+			</div>
         
-				<br/>
-      
-        <!-- <div class="formLabel">Lifecycle Version:</div>
-        <div class="formField">
-          <input type="text" name="lcversion" id="lcversion" class="input" />
-        </div> -->
-				<br/>
-      
-        <!-- TODO: Enable image upload -->
-        <!-- <div class="formLabel">Course Image/Icon:</div>
-        <div class="formField">
-          <input type="file" name="icon" id="icon">
-        </div> -->
-      </div>
-      
-      <div class="column span-6 last">  
-        <div class="formLabel">Highlights:</div>
-        <div class="formField">
-          <?php echo form_textarea($coursehighlightbox); ?>
-        </div>
-        
-        <div class="formLabel">Description:</div>
-        <div class="formField">
-          <?php echo form_textarea($coursedescbox); ?>
-        </div>
-        
-        <div class="formLabel">Keywords:</div>
-        <div class="formField">
-          <?php echo form_textarea($keywordbox); ?>
-        </div>
-     </div>
-        
+			<div class="formLabel">Keywords:</div>
+			<div class="formField">
+				<?php echo form_textarea($keywordbox); ?>
+			</div>
+		</div>
 		<br style="clear:both"/><br/><br/>
 		<span style="text-align:center">
-			<input type="submit" value="Save" />&nbsp;&nbsp;
-			<input type="button" value="Cancel" onclick="parent.window.location.reload(); parent.TB_remove();"/>
+			<input type="submit" style="float:left" value="Save" />
 		</span>
+	</div>
+	<div style="clear:both"/>
+		<input type="button" style="float:right" value="Cancel" onclick="parent.window.location.reload(); parent.TB_remove();"/>
+		<input type="button" style="float:left" value="Done" onclick="parent.window.location.reload(); parent.TB_remove();"/>
+	</div>
   </form>
 </div>
  

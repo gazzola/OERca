@@ -16,7 +16,7 @@
 		'copyright_holder' => "maxlength[255]|xss_clean",
 		'language' => "maxlength[255]|xss_clean",
 		'school_id' => "integer|maxlength[3]|xss_clean|callback_school_check",
-		'subj_id' => "integer|maxlength[4]|xss_clean|callback_subject_check",
+		'subj_id' => "integer|maxlength[4]|xss_clean",
 		'curricular_info' => "maxlength[200]|xss_clean",
 		'lifecycle_version' => "maxlength[255]|xss_clean",
 		'highlights' => "maxlength[200]|xss_clean",

@@ -8,7 +8,9 @@
 			$course_list_url = site_url('dscribe2/courses');
    } elseif (getUserProperty('role') == 'instructor') { 
 			$course_list_url = site_url('instructor/courses');
-	 }
+	 } elseif (getUserProperty('role') == 'admin') {
+			$course_list_url = site_url('admin/courses');
+	}
 ?>
 
 <div class="column span-24 first last">

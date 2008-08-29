@@ -26,7 +26,7 @@ if (isset($flash) AND $flash!='') {
 
 <h2>Add a new Course</h2>
 
-<div class="column span-21 first last">
+	<div style="border: 1px solid #888; margin-top: 10px; margin-bottom: 10px; margin-left: -10px; padding: 5px;" class="column span-21 first last">
     <?php echo form_open_multipart("courses/add_new_course/create"); ?>
       <div class="column span-6 colborder">
 
@@ -179,15 +179,20 @@ if (isset($flash) AND $flash!='') {
         <div class="formField">
           <?php echo form_textarea($keywordbox); ?>
         </div>
-     </div>
+		  </div>
         
 		<br style="clear:both"/><br>
 		<span style="text-align:center">
-			<input type="submit" value="Create" />&nbsp;&nbsp;
-			<input type="button" value="Cancel" onclick="parent.window.location.reload(); parent.TB_remove();"/>
+			<input type="submit" value="Create" />
 		</span>
-  </form>
-</div>
+	</div>
+
+	<div style="clear:both"/>
+		<input type="button" style="float:right" value="Cancel" onclick="parent.window.location.reload(); parent.TB_remove();"/>
+		<input type="button" style="float:left" value="Done" onclick="parent.window.location.reload(); parent.TB_remove();"/>
+	</div>
+</form>
+
  
 <div id="feedback" style="display:none"></div>
 <input type="hidden" id="cid" name="cid" value="<?=$cid?>" />
