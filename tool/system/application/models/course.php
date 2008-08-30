@@ -66,7 +66,7 @@ class Course extends Model
     * @param   string user role 
     * @return  string | boolean
     */
-  public function remove_user($cid, $did, $role)
+  public function remove_user($cid, $uid, $role)
   {
 		$d = array('user_id'=>$uid, 'course_id'=>$cid, 'role'=>$role);
 		$this->db->delete('acl',$d);
