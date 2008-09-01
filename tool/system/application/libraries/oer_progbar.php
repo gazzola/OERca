@@ -234,7 +234,7 @@ class OER_progbar {
  
     /* create the canvas and allocate the colors. the canvas is padded
      * to allow for borders etc. which take up space */
-    $canv_pad = 3; 
+    $canv_pad = 0; 
     $this->im = imagecreatetruecolor(($this->width + $canv_pad),($this->height + $canv_pad));
    
     //  save room to show total objects - bdr
@@ -297,17 +297,17 @@ class OER_progbar {
     } else{
            // figure out if we have to fudge the width for small "counts"  - bdr
            if ($rem_objects > 0)
-	      if (($rem_objects / $this->total_objects) < .15) {
+	      if (($rem_objects / $this->total_objects) < .11) {
                   $rem_fudge = 1;
                   $fudge = $fudge + 1;
                }
            if ($ask_objects > 0)
-	      if (($ask_objects / $this->total_objects) < .15) {
+	      if (($ask_objects / $this->total_objects) < .11) {
                   $ask_fudge = 1;
                   $fudge = $fudge + 1;
               }
            if ($done_objects > 0)
-	      if (($done_objects / $this->total_objects) < .15) {
+	      if (($done_objects / $this->total_objects) < .11) {
                   $done_fudge = 1;
                   $fudge = $fudge + 1;
               }
@@ -322,16 +322,7 @@ class OER_progbar {
             *  and change the starting point for the next C0 types */
            if ($rem_objects > 0) {
              if (($rem_fudge) && ($rem_objects != $this->total_objects)) {
-                // $cal1 = $rem_fudge * 10;
-                // $cal2 = $cal1 / 100;
-                // $cal3 = $this->width * $cal2;
-		// $cal3 = round($this->width * .10);
-                // $rem_x2 = $rem_x1 + $cal3;
-                if ($this->width > 500 ) {
-                        $rem_x2 = $rem_x1 + ($this->_set_prog_width($rem_objects, $sludge));
-                } else {
-                        $rem_x2 = ($rem_x1 + round($this->width * .10));
-                }
+                $rem_x2 = ($rem_x1 + round($this->width * .10));
              } else {
                 $rem_x2 = $rem_x1 + ($this->_set_prog_width($rem_objects, $sludge));
              }
@@ -343,17 +334,7 @@ class OER_progbar {
     
            if ($ask_objects > 0) {
              if (($ask_fudge) && ($ask_objects != $this->total_objects)) {
-                // $cal1 = $ask_fudge * 10;
-		// $cal2 = $cal1 / 100;
-		// $cal3 = $this->width * $cal2;
-		// $cal3 = round($this->width * .10);
-		// $ask_x2 = $ask_x1 + $cal3;
-                if ($this->width > 500 ) {
-                        $ask_x2 = $ask_x1 + ($this->_set_prog_width($ask_objects, $sludge));
-                } else {
-                        $ask_x2 = ($ask_x1 + round($this->width * .10));
-                }
-
+                $ask_x2 = ($ask_x1 + round($this->width * .10));
              } else {
                  $ask_x2 = $ask_x1 + ($this->_set_prog_width($ask_objects, $sludge));
              }
@@ -364,16 +345,7 @@ class OER_progbar {
 
            if ($done_objects > 0) {
              if (($done_fudge) && ($done_objects != $this->total_objects)) {
-		// $cal1 = $done_fudge * 10;
-                // $cal2 = $cal1 / 100;
-                // $cal3 = $this->width * $cal2;
-                // $cal3 = round($this->width * .10);
-                // $done_x2 = $done_x1 + $cal3;
-                if ($this->width > 500 ) {
-			$done_x2 = $done_x1 + ($this->_set_prog_width($done_objects, $sludge));
-		} else {
-		       $done_x2 = ($done_x1 + round($this->width * .10));
-                }
+		$done_x2 = ($done_x1 + round($this->width * .10));
              } else {
                  $done_x2 = $done_x1 + ($this->_set_prog_width($done_objects, $sludge));
                }	
@@ -479,8 +451,12 @@ class OER_progbar {
 	$bob2 = ((100-$sludge) / 100);
 
 	if ($bob1 > $bob2) return(round(($this->width)  * ($bob2)));
-	// else return(round(($this->width)  * ($$bob1)));
-        return(round(($this->width)  * ($num_objects / $this->total_objects)));
+        else {
+	    $sfudge = ($sludge/10);
+	    $awidth = (($this->width + 30) / 150) * 4;
+	    $swidth = (($this->width) * ($num_objects / $this->total_objects)) - ($sfudge * $awidth);
+	    return(round($swidth));
+	}
   }
 
 
