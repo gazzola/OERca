@@ -19,7 +19,7 @@
         <th class="sortable-sortEnglishLonghandDateFormat">Start Date</th>
         <th class="sortable-sortEnglishLonghandDateFormat">End Date</th>
         <th class="sortable">Curriculum</th>
-        <th class="sortable">Director</th>
+        <th class="sortable">Primary Instructor</th>
         <th class="sortable">Instructor(s)</th>
 	<!-- bdr OERDEV140 - add CO status to CourseListing   -->
         <?php if ((getUserProperty('role') != 'dscribe1')) { ?>

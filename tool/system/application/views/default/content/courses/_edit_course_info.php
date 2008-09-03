@@ -109,7 +109,7 @@ if (isset($flash) AND $flash!='') {
 			</div>
 			<br>
 
-      <div class="formLabel">Director (Med School Only):</div>
+      <div class="formLabel">Primary Instructor (Med School Only):</div>
       <div class="formField">
 				<input type="text" name="director" id="director" 
 					value="<?=$coursedetails['director'] ?>" class="input" />

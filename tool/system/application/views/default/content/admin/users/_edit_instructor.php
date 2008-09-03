@@ -29,7 +29,7 @@
         <th class="sortable-sortEnglishLonghandDateFormat">Start Date</th>
         <th class="sortable-sortEnglishLonghandDateFormat">End Date</th>
         <th class="sortable">Curriculum</th>
-        <th class="sortable">Director</th>
+        <th class="sortable">Primary Instructor</th>
 				<th>&nbsp;</th>
     </tr>
     </thead>
@@ -51,6 +51,7 @@
     <td><?=mdate('%d %M, %Y',mysql_to_unix($c['end_date']))?></td>
     <td width="40px"><?=ucfirst($c['cname'])?></td>
     <td><?=ucfirst($c['director'])?></td>
+    <td><?=ucfirst($c['instructors'])?></td>
 		<td>
 			<form name="adminform2" method="post" action="<?php echo site_url("admin/users/edit/$defuser/{$user['id']}")?>" enctype="multipart/form-data" style="margin:0px;padding:0">
 				<input type="hidden" name="cid" value="<?=$c['id']?>" />

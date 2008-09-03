@@ -151,6 +151,7 @@ class Material extends Model
       ON ocw_tags.id = ocw_materials.tag_id
       WHERE ocw_materials.course_id = $cid $where
       ORDER BY ocw_materials.order";
+            echo "<p>$sql</p><h1>$cid</h1>";
     $q = $this->db->query($sql);
 
     if ($q->num_rows() > 0) {
