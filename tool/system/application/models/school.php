@@ -64,8 +64,7 @@ class School extends Model
 		$this->db->delete('subjects', array('school_id' => $sid));
 		
 		// Now delete the school
-		$data = array('id'=>$sid);
-		$this->db->delete('schools',$data);
+		$this->db->delete('schools', array('id' => $sid));
 		
 		return true;
 	}
@@ -108,7 +107,7 @@ class School extends Model
      */
 	public function exists($name)
 	{
-		$this->db->where('LOWER(name)="'.strtolower($name).'"');
+		$this->db->where('TRIM(LOWER(name))="'.strtolower($name).'"');
 		$query = $this->db->get('schools'); 
 		return ($query->num_rows() > 0) ? true : false;
 	}

@@ -438,5 +438,24 @@ class Courses extends Controller {
     		$this->load->view(property('app_views_path').'/courses/_edit_course_info.php', $data);
 		}
 	}
+
+	/**
+	 * remove a course and all the associated information along with it
+	 *
+	 * @access  public
+	 * @param   int course id
+	 * @return  boolean
+	 */
+	public function remove_course($cid)
+	{
+		if (getUserProperty('role') != 'admin') {
+			flashMsg("Only administrators are permitted to remove a course!");
+			return false;
+		}
+		
+		// XXX Should make them verify again!
+		$this->course->remove_course($cid);
+	}
+	
 }
 ?>

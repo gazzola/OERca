@@ -25,10 +25,7 @@
         <?php if ((getUserProperty('role') != 'dscribe1')) { ?>
         <th>    CO Status    &nbsp;</th>
         <?php }?>
-
-		<!--
-		<th>Edit&nbsp;</th>
-		-->
+        <?php if ((getUserProperty('role') == 'admin')) { ?> <th></th> <?php }?>
     </tr>
     </thead>
     <tbody>
@@ -67,6 +64,13 @@
 	   </a>
    </td>
     <?php }?>
+    <?php if ((getUserProperty('role') == 'admin')) { ?>
+				<td>
+					<?php echo anchor(site_url("admin/courses/remove_course/".$c['id']),	
+						'<img src="'.property('app_img').'/cross.png" title="Remove course and all its materials" />',
+							array('title'=>"Remove", 'class'=>'confirm')) ?>
+				</td>
+		<?php } ?>
 	</tr>	
 	<?php }} ?>
 	</tbody>

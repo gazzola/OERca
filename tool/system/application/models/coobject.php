@@ -1544,11 +1544,12 @@ class Coobject extends Model
     */
   public function remove_object($cid, $mid, $oid)
   {
+		# remove any postoffice entries associated with this object
+		$this->db->delete('postoffice', array('object_id'=>$oid));
+
 		# remove material objects and related info
 		$this->db->select('id')->from('object_replacements')->where("object_id='$oid'");
-
 		$replacements = $this->db->get();
-
 		if ($replacements->num_rows() > 0) {
 				foreach($replacements->result_array() as $row) {
 								$this->remove_replacement($cid, $mid, $oid, $row['id']);
@@ -1560,14 +1561,15 @@ class Coobject extends Model
 		$this->db->delete('object_comments', array('object_id'=>$oid));
 		$this->db->delete('object_copyright', array('object_id'=>$oid));
 		$this->db->delete('object_log', array('object_id'=>$oid));
-		$this->db->delete('objects', array('id'=>$oid));
 
 		# remove object from filesystem
 		$path = $this->object_path($cid, $mid, $oid);
 		if (!is_null($path)) {
 				$this->ocw_utils->remove_dir(property('app_uploads_path').$path);
 		}
-
+		// These have to stick around so we can find the filename above!
+		$this->db->delete('object_files', array('object_id'=>$oid));
+		$this->db->delete('objects', array('id'=>$oid));
 		return true;
   }
 

@@ -330,19 +330,11 @@ class Admin extends Controller {
 		} else {
 			// view all schools
 			$schools = $this->school->get_schools();
-			$select_box = '<select id="sid" name="sid" width="200px">';
-			$select_box .= '<option value="none">Choose a school</option>';
-			foreach($schools as $s) {
-							$select_box .= '<optgroup label="'.$s->name.'">';
-			}
-			$select_box .= '</select>';
-
 
 			$data = array('title'=>'Admin: Manage Schools ',
 										'section'=>'schools',
 										'tab'=>'',
 										'schools' => $schools);	
-			$data['select_school'] = $select_box;
 
    		$this->layout->buildPage('admin/schools/schools', $data);
 		}
@@ -515,19 +507,29 @@ class Admin extends Controller {
 		* @access  public
 		* @return  void
 		*/
-	public function courses($action='view', $sid=NULL, $cid='')
+	public function courses($action='view', $cid='')
 	{
+		if ($action == 'remove_course') {
 
-		// get all courses
-		$courses = $this->course->get_courses();
+			// remove a course
+			$this->course->remove_course($cid);
+			
+			redirect('admin/courses/view/', 'location');
 
-		$data = array('title'=>'Admin: Manage Courses ',
-									'section'=>'courses',
-									'tab'=>'',
-									'courses' => $courses);	
-		$data['defuser'] = '';
+		} else {
+			
+			// view all courses
+			$courses = $this->course->get_courses();
 
-		$this->layout->buildPage('admin/courses/index', $data);
+			$data = array('title'=>'Admin: Manage Courses ',
+										'section'=>'courses',
+										'tab'=>'',
+										'courses' => $courses);	
+			$data['defuser'] = '';
+
+			$this->layout->buildPage('admin/courses/index', $data);
+
+		}
 	}
 
 	/**

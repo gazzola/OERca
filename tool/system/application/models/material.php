@@ -76,14 +76,19 @@ class Material extends Model
 		# remove material comments 
 		$this->db->delete('material_comments', array('material_id'=>$mid));
 
-		# remove material from db
-    $this->db->delete('materials',array('id'=>$mid, 'course_id'=>$cid));
-
 		# remove material from filesystem
 		$paths = $this->material_path($cid, $mid, true);
 		if (!is_null($paths)) {
 				foreach($paths as $path) { $this->ocw_utils->remove_dir($path); }
 		}
+
+		# The following must be done _after_ removing material from
+		# filesystem so we can find the name to be removed!
+
+		# remove material_files entry 
+		$this->db->delete('material_files', array('material_id'=>$mid));
+		# remove material from db
+    $this->db->delete('materials',array('id'=>$mid, 'course_id'=>$cid));
 
 		return true;
   }

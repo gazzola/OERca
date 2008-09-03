@@ -46,10 +46,43 @@ class Course extends Model
 	}
 
 	/**
+   * remove a course and all the associated data
+	 *
+	 * @access	public
+	 * @param		int	course id
+	 * @param 	boolean
+	 */
+  public function remove_course($cid)
+  {
+		// Prepare to delete everything associated with this course
+		$d = array('course_id' => $cid);
+
+		// Remove all the acl connections with this course (dscribe1, dscribe2, or instructor)
+		$this->db->delete('acl', $d);
+		
+		// Remove all materials associated with this course
+		$this->db->select('id')->from('materials')->where("course_id=$cid");
+		$q = $this->db->get();
+		foreach($q->result_array() as $row) {
+			$this->material->remove_material($cid, $row['id']);
+		}
+
+		// Remove all the course files associated with this course
+		$cdirname = $this->course_path($cid);
+		$this->ocw_utils->remove_dir($cdirname);
+		
+		// remove course_files entry from db
+		$this->db->delete('course_files', array('course_id'=>$cid));
+		
+		// remove course from db
+		$this->db->delete('courses', array('id'=>$cid));
+	}
+	
+	/**
      * add user with the role to the course
 	 *
 	 * @access  public
-	 * @return  array
+	 * @return  boolean
 	 */
   public function add_user($details)
   {
@@ -275,5 +308,24 @@ class Course extends Model
 
       return $digest;
   }
+
+	/**
+   * Return path for course information
+   *
+   * @access  public
+   * @param   int	cid course id
+   * @return  string path name
+   */
+	public function course_path($cid)
+	{
+		# get course directory name
+		$path = property('app_uploads_path');
+		$this->db->select('filename')->from('course_files')->where("course_id=$cid")->order_by('created_on desc')->limit(1);
+		$q = $this->db->get();
+		$r = $q->row();
+		$path .= 'cdir_'.$r->filename;
+		return $path;
+	}
+
 }
 ?>
