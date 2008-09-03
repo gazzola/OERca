@@ -2,7 +2,7 @@
 
   <?php
   $printkey = FALSE; 
-  echo "<pre>"; print_r($courses); echo "</pre>";
+  
   if ($courses) { 
     foreach ($courses as $value) {
       if ($value['num']['total'] > 0) {
