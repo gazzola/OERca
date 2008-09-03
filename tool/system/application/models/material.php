@@ -194,6 +194,7 @@ class Material extends Model
       ON ocw_mimetypes.id = ocw_materials.mimetype_id
       WHERE ocw_materials.course_id = '$cid' $where
       ORDER BY ocw_materials.order";
+
     $q = $this->db->query($sql);
 
     if ($q->num_rows() > 0) {
