@@ -438,6 +438,33 @@ class OCW_user extends Model
 	
 
 	// ----- Courses related functions -----
+	
+			/**
+     * Get instructor of a course by course id
+     *  mbleed 08/29/08
+     * @access  public
+     * @param   string number
+     * @return  string
+     */
+	public function get_course_instructor_by_id($id)
+	{
+		$sql = "SELECT ocw_users.name AS iname
+				FROM ocw_courses, ocw_acl, ocw_users
+				WHERE ocw_courses.id = ocw_acl.course_id
+				AND ocw_acl.user_id = ocw_users.id
+				AND ocw_acl.role = 'instructor'
+				AND ocw_courses.id = $id
+				ORDER BY ocw_users.name ASC";
+		$q = $this->db->query($sql);
+        if ($q->num_rows() > 0) {
+        	$course_instructors = array();
+            foreach($q->result_array() as $row) { 
+        		$course_instructors[] = $row['iname'];    	
+            }
+        }
+		return ($q->num_rows() > 0) ? implode("<br>", $course_instructors) : '';
+	}
+	
   /**
     * Get a user's courses 
     *
@@ -472,6 +499,7 @@ class OCW_user extends Model
         $row['rem'] = $this->get_rem_count($row['cid']);
         $row['statcount'] = $row['total'].'/'.$row['done'].'/'.$row['ask'].'/'.$row['rem'];
         $row['notdone'] = $row['total'] - $row['done'];
+        $row['instructors'] = $this->get_course_instructor_by_id($row['cid']);
         //$this->ocw_utils->dump($row);
         $courses[$row['sname']][$row['cname']][] = $row; 
       }
@@ -499,6 +527,7 @@ class OCW_user extends Model
         $row['rem'] = $this->get_rem_count($row['cid']);
         $row['statcount'] = $row['total'].'/'.$row['done'].'/'.$row['ask'].'/'.$row['rem'];
         $row['notdone'] = $row['total'] - $row['done'];
+        $row['instructors'] = $this->get_course_instructor_by_id($row['cid']);
         //$this->ocw_utils->dump($row);
         $courses['No School Specified']['No Curriculum Specified'][] = $row;
       }
