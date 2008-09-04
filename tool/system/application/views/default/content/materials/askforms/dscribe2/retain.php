@@ -5,10 +5,14 @@ $yes = $accept = $sliders = array();
 $accept['Retain: No Copyright'] = "Do you accept the dScribe's action recommendation to retain this content object because it has <em>no copyright</em>?";
 $accept['Retain: Permission'] = "Do you accept the dScribe's action recommendation to retain this content object because OER has <em>permission</em>?";
 $accept['Retain: Public Domain'] = "Do you accept the dScribe's action recommendation to retain this content object because it is in the <em>public domain</em>?";
+//default actions
+$default_actions = array('None', 'Permission', 'Search', 'Re-Create', 'Commission', 'Fair Use', 'Remove and Annotate');
+foreach ($default_actions as $default_action) $accept[$default_action] = 'The action type is not currently Retain:No Copyright, Retain: Permission, or Retain: Public Domain.  Choose No below to change it.';
 
 $yes['Retain: No Copyright'] = "Please provide additional rationale for why this object has <em>no copyright</em>:";
 $yes['Retain: Permission'] = "Please provide additional rationale for why OER has <em>permission</em> for this object:";
 $yes['Retain: Public Domain'] = "Please provide additional rationale for why this object is in the <em>public domain</em>:";
+foreach ($default_actions as $default_action) $yes[$default_action] = 'The action type is not currently Retain:No Copyright, Retain: Permission, or Retain: Public Domain.  Choose No below to change it.';
 
 foreach($cos as $obj) {
   			$items = $obj['retain'];
@@ -16,6 +20,7 @@ foreach($cos as $obj) {
 			  foreach($items as $item) {
 					if ($item['status']<>'done') {
 ?>
+
 <tr>
 	<!-- first column -->
 	<td valign="top" style="vertical-align:top;"><?=$count?></td>
@@ -34,6 +39,7 @@ foreach($cos as $obj) {
 			<!-- accept rationale? -->
 			<p>
 				<br/><br/>
+
 				<strong><?=$accept[$item['action']]?></strong><br/>
 				<?= form_radio($item['yes_rationale_data']) ?>	&nbsp; Yes&nbsp;
 				<?= form_radio($item['no_rationale_data']) ?>	&nbsp; No&nbsp;
