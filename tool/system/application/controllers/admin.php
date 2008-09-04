@@ -34,7 +34,7 @@ class Admin extends Controller {
     */
 	public function home()
 	{
-		$data = array('title'=>'Admin'); 
+		$data = array('title'=>'Admin', 'section'=>'home'); 
    	$this->layout->buildPage('admin/index', $data);
 	}
 
@@ -292,7 +292,7 @@ class Admin extends Controller {
 			}
 
 			// show add school form
-			$data = array('title'=>'Admin: Manage Courses &rqauo; Add a School');
+			$data = array('title'=>'Admin: Manage Schools &rqauo; Add a School');
 			$this->load->view(property('app_views_path').'/admin/schools/_add_school',$data); 
 
 		} else if ($action=='edit_school') {
@@ -314,7 +314,7 @@ class Admin extends Controller {
 			}
 
 			// show edit school form
-			$data = array('title'=>'Admin: Manage Courses &rqauo; Edit a School',
+			$data = array('title'=>'Admin: Manage Schools &rqauo; Edit a School',
 										'school' => $this->school->get_school($sid));
 			$this->load->view(property('app_views_path').'/admin/schools/_edit_school', $data); 
 			
@@ -366,7 +366,7 @@ class Admin extends Controller {
    			redirect('admin/curriculum/add_curriculum/' . $sid, 'location');
 			}
 
-			// show add school form
+			// show add curriculum form
 			$data = array('title'=>'Admin: Manage Schools &rqauo; Add a Curriculum',
 										'sid' => $sid,
 										'sname' => $this->school->name($sid));
@@ -393,7 +393,7 @@ class Admin extends Controller {
 			}
 
 			// show edit curriculum form
-			$data = array('title'=>'Admin: Manage Courses &rqauo; Edit a School',
+			$data = array('title'=>'Admin: Manage Schools &rqauo; Edit a Curriculum',
 										'sid' => $sid,
 										'curr' => $this->curriculum->get_curriculum($currid));
 			$this->load->view(property('app_views_path').'/admin/schools/_edit_curriculum', $data);
@@ -484,7 +484,7 @@ class Admin extends Controller {
 			}
 
 			// show edit subject form
-			$data = array('title'=>'Admin: Manage Courses &rqauo; Edit a Subject',
+			$data = array('title'=>'Admin: Manage Schools &rqauo; Edit a Subject',
 										'sid' => $sid,
 										'subj' => $this->subject->get_subject($subjid));
 			$this->load->view(property('app_views_path').'/admin/schools/_edit_subject', $data);

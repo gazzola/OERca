@@ -1,3 +1,5 @@
+<?php $this->load->view(property('app_views_path').'/admin/admin_header.php', $data); ?>
+
 <div class="column span-24 first last">
 
   <div id="boxes">
@@ -26,3 +28,5 @@
 	</div>
 
 </div>
+
+<?php $this->load->view(property('app_views_path').'/admin/admin_footer.php', $data); ?>
