@@ -3,7 +3,7 @@
 
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<title>OER Work Tool &raquo; <?php echo $title ?></title>
+	<title>OERca &raquo; <?php echo $title ?></title>
 
 	<?php 
 	   echo style('blueprint/screen.css',array('media'=>"screen, projection"));
@@ -37,7 +37,7 @@
 
 <div id="<?= (isValidUser()) ? 'header':'header_line'?>" class="column span-24 first last">
 	<div class="column span-10 first last">
-	  <a href="<?php echo base_url()?>"><h1>OER Work Tool</h1></a>
+	  <a href="<?php echo base_url()?>"><h1><img src="<?php echo property('app_img').'/OERca.png'?>"></h1></a>
 	</div>
 
 

@@ -3,7 +3,7 @@
 
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<title>OER Work Tool &raquo; Help/FAQ</title>
+	<title>OERca &raquo; Help/FAQ</title>
 
 	<?php 
 	   echo style('blueprint/screen.css',array('media'=>"screen, projection"));
@@ -43,7 +43,7 @@
 
 <div id="mainPage" class="container">
 <div id="header_line">
-    <h1>OER Work Tool</h1>
+    <h1><img src="<?php echo property('app_img').'/OERca.png'?>"></h1>
     <br />
     <h1>Help/FAQ</h1>
 </div>

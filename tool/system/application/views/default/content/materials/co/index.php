@@ -3,7 +3,7 @@
 
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<title>OER Work Tool &raquo; Edit <?php echo $obj['name'] ?></title>
+	<title>OERca &raquo; Edit <?php echo $obj['name'] ?></title>
 <?php	
 echo style('blueprint/screen.css',array('media'=>"screen, projection"));
 echo style('blueprint/print.css',array('media'=>"print"));
