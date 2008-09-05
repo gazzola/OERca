@@ -97,6 +97,7 @@ echo script('mootabs1.2.js');
 			        <th class="sortable-sortEnglishLonghandDateFormat">End Date</th>
 			        <th class="sortable">Curriculum</th>
 			        <th class="sortable">Primary Instructor</th>
+			        <th class="sortable">Instructor(s)</th>
 							<th>&nbsp;</th>
 			    </tr>
 			    </thead>
