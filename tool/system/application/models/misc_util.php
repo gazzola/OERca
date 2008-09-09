@@ -68,7 +68,7 @@ class Misc_Util extends Model
     }
     
     $this->db->select("id");
-    $this->db->where($full_col_name, $value_text);
+    $this->db->where($short_col_name, $value_text);
     $q = $this->db->get($short_table_name);
     if ($q->num_rows() > 0) {
       $row = $q->row();
