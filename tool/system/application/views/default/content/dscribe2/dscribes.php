@@ -1,7 +1,8 @@
 <?php
 $select_box = '<select id="cid" name="cid" onchange="document.choosecourse.submit();" width="200px">';
 $select_box .= '<option value="none">Choose a course</option>';
-foreach($courses as $school => $curriculum) {
+if ($courses<>null) {
+    foreach($courses as $school => $curriculum) {
 				$select_box .= '<optgroup label="'.$school.'">';
 				foreach($curriculum as $crse) {
 					foreach($crse as $c) {
@@ -9,8 +10,9 @@ foreach($courses as $school => $curriculum) {
 									$select_box .= '<option value="'.$c['id'].'" '.$sel.'>'.
 																	$c['number'].' '.$c['title'].'</option>';
 					}
+        }
+		    $select_box .= '</optgroup>';
     }
-		$select_box .= '</optgroup>';
 } 
 $select_box .= '</select>';
 

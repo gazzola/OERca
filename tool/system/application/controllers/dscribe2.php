@@ -92,7 +92,7 @@ class Dscribe2 extends Controller {
 
 		} else {
 			$this->data['title'] = 'dScribe2 &raquo; Manage Courses'; 
-			$this->data['courses'] = $this->course->get_courses();
+			$this->data['courses'] = $this->ocw_user->get_courses(getUserProperty('id'));
     	$this->layout->buildPage('dscribe2/courses', $this->data);
 		}
 	}
@@ -123,7 +123,7 @@ class Dscribe2 extends Controller {
 
 		$this->data['cid'] = $cid;
 		$this->data['course'] = ($cid<>'none') ? $this->course->get_course($cid) : null;
-		$this->data['courses'] = $this->course->get_courses();
+		$this->data['courses'] = $this->ocw_user->get_courses(getUserProperty('id'));
 		$this->data['dscribes'] = ($cid<>'none') ? $this->ocw_user->dscribes($cid) : null; 
 		$this->data['all_dscribes'] = $this->ocw_user->getUsers('email, name, user_name',null,'role="dscribe1"'); 
 		$this->data['title'] = 'dScribe2 &raquo; Manage dScribes'; 
