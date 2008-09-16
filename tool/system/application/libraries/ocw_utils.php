@@ -533,5 +533,23 @@ class OCW_utils {
    	}
    	return $file_details;
   }
+
+	/**
+		* Log a message to the apache error log
+		*
+		* @access public
+		* @param string level - message level indicator (i.e. 'error', 'warn', 'info', 'debug')
+		* @param string message - message to be logged
+		*/
+	public function log_to_apache($level, $message)
+	{
+		$now = date("D M j G:i:s Y");
+		$message = "[" . $now . "] [" . $level . "] " . $message . "\n";
+		$stderr = @fopen('php://stderr', 'w');
+		fwrite($stderr, $message);
+		fclose($stderr);
+	}
+
 }
+
 ?>

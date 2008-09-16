@@ -516,6 +516,92 @@ class Admin extends Controller {
 			
 			redirect('admin/courses/view/', 'location');
 
+		} else if ($action == 'manage_users') {
+
+			$r = true;
+			if (isset($_POST['remove']) || isset($_POST['add'])) {
+				if (isset($_POST['remove'])) {
+					unset($_POST['remove']);
+				
+					$uid = $_POST['rem_id'];
+					if ($uid != "none") {
+						$role = getUserPropertyFromId($uid, 'role');
+						$r = $this->course->remove_user($cid, $uid, $role);
+					} else $r = "Select a user";
+
+				} else if (isset($_POST['add'])) {
+
+					unset($_POST['add']);
+					$uid = $_POST['add_id'];
+					if ($uid != "none") {
+						$role = getUserPropertyFromId($uid, 'role');
+						$d = array('user_id'=>$uid, 'role'=>$role, 'course_id'=>$cid);
+						$r = $this->course->add_user($d);
+					} else $r = "Select a user";
+				}
+			
+				// Flash only error messages
+				if ($r !== true)
+					flashMsg($r);
+				redirect('admin/courses/manage_users/' . $cid);
+			}
+			
+			// get list of users (acl entries) already associated with the course
+			$cacls = $this->course->get_course_users($cid);
+
+			// get list of all users
+			$users = $this->ocw_user->getUsers('id, name, user_name, role');
+
+			// filter out users that are already associated with the course
+			$remove_list = array();
+			$add_list = array();
+
+			$rem_select_box = '<select id="rem_id" name="rem_id" width="200px">';
+			$rem_select_box .= '<option value="none">Remove a user...</option>';
+			$add_select_box = '<select id="add_id" name="add_id" width="200px">';
+			$add_select_box .= '<option value="none">Add a user...</option>';
+
+			$usertype = array("dscribe1", "dscribe2", "instructor");
+			
+			// Note that this loops through the list multiple times, but we
+			// only go to the DB once (well, once for users and once for acls)
+			foreach($usertype as $t) {
+				$add_select_box .= '<optgroup label="' . $t . '">';
+				$rem_select_box .= '<optgroup label="' . $t . '">';
+				if (!is_null($users)) {
+					foreach($users as $u) {
+						if ($u['role'] != $t) continue;
+						$associated = false;
+						if (!is_null($cacls)) {
+							foreach($cacls as $a) {
+								if ($a['user_id'] == $u['id']) {
+									$rem_select_box .= '<option value="'. $u['id'] . '">' .
+											$u['name'] . ' (' . $u['user_name'] . ')</option>';
+									$remove_list[] = $u;
+									$associated = true;
+									break;
+								}
+							}
+						}
+						if ($associated === false) {
+							$add_select_box .= '<option value="'. $u['id'] . '">' .
+									$u['name'] . ' (' . $u['user_name'] . ')</option>';
+							$add_list[] = $u;
+						}
+					}
+				}
+				$add_select_box .= '</optgroup>';
+				$rem_select_box .= '</optgroup>';
+			}
+			$data = array('title' => 'Admin: Manage Course Users ',
+										'section' => 'courses',
+										'tab' => '',
+										'rem_box' => $rem_select_box,
+										'add_box' => $add_select_box,
+										'cid' => $cid,
+										'ctitle' => $this->course->course_title($cid));
+			$this->load->view(property('app_views_path').'/courses/_manage_course_users', $data);
+			
 		} else {
 			
 			// view all courses
