@@ -9,9 +9,21 @@
 <p class="error">No materials found for this course</p>
 
 <?php } else { 
-
+    $printkey = TRUE;
+    if ($printkey == TRUE) { // print the key only if we have COs ?>
+      <div class="column span-24 first last">
+        <h2>
+          <img src="<?= site_url("/home/make_stat_key/rem") ?>" class="prog-key"> Not Cleared
+          &nbsp; &nbsp; &nbsp;
+          <img src="<?= site_url("/home/make_stat_key/ask") ?>" class="prog-key"> In Progress
+          &nbsp; &nbsp; &nbsp;
+          <img src="<?= site_url("/home/make_stat_key/done") ?>" class="prog-key"> Cleared
+        </h2>
+      </div>
+<?php   } 
  foreach($materials as $category => $cmaterial) { 
-?> 
+?>
+ 
 <h2 style="clear:both"><?=$category?></h2>
 <?php $mat_form_attr = array( 'id' => 'mat_form', 'name' => 'mat_form'); ?>
 
