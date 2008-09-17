@@ -368,7 +368,10 @@ class Material extends Model
         $cm['mask'] = $status['recaction'] + $status['actaken'];
         $cm['mtotal'] = $status['done']  + $status['notdone'] + $status['recaction'] + $status['actaken'];
         $cm['mdash'] = 0;     //  if date modified is NULL, show dashes   OERDEV-147
-        if ($cm['modified_on'] == 0 && $cm['embedded_co'] != 0) $cm['mdash'] = 1;
+        if ($cm['modified_on'] == '0000-00-00 00:00:00') $cm['mdash'] = 1; // material is brand new;
+        if ($cm['modified_on'] <> '0000-00-00 00:00:00' && $cm['embedded_co'] == 0) $cm['mdash'] = 2; // edited and co=no
+        if ($cm['modified_on'] <> '0000-00-00 00:00:00' && $cm['embedded_co'] == 1) $cm['mdash'] = 3; // edited and co=yes
+
 
         //  OERDEV-140 - let's see if we can make a progress bar green with no CO's
 	if ($cm['embedded_co'] == 0) $cm['mtotal'] = 1000000;
@@ -431,7 +434,10 @@ class Material extends Model
           $tmp[$order]['mask'] = $status['recaction'] + $status['actaken'];
           $tmp[$order]['mtotal'] = $status['done']  + $status['notdone'] + $status['recaction'] + $status['actaken'];
           $tmp[$order]['mdash'] = 0;     //  if date modified is NULL, show dashes   OERDEV-147
-          if ($tmp[$order]['modified_on'] == 0 && $cm['embedded_co'] != 0) $tmp[$order]['mdash'] = 1;
+          if ($tmp[$order]['modified_on'] == '0000-00-00 00:00:00') $tmp[$order]['mdash'] = 1; // material is brand new;
+          if ($tmp[$order]['modified_on'] <> '0000-00-00 00:00:00' && $tmp[$order]['embedded_co'] == 0) $tmp[$order]['mdash'] = 2; // edited and co=no
+          if ($tmp[$order]['modified_on'] <> '0000-00-00 00:00:00' && $tmp[$order]['embedded_co'] == 1) $tmp[$order]['mdash'] = 3; // edited and co=yes
+
 
           //  OERDEV-140 - let's see if we can make a progress bar green with no CO's
           if ($cm['embedded_co'] == 0) $tmp[$order]['mtotal'] = 1000000;

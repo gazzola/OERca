@@ -109,10 +109,14 @@ class Home extends Controller {
     */
   public function material_bar($total,$done,$ask,$rem,$dash)
   {
-	if ($dash == 0 ) {
+		# red,0=3, green,0=2
+  	if ($dash == 0 || $dash == 3) {
             $this->oer_progbar->build_prog_bar($total,$done,$ask,$rem, 150, 20, 8);
             $this->oer_progbar->get_prog_bar();
-        }
+    } elseif($dash == 2) {
+            $this->oer_progbar->build_prog_bar(1000000,0,0,0, 150, 20, 8);
+            $this->oer_progbar->get_prog_bar();
+    }
   }
 
 }

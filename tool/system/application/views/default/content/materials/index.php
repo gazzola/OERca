@@ -99,7 +99,7 @@
     
   		<td class="options">
     		<? $params_url = $material['mtotal'].'/'.$material['mdone'].'/'.$material['mask'].'/'.$material['mrem'].'/'.$material['mdash'];
-		if ($material['mdash'] > 0) { ?>
+		if ($material['mdash'] == 1) { ?>
 			<span style="font-size: 13px;"><center>--</center></span>
 		<?}
 
