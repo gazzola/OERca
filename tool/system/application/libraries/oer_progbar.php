@@ -284,7 +284,7 @@ class OER_progbar {
 
     // if no embedded objects and material is "cleared"
     if ($total_objects == 1000000) {
-        $done_x2 = $done_x1 + ($this->_set_prog_width(1000000, $sludge));
+        $done_x2 = $done_x1 + ($this->_set_prog_width(1000000, $sludge, 0));
         imagefilledrectangle($this->im, $done_x1, $y1, $done_x2, $y2, $done_color);
         imagettftext($this->im,$pointsize,0,$done_x1+(($done_x2-$done_x1-4)/2),$y2-3,
                      $text_color, $fontfile, 0);
