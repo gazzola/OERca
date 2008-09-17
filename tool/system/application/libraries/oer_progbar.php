@@ -253,6 +253,8 @@ class OER_progbar {
     $tot_color = imagecolorallocate($this->im, $this->tot_rgb[0],
       $this->tot_rgb[1], $this->tot_rgb[2]);
 
+	//transparency
+	imagecolortransparent($this->im, $tot_color);
       
     // fill the canvas with the a white color
     imagefill ($this->im, 0, 0, $tot_color);
@@ -295,21 +297,28 @@ class OER_progbar {
                         $text_color, $fontfile, $zero_objects);
 
     } else{
+    		$fudge_amount = 0;
            // figure out if we have to fudge the width for small "counts"  - bdr
            if ($rem_objects > 0)
-	      if (($rem_objects / $this->total_objects) < .11) {
+	      if (round(($rem_objects / $this->total_objects),2) <= .10) {
                   $rem_fudge = 1;
                   $fudge = $fudge + 1;
+                  $rem_fudge_amount = ($this->width * .10) - round($this->width * $rem_objects / $this->total_objects);
+                  $fudge_amount += $rem_fudge_amount;
                }
            if ($ask_objects > 0)
-	      if (($ask_objects / $this->total_objects) < .11) {
+	      if (round(($ask_objects / $this->total_objects),2) <= .10) {
                   $ask_fudge = 1;
                   $fudge = $fudge + 1;
+                  $ask_fudge_amount = ($this->width * .10) - round($this->width * $ask_objects / $this->total_objects);
+                  $fudge_amount += $ask_fudge_amount;
               }
            if ($done_objects > 0)
-	      if (($done_objects / $this->total_objects) < .11) {
+	      if (round(($done_objects / $this->total_objects),2) <= .10) {
                   $done_fudge = 1;
                   $fudge = $fudge + 1;
+                  $done_fudge_amount = ($this->width * .10) - round($this->width * $done_objects / $this->total_objects);
+                  $fudge_amount += $done_fudge_amount;
               }
 
            // figure out whether we nedd to save 10% or 20 % of width for small count
@@ -324,7 +333,7 @@ class OER_progbar {
              if (($rem_fudge) && ($rem_objects != $this->total_objects)) {
                 $rem_x2 = ($rem_x1 + round($this->width * .10));
              } else {
-                $rem_x2 = $rem_x1 + ($this->_set_prog_width($rem_objects, $sludge));
+                $rem_x2 = $rem_x1 + ($this->_set_prog_width($rem_objects, $sludge, $fudge_amount));
              }
              imagefilledrectangle($this->im, $rem_x1, $y1, $rem_x2, $y2, $rem_color);
              $ask_x1 = $rem_x2;
@@ -336,7 +345,7 @@ class OER_progbar {
              if (($ask_fudge) && ($ask_objects != $this->total_objects)) {
                 $ask_x2 = ($ask_x1 + round($this->width * .10));
              } else {
-                 $ask_x2 = $ask_x1 + ($this->_set_prog_width($ask_objects, $sludge));
+                 $ask_x2 = $ask_x1 + ($this->_set_prog_width($ask_objects, $sludge, $fudge_amount));
              }
              imagefilledrectangle($this->im, $ask_x1, $y1, $ask_x2, $y2, $ask_color);
              $done_x1 = $ask_x2;
@@ -345,9 +354,10 @@ class OER_progbar {
 
            if ($done_objects > 0) {
              if (($done_fudge) && ($done_objects != $this->total_objects)) {
+           
 		$done_x2 = ($done_x1 + round($this->width * .10));
              } else {
-                 $done_x2 = $done_x1 + ($this->_set_prog_width($done_objects, $sludge));
+                 $done_x2 = $done_x1 + ($this->_set_prog_width($done_objects, $sludge, $fudge_amount));
                }	
              imagefilledrectangle($this->im, $done_x1, $y1, $done_x2, $y2, $done_color);
              $tot_x1 = $done_x2;
@@ -445,16 +455,17 @@ class OER_progbar {
    * @param   int total number of objects, int number of objects 
    * @return  int width of the progress bar
    */
-  private function _set_prog_width($num_objects, $sludge)
+  private function _set_prog_width($num_objects, $sludge, $fudge_amount)
   {
 	$bob1 = ($num_objects / $this->total_objects);
 	$bob2 = ((100-$sludge) / 100);
-
-	if ($bob1 > $bob2) return(round(($this->width)  * ($bob2)));
+	if ($bob1 > $bob2) {
+			return(round(($this->width)  * ($bob2)));
+	}
         else {
-	    $sfudge = ($sludge/10);
-	    $awidth = (($this->width + 30) / 150) * 4;
-	    $swidth = (($this->width) * ($num_objects / $this->total_objects)) - ($sfudge * $awidth);
+        $already_fudged = $sludge/10;
+        $need_to_fudge_here = 3 - $already_fudged;
+	    $swidth = (($this->width) * ($num_objects / $this->total_objects)) - ($fudge_amount/$need_to_fudge_here);
 	    return(round($swidth));
 	}
   }
