@@ -4,23 +4,16 @@
 
 <input type="hidden" id="cid" name="cid" value="<?=$cid?>" />
 
-<?php if ($materials == null) { ?>
+<?php if ($materials == null) { 
+	$printkey = FALSE;	
+?>
 
 <p class="error">No materials found for this course</p>
 
 <?php } else { 
     $printkey = TRUE;
-    if ($printkey == TRUE) { // print the key only if we have COs ?>
-      <div class="column span-24 first last">
-        <h2>
-          <img src="<?= site_url("/home/make_stat_key/rem") ?>" class="prog-key"> Not Cleared
-          &nbsp; &nbsp; &nbsp;
-          <img src="<?= site_url("/home/make_stat_key/ask") ?>" class="prog-key"> In Progress
-          &nbsp; &nbsp; &nbsp;
-          <img src="<?= site_url("/home/make_stat_key/done") ?>" class="prog-key"> Cleared
-        </h2>
-      </div>
-<?php   } 
+    }
+
  foreach($materials as $category => $cmaterial) { 
 ?>
  
@@ -39,6 +32,16 @@
       <a href="javascript:void(0);" onClick="SetAllCheckBoxes('mat_form', 'select_material[]', false);" >None</a>
     </span>
   </div>
+  
+<?php
+      if ($printkey == TRUE) { // print the key only if we have COs ?>
+      <div style="text-align: right; font-size: 77%; font-weight: bolder;"><br>
+          <img src="<?= site_url("/home/make_stat_key/rem") ?>" class="prog-key"> Not Cleared
+          &nbsp;
+          <img src="<?= site_url("/home/make_stat_key/ask") ?>" class="prog-key"> In Progress
+          &nbsp;
+          <img src="<?= site_url("/home/make_stat_key/done") ?>" class="prog-key"> Cleared
+      </div>
 
   <table class="sortable-onload-7 rowstyle-alt no-arrow" style="clear: both; margin-bottom: 0px;">
   	<thead>
