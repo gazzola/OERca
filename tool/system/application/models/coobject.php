@@ -122,6 +122,8 @@ class Coobject extends Model
 	{
 		$objects = array();
 		$where = "material_id=$mid";
+		// retrieve COs sorted by location
+		$sort_order = "CAST(location AS UNSIGNED) ASC, location ASC, modified_on ASC";
 
 		$action_type = ($action_type == 'Any') ? '' : $action_type;
 
@@ -169,7 +171,7 @@ class Coobject extends Model
 			}
 		}
 
-		$this->db->select($details)->from('objects')->where($where);
+		$this->db->select($details)->from('objects')->where($where)->order_by($sort_order);
 		$q = $this->db->get();
 
 		if ($q->num_rows() > 0) {
