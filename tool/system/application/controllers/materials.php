@@ -164,15 +164,19 @@ class Materials extends Controller {
 
 
 	// edit content objects	
-	public function edit($cid, $mid, $oid=0, $view='new', $subtab='')
+	public function edit($cid, $mid, $oid=0, $view='all', $subtab='')
 	{
 	  $course = $this->course->get_course($cid); 
 		$material =  $this->material->materials($cid,$mid,true);
 		$stats = $this->coobject->object_stats($cid, $mid);
 
+		if($stats['data']['num_new'] > 0) {
+		  $view = 'new';
+		}
+		
 		$view = (!in_array($view, array('all','new','ask:orig','fairuse','search','retain:pd',
 											'retain:perm','ask:rco','uncleared', 'permission','commission', 'retain:nc','replace',
-											'recreate','remove','cleared'))) ? 'new' : $view;
+											'recreate','remove','cleared'))) ? 'all' : $view;
 
 		// get correct view if an object id is provided
 		if ($oid != 0)  {
