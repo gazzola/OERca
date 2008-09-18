@@ -261,7 +261,7 @@ class Materials extends Controller {
 
 		/* info for queries sent to instructor */
 		if ($questions_to=='instructor' || ($role == 'instructor' && $questions_to=='') || $role=='') {
-				$view = (!in_array($view, array('general', 'provenance','replacement','done'))) ? 'general' : $view;
+				//$view = (!in_array($view, array('general', 'provenance','replacement','done'))) ? 'general' : $view; //commented out mbleed oerdev-168
 
 				$prov_objects =  $this->coobject->coobjects($mid,'','Ask'); // objects with provenace questions
 				$repl_objects =  $this->coobject->replacements($mid,'','','Ask'); // objects with replacement questions
@@ -315,6 +315,12 @@ class Materials extends Controller {
 										$num_obj++;
 						}
 				}
+				
+				//added this to check for objs and set default based on rules defined in OERDEV-168 mbleed
+				if ($num_prov > 0) $default_ins_view = 'provenance';
+				elseif ($num_repl > 0) $default_ins_view = 'replacement';
+				else $default_ins_view = 'done';
+				$view = (!in_array($view, array('general', 'provenance','replacement','done'))) ? $default_ins_view : $view;
 				
 				$data['view'] = $view; 
 				
