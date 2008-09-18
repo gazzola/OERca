@@ -164,13 +164,13 @@ class Materials extends Controller {
 
 
 	// edit content objects	
-	public function edit($cid, $mid, $oid=0, $view='all', $subtab='')
+	public function edit($cid, $mid, $oid=0, $view='', $subtab='')
 	{
 	  $course = $this->course->get_course($cid); 
 		$material =  $this->material->materials($cid,$mid,true);
 		$stats = $this->coobject->object_stats($cid, $mid);
 
-		if($stats['data']['num_new'] > 0) {
+		if(($stats['data']['num_new'] > 0) && $view == '') {
 		  $view = 'new';
 		}
 		
