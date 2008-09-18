@@ -1266,6 +1266,7 @@ class Coobject extends Model
 
 		// indicate in materials table that content objects exist
 		$this->db->update('materials',array('embedded_co'=>'1'),"id=$mid");
+		$this->db->update('materials',array('modified_on'=>date('Y-m-d h:i:s')),"id=$mid");
 
 		// add  questions and comments
 		if ($question <> '') {
