@@ -433,7 +433,7 @@ var Rules = {
 				 	orig_q_ap.setrole('dscribe2');
 				 	orig_q_ap.show();
 					var el = $('orig_q_addpanel');
-					window.scrollTo(el.getLeft(), el.getTop());
+					//window.scrollTo(el.getLeft(), el.getTop());
 				}
 			} else {
 			   if ($('ask_dscribe2_yes')) { 
