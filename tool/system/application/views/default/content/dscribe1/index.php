@@ -35,6 +35,7 @@
             <?=   anchor(site_url("courses/edit_course_info/{$value['id']}").'?TB_iframe=true&height=675&width=875','Edit Info &raquo;',array('style'=>'font-size:10px','class'=>'smoothbox','title'=>'Edit Course')) ?>
             </span>
 	    <br>
+	    <a class="prog-link" href="<?php echo site_url("materials/home/{$value['id']}"); ?>">
             <img src="<?= site_url("/home/make_bar/$params_url") ?>" 
               alt="Progress Bar: 
               Total Objects=<?=$value['num']['total'] ?>
@@ -42,6 +43,7 @@
               Objects in progress=<?=$value['num']['ask'] ?> 
               Remaining Objects=<?=$value['num']['rem'] ?>"
               class="prog-bar">
+           </a>
            </div>
          </a>
          </div>
