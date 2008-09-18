@@ -11,7 +11,14 @@ function valid_recommendation(oid,recommendation)
 var Rules = {
 	'.confirm' : function(element) {
 		element.onclick = function() {
-			var con = confirm('Are you sure?');
+			var conf_prompt;
+			var cp_attr_node = this.getAttributeNode("customprompt");
+			if (cp_attr_node && cp_attr_node.specified) {
+				conf_prompt = cp_attr_node.value;
+			} else {
+				conf_prompt = "Are you sure?";
+			}
+			var con = confirm(conf_prompt);
 			return con;
 		}
 	},

@@ -50,7 +50,7 @@
 				<td>
     		<?php echo anchor(site_url("admin/users/remove_user/$tab/".$user['id']),  
 												 '<img src="'.property('app_img').'/cross.png" title="Remove '.$tab.'" />',
-            							array('title'=>"Remove $tab", 'class'=>'confirm'))?>
+            							array('customprompt'=>"You are about to completely remove $tab {$user['name']} ({$user['email']}) from the system.  ARE YOU SURE???", 'title'=>"Remove $tab", 'class'=>'confirm'))?>
 			</tr>
 		<?php } ?>
 		</tbody>

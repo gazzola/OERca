@@ -34,7 +34,7 @@
 							<td>
 								<?php echo anchor(site_url("admin/curriculum/remove_curriculum/$sid/$curr->id"),	
 								'<img src="'.property('app_img').'/cross.png" title="Remove " />',
-									array('title'=>"Remove", 'class'=>'confirm'))?>
+									array('customprompt'=>"You are about to delete curriculum $curr->name ($curr->description).  ARE YOU SURE???", 'title'=>"Remove", 'class'=>'confirm'))?>
 							</td>	
 						</tr>
 		<?php } ?>
@@ -76,7 +76,7 @@
 							<td>
 								<?php echo anchor(site_url("admin/subjects/remove_subject/$sid/$subj->id"),	
 									'<img src="'.property('app_img').'/cross.png" title="Remove " />',
-										array('title'=>"Remove", 'class'=>'confirm'))?>
+										array('customprompt'=>"You are about to delete subject $subj->subj_code ($subj->subj_desc).  ARE YOU SURE???", 'title'=>"Remove", 'class'=>'confirm'))?>
 							</td>	
 						</tr>
 		<?php } ?>
