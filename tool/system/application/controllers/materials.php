@@ -977,12 +977,15 @@ class Materials extends Controller {
 					$rep_filepath=$object_filepath."/".$object_filename."_rep".$rep_extension;
 					$this->zip->read_file(getcwd().'/uploads/'.$rep_filepath);
 				}
-			}
-		
-			// Download the file to your desktop. Name it "SITENAME_IMSCP.zip"
-			$this->zip->download($name.'_RCOs.zip');
+				// Download the file to your desktop. Name it "SITENAME_IMSCP.zip"
+				$this->zip->download($name.'_RCOs.zip');
 			
-   	      	$this->zip->clear_data(); // clear cached data
+				$this->zip->clear_data(); // clear cached data
+			} else {
+					$msg = 'There are no Replacement COs for this material';
+					flashMsg($msg);
+					redirect("materials/edit/$cid/$mid", 'location');
+			}
 		}
 		
 		
