@@ -64,7 +64,7 @@ echo script('ocw_tool.js');
 						</center>
 			      <br style="clear:both"/>
 						<small>
-			      	<a href="<?=site_url("materials/remove_object/$cid/$mid/{$obj['id']}/original")?>" title="delete content object" style="text-align: center" class="confirm" target="_top">Delete content object &raquo;</a>
+			      	<a href="<?=site_url("materials/remove_object/$cid/$mid/{$obj['id']}/original")?>" title="delete content object" style="text-align: center" customprompt="You are about to permanently delete this Content Object. ARE YOU SURE?" class="confirm" target="_top">Delete content object &raquo;</a>
 						</small>
 			    </li>
 			
@@ -82,7 +82,7 @@ echo script('ocw_tool.js');
 			     	<br style="clear:both"/>
 						<small>
 						<?php if ($x) { $r = $this->coobject->replacements($mid,$obj['id']); ?>
-							<a href="<?=site_url("materials/remove_object/$cid/$mid/{$obj['id']}/replacement/{$r[0]['id']}")?>" style="text-align: center" title="delete replacement objects" class="confirm" target="_top">Delete &raquo;</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+							<a href="<?=site_url("materials/remove_object/$cid/$mid/{$obj['id']}/replacement/{$r[0]['id']}")?>" style="text-align: center" title="delete replacement object" customprompt="You are about to permanently delete this Replacement Content Object. ARE YOU SURE?" class="confirm" target="_top">Delete &raquo;</a>&nbsp;&nbsp;|&nbsp;&nbsp;
 						<?php } ?>
 			      		<a href="#upload" style="text-align: center" title="upload replacements">Upload &raquo;</a>&nbsp;&nbsp;
 			      		<?php if ($x) { ?>

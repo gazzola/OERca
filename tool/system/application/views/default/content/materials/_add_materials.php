@@ -97,6 +97,7 @@ if (isset($flash) AND $flash!='') {
 		<input type="hidden" name="ctools_url" value="" />
 		<input type="hidden" name="mimetype_id" value="6" />
 		<input type="hidden" name="tag_id" value="15" />
+		<input type="hidden" name="embedded_co" value="1" />
 		
 		
 		<div class="formLabel">Author: (required)</div>

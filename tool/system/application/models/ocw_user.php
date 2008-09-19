@@ -224,6 +224,8 @@ class OCW_user extends Model
 		($where != null) ? $this->db->where($where) :'';
 		
 		($limit != null ? $this->db->limit($limit['start'], $limit['end']) : '');
+		
+		$this->db->orderby('users.name');
         
 		$q = $this->db->get();
 
@@ -594,13 +596,31 @@ class OCW_user extends Model
     */
   public function set_relationship($d1_uid, $d2_uid, $action='assign')
   {
-			$d = array('dscribe2_id'=>$d2_uid, 'dscribe1_id'=>$d1_uid);
+		$d = array('dscribe2_id'=>$d2_uid, 'dscribe1_id'=>$d1_uid);
 		if ($action=='assign') {
-				$this->db->insert('dscribe2_dscribe1',$d);
+				// Don't create a duplicate relationship
+				if (!$this->has_relationship($d1_uid, $d2_uid))
+					$this->db->insert('dscribe2_dscribe1',$d);
 		} else {
 				$this->db->delete('dscribe2_dscribe1',$d);
 		}
 		return true;
+  }
+
+  /**
+    * Check to see if a dscribe2_dscribe1 relationship already exists 
+    *
+    * @access  public
+    * @param   int	d1_uid dscribe1 user id
+    * @param   int	d2_uid dscribe2 user id
+    * @return  boolean
+    */
+  public function has_relationship($d1_uid, $d2_uid)
+  {
+  	$where = array('dscribe1_id'=>$d1_uid, 'dscribe2_id'=>$d2_uid);
+  	$this->db->select('*')->from('dscribe2_dscribe1')->where($where);
+  	$q = $this->db->get();
+		return ($q->num_rows() > 0) ? true : false;
   }
 
   /**

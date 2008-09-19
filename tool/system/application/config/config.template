@@ -12,9 +12,9 @@
 |
 */
 if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']=='on') {
-		$config['base_url']	= "https://{$_SERVER['HTTP_HOST']}/oer/";
+		$config['base_url']	= "https://{$_SERVER['HTTP_HOST']}/@OERTOP@/";
 } else {
-		$config['base_url']	= "http://{$_SERVER['HTTP_HOST']}/oer/";
+		$config['base_url']	= "http://{$_SERVER['HTTP_HOST']}/@OERTOP@/";
 }
 
 /*
@@ -275,6 +275,16 @@ $config['sess_match_useragent']		= FALSE;
 $config['cookie_prefix']	= "";
 $config['cookie_domain']	= "";
 $config['cookie_path']		= "/";
+
+/*
+|--------------------------------------------------------------------------
+| Cosign cookie Related Variables
+|--------------------------------------------------------------------------
+|
+| 'cosign_cookie_name' = Name of the Cosign session cookie
+|
+*/
+$config['cosign_cookie_name']	= "";
 
 /*
 |--------------------------------------------------------------------------

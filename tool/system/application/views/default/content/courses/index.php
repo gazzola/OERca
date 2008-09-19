@@ -12,6 +12,19 @@
 
 <h2><?= $school ?></h2>
 <p><em>Note: Hold down the shift key to select multiple columns to sort</em></p>
+
+<?php
+    $printkey = TRUE;
+    if ($printkey == TRUE) { // print the key only if we have COs ?>
+      <div style="text-align: right; font-size: 77%; font-weight: bolder;">
+          <img src="<?= site_url("/home/make_stat_key/rem") ?>" class="prog-key"> Not Cleared
+          &nbsp;
+          <img src="<?= site_url("/home/make_stat_key/ask") ?>" class="prog-key"> In Progress
+          &nbsp;
+          <img src="<?= site_url("/home/make_stat_key/done") ?>" class="prog-key"> Cleared
+      </div>
+  <?php } ?>
+
 <table class="sortable-onload-1 rowstyle-alt no-arrow">
     <thead>
     <tr>
@@ -38,8 +51,11 @@
 			<br/>
 			<span style="font-size:9px; clear:both; margin-top:20px;">
 			<?=
-				anchor(site_url("courses/edit_course_info/{$c['id']}").'?TB_iframe=true&height=600&width=850','Edit Info &raquo;',array('class'=>'smoothbox','title'=>'Edit Course'))
+				anchor(site_url("courses/edit_course_info/{$c['id']}").'?TB_iframe=true&height=600&width=850','Edit Info &raquo;',array('class'=>'smoothbox','title'=>'Edit course information'))
 			?>
+			<?php if ((getUserProperty('role') == 'admin')) { ?>
+			 <?=anchor(site_url("admin/courses/manage_users/{$c['id']}").'?TB_iframe=true&height=200&width=600','Manage Users', array('class'=>'smoothbox','title'=>'Manage course users')) ?>
+			<?php } ?>
 			</span>
 		</td>
     <td><?=mdate('%d %M, %Y',mysql_to_unix($c['start_date']))?></td>
@@ -68,7 +84,7 @@
 				<td>
 					<?php echo anchor(site_url("admin/courses/remove_course/".$c['id']),	
 						'<img src="'.property('app_img').'/cross.png" title="Remove course and all its materials" />',
-							array('title'=>"Remove", 'class'=>'confirm')) ?>
+							array('customprompt'=>"You are about to COMPLETELY delete course ". $c['number']. " " . $c['title'] . " and ALL its related materials.  ARE YOU REALLY SURE ABOUT THAT???", 'title'=>"Remove", 'class'=>'confirm')) ?>
 				</td>
 		<?php } ?>
 	</tr>	

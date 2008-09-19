@@ -4,20 +4,26 @@
 
 <input type="hidden" id="cid" name="cid" value="<?=$cid?>" />
 
-<?php if ($materials == null) { ?>
+<?php if ($materials == null) { 
+	$printkey = FALSE;	
+?>
 
 <p class="error">No materials found for this course</p>
 
 <?php } else { 
+    $printkey = TRUE;
+    }
 
  foreach($materials as $category => $cmaterial) { 
-?> 
+?>
+ 
 <h2 style="clear:both"><?=$category?></h2>
 <?php $mat_form_attr = array( 'id' => 'mat_form', 'name' => 'mat_form'); ?>
 
 <?php echo form_open("materials/manipulate/$cid", $mat_form_attr) ?>
   <div class="column span-7 firstlast">
-    <input type="submit" name="delete" id="delete" value="Delete" class="confirm">
+    <input type="submit" name="delete" id="delete" value="Delete" class="confirm"
+					customprompt="You are about to permanently delete ALL the selected materials. ARE YOU SURE?">
     <input type="submit" name="download" id="download" value="Download"> <br />
     <span>
       Select:
@@ -27,6 +33,16 @@
       <a href="javascript:void(0);" onClick="SetAllCheckBoxes('mat_form', 'select_material[]', false);" >None</a>
     </span>
   </div>
+  
+<?php
+      if ($printkey == TRUE) { // print the key only if we have COs ?>
+      <div style="text-align: right; font-size: 77%; font-weight: bolder;"><br>
+          <img src="<?= site_url("/home/make_stat_key/rem") ?>" class="prog-key"> Not Cleared
+          &nbsp;
+          <img src="<?= site_url("/home/make_stat_key/ask") ?>" class="prog-key"> In Progress
+          &nbsp;
+          <img src="<?= site_url("/home/make_stat_key/done") ?>" class="prog-key"> Cleared
+      </div>
 
   <table class="sortable-onload-7 rowstyle-alt no-arrow" style="clear: both; margin-bottom: 0px;">
   	<thead>
@@ -84,7 +100,7 @@
     
   		<td class="options">
     		<? $params_url = $material['mtotal'].'/'.$material['mdone'].'/'.$material['mask'].'/'.$material['mrem'].'/'.$material['mdash'];
-		if ($material['mdash'] > 0) { ?>
+		if ($material['mdash'] == 1) { ?>
 			<span style="font-size: 13px;"><center>--</center></span>
 		<?}
 
@@ -114,7 +130,8 @@
       &nbsp;
       <a href="javascript:void(0);" onClick="SetAllCheckBoxes('mat_form', 'select_material[]', false);" >None</a>
     </span> <br />
-    <input type="submit" name="delete" id="delete" value="Delete" class="confirm">
+    <input type="submit" name="delete" id="delete" value="Delete" class="confirm"
+				customprompt="You are about to permanently delete ALL the selected materials. ARE YOU SURE?">
     <input type="submit" name="download" id="download" value="Download">
   </div>
 </form>

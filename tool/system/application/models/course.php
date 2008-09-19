@@ -79,14 +79,111 @@ class Course extends Model
 	}
 	
 	/**
+		* Get users (acl entries) associated with a course
+		*
+		* @access  public
+		*	@param   int course_id
+		*	@param   string user role (optional)
+		*	@return  array of ocw_acl entries
+		*/
+	public function get_course_users($cid, $role = NULL) {
+		$where = ($role == NULL) ? array('course_id' => $cid)
+														 : array('course_id' => $cid, 'role' => $role);
+		$this->db->select('*')->from('acl')->where($where);
+		$q = $this->db->get();
+		if ($q->num_rows() > 0) {
+			foreach($q->result_array() as $row) {
+				$cacls[] = $row;
+    	}
+		}
+		return ($q->num_rows() > 0) ? $cacls : null;
+	}
+
+	/**
+    * Complete (dscribe2_dscribe1) relationships when adding an acl entry
+		*
+		* @access  private
+		* @param   array details (containing course_id, user_id, and role)
+		* @return  boolean
+		*/
+	private function complete_relationships($details)
+	{
+		if ($details['role'] != 'dscribe1' && $details['role'] != 'dscribe2')
+			return true;
+		if ($details['role'] == 'dscribe1') {
+			// create a relationship with existing dscribe2s
+			$d2s = $this->get_course_users($details['course_id'], 'dscribe2');
+			if (count($d2s) != 0) {
+				foreach($d2s as $d2) {
+					$this->ocw_user->set_relationship($details['user_id'], $d2['user_id']);
+				}
+			}
+		} else if ($details['role'] == 'dscribe2') {
+			// create a relationship with existing dscribe1s
+			$d1s = $this->get_course_users($details['course_id'], 'dscribe1');
+			if (count($d1s) != 0) {
+				foreach($d1s as $d1) {
+					$this->ocw_user->set_relationship($d1['user_id'], $details['user_id']);
+				}
+			}
+		}
+		return true;
+	}
+
+	/**
+		* This function checks all the existing acl rows and verifies that
+		* the role claimed in that row matches the roll of the user pointed
+		* to by the user_id field
+		* Inconsistencies are logged to the apache error log
+		*
+	  * @access private
+	  * @return true
+	  */
+	private function check_for_inconsistent_acls()
+	{
+		$this->db->select("*")->from('acl');
+		$q = $this->db->get();
+		if ($q->num_rows() > 0) {
+			foreach($q->result_array() as $acl) {
+				$this->db->select('id, role')->from('users')->where(array('id' => $acl['user_id']))->limit(1);
+				$qu = $this->db->get();
+				if ($qu->num_rows() != 1) {
+					$errmsg = "check_for_inconsistent_acls: Invalid acl entry "
+								. "(user_id " . $acl['user_id']
+								. ", course_id " . $acl['course_id']
+								. ", role " . $acl['role']
+								. "), no matching user entry found";
+					$this->ocw_utils->log_to_apache('warn', $errmsg);
+				}
+				foreach($qu->result_array() as $u) {
+					if ($u['role'] != $acl['role']) {
+						$errmsg = "check_for_inconsistent_acls: Invalid acl entry "
+									. "(user_id " . $acl['user_id']
+									. ", course_id " . $acl['course_id']
+									. ", role " . $acl['role']
+									. "), role doesn't match user entry role (" . $u['role'] . ")";
+						$this->ocw_utils->log_to_apache('warn', $errmsg);
+						// This goes to the CodeIgniter logs: log_message('error', $errmsg);
+						// This goes to the php_error.log: error_log($errmsg, 0);
+					}
+				}
+			}
+		}
+		return true;
+	}
+
+	/**
      * add user with the role to the course
 	 *
 	 * @access  public
+	 * @param   array details (containing course_id, user_id, and role)
 	 * @return  boolean
 	 */
   public function add_user($details)
   {
+		$this->complete_relationships($details);
 		$this->db->insert('acl', $details);
+		$this->check_for_inconsistent_acls();
 		return true;
 	}
 
@@ -101,6 +198,21 @@ class Course extends Model
     */
   public function remove_user($cid, $uid, $role)
   {
+		// Don't allow deletion of the last user in any particular
+		// role (dscribe1, dscribe2, or instructor) from a course
+		$d1s = $this->get_course_users($cid, 'dscribe1');
+		$d2s = $this->get_course_users($cid, 'dscribe2');
+		$instrs = $this->get_course_users($cid, 'instructor');
+
+		if ($role == 'instructor' && count($instrs) <= 1)
+			return "Cannot remove the only instructor from a course";
+		if ($role == 'dscribe2' && count($d2s) <= 1)
+			return "Cannot remove the only dscribe2 from a course";
+		if ($role == 'dscribe1' && count($d1s) <= 1)
+			return "Cannot remove the only dscribe1 from a course";
+		if ((count($d2s) + count($d1s) + count($instrs)) <= 1)
+			return "Cannot remove the only user for a course";
+		
 		$d = array('user_id'=>$uid, 'course_id'=>$cid, 'role'=>$role);
 		$this->db->delete('acl',$d);
 		return true;

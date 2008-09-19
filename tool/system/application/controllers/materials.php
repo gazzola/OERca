@@ -164,15 +164,19 @@ class Materials extends Controller {
 
 
 	// edit content objects	
-	public function edit($cid, $mid, $oid=0, $view='new', $subtab='')
+	public function edit($cid, $mid, $oid=0, $view='', $subtab='')
 	{
 	  $course = $this->course->get_course($cid); 
 		$material =  $this->material->materials($cid,$mid,true);
 		$stats = $this->coobject->object_stats($cid, $mid);
 
+		if(($stats['data']['num_new'] > 0) && $view == '') {
+		  $view = 'new';
+		}
+		
 		$view = (!in_array($view, array('all','new','ask:orig','fairuse','search','retain:pd',
 											'retain:perm','ask:rco','uncleared', 'permission','commission', 'retain:nc','replace',
-											'recreate','remove','cleared'))) ? 'new' : $view;
+											'recreate','remove','cleared'))) ? 'all' : $view;
 
 		// get correct view if an object id is provided
 		if ($oid != 0)  {
@@ -257,7 +261,7 @@ class Materials extends Controller {
 
 		/* info for queries sent to instructor */
 		if ($questions_to=='instructor' || ($role == 'instructor' && $questions_to=='') || $role=='') {
-				$view = (!in_array($view, array('general', 'provenance','replacement','done'))) ? 'general' : $view;
+				//$view = (!in_array($view, array('general', 'provenance','replacement','done'))) ? 'general' : $view; //commented out mbleed oerdev-168
 
 				$prov_objects =  $this->coobject->coobjects($mid,'','Ask'); // objects with provenace questions
 				$repl_objects =  $this->coobject->replacements($mid,'','','Ask'); // objects with replacement questions
@@ -311,6 +315,12 @@ class Materials extends Controller {
 										$num_obj++;
 						}
 				}
+				
+				//added this to check for objs and set default based on rules defined in OERDEV-168 mbleed
+				if ($num_prov > 0) $default_ins_view = 'provenance';
+				elseif ($num_repl > 0) $default_ins_view = 'replacement';
+				else $default_ins_view = 'done';
+				$view = (!in_array($view, array('general', 'provenance','replacement','done'))) ? $default_ins_view : $view;
 				
 				$data['view'] = $view; 
 				
@@ -967,12 +977,15 @@ class Materials extends Controller {
 					$rep_filepath=$object_filepath."/".$object_filename."_rep".$rep_extension;
 					$this->zip->read_file(getcwd().'/uploads/'.$rep_filepath);
 				}
-			}
-		
-			// Download the file to your desktop. Name it "SITENAME_IMSCP.zip"
-			$this->zip->download($name.'_RCOs.zip');
+				// Download the file to your desktop. Name it "SITENAME_IMSCP.zip"
+				$this->zip->download($name.'_RCOs.zip');
 			
-   	      	$this->zip->clear_data(); // clear cached data
+				$this->zip->clear_data(); // clear cached data
+			} else {
+					$msg = 'There are no Replacement COs for this material';
+					flashMsg($msg);
+					redirect("materials/edit/$cid/$mid", 'location');
+			}
 		}
 		
 		

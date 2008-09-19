@@ -28,7 +28,7 @@
 			<td>
 				<?php echo anchor(site_url("admin/schools/remove_school/".$s->id),	
 					'<img src="'.property('app_img').'/cross.png" title="Remove " />',
-					array('title'=>"Remove", 'class'=>'confirm'))?>
+					array('customprompt'=> "You are about to delete school $s->name. ARE YOU SURE???", 'title'=>"Remove", 'class'=>'confirm'))?>
 			</td>	
 		</tr>
 		<?php } ?>
