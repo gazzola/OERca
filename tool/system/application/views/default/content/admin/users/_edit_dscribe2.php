@@ -55,7 +55,8 @@ echo script('mootabs1.2.js');
 							<form method="post" action="<?php echo site_url("admin/users/edit/$defuser/{$user['id']}")?>" enctype="multipart/form-data" style="margin:0px;padding:0">
 								<input type="hidden" name="dsid" value="<?=$d['id']?>" />
 								<input type="hidden" name="task" value="unassigndscribe1" />
-			  				<input id="submitbutton" type="submit" name="submit" value="Unassign dscribe1" class="confirm"/>
+			  				<input id="submitbutton" type="submit" name="submit" value="Unassign dscribe1" class="confirm"
+										customprompt="Are you sure you want to unassign dscribe1, <?=$d['name']?>, from dscribe2, <?=$user['name']?>?"/>
 							</form>
 						</td>
 				</tr>
@@ -124,7 +125,8 @@ echo script('mootabs1.2.js');
 						<form method="post" action="<?php echo site_url("admin/users/edit/$defuser/{$user['id']}")?>" enctype="multipart/form-data" style="margin:0px;padding:0">
 							<input type="hidden" name="cid" value="<?=$c['id']?>" />
 							<input type="hidden" name="task" value="removecourse" />
-			  			<input id="submitbutton" type="submit" name="submit" value="Unassign dscribe2 from this course" class="confirm"/>
+			  			<input id="submitbutton" type="submit" name="submit" value="Unassign dscribe2 from this course" class="confirm"
+										customprompt="Are you sure you want to unassign dscribe2, <?=$user['name']?>, from course <?=$c['number']?>  <?=$c['title']?>?"/>
 						</form>
 					</td>
 				</tr>	

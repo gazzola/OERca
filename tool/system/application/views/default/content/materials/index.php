@@ -22,7 +22,8 @@
 
 <?php echo form_open("materials/manipulate/$cid", $mat_form_attr) ?>
   <div class="column span-7 firstlast">
-    <input type="submit" name="delete" id="delete" value="Delete" class="confirm">
+    <input type="submit" name="delete" id="delete" value="Delete" class="confirm"
+					customprompt="You are about to permanently delete ALL the selected materials. ARE YOU SURE?">
     <input type="submit" name="download" id="download" value="Download"> <br />
     <span>
       Select:
@@ -129,7 +130,8 @@
       &nbsp;
       <a href="javascript:void(0);" onClick="SetAllCheckBoxes('mat_form', 'select_material[]', false);" >None</a>
     </span> <br />
-    <input type="submit" name="delete" id="delete" value="Delete" class="confirm">
+    <input type="submit" name="delete" id="delete" value="Delete" class="confirm"
+				customprompt="You are about to permanently delete ALL the selected materials. ARE YOU SURE?">
     <input type="submit" name="download" id="download" value="Download">
   </div>
 </form>
