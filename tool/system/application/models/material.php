@@ -312,6 +312,12 @@ class Material extends Model
     */
   public function update($mid, $data)
   {
+		// We're modifying the material.  Update the 'modified_on' time.
+		// It seems we could get this for free from the DB code by
+		// making a schema change?
+		echo "Hi Piet<br>";
+		if (!isset($data['modified_on']))
+			$data['modified_on'] = date('Y-m-d h:i:s');
     $this->db->update('materials',$data,"id=$mid");
   }
 
