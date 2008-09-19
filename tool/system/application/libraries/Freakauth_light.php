@@ -162,6 +162,15 @@ class Freakauth_light
           log_message('debug', "bdr:  freakauth_light_check - cosign USERID: $cosign_user");
       }
 
+			log_message('debug', "cosign user is $cosign_user, session user is $_who_name");
+			// If there is an existing session, but the user there doesn't match
+			// the current cosign user delete the session and force them back around
+			if ($this->CI->db_session AND $cosign_user != '' AND $cosign_user != $_who_name) {
+				log_message('debug', "cosign user is $cosign_user, destroying session for $_who_name");
+				$this->CI->db_session->sess_destroy();
+				redirect($this->CI->config->item('FAL_login_uri'), 'location');
+			}
+
 		if ($this->CI->db_session AND $this->CI->config->item('FAL') AND !empty($_who_is)
  					  AND ($cosign_user == $_who_name))
 	        {
