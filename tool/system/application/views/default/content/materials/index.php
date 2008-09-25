@@ -12,7 +12,6 @@
 
 <?php } else { 
     $printkey = TRUE;
-    }
 
  foreach($materials as $category => $cmaterial) { 
 ?>
@@ -119,7 +118,7 @@
 		
   		<?php } ?>
   	</tr>
-  <?php }?>
+  <?php } }?>
   	</tbody>
   </table>
   <div class="column span-7 firstlast" style="margin-bottom:30px;">
