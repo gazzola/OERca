@@ -179,7 +179,7 @@ class Admin extends Controller {
        						redirect('admin/users/edit/'.$type.'/'.$uid, 'location');
 							}
 
-							$courses = $this->course->get_courses();	
+							$courses = $this->course->get_courses(getUserProperty('id'),'admin');	
 
 							// get all courses
 							$select_box = '<select id="cid" name="cid" width="200px">';
@@ -226,7 +226,8 @@ class Admin extends Controller {
 									$data['select_dscribes'] = $ds_select_box;
 							}
 
-							$data['courses'] = $this->ocw_user->get_courses($uid);
+							//$data['courses'] = $this->ocw_user->get_courses($uid);
+							$data['courses'] = $this->course->get_courses($uid,getUserPropertyFromId($uid, 'role'));
 							$this->layout->buildPage('admin/users/_edit_'.$u['role'],$data); 
 					} else {
 			 				flashMsg('This user does not exist...');
@@ -547,7 +548,7 @@ class Admin extends Controller {
 			}
 			
 			// get list of users (acl entries) already associated with the course
-			$cacls = $this->course->get_course_users($cid);
+			$cacls = $this->course->get_course_users($cid,'admin');
 
 			// get list of all users
 			$users = $this->ocw_user->getUsers('id, name, user_name, role');
@@ -605,7 +606,7 @@ class Admin extends Controller {
 		} else {
 			
 			// view all courses
-			$courses = $this->course->get_courses();
+			$courses = $this->course->get_courses(getUserProperty('id'),'admin');
 
 			$data = array('title'=>'Admin: Manage Courses ',
 										'section'=>'courses',

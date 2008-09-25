@@ -41,10 +41,21 @@ class Dscribe1 extends Controller
     $data['courses'] = $this->ocw_user->get_courses_simple($data['id']);
 		if (is_array($data['courses'])) {
       			foreach ($data['courses'] as $key => &$value) {
-        				$value['num']['total'] = $this->material->get_co_count($value['id']);
-        				$value['num']['done'] = $this->material->get_done_count($value['id']);
-        				$value['num']['ask'] = $this->material->get_ask_count($value['id']);
-        				$value['num']['rem'] = $this->material->get_rem_count($value['id']);
+        				// bdr OERDEV-173 let's go count all the CO's the same way as for materials page
+        				$materials =  $this->material->materials($value['id'],'',true,true);
+					$value['num']['total'] = 0;
+					$value['num']['done']  = 0;
+					$value['num']['ask']   = 0;
+					$value['num']['rem']   = 0;
+					foreach($materials as $category => $cmaterial) {
+					   foreach($cmaterial as $material) {
+						$value['num']['rem'] += $material['mrem'];
+						$value['num']['ask'] += $material['mask'];
+						$value['num']['done'] += $material['mdone'];
+						if ($material['mtotal'] != 1000000)
+						    $value['num']['total'] += $material['mtotal'];
+					   }
+					}
       			}
 		}
    	$this->layout->buildpage('dscribe1/index', $data);
@@ -61,7 +72,8 @@ class Dscribe1 extends Controller
   public function courses()
   {
       $this->data['title'] = 'dScribe1 &raquo; Manage Courses';
-      $this->data['courses'] = $this->ocw_user->get_courses(getUserProperty('id'));
+      // $this->data['courses'] = $this->ocw_user->get_courses(getUserProperty('id'));
+      $this->data['courses'] = $this->course->get_courses(getUserProperty('id'));
       $this->layout->buildPage('dscribe1/courses', $this->data);
 	}
 }

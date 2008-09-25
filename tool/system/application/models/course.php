@@ -296,44 +296,88 @@ class Course extends Model
      * @access  public
      * @return  array
      */
-    public function get_courses()
+    // public function get_courses()
+    // OERDEV-173  bdr - should only have a single get_courses routine
+    public function get_courses($uid, $urole = NULL)
     {
         $courses = array();
-		    $sql = 'SELECT ocw_courses. *, ocw_curriculums.name AS cname, 
-                                   ocw_schools.name AS sname,
-				   ocw_courses.id AS cid
-				  FROM ocw_courses, ocw_curriculums, ocw_schools
-				 WHERE ocw_curriculums.id = ocw_courses.curriculum_id
-				   AND ocw_schools.id = ocw_curriculums.school_id
-				 ORDER BY ocw_courses.start_date DESC';
-		   $q = $this->db->query($sql);
+	if ($urole == 'admin') {
+		$uid = NULL;
+		$role = 'admin';
+	}
+
+	if ($uid == NULL) {
+		$sql = 'SELECT ocw_courses. *, ocw_curriculums.name AS cname, 
+                        ocw_schools.name AS sname,
+			ocw_courses.id AS cid
+			FROM ocw_courses, ocw_curriculums, ocw_schools
+			WHERE ocw_curriculums.id = ocw_courses.curriculum_id
+			AND ocw_schools.id = ocw_curriculums.school_id
+			ORDER BY ocw_courses.start_date DESC';
+        } else {
+    		$sql = "SELECT ocw_courses.*, 
+      		ocw_curriculums.name AS cname, 
+      		ocw_schools.name AS sname,
+      		ocw_courses.id AS cid
+      		FROM ocw_courses, ocw_curriculums, ocw_schools, ocw_acl
+      		WHERE ocw_curriculums.id = ocw_courses.curriculum_id
+      		AND ocw_schools.id = ocw_curriculums.school_id
+      		AND ocw_acl.course_id = ocw_courses.id
+      		AND ocw_acl.user_id = '$uid'
+      		ORDER BY start_date DESC";
+	}
+	
+    	$q = $this->db->query($sql);
 
         if ($q->num_rows() > 0) {
             foreach($q->result_array() as $row) { 
-		 // bdr OERDEV-140 (which looks similiar to OERDEV-118
-                 $uprop = getUserProperty('role');
-                 if (($uprop != 'dscribe1')) { // && ($row['cid'] == 35)) 
-                     $row['total'] = $this->material->get_co_count($row['cid']);
-                     $row['done'] = $this->material->get_done_count($row['cid']);
-                     $row['ask'] = $this->material->get_ask_count($row['cid']);
-                     $row['rem'] = $this->material->get_rem_count($row['cid']);
+                 if (($urole != 'dscribe1')) { 
+		    // bdr OERDEV-173 - count everything like materials list counts
+                     $materials =  $this->material->materials($row['cid'],'',true,true);
+                     $row['total'] = 0;
+                     $row['done']  = 0;
+                     $row['ask']   = 0;
+                     $row['rem']   = 0;
+         	     if ($materials != NULL) {
+                       foreach($materials as $category => $cmaterial) {
+                          foreach($cmaterial as $material) {
+                             $row['rem'] += $material['mrem'];
+                             $row['ask'] += $material['mask'];
+                             $row['done'] += $material['mdone'];
+                             if ($material['mtotal'] != 1000000)
+                                   $row['total'] += $material['mtotal'];
+                          }
+                       }
+		     }
                      $row['instructors'] = $this->get_course_instructor_by_id($row['cid']);
 		     $row['statcount'] = $row['total'].'/'.$row['done'].'/'.$row['ask'].'/'.$row['rem'];
-		     $row['notdone'] = $row['total'] - $row['done'];
-		     //$this->ocw_utils->dump($row);
+		     $row['notdone'] = $row['rem'];
+		     // $this->ocw_utils->dump($row);
 		 }
 	         $courses[$row['sname']][$row['cname']][] = $row; 
             }
         }
       
       // get the courses that have NULL curriculum ids
-      $sql_no_curr_id = "SELECT ocw_courses.*,
-          ocw_courses.curriculum_id AS cname,
-          ocw_courses.curriculum_id AS sname,
-          ocw_courses.id AS cid
-        FROM ocw_courses
-        WHERE ocw_courses.curriculum_id IS NULL
-        ORDER BY ocw_courses.start_date DESC";
+        if ($uid == NULL) {
+      		$sql_no_curr_id = "SELECT ocw_courses.*,
+          			ocw_courses.curriculum_id AS cname,
+          			ocw_courses.curriculum_id AS sname,
+          			ocw_courses.id AS cid
+        			FROM ocw_courses
+        			WHERE ocw_courses.curriculum_id IS NULL
+        			ORDER BY ocw_courses.start_date DESC";
+        } else {
+                $sql_no_curr_id = "SELECT ocw_courses.*, 
+                	ocw_courses.curriculum_id AS cname, 
+                	ocw_courses.curriculum_id AS sname,
+                	ocw_courses.id AS cid
+                	FROM ocw_courses, ocw_acl
+                	WHERE ocw_courses.curriculum_id = NULL 
+                	AND ocw_acl.course_id = ocw_courses.id
+                	AND ocw_acl.user_id = '$uid'
+                	ORDER BY start_date DESC";
+        }
 
       $q_no_curr_id = $this->db->query($sql_no_curr_id);
 
@@ -341,15 +385,27 @@ class Course extends Model
         foreach ($q_no_curr_id->result_array() as $row) {
                  // bdr OERDEV-140 (which looks similiar to OERDEV-118
                  $uprop = getUserProperty('role');
-                 if (($uprop != 'dscribe1')) { // && ($row['cid'] == 35)) 
-                     $row['total'] = $this->material->get_co_count($row['cid']);
-                     $row['done'] = $this->material->get_done_count($row['cid']);
-                     $row['ask'] = $this->material->get_ask_count($row['cid']);
-                     $row['rem'] = $this->material->get_rem_count($row['cid']);
+                 // if (($uprop != 'dscribe1')) { // && ($row['cid'] == 35)) 
+		 if (($role != 'dscribe1')) {
+                    // bdr OERDEV-173 - count everything like materials list counts
+                     $materials =  $this->material->materials($row['cid'],'',true,true);
+                     $row['total'] = 0;
+                     $row['done']  = 0;
+                     $row['ask']   = 0;
+                     $row['rem']   = 0;
+                     foreach($materials as $category => $cmaterial) {
+                          foreach($cmaterial as $material) {
+                             $row['rem'] += $material['mrem'];
+                             $row['ask'] += $material['mask'];
+                             $row['done'] += $material['mdone'];
+                             if ($material['mtotal'] != 1000000)
+                                   $row['total'] += $material['mtotal'];
+                          }                
+                      }                 
                      $row['instructors'] = $this->get_course_instructor_by_id($row['cid']);
                      $row['statcount'] = $row['total'].'/'.$row['done'].'/'.$row['ask'].'/'.$row['rem'];
-		     $row['notdone'] = $row['total'] - $row['done'];
-                     //   $this->ocw_utils->dump($row);
+		     $row['notdone'] = $row['rem'];
+                     // $this->ocw_utils->dump($row);
                  }
           $courses['No School Specified']['No Curriculum Specified'][] = $row;
         }
