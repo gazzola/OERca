@@ -564,6 +564,8 @@ class Material extends Model
     $this->db->where($passedParams);
     $q = $this->db->get();
     //return the number of results
+    // $this->ocw_utils->dump($q->num_rows());
+    // $this->ocw_utils->dump($q);
     return($q->num_rows());
   }
 
