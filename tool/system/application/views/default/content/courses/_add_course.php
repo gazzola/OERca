@@ -188,8 +188,7 @@ if (isset($flash) AND $flash!='') {
 	</div>
 
 	<div style="clear:both"/>
-		<input type="button" style="float:right" value="Cancel" onclick="parent.window.location.reload(); parent.TB_remove();"/>
-		<input type="button" style="float:left" value="Done" onclick="parent.window.location.reload(); parent.TB_remove();"/>
+		<input type="button" style="float:right" value="Close" onclick="parent.window.location.reload(); parent.TB_remove();"/>
 	</div>
 </form>
 
