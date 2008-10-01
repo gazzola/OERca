@@ -15,7 +15,7 @@ class Dscribe1 extends Controller
 		parent::Controller();
 
 		$this->freakauth_light->check('dscribe1');
-
+                $this->load->model('course');
 		$this->load->model('ocw_user');
 		$this->load->model('material');
 	}
@@ -72,7 +72,6 @@ class Dscribe1 extends Controller
   public function courses()
   {
       $this->data['title'] = 'dScribe1 &raquo; Manage Courses';
-      // $this->data['courses'] = $this->ocw_user->get_courses(getUserProperty('id'));
       $this->data['courses'] = $this->course->get_courses(getUserProperty('id'));
       $this->layout->buildPage('dscribe1/courses', $this->data);
 	}
