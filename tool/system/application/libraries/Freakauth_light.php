@@ -272,21 +272,13 @@ class Freakauth_light
                     $referer = $_SERVER['HTTP_REFERER'];
                     if (preg_match("|^".base_url()."|", $referer) == 0)
                     {
-			// bdr - this is where we can handle cosignUID != ocw_userUID
-			//       we need to destroy the session data & then things
-			//	 will get correctly sorted out
 			log_message('debug', 'bdr: denyAccess #6');
-                        $this->CI->db_session->sess_destroy();
 
 			// if http_referer is from an external site,
-                        // users are taken to the page defined in the config file$a
+                        // users are taken to the page defined in the config file
 			log_message('debug', "bdr: denyAccess #6 referer: $referer");
 			// $this->ocw_utils->dump($_SERVER);
-			if (isset($_SERVER['PATH_INFO'])) {
-                          redirect($_SERVER['PATH_INFO'], 'location');
-			} else {
-                          redirect($this->CI->config->item('FAL_denied_from_ext_location'));
-			}
+                        redirect($this->CI->config->item('FAL_denied_from_ext_location'));
                     }
                     else
                     {
