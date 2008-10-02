@@ -220,7 +220,7 @@ class OCW_utils {
       
 	   	$imgurl = ($thumb_found) ? $imgurl : property('app_img').'/'.$defimg;
 	   	$editurl = site_url("materials/object_info/$cid/$mid/$oid/$filter").
-								 '?TB_iframe=true&height=630&width=800';
+								 '?TB_iframe=true&height=450&width=800';
 
 		  $locbar = '<p id="ciloc">'.$loc.'</p>';
 			$size = ($shrink) ? 'width:150px; height:150px;':'width:300px; height:300px;';

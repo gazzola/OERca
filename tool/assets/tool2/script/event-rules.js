@@ -317,32 +317,38 @@ var Rules = {
 										if ($('Permission')) { $('Permission').style.display = 'none';}
 										if ($('Commission')) { $('Commission').style.display = 'none';}
 										if ($('Retain')) { $('Retain').style.display = 'none';}
+										// don't scroll
 
 								} else if (val == 'Fair Use') {
 									if ($('Fair Use')) { $('Fair Use').style.display = 'block';}
 									if ($('Permission')) { $('Permission').style.display = 'none';}
 									if ($('Commission')) { $('Commission').style.display = 'none';}
 									if ($('Retain')) { $('Retain').style.display = 'none';}
+									this.scrollIntoView();
 								} else if (val == 'Permission') {
 									if ($('Fair Use')) { $('Fair Use').style.display = 'none';	}
 									if ($('Permission')) { $('Permission').style.display = 'block';}
 									if ($('Commission')) { $('Commission').style.display = 'none';}
 									if ($('Retain')) { $('Retain').style.display = 'none';}
+									this.scrollIntoView();
 								} else if (val == 'Commission') {
 									if ($('Fair Use')) { $('Fair Use').style.display = 'none';	}
 									if ($('Permission')) { $('Permission').style.display = 'none';}
 									if ($('Commission')) { $('Commission').style.display = 'block';}
 									if ($('Retain')) { $('Retain').style.display = 'none';}
+									this.scrollIntoView();
 								} else if (val.substring(0, 6) == 'Retain' && val != 'Retain: Instructor Created') {
 									if ($('Fair Use')) { $('Fair Use').style.display = 'none';	}
 									if ($('Permission')) { $('Permission').style.display = 'none';}
 									if ($('Commission')) { $('Commission').style.display = 'none';}
 									if ($('Retain')) { $('Retain').style.display = 'block';}
+									this.scrollIntoView();
 								} else {
 									if ($('Fair Use')) { $('Fair Use').style.display = 'none';	}
 									if ($('Permission')) { $('Permission').style.display = 'none';}
 									if ($('Commission')) { $('Commission').style.display = 'none';}
 									if ($('Retain')) { $('Retain').style.display = 'none';}
+									this.scrollIntoView();
 								} 
 								$('raction').value=val;
 						}	
@@ -439,8 +445,7 @@ var Rules = {
 					$('ask_dscribe2_yes').style.display = 'inline';	
 				 	orig_q_ap.setrole('dscribe2');
 				 	orig_q_ap.show();
-					var el = $('orig_q_addpanel');
-					window.scrollTo(el.getLeft(), el.getTop());
+					$('orig_q_addpanel').scrollIntoView();
 				}
 			} else {
 			   if ($('ask_dscribe2_yes')) { 
