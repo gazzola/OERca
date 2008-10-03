@@ -41,7 +41,7 @@ $dbh->disconnect;
 sub digest
 {
 	my $type = shift; 
-	my $subject = '[OER NOTICE] Action Items for '.$time[3].' '.
+	my $subject = '[OERca NOTICE] Action Items for '.$time[3].' '.
 							  $months[$time[4]].', '.($time[5]+1900);
 
 	my $mail = queue($type);
@@ -61,7 +61,8 @@ sub digest
 
 			while (my ($to_id, $receivers) = each(%sendlist)) {
 					my @to_user = get_user_by_id($to_id);
-					my $msg = template('intro');
+					my $msg = template('notice');
+					$msg .= template('intro');
 					$msg =~ s/{TO_NAME}/$to_user[1]/g; 
 				  my %update_candidates = ();
 
@@ -190,10 +191,11 @@ sub template
 {
 	my $type = shift;
 	my %template = (
+			'notice' => "Note: Don't reply to this email -- it will go no where :)\n\n",
 			'intro'=> "{TO_NAME},\n\nYou have ASK Form items from the following people that need your attention:\n\n",
 			'body1' => "{FROM_NAME} ({FROM_ROLE}):\n\n",
 			'body2' => " Course: {CNAME}{ITEMS}\n\n\n",
-			'footer' => "Thank you.\n\nOER Tool\n\nps: Don't reply to this email -- it will go no where :)"
+			'footer' => "Thank you,\nThe OERca Notifier\n"
 	);
 	return $template{$type};
 }
@@ -210,7 +212,7 @@ sub email
 	} else {
 		my %mail = (
 			To => $to_email,
-		 	From	=> "OER Tool Notifier <nobody\@umich.edu>", 
+		 	From	=> "OERca Notifier <nobody\@umich.edu>", 
 			Subject => $subject,
 			Message => $msg,
 		);
