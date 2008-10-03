@@ -27,10 +27,10 @@
 
 			<div style="float: right">
 		<?php		if (!isset($sname)) { ?>
-					<?=anchor(site_url("admin/schools/add_school").'?TB_iframe=true&height=500&width=600', 'Add a School', array('class'=>'smoothbox', 'title'=>'Add a new school')) ?>
+					<?=anchor(site_url("admin/schools/add_school").'?TB_iframe=true&height=450&width=600', 'Add a School', array('class'=>'smoothbox', 'title'=>'Add a new school')) ?>
 		<?php		} else { ?>
-					<?=anchor(site_url("admin/curriculum/add_curriculum/$sid").'?TB_iframe=true&height=500&width=600', 'Add a Curriculum&nbsp;&nbsp;', array('class'=>'smoothbox', 'title'=>'Add new curriculum for ' . $sname)) ?>
-					<?=anchor(site_url("admin/subjects/add_subject/$sid").'?TB_iframe=true&height=500&width=600', 'Add a Subject', array('class'=>'smoothbox', 'title'=>'Add new subject for ' . $sname)) ?>
+					<?=anchor(site_url("admin/curriculum/add_curriculum/$sid").'?TB_iframe=true&height=450&width=600', 'Add a Curriculum&nbsp;&nbsp;', array('class'=>'smoothbox', 'title'=>'Add new curriculum for ' . $sname)) ?>
+					<?=anchor(site_url("admin/subjects/add_subject/$sid").'?TB_iframe=true&height=450&width=600', 'Add a Subject', array('class'=>'smoothbox', 'title'=>'Add new subject for ' . $sname)) ?>
 		<?		} ?>
 			</div>
 			<div style="float: left">
