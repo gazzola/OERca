@@ -34,7 +34,7 @@
 
   <div class="column span-24 first last">
 		<p class="error">No content objects recorded for this material.
-					<a href="<?=site_url("materials/add_object/$cid/$mid/snapper")?>?TB_iframe=true&height=500&width=450" class="smoothbox" style="color:blue" title="Add Content Objects">Use Snapper tool to capture Content Objects</a>
+					<a href="<?=site_url("materials/add_object/$cid/$mid/snapper")?>?TB_iframe=true&height=450&width=450" class="smoothbox" style="color:blue" title="Add Content Objects">Use Snapper tool to capture Content Objects</a>
 		</p>
 	</div>
 

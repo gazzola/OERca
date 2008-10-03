@@ -71,8 +71,8 @@
   			<span style="font-size: 13px;"><a href="<?php echo site_url()."materials/edit/$cid/".$material['id']?>"><?= $material['name']?></a></span>
 				<br/>
 				<span style="font-size:9px; clear:both; margin-top:20px;">
-						<a href="<?=site_url("materials/editinfo/$cid/{$material['id']}")?>?TB_iframe=true&height=500&width=350" class="smoothbox" title="Editing <?=$material['name']?> Info">Edit</a>&nbsp;|&nbsp;
-						<a href="<?=site_url("materials/editcomments/$cid/{$material['id']}")?>?TB_iframe=true&height=500&width=350" class="smoothbox" title="Comments for <?=$material['name']?>">Comments (<?=$numcomments?>)</a>&nbsp;|&nbsp;
+						<a href="<?=site_url("materials/editinfo/$cid/{$material['id']}")?>?TB_iframe=true&height=450&width=350" class="smoothbox" title="Editing <?=$material['name']?> Info">Edit</a>&nbsp;|&nbsp;
+						<a href="<?=site_url("materials/editcomments/$cid/{$material['id']}")?>?TB_iframe=true&height=450&width=350" class="smoothbox" title="Comments for <?=$material['name']?>">Comments (<?=$numcomments?>)</a>&nbsp;|&nbsp;
 						<a href="<?=site_url("materials/askforms/$cid/{$material['id']}")?>" title="View Material ASK forms" style="<?=$askcolor?>" target="_blank">ASK Forms</a>
 				</span>
   		</td>
