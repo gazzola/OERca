@@ -45,8 +45,8 @@ echo script('mootabs1.2.js');
 								<?php echo $d['name']?>
 								<br/>
 								<span style="font-size:9px; clear:both; margin-top:20px;">
-									<a href="<?=site_url("admin/users/editinfo/$tab/{$d['id']}")?>?TB_iframe=true&height=500&width=400" class="smoothbox" title="Editing <?=$d['name']?> Info">Edit Info</a>&nbsp;|&nbsp;
-									<a href="<?=site_url("admin/users/editprofile/$tab/{$d['id']}")?>?TB_iframe=true&height=650&width=400" class="smoothbox" title="Editing <?=$d['name']?> Profile">Edit Profile</a>
+									<a href="<?=site_url("admin/users/editinfo/$tab/{$d['id']}")?>?TB_iframe=true&height=450&width=600" class="smoothbox" title="Editing <?=$d['name']?> Info">Edit Info</a>&nbsp;|&nbsp;
+									<a href="<?=site_url("admin/users/editprofile/$tab/{$d['id']}")?>?TB_iframe=true&height=450&width=600" class="smoothbox" title="Editing <?=$d['name']?> Profile">Edit Profile</a>
 							</span>
 						</td>
   					<td><?php echo $d['user_name']?></td>

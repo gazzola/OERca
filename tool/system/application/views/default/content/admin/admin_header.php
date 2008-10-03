@@ -4,7 +4,7 @@
 		<?php if ($section=='users') { ?>
 
 			<div style="float: right"> 
-				<a href="<?=site_url("admin/users/add_user/$tab")?>?TB_iframe=true&height=650&width=550" class="smoothbox" title="Add User">Add a User</a>
+				<a href="<?=site_url("admin/users/add_user/$tab")?>?TB_iframe=true&height=450&width=600" class="smoothbox" title="Add User">Add a User</a>
 			</div>
 			<div style="float: left">
 		    <a href="<?=site_url('admin/home');?>">Admin</a> &raquo; 

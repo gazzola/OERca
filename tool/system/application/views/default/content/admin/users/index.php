@@ -16,7 +16,7 @@
 <div class="column span-24 first last" style="margin-bottom: 10px;">
 <?php if ($users == null || !isset($users[$tab]) || count($users[$tab])==0) { ?>
 
-		 <p class="error">No users found: <a href="<?=site_url("admin/users/add_user/$tab")?>?TB_iframe=true&height=650&width=550" class="smoothbox" title="Add User" style="color:blue">Add User</a></p>
+		 <p class="error">No users found: <a href="<?=site_url("admin/users/add_user/$tab")?>?TB_iframe=true&height=500&width=550" class="smoothbox" title="Add User" style="color:blue">Add User</a></p>
 
 <?php } else { ?>
 
@@ -41,8 +41,8 @@
 					<?php } else {  echo $user['name']; } ?>
 				<br/>
 				<span style="font-size:9px; clear:both; margin-top:20px;">
-						<a href="<?=site_url("admin/users/editinfo/$tab/{$user['id']}")?>?TB_iframe=true&height=500&width=400" class="smoothbox" title="Editing <?=$user['name']?> Info">Edit Info</a>&nbsp;|&nbsp;
-						<a href="<?=site_url("admin/users/editprofile/$tab/{$user['id']}")?>?TB_iframe=true&height=650&width=400" class="smoothbox" title="Editing <?=$user['name']?> Profile">Edit Profile</a>
+						<a href="<?=site_url("admin/users/editinfo/$tab/{$user['id']}")?>?TB_iframe=true&height=450&width=600" class="smoothbox" title="Editing <?=$user['name']?> Info">Edit Info</a>&nbsp;|&nbsp;
+						<a href="<?=site_url("admin/users/editprofile/$tab/{$user['id']}")?>?TB_iframe=true&height=450&width=600" class="smoothbox" title="Editing <?=$user['name']?> Profile">Edit Profile</a>
 				</span>
 				</td>
   			<td><?php echo $user['user_name']?></td>
