@@ -110,13 +110,13 @@ class Home extends Controller {
   public function material_bar($total,$done,$ask,$rem,$dash)
   {
 		# red,0=3, green,0=2
-  	if ($dash == 0 || $dash == 3) {
-            $this->oer_progbar->build_prog_bar($total,$done,$ask,$rem, 150, 20, 8);
+  	//if ($dash == 0 || $dash == 3) { //OERDEV-181 mbleed: removed this if statement, no longer hardcoding mtotal=1000000 as a workaround, no need for different calls
+            $this->oer_progbar->build_prog_bar($total,$done,$ask,$rem, 150, 20, 8, $dash); 	//OERDEV-181 mbleed: added $dash var to progbar call so we can process CO=0 cases properly
             $this->oer_progbar->get_prog_bar();
-    } elseif($dash == 2) {
-            $this->oer_progbar->build_prog_bar(1000000,0,0,0, 150, 20, 8);
-            $this->oer_progbar->get_prog_bar();
-    }
+    //} elseif($dash == 2) { 												
+    //        $this->oer_progbar->build_prog_bar(1000000,0,0,0,150,20,8,);		
+    //        $this->oer_progbar->get_prog_bar();							
+    //}																		
   }
 
 }

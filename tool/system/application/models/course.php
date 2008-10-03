@@ -344,8 +344,8 @@ class Course extends Model
                              $row['rem'] += $material['mrem'];
                              $row['ask'] += $material['mask'];
                              $row['done'] += $material['mdone'];
-                             if ($material['mtotal'] != 1000000)
-                                   $row['total'] += $material['mtotal'];
+                             //if ($material['mtotal'] != 1000000)				//OERDEV-181 mbleed: removed hardcoded total=1000000 logic
+                             $row['total'] += $material['mtotal'];	
                           }
                        }
 		     }

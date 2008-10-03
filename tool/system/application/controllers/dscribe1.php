@@ -52,8 +52,8 @@ class Dscribe1 extends Controller
 						$value['num']['rem'] += $material['mrem'];
 						$value['num']['ask'] += $material['mask'];
 						$value['num']['done'] += $material['mdone'];
-						if ($material['mtotal'] != 1000000)
-						    $value['num']['total'] += $material['mtotal'];
+						//if ($material['mtotal'] != 1000000)						//OERDEV-181 mbleed: removed hardcoded total=1000000 logic
+						$value['num']['total'] += $material['mtotal'];		
 					   }
 					}
       			}
