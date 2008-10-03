@@ -51,7 +51,7 @@
 			<br/>
 			<span style="font-size:9px; clear:both; margin-top:20px;">
 			<?=
-				anchor(site_url("courses/edit_course_info/{$c['id']}").'?TB_iframe=true&height=600&width=850','Edit Info &raquo;',array('class'=>'smoothbox','title'=>'Edit course information'))
+				anchor(site_url("courses/edit_course_info/{$c['id']}").'?TB_iframe=true&height=400&width=800','Edit Info &raquo;',array('class'=>'smoothbox','title'=>'Edit course information'))
 			?>
 			<?php if ((getUserProperty('role') == 'admin')) { ?>
 			 <?=anchor(site_url("admin/courses/manage_users/{$c['id']}").'?TB_iframe=true&height=200&width=600','Manage Users', array('class'=>'smoothbox','title'=>'Manage course users')) ?>

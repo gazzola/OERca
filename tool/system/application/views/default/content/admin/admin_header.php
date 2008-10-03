@@ -16,7 +16,7 @@
 		<?php } elseif ($section=='courses') { ?>
 
 			<div style="float: right"> 
-				<?=anchor(site_url("courses/add_new_course/").'?TB_iframe=true&height=675&width=875', 'Add a Course', array('class'=>'smoothbox', 'title'=>'Add a new course')) ?>
+				<?=anchor(site_url("courses/add_new_course/").'?TB_iframe=true&height=400&width=800', 'Add a Course', array('class'=>'smoothbox', 'title'=>'Add a new course')) ?>
 			</div>
 	    <div style="float: left">
 		    <a href="<?=site_url('admin/home');?>">Admin</a> &raquo;
