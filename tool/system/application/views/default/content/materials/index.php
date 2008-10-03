@@ -102,8 +102,9 @@
 		if ($material['mdash'] == 1) { ?>
 			<span style="font-size: 13px;"><center>--</center></span>
 		<?}
-
-      		elseif ($material['mtotal'] > 0) { ?>
+      		//elseif ($material['mtotal'] > 0) { //OERDEV-181 mbleed: removed this if statement, 0 CO case will produce progbars 
+      		else {
+		?>
                    <a href="<?php echo site_url()."materials/edit/$cid/".$material['id']?>">
 		   <img src="<?= site_url("/home/material_bar/$params_url") ?>" 
               	   alt="Progress Bar: 
