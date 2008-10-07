@@ -548,7 +548,7 @@ class Admin extends Controller {
 			}
 			
 			// get list of users (acl entries) already associated with the course
-			$cacls = $this->course->get_course_users($cid,'admin');
+			$cacls = $this->course->get_course_users($cid);
 
 			// get list of all users
 			$users = $this->ocw_user->getUsers('id, name, user_name, role');
