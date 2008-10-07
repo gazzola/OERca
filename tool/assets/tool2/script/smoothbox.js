@@ -217,6 +217,16 @@ function TB_show(caption, url, rel) {
 		TB_WIDTH = (params['width']*1) + 30;
 		TB_HEIGHT = (params['height']*1) + 40;
 
+		// kwc 10/07/2008 If the requested sizes are too big,
+		// make them work for the current window size
+		if (TB_WIDTH > window.getWidth()) {
+			TB_WIDTH = window.getWidth() - 100;
+		}
+		if (TB_HEIGHT > window.getHeight()) {
+			TB_HEIGHT = window.getHeight() - 100;
+			TB_WIDTH += 50;  // add extra width for scroll bar
+		}
+
 		var ajaxContentW = TB_WIDTH - 30,
 			ajaxContentH = TB_HEIGHT - 45;
 		
