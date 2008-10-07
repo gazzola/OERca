@@ -32,7 +32,7 @@
             <?=$value['number'] ?> <?=$value['title'] ?>
             </span>
             <span style="font-size:8px; clear:both; margin-top:10px;">
-            <?=   anchor(site_url("courses/edit_course_info/{$value['id']}").'?TB_iframe=true&height=400&width=800','Edit Info &raquo;',array('style'=>'font-size:10px','class'=>'smoothbox','title'=>'Edit Course')) ?>
+            <?=   anchor(site_url("courses/edit_course_info/{$value['id']}").'?TB_iframe=true&height=675&width=875','Edit Info &raquo;',array('style'=>'font-size:10px','class'=>'smoothbox','title'=>'Edit Course')) ?>
             </span>
 	    <br>
 	    <a class="prog-link" href="<?php echo site_url("materials/home/{$value['id']}"); ?>">
@@ -55,7 +55,7 @@
             <?=$value['number'] ?> <?=$value['title'] ?>
             </span>
             <span style="font-size:8px; clear:both; margin-top:10px;">
-            <?=   anchor(site_url("courses/edit_course_info/{$value['id']}").'?TB_iframe=true&height=400&width=800','Edit Info &raquo;',array('style'=>'font-size:10px','class'=>'smoothbox','title'=>'Edit Course')) ?>
+            <?=   anchor(site_url("courses/edit_course_info/{$value['id']}").'?TB_iframe=true&height=675&width=875','Edit Info &raquo;',array('style'=>'font-size:10px','class'=>'smoothbox','title'=>'Edit Course')) ?>
             <p class="error">No content objects recorded for this course.</p>
 	    </span>
             </div>

@@ -44,7 +44,7 @@
 			<br/>
 			<span style="font-size:9px; clear:both; margin-top:20px;">
 			<?=
-				anchor(site_url("courses/edit_course_info/{$c['id']}").'?TB_iframe=true&height=400&width=800','Edit Info &raquo;',array('class'=>'smoothbox','title'=>'Edit Course'))
+				anchor(site_url("courses/edit_course_info/{$c['id']}").'?TB_iframe=true&height=675&width=875','Edit Info &raquo;',array('class'=>'smoothbox','title'=>'Edit Course'))
 			?>
 			</span>
 		</td>

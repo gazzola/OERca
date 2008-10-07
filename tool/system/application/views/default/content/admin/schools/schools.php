@@ -3,7 +3,7 @@
 <div class="column span-24 first last" style="margin-bottom: 10px;">
 <?php if ($schools == null || !isset($schools) ) { ?>
 
-		 <p class="error">No schools found:&nbsp;&nbsp;<a href="<?=site_url("admin/schools/add_school/")?>?TB_iframe=true&height=450&width=600" class="smoothbox" title="Add a new School" style="color:blue">Add a School</a></p>
+		 <p class="error">No schools found:&nbsp;&nbsp;<a href="<?=site_url("admin/schools/add_school/")?>?TB_iframe=true&height=500&width=600" class="smoothbox" title="Add a new School" style="color:blue">Add a School</a></p>
 
 <?php } else { ?>
 
@@ -21,7 +21,7 @@
 				<a href="<?=site_url("admin/curriculum/view/$s->id")?>" title="Manage <?=$s->name?>'s Subjects and Curriculum"><?=$s->name?></a>
 				<br>
 				<span style="font-size:9px; clear:both; margin-top:20px;">
-						<a href="<?=site_url("admin/schools/edit_school/$s->id")?>?TB_iframe=true&height=450&width=600" class="smoothbox" title="Edit <?=$s->name?>'s Info">Edit Info</a>&nbsp;&nbsp;
+						<a href="<?=site_url("admin/schools/edit_school/$s->id")?>?TB_iframe=true&height=500&width=600" class="smoothbox" title="Edit <?=$s->name?>'s Info">Edit Info</a>&nbsp;&nbsp;
 				</span>
 			</td>
 			<td><?=ucfirst($s->description)?></td>

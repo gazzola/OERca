@@ -7,7 +7,7 @@
 
 		<p class="error">
 			No curriculum found:&nbsp;&nbsp;<a href="<?=site_url("admin/curriculum/add_curriculum/$sid")?>
-				?TB_iframe=true&height=450&width=600" class="smoothbox" title="Add new Curriculum for <?php echo $sname ?>"
+				?TB_iframe=true&height=500&width=600" class="smoothbox" title="Add new Curriculum for <?php echo $sname ?>"
 				style="color:blue">Add a Curriculum</a>
 		</p>
 
@@ -27,7 +27,7 @@
 								<br>
 								<span style="font-size:9px; clear:both; margin-top:20px;">
 									<a href="<?=site_url("admin/curriculum/edit_curriculum/$sid/$curr->id")?>
-										?TB_iframe=true&height=450&width=600" class="smoothbox" title="Edit curriculum Info">Edit Info</a>&nbsp;&nbsp;
+										?TB_iframe=true&height=500&width=600" class="smoothbox" title="Edit curriculum Info">Edit Info</a>&nbsp;&nbsp;
 								</span>
 							</td>
 							<td><?=$curr->description?></td>
@@ -48,7 +48,7 @@
 
 		<p class="error">
 			No subjects found:&nbsp;&nbsp;<a href="<?=site_url("admin/subjects/add_subject/$sid")?>
-				?TB_iframe=true&height=450&width=600" class="smoothbox" title="Add new Subject for <?php echo $sname ?>"
+				?TB_iframe=true&height=500&width=600" class="smoothbox" title="Add new Subject for <?php echo $sname ?>"
 				style="color:blue">Add a Subject</a>
 		</p>
 
@@ -68,7 +68,7 @@
 								<br>
 								<span style="font-size:9px; clear:both; margin-top:20px;">
 									<a href="<?=site_url("admin/subjects/edit_subject/$sid/$subj->id")?>
-										?TB_iframe=true&height=450&width=600" class="smoothbox"
+										?TB_iframe=true&height=500&width=600" class="smoothbox"
 										title="Edit subject Info">Edit Info</a>&nbsp;&nbsp;
 								</span>
 							</td>

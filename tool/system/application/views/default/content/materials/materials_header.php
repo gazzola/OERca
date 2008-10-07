@@ -25,7 +25,7 @@
     <?php if (isset($material['name'])) { ?>
     <div id="materials_nav" style="float: right">
 		  <ul>
-					<li class="normal"><a href="<?=site_url("materials/add_object/$cid/$mid/snapper")?>?TB_iframe=true&height=450&width=500" class="smoothbox" title="Add Content Objects">Add Content Objects</a></li>
+					<li class="normal"><a href="<?=site_url("materials/add_object/$cid/$mid/snapper")?>?TB_iframe=true&height=600&width=450" class="smoothbox" title="Add Content Objects">Add Content Objects</a></li>
 					<li class="normal"><a href="<?=site_url("materials/askforms/$cid/$mid")?>" target="_new">ASK Forms</a></li>
 			    <li class="normal"><a href="<?=site_url("materials/download_all_rcos/$cid/$mid/")?>">Download all Replacement COs</a></li>
       </ul>
@@ -36,7 +36,7 @@
     <div id="materials_nav" style="float: right">
 		  <ul>
 			    <li class="normal">
-						<a href="<?=site_url("materials/add_material/$cid/single/view")?>?TB_iframe=true&height=450&width=400" class="smoothbox" title="Add Materials">Add Materials</a>
+						<a href="<?=site_url("materials/add_material/$cid/single/view")?>?TB_iframe=true&height=500&width=350" class="smoothbox" title="Add Materials">Add Materials</a>
 					</li>
       </ul>
     </div>
