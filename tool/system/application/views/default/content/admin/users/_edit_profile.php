@@ -14,16 +14,16 @@ echo script('flash.js');
 $flash=$this->db_session->flashdata('flashMessage');
 if (isset($flash) AND $flash!='') {
 ?>
-<div id="statusmsg" class="column span-10 first last">
+<div id="statusmsg" class="column span-8.5 first last">
   <div id="flashMessage" style="display:none;"><?=$flash?></div>
 </div>
 <?php } ?>
 
-<div class="column span-6 first last">
+<div class="column span-8.5 first last">
 	<h2>Edit User Profile</h2>
 </div>
 
-<div class="column span-6 first last">
+<div class="column span-8.5 first last">
 
 <?php if ($profile !== false && is_array($profile)) { ?>
 
@@ -46,8 +46,9 @@ if (isset($flash) AND $flash!='') {
 					<img src="<?=site_url('admin/profileimage/'.$uid)?>" width="48px" height="48px" style="margin-top:-20px; float:right"/>
 				</td>
 		</tr>
-    <tr><td><input id="submitbutton" type="submit" name="submit" value="Update Profile" /></td></tr>
  	</table>
+ 	<input id="submitbutton" type="submit" style="float:left" name="submit" value="Update Profile" />
+ 	<input type="button" style="float:right" onclick="parent.window.location.reload(); parent.TB_remove();" value="Close" />
 </form>
 
 <?php } else { ?>
@@ -68,17 +69,12 @@ if (isset($flash) AND $flash!='') {
 			
 			    <tr><th style="">Image: &nbsp;&nbsp;</th></tr>
 			    <tr><td><input type="file" id="photo" name="profile" tabindex="7" size="30"/></td></tr>
-
-    			<tr><td><input id="submitbutton" type="submit" name="submit" value="Add Profile" /></td></tr>
  	</table>
+ 	<input id="submitbutton" type="submit" style="float:left" name="submit" value="Add Profile" />
+ 	<input type="button" style="float:right" onclick="parent.window.location.reload(); parent.TB_remove();" value="Close" />
+	
 </form>
 
 <?php } ?>
 
-</div>
-
-<br style="clear:both"/>
-
-<div class="column span-5 first last" style="margin-top:20px;">
-	<input type="button" style="float:right" onclick="parent.window.location.reload(); parent.TB_remove();" value="Close" />
 </div>

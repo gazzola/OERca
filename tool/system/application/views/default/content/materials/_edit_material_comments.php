@@ -44,7 +44,7 @@ $comments = $material['comments'];
 
 	<div class="clear"><br/></div>
 
-	<input type="button" value="Close" onclick="parent.window.location.reload(); parent.TB_remove();"/>
+	<input type="button" value="Close" style="float:right" onclick="parent.window.location.reload(); parent.TB_remove();"/>
 
   <div id="feedback" style="display:none"></div>
   <input type="hidden" id="cid" name="cid" value="<?=$cid?>" />  <input type="hidden" id="mid" name="mid" value="<?=$mid?>" />
