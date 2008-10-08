@@ -35,13 +35,10 @@ if (isset($flash) AND $flash!='') {
 			<th style=""> Description: &nbsp;&nbsp;</th>
 			<td><textarea id="description" name="description" tabindex="2" style="width:330px; height:100px;"> <?=$school['description']?> </textarea></td>
 		</tr>
-		
-		<tr>
-			<th></th>
-			<td><input id="submitbutton" type="submit" name="submit" value="Edit School" /></td>
-		</tr>
  	</table>
-
+ 	
+ 	<input id="submitbutton" type="submit" style="float:left" name="submit" value="Edit School" />
+  <input type="button" style="float:right" onclick="parent.window.location.reload(); parent.TB_remove();" value="Close" />
 	
 </form>
 
@@ -49,5 +46,5 @@ if (isset($flash) AND $flash!='') {
 
 <br style="clear:both"/>
 
-<input type="button" style="float:right" onclick="parent.window.location.reload(); parent.TB_remove();" value="Close" />
+
 
