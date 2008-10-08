@@ -132,7 +132,7 @@
     <input type="submit" name="download" id="download" value="Download">
   </div>
 </form>
-<?php }}  ?>
+<?php }  ?>
 
 <script type="text/javascript">
 window.addEvent('domready', function() {
