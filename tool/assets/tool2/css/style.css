@@ -376,3 +376,11 @@ div#rightarrow a, div#leftarrow a { border:none; color:#fff}
 #donebot { position:relative; margin-top: 10px; left: 50px;}
 
 /* end Edit CO  page */
+
+.caption_progbar_key {
+	text-align: right; 
+	font-size: 77%; 
+	font-weight: bolder;
+	background-color: #FFF;
+	height: 2em;
+}

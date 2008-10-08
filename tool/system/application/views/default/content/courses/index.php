@@ -13,19 +13,14 @@
 <h2><?= $school ?></h2>
 <p><em>Note: Hold down the shift key to select multiple columns to sort</em></p>
 
-<?php
-    $printkey = TRUE;
-    if ($printkey == TRUE) { // print the key only if we have COs ?>
-      <div style="text-align: right; font-size: 77%; font-weight: bolder;">
+<table class="sortable-onload-1 rowstyle-alt no-arrow">
+      <caption class="caption_progbar_key">
           <img src="<?= site_url("/home/make_stat_key/rem") ?>" class="prog-key"> Not Cleared
           &nbsp;
           <img src="<?= site_url("/home/make_stat_key/ask") ?>" class="prog-key"> In Progress
           &nbsp;
           <img src="<?= site_url("/home/make_stat_key/done") ?>" class="prog-key"> Cleared
-      </div>
-  <?php } ?>
-
-<table class="sortable-onload-1 rowstyle-alt no-arrow">
+      </caption>
     <thead>
     <tr>
         <th class="sortable">Title</th>
