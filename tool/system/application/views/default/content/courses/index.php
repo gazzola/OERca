@@ -30,9 +30,7 @@
         <th class="sortable">Primary Instructor</th>
         <th class="sortable">Instructor(s)</th>
 	<!-- bdr OERDEV140 - add CO status to CourseListing   -->
-        <?php if ((getUserProperty('role') != 'dscribe1')) { ?>
         <th>    CO Status    &nbsp;</th>
-        <?php }?>
         <?php if ((getUserProperty('role') == 'admin')) { ?> <th></th> <?php }?>
     </tr>
     </thead>
@@ -59,7 +57,6 @@
     <td><?=ucfirst($c['director'])?></td>
     <td><?=ucfirst($c['instructors'])?></td>
     
-    <?php if ((getUserProperty('role') !== 'dscribe1')) { ?>
     <td>
     <? $params_url = $c['total'].'/'.$c['done'].'/'.$c['ask'].'/'.$c['rem'];
       if ($c['total'] > 0) { ?>
@@ -74,7 +71,6 @@
 	<? }?>
 	   </a>
    </td>
-    <?php }?>
     <?php if ((getUserProperty('role') == 'admin')) { ?>
 				<td>
 					<?php echo anchor(site_url("admin/courses/remove_course/".$c['id']),	
