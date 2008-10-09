@@ -51,9 +51,13 @@ $copyholder = ($material['author']=='') ? $course['director'] : $material['autho
 		<br/>
 
 		<div class="formField">Embedded COs?:&nbsp;&nbsp;
-			<?php if ($material['embedded_co']==1) { ?>
-        		<input type="radio" name="embedded_co" id="emip_yes" class="update_material" value="1" checked="checked" />&nbsp;Yes
-        		<input type="radio" name="embedded_co" id="emip_no" class="update_material" value="0" />&nbsp;No
+			<?php if ($material['embedded_co']==1) {
+						if ($co_count != 0)
+							$state = 'disabled="disabled"';
+						else
+						 	$state = ''; ?>
+        		<input type="radio" name="embedded_co" id="emip_yes" class="update_material" value="1" checked="checked" <?=$state?> />&nbsp;Yes
+        		<input type="radio" name="embedded_co" id="emip_no" class="update_material" value="0" <?=$state?> />&nbsp;No
     		<?php } else { ?>
         		<input type="radio" name="embedded_co" id="emip_yes" class="update_material" value="1" />&nbsp;Yes
         		<input type="radio" name="embedded_co" id="emip_no" class="update_material" value="0" checked="checked" />&nbsp;No
@@ -62,9 +66,8 @@ $copyholder = ($material['author']=='') ? $course['director'] : $material['autho
 		
 		<br/>
 
-  <input type="button" value="Save" onclick="parent.window.location.reload(); parent.TB_remove();"/>
-	&nbsp; &nbsp; &nbsp; &nbsp;
-  <input type="button" value="Cancel" onclick="parent.TB_remove();"/>
+  <input type="button" value="Save" style="float:left" onclick="parent.window.location.reload(); parent.TB_remove();"/>
+  <input type="button" value="Close" style="float:right" onclick="parent.TB_remove();"/>
 
 	<div id="feedback" style="display:none"></div>
 	<input type="hidden" id="cid" name="cid" value="<?=$cid?>" />

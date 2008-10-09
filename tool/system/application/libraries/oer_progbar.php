@@ -224,9 +224,10 @@ class OER_progbar {
    * @return  void
    */
   public function build_prog_bar($total_objects, $done_objects, $ask_objects,
-    $rem_objects, $my_width, $my_height, $font_size)
+    $rem_objects, $my_width, $my_height, $font_size, $dash = 0) //OERDEV-181 mbleed: added $dash var to fucntion call
   { 
     // TODO: build in dynamic borders, currently they are fixed.
+    if ($total_objects == 0 ) $total_objects = 1; //division by zero workaround OERDEV-181 mbleed
     $this->total_objects = $total_objects;
     $this->width = $my_width;
     $this->height = $my_height;
@@ -283,8 +284,9 @@ class OER_progbar {
     $sludge = 0;
 
     // if no embedded objects and material is "cleared"
-    if ($total_objects == 1000000) {
-        $done_x2 = $done_x1 + ($this->_set_prog_width(1000000, $sludge, 0));
+    
+    if ($dash == 2) { 					//OERDV-181 mbleed: change this from checking for hardcoded obj=1000000 to dash case 2 (edited and co=no) 
+        $done_x2 = $done_x1 + ($this->_set_prog_width($this->total_objects, $sludge, 0));
         imagefilledrectangle($this->im, $done_x1, $y1, $done_x2, $y2, $done_color);
         imagettftext($this->im,$pointsize,0,$done_x1+(($done_x2-$done_x1-4)/2),$y2-3,
                      $text_color, $fontfile, 0);
@@ -296,7 +298,21 @@ class OER_progbar {
         imagettftext($this->im,$pointsize+1,0,$tot_x1+(($tot_x2-$tot_x1-16)/2),$y2-3,
                         $text_color, $fontfile, $zero_objects);
 
-    } else{
+    } elseif ($dash == 4) { 		//OERDV-181 mbleed: change this from checking for hardcoded obj=1000000 to dash case 4 (edited and co=yes and total=0) 
+        $done_x2 = $done_x1 + ($this->_set_prog_width($this->total_objects, $sludge, 0));
+        imagefilledrectangle($this->im, $done_x1, $y1, $done_x2, $y2, $rem_color);
+        imagettftext($this->im,$pointsize,0,$done_x1+(($done_x2-$done_x1-4)/2),$y2-3,
+                     $text_color, $fontfile, 0);
+
+        $tot_x1 = $done_x2 + 2;
+        $tot_x2 = $tot_x1 + 20;
+
+        $zero_objects = 0;
+        imagettftext($this->im,$pointsize+1,0,$tot_x1+(($tot_x2-$tot_x1-16)/2),$y2-3,
+                        $text_color, $fontfile, $zero_objects);
+
+    } else {
+    	
     		$fudge_amount = 0;
            // figure out if we have to fudge the width for small "counts"  - bdr
            if ($rem_objects > 0)

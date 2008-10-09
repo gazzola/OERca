@@ -32,18 +32,15 @@
       <a href="javascript:void(0);" onClick="SetAllCheckBoxes('mat_form', 'select_material[]', false);" >None</a>
     </span>
   </div>
-  
-<?php
-      if ($printkey == TRUE) { // print the key only if we have COs ?>
-      <div style="text-align: right; font-size: 77%; font-weight: bolder;"><br>
+
+  <table class="sortable-onload-7 rowstyle-alt no-arrow" style="clear: both; margin-bottom: 0px;">
+      <caption class="caption_progbar_key">
           <img src="<?= site_url("/home/make_stat_key/rem") ?>" class="prog-key"> Not Cleared
           &nbsp;
           <img src="<?= site_url("/home/make_stat_key/ask") ?>" class="prog-key"> In Progress
           &nbsp;
           <img src="<?= site_url("/home/make_stat_key/done") ?>" class="prog-key"> Cleared
-      </div>
-
-  <table class="sortable-onload-7 rowstyle-alt no-arrow" style="clear: both; margin-bottom: 0px;">
+      </caption>
   	<thead>
   	<tr>
   	  <th><strong>Select</strong></th>
@@ -102,8 +99,9 @@
 		if ($material['mdash'] == 1) { ?>
 			<span style="font-size: 13px;"><center>--</center></span>
 		<?}
-
-      		elseif ($material['mtotal'] > 0) { ?>
+      		//elseif ($material['mtotal'] > 0) { //OERDEV-181 mbleed: removed this if statement, 0 CO case will produce progbars 
+      		else {
+		?>
                    <a href="<?php echo site_url()."materials/edit/$cid/".$material['id']?>">
 		   <img src="<?= site_url("/home/material_bar/$params_url") ?>" 
               	   alt="Progress Bar: 
@@ -134,7 +132,7 @@
     <input type="submit" name="download" id="download" value="Download">
   </div>
 </form>
-<?php }}  ?>
+<?php }  ?>
 
 <script type="text/javascript">
 window.addEvent('domready', function() {

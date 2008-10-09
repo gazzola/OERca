@@ -13,19 +13,14 @@
 <h2><?= $school ?></h2>
 <p><em>Note: Hold down the shift key to select multiple columns to sort</em></p>
 
-<?php
-    $printkey = TRUE;
-    if ($printkey == TRUE) { // print the key only if we have COs ?>
-      <div style="text-align: right; font-size: 77%; font-weight: bolder;">
+<table class="sortable-onload-1 rowstyle-alt no-arrow">
+      <caption class="caption_progbar_key">
           <img src="<?= site_url("/home/make_stat_key/rem") ?>" class="prog-key"> Not Cleared
           &nbsp;
           <img src="<?= site_url("/home/make_stat_key/ask") ?>" class="prog-key"> In Progress
           &nbsp;
           <img src="<?= site_url("/home/make_stat_key/done") ?>" class="prog-key"> Cleared
-      </div>
-  <?php } ?>
-
-<table class="sortable-onload-1 rowstyle-alt no-arrow">
+      </caption>
     <thead>
     <tr>
         <th class="sortable">Title</th>
@@ -35,9 +30,7 @@
         <th class="sortable">Primary Instructor</th>
         <th class="sortable">Instructor(s)</th>
 	<!-- bdr OERDEV140 - add CO status to CourseListing   -->
-        <?php if ((getUserProperty('role') != 'dscribe1')) { ?>
         <th>    CO Status    &nbsp;</th>
-        <?php }?>
         <?php if ((getUserProperty('role') == 'admin')) { ?> <th></th> <?php }?>
     </tr>
     </thead>
@@ -64,7 +57,6 @@
     <td><?=ucfirst($c['director'])?></td>
     <td><?=ucfirst($c['instructors'])?></td>
     
-    <?php if ((getUserProperty('role') !== 'dscribe1')) { ?>
     <td>
     <? $params_url = $c['total'].'/'.$c['done'].'/'.$c['ask'].'/'.$c['rem'];
       if ($c['total'] > 0) { ?>
@@ -79,7 +71,6 @@
 	<? }?>
 	   </a>
    </td>
-    <?php }?>
     <?php if ((getUserProperty('role') == 'admin')) { ?>
 				<td>
 					<?php echo anchor(site_url("admin/courses/remove_course/".$c['id']),	

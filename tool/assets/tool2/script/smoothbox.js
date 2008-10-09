@@ -217,13 +217,26 @@ function TB_show(caption, url, rel) {
 		TB_WIDTH = (params['width']*1) + 30;
 		TB_HEIGHT = (params['height']*1) + 40;
 
+		// kwc 10/07/2008 If the requested sizes are too big,
+		// make them work for the current window size
+		if (TB_WIDTH > window.getWidth()) {
+			TB_WIDTH = window.getWidth() - 100;
+		}
+		if (TB_HEIGHT > window.getHeight()) {
+			TB_HEIGHT = window.getHeight() - 100;
+			TB_WIDTH += 50;  // add extra width for scroll bar
+		}
+
 		var ajaxContentW = TB_WIDTH - 30,
 			ajaxContentH = TB_HEIGHT - 45;
 		
 		if(url.indexOf('TB_iframe') != -1){				
 			urlNoQuery = url.split('TB_');		
 			//$("TB_window").innerHTML += "<div id='TB_title'><div id='TB_ajaxWindowTitle'>"+caption+"</div><div id='TB_closeAjaxWindow'><a href='#' id='TB_closeWindowButton' title='Close'>close</a></div></div><iframe frameborder='0' hspace='0' src='"+urlNoQuery[0]+"' id='TB_iframeContent' name='TB_iframeContent' style='width:"+(ajaxContentW + 29)+"px;height:"+(ajaxContentH + 17)+"px;' onload='TB_showWindow()'> </iframe>";
-			$("TB_window").innerHTML += "<div id='TB_title'><div id='TB_ajaxWindowTitle'>"+caption+"</div></div><iframe frameborder='0' hspace='0' src='"+urlNoQuery[0]+"' id='TB_iframeContent' name='TB_iframeContent' style='width:"+(ajaxContentW + 29)+"px;height:"+(ajaxContentH + 17)+"px;' onload='TB_showWindow()'> </iframe>";
+			//$("TB_window").innerHTML += "<div id='TB_title'><div id='TB_ajaxWindowTitle'>"+caption+"</div></div><iframe frameborder='0' hspace='0' src='"+urlNoQuery[0]+"' id='TB_iframeContent' name='TB_iframeContent' style='width:"+(ajaxContentW + 29)+"px;height:"+(ajaxContentH + 17)+"px;' onload='TB_showWindow()'> </iframe>";
+			// remove the white TB_title and TB_ajaxWindowTitle elements in the popup smoothbox
+			$("TB_window").innerHTML += "<iframe frameborder='0' hspace='0' src='"+urlNoQuery[0]+"' id='TB_iframeContent' name='TB_iframeContent' style='width:"+(ajaxContentW + 29)+"px;height:"+(ajaxContentH + 17)+"px;' onload='TB_showWindow()'> </iframe>";
+			
 		} else {
 			$("TB_window").innerHTML += "<div id='TB_title'><div id='TB_ajaxWindowTitle'>"+caption+"</div><div id='TB_closeAjaxWindow'><a href='#' id='TB_closeWindowButton'>close</a></div></div><div id='TB_ajaxContent' style='width:"+ajaxContentW+"px;height:"+ajaxContentH+"px;'></div>";
 		}

@@ -376,10 +376,10 @@ class Material extends Model
         if ($cm['modified_on'] == '0000-00-00 00:00:00') $cm['mdash'] = 1; // material is brand new;
         if ($cm['modified_on'] <> '0000-00-00 00:00:00' && $cm['embedded_co'] == 0) $cm['mdash'] = 2; // edited and co=no
         if ($cm['modified_on'] <> '0000-00-00 00:00:00' && $cm['embedded_co'] == 1) $cm['mdash'] = 3; // edited and co=yes
-
+        if ($cm['modified_on'] <> '0000-00-00 00:00:00' && $cm['embedded_co'] == 1 && $cm['mtotal']== 0) $cm['mdash'] = 4; // edited and co=yes and total = 0 OERDEV-181 mbleed
 
         //  OERDEV-140 - let's see if we can make a progress bar green with no CO's
-	if ($cm['embedded_co'] == 0) $cm['mtotal'] = 1000000;
+		//if ($cm['embedded_co'] == 0) $cm['mtotal'] = 1000000; //OERDEV-181 mbleed: remove hardcoded 1000000 total case and replace by sending $dash=2 to progbar function
 
         // bdr OERDEV-146: let's try to figure out if all CO's have a Recommended Action
 	$cm['recaction'] = 0;
@@ -442,10 +442,11 @@ class Material extends Model
           if ($tmp[$order]['modified_on'] == '0000-00-00 00:00:00') $tmp[$order]['mdash'] = 1; // material is brand new;
           if ($tmp[$order]['modified_on'] <> '0000-00-00 00:00:00' && $tmp[$order]['embedded_co'] == 0) $tmp[$order]['mdash'] = 2; // edited and co=no
           if ($tmp[$order]['modified_on'] <> '0000-00-00 00:00:00' && $tmp[$order]['embedded_co'] == 1) $tmp[$order]['mdash'] = 3; // edited and co=yes
+          if ($tmp[$order]['modified_on'] <> '0000-00-00 00:00:00' && $tmp[$order]['embedded_co'] == 1 && $tmp[$order]['mtotal'] == 0) $tmp[$order]['mdash'] = 4; // edited and co=yes and total=0 OERDEV-181 mbleed
 
 
           //  OERDEV-140 - let's see if we can make a progress bar green with no CO's
-          if ($cm['embedded_co'] == 0) $tmp[$order]['mtotal'] = 1000000;
+          //if ($cm['embedded_co'] == 0) $tmp[$order]['mtotal'] = 1000000; //OERDEV-181 mbleed: remove hardcoded 1000000 total case and replace by sending $dash=2 to progbar functio
 
           // bdr OERDEV-146: let's try to figure out if all CO's have a Recommended Action
           $tmp[$order]['recaction'] = 0;

@@ -142,7 +142,7 @@ if (isset($flash) AND $flash!='') {
 				<input type="text" name="language" id="language" 
 					value="<?=$coursedetails['language'] ?>" class="input" />
 			</div>
-        
+      
 			<!-- <div class="formLabel">Curricular Information:</div>
 			<div class="formField">
 				<input type="text" name="currinfo" id="currinfo" class="input" />
@@ -181,10 +181,8 @@ if (isset($flash) AND $flash!='') {
 		<br style="clear:both"/><br/><br/>
 		<span style="text-align:center">
 			<input type="submit" style="float:left" value="Save" />
+			<input type="button" style="float:right" value="Close" onclick="parent.window.location.reload(); parent.TB_remove();"/>
 		</span>
-	</div>
-	<div style="clear:both"/>
-		<input type="button" style="float:right" value="Close" onclick="parent.window.location.reload(); parent.TB_remove();"/>
 	</div>
   </form>
 </div>

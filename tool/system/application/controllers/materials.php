@@ -74,6 +74,7 @@ class Materials extends Controller {
 		$mimetypes =  $this->mimetype->mimetypes();
 	  $course = $this->course->get_course($cid); 
 		$material =  $this->material->materials($cid,$mid,true);
+		$co_count = $this->coobject->num_objects($mid);
 
 		$data = array(
 					  'material'=>$material[0], 
@@ -82,6 +83,7 @@ class Materials extends Controller {
 	   				'course'=> $course,
 				  	'tags'=>$tags,
 				  	'mimetypes'=>$mimetypes,
+						'co_count'=>$co_count,
 		);
 
     $this->load->view(property('app_views_path').'/materials/_edit_material_info.php', $data);

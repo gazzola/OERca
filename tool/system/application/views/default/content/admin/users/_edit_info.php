@@ -14,16 +14,16 @@ echo script('flash.js');
 $flash=$this->db_session->flashdata('flashMessage');
 if (isset($flash) AND $flash!='') {
 ?>
-<div id="statusmsg" class="column span-6 first last">
+<div id="statusmsg" class="column span-9 first last">
   <div id="flashMessage" style="display:none;"><?=$flash?></div>
 </div>
 <?php } ?>
 
-<div class="column span-6 first last">
+<div class="column span-9 first last">
 	<h2>Edit User</h2>
 </div>
 
-<div class="column span-6 first last">
+<div class="column span-9 first last">
 
 <?php if ($user !== false && is_array($user)) { ?>
 
@@ -49,13 +49,10 @@ if (isset($flash) AND $flash!='') {
       <th style="text-align:left"><span style="color:red">*</span>Username:</th>
       <td><input type="text" id="user_name" name="user_name" tabindex="3" size="30" value="<?=$user['user_name']?>" /></td>
     </tr>
-
-    <tr>
-			<th></th>
-      <td><input id="submitbutton" type="submit" name="submit" value="Update" /></td>
-    </tr>
  	</table>
-
+ 	
+  <input id="submitbutton" type="submit" style="float:left" name="submit" value="Update" />
+  <input type="button" style="float:right" onclick="parent.window.location.reload(); parent.TB_remove();" value="Close" />
 </form>
 
 <?php } else { ?>
@@ -64,10 +61,4 @@ if (isset($flash) AND $flash!='') {
 
 <?php } ?>
 
-</div>
-
-<br style="clear:both"/>
-
-<div class="column span-5 first last">
-	<input type="button" style="float:right" onclick="parent.window.location.reload(); parent.TB_remove();" value="Close" />
 </div>
