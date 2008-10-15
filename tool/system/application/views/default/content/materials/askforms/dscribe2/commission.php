@@ -3,7 +3,7 @@ $count = 1;
 $sliders = array();
 $lim_select = $select_actions;
 
-foreach($lim_select as $k => $v) {if ($v<>'None' &&$v<>'Search' && $v<>'Re-Create') {unset($lim_select[$k]);}}
+foreach($lim_select as $k => $v) {if ($v<>'None' &&$v<>'Search' && $v<>'Create') {unset($lim_select[$k]);}}
 
 foreach($cos as $obj) {
   			$items = $obj['commission'];

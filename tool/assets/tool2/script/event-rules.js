@@ -304,7 +304,7 @@ var Rules = {
 							
 							return false;
 						} else {
-								if (val == 'Search' || val == 'Re-Create' || val=='Remove and Annotate') {
+								if (val == 'Search' || val == 'Create' || val=='Remove and Annotate') {
 										new Ajax(url, { method: 'post', postBody: 'field='+field+'&val='+val, update: fb }).request();
 										var ask_dscrib2 = document.getElementsByName('ask_dscribe2');
 										for ( var i = 0 ; i < ask_dscrib2.length ; i++ ) {
@@ -416,7 +416,7 @@ var Rules = {
 							return 'Please fill out required field for this action'; } 
 					if (action=='Permission' && ($('description').value=='' || $('contact_name').value=='' || $('contact_phone').value=='' || $('contact_email').value=='')) { 
 							return 'Please fill out required fields for this action'; } 
-					if ((action=='Retain: Permission' || action=='Retain: No Copyright' || action=='Retain: Public Domain') && $('retain_rationale').value=='') { 
+					if ((action=='Retain: Permission' || action=='Retain: Copyright Analysis' || action=='Retain: Public Domain') && $('retain_rationale').value=='') { 
 							return 'Please fill out required field for this action'; } 
 					return 'success';
 		}
