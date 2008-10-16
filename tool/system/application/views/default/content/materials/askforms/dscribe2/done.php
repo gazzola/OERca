@@ -122,7 +122,7 @@ foreach($cos as $type => $co) {
 
 	<?php } elseif ($type=='retain') { ?>
 
-			<h2>Here are the responses the dScribe2 provided to the dscribe1's Copyright Analysis claims:</h2>
+			<h2>Here are the responses the dScribe2 provided to the dscribe1's Retain claims:</h2>
 			<br/>
 
 			<?php foreach($obj['retain'] as $item) { 

@@ -2,14 +2,14 @@
 $count = 1;
 $yes = $accept = $sliders = array();
 				
-$accept['Retain: Copyright Analysis'] = "Do you accept the dScribe's action recommendation to retain this content object following <em>copyright analysis</em>?";
+$accept['Retain: Copyright Analysis'] = "Do you accept the dScribe's action recommendation to retain this content object based on your <em>copyright analysis</em>?";
 $accept['Retain: Permission'] = "Do you accept the dScribe's action recommendation to retain this content object because OER has <em>permission</em>?";
 $accept['Retain: Public Domain'] = "Do you accept the dScribe's action recommendation to retain this content object because it is in the <em>public domain</em>?";
 //default actions
 $default_actions = array('None', 'Permission', 'Search', 'Create', 'Commission', 'Fair Use', 'Remove and Annotate');
 foreach ($default_actions as $default_action) $accept[$default_action] = 'The action type is not currently Retain: Copyright Analysis, Retain: Permission, or Retain: Public Domain.  Choose No below to change it.';
 
-$yes['Retain: Copyright Analysis'] = "Please provide additional rationale for why this object has been retained following <em>copyright analysis</em>:";
+$yes['Retain: Copyright Analysis'] = "Please provide additional rationale for why this object has been retained based on your <em>copyright analysis</em>:";
 $yes['Retain: Permission'] = "Please provide additional rationale for why OER has <em>permission</em> for this object:";
 $yes['Retain: Public Domain'] = "Please provide additional rationale for why this object is in the <em>public domain</em>:";
 foreach ($default_actions as $default_action) $yes[$default_action] = 'The action type is not currently Retain: Copyright Analysis, Retain: Permission, or Retain: Public Domain.  Choose No below to change it.';
