@@ -144,7 +144,7 @@ foreach($cos as $type => $co) {
 			?>
 
 				<fieldset>
-					<label>Copyright Analysis Claim</label>
+					<label>Retain Claim</label>
      			<p><h3><?=$this->ocw_user->username($item['user_id']) ?>'s (dScribe) Rationale:</h3></p>
     			<p style="margin-bottom:15px;border:1px solid #ccc; padding:5px; background-color:#eee">
 						<?= ($item['rationale']=='') ? 'No rationale provided' : $item['rationale'] ?>
