@@ -122,7 +122,7 @@ foreach($cos as $type => $co) {
 
 	<?php } elseif ($type=='retain') { ?>
 
-			<h2>Here are the responses the dScribe2 provided to the dscribe1's No copyright claims:</h2>
+			<h2>Here are the responses the dScribe2 provided to the dscribe1's Copyright Analysis claims:</h2>
 			<br/>
 
 			<?php foreach($obj['retain'] as $item) { 
@@ -130,7 +130,7 @@ foreach($cos as $type => $co) {
 			?>
 
 				<fieldset>
-					<label>No Copyright Claim</label>
+					<label>Copyright Analysis Claim</label>
      			<p><h3><?=$this->ocw_user->username($item['user_id']) ?>'s (dScribe) Rationale:</h3></p>
     			<p style="margin-bottom:15px;border:1px solid #ccc; padding:5px; background-color:#eee">
 						<?= ($item['rationale']=='') ? 'No rationale provided' : $item['rationale'] ?>

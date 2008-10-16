@@ -254,7 +254,7 @@ class Materials extends Controller {
 																																	  'fairuse'=>'Fair Use Questions',
 																																	  'permission'=>'Permission Questions',
 																																	  'commission'=>'Commission Questions',
-																																	  'retain'=>'No Copyright Questions',
+																																	  'retain'=>'Copyright Analysis Questions',
 																																	 ); }
 		if ($view == 'fairuse') { $data['select_actions'] = $this->coobject->enum2array('claims_fairuse','action'); }
 		if ($view == 'permission') { $data['select_actions'] = $this->coobject->enum2array('claims_permission','action'); }
