@@ -12,7 +12,6 @@
 	   echo style('style.css',array('media'=>"screen, projection"));
 	   echo style('table.css',array('media'=>"screen, projection"));
 	   echo style('multiupload.css',array('media'=>"screen, projection"));
-	   echo style('carousel.css',array('media'=>"screen, projection"));
 	   echo style('smoothbox.css',array('media'=>"screen, projection"));
 
 	   echo script('mootools.js'); 

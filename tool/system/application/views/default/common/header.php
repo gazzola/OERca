@@ -53,7 +53,7 @@
 		
     <?php } elseif (getUserProperty('role') == 'instructor') { ?>
 
-		  <li<?= (preg_match('/^(instructor|instructor\/home)/', $ci_uri) > 0)? $att: ''?>><?=anchor("/home",$this->lang->line('ocw_ds_menu_home'))?></li>
+		  <li<?= (preg_match('/^(home)|(instructor\/home)/', $ci_uri) > 0)? $att: ''?>><?=anchor("/home",$this->lang->line('ocw_ds_menu_home'))?></li>
 	  	<li<?= (preg_match('/^(instructor\/courses)/', $ci_uri) > 0)? $att: ''?>><?=anchor("/instructor/courses",'Manage Courses')?></li>
 
 			<?php if (isset($cid)) { ?>

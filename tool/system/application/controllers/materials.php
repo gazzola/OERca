@@ -177,8 +177,8 @@ class Materials extends Controller {
 		}
 		
 		$view = (!in_array($view, array('all','new','ask:orig','fairuse','search','retain:pd',
-											'retain:perm','ask:rco','uncleared', 'permission','commission', 'retain:nc','replace',
-											'recreate','remove','cleared'))) ? 'all' : $view;
+											'retain:perm','ask:rco','uncleared', 'permission','commission', 'retain:ca','replace',
+											'create','remove','cleared'))) ? 'all' : $view;
 
 		// get correct view if an object id is provided
 		if ($oid != 0)  {
@@ -214,9 +214,9 @@ class Materials extends Controller {
 				'permission' => 'Permission ('.$data['num_permission'].')',
 				'search' => 'Search ('.$data['num_search'].')',
 				'retain:perm' => 'Retain: Permission ('.$data['num_retain_perm'].')',
-				'retain:nc' => 'Retain: No Copyright ('.$data['num_retain_nc'].')',
+				'retain:ca' => 'Retain: Copyright Analysis ('.$data['num_retain_ca'].')',
 				'retain:pd' => 'Retain: Public Domain ('.$data['num_retain_pd'].')',
-				'recreate' => 'Re-Create ('.$data['num_recreate'].')',
+				'create' => 'Create ('.$data['num_create'].')',
 				'commission' => 'Commission ('.$data['num_commission'].')',
 				'fairuse' => 'Fair Use ('.$data['num_fairuse'].')',
 				'remove' => 'Remove ('.$data['num_remove'].')',
@@ -254,7 +254,7 @@ class Materials extends Controller {
 																																	  'fairuse'=>'Fair Use Questions',
 																																	  'permission'=>'Permission Questions',
 																																	  'commission'=>'Commission Questions',
-																																	  'retain'=>'No Copyright Questions',
+																																	  'retain'=>'Copyright Analysis Questions',
 																																	 ); }
 		if ($view == 'fairuse') { $data['select_actions'] = $this->coobject->enum2array('claims_fairuse','action'); }
 		if ($view == 'permission') { $data['select_actions'] = $this->coobject->enum2array('claims_permission','action'); }
@@ -532,10 +532,10 @@ class Materials extends Controller {
 	
 						if ($res===true) {
 								// update claim action as well.
-								if ($val<>'Search' && $val<>'Re-Create' && $val<>'Remove and Annotate') {
+								if ($val<>'Search' && $val<>'Create' && $val<>'Remove and Annotate') {
 										$claimtype = array('Permission'=>'permission','Commission'=>'commission', 'Fair Use'=>'fairuse',
 																			 'Retain: Public Domain'=>'retain',
-																			 'Retain: No Copyright'=>'retain',
+																			 'Retain: Copyright Analysis'=>'retain',
 																			 'Retain: Permission'=>'retain');
 										$cl = $this->coobject->claim_exists($oid,$claimtype[$val]);
 										if ($cl!== false) {
@@ -879,13 +879,15 @@ class Materials extends Controller {
 	    {
 	      $this->load->helper('download');
 	      $this->load->library('zip');
+	     
+	      // $user_name = getUserProperty('user_name');
 	      
 	      // get a timestamp formatted as YYYY-MM-DD-HHMMSS
 	      $timestamp = date($this->date_format);
 	      
 	      /* add a top level folder in zip files so files aren't sprayed all 
-	       * over the filesystem. Use "oer_materials-$timestamp" defined above
-	       * as a folder name */
+	       * over the filesystem. Use "$timestamp" defined above
+	       * as a part of the folder name */
 	      $parent_folder = "oer_materials-$timestamp";
 	      
 	      $num_files = 0;
@@ -913,7 +915,9 @@ class Materials extends Controller {
 	            /* for more than $max_in_single_folder files
     	         * create subfolders for materials */
 	            elseif ($num_files > $max_in_single_folder) {
-	              $name = "$parent_folder/{$mat_files['material_name']}_{$mat_files['material_date']}/$name";
+	              $name = "$parent_folder/" .
+	                $mat_files['material_name'] . "_" . 
+	                $mat_files['material_date'] . "/" . $name;
 	            }
 	            $this->zip->add_data($name, $data);
 	          }
@@ -926,7 +930,7 @@ class Materials extends Controller {
 	    
 	    /**
 	      * Determine the name for the material files from the metadata
-	      * this is function attempts to do the best it can.
+	      * this function attempts to do the best it can.
 	      * 
 	      * @access   private
 	      * @param    string the original name of the file

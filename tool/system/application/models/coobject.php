@@ -520,7 +520,7 @@ class Coobject extends Model
 								 if ($notalldone) { array_push($commission, $obj); $num_commission++; }
 						}
 
-						/* get objects with retain (no copyright) claims */
+						/* get objects with retain (copyright analysis) claims */
 						if (($c = $this->claim_exists($obj['id'], 'retain')) !== FALSE) {
 								 $added = $notalldone = false;
 								 $obj['otype'] = 'original';
@@ -688,8 +688,8 @@ class Coobject extends Model
    * @param int mid material id
 	 * @param int oid object id
    * @return string status [new|ask:orig|ask:rco|fairuse|search|retain:perm|
-	 *											  retain:nc|retain:pd|uncleared|cleared|permission|
-	 *										    commission|replace|remove|recreate]
+	 *											  retain:ca|retain:pd|uncleared|cleared|permission|
+	 *										    commission|replace|remove|create]
 	 */
 	public function object_status($cid, $mid, $oid) 
 	{
@@ -717,10 +717,10 @@ class Coobject extends Model
                               case 'Fair Use':   $status = 'fairuse';     break;
                               case 'Permission': $status = 'permission';  break;
                               case 'Commission': $status = 'commission';  break;
-                              case 'Re-Create':  $status = 'recreate';    break;
+                              case 'Create':     $status = 'create';    break;
                               case 'Retain: Permission':    $status = 'retain:perm'; break;
                               case 'Retain: Public Domain': $status = 'retain:pd'; break;
-                              case 'Retain: No Copyright':  $status = 'retain:nc'; break;
+                              case 'Retain: Copyright Analysis':  $status = 'retain:ca'; break;
                               case 'Remove and Annotate':   $status = 'remove'; break;
                               default: $status = 'new';
                      	}
@@ -755,8 +755,8 @@ class Coobject extends Model
 			    $data['num_ask_orig'] = $data['num_ask_rco'] = $data['num_ask_generalinst'] = 
 				  $data['num_ask_general'] = $data['num_ask_done'] = $data['num_ask_aitems'] = $data['num_fairuse'] =
 			    $data['num_permission'] = $data['num_commission'] =
-			    $data['num_retain_perm'] = $data['num_retain_nc'] = $data['num_retain_pd'] =
-			    $data['num_replace'] = $data['num_recreate'] = $data['num_uncleared'] =
+			    $data['num_retain_perm'] = $data['num_retain_ca'] = $data['num_retain_pd'] =
+			    $data['num_replace'] = $data['num_create'] = $data['num_uncleared'] =
 			    $data['num_remove'] = $data['num_cleared'] = 0;
 			
 					$objects = array();
@@ -764,8 +764,8 @@ class Coobject extends Model
 			    $objects['ask:orig'] = $objects['ask:rco'] = $objects['done'] = $objects['aitems'] = 
 			    $objects['generalinst'] = $objects['general'] = $objects['fairuse'] =
 			    $objects['permission'] = $objects['commission'] =
-			    $objects['retain:perm'] = $objects['retain:nc'] = $objects['retain:pd'] =
-			    $objects['replace'] = $objects['recreate'] = $objects['uncleared'] =
+			    $objects['retain:perm'] = $objects['retain:ca'] = $objects['retain:pd'] =
+			    $objects['replace'] = $objects['create'] = $objects['uncleared'] =
 			    $objects['remove'] = $objects['cleared'] = array();
 	
 					// use information from ask form status	
@@ -774,7 +774,7 @@ class Coobject extends Model
 					$objects['fairuse'] = $askinfo['fairuse'];	$data['num_fairuse'] = $askinfo['num_avail']['fairuse'];	
 					$objects['permission'] = $askinfo['permission'];	$data['num_permission'] = $askinfo['num_avail']['permission'];	
 					$objects['commission'] = $askinfo['commission'];	$data['num_commission'] = $askinfo['num_avail']['commission'];	
-					$objects['retain:nc'] = $askinfo['retain'];	$data['num_retain_nc'] = $askinfo['num_avail']['retain'];	
+					$objects['retain:ca'] = $askinfo['retain'];	$data['num_retain_ca'] = $askinfo['num_avail']['retain'];	
 
 			    if ($orig_objects != null) {
 			        foreach ($orig_objects as $obj) {
@@ -851,7 +851,7 @@ class Coobject extends Model
 																			break;
 			                          case 'Commission': // used data from $askinfo above 
 																			break;
-			                          case 'Retain: No Copyright': // used data from $askinfo above 
+			                          case 'Retain: Copyright Analysis': // used data from $askinfo above 
 																			break;
 			                          case 'Retain: Permission':
 			                                array_push($objects['retain:perm'],$obj);
@@ -859,9 +859,9 @@ class Coobject extends Model
 			                          case 'Retain: Public Domain':
 			                                array_push($objects['retain:pd'],$obj);
 			                                $data['num_retain_pd']++; break;
-			                          case 'Re-Create':
-			                                array_push($objects['recreate'],$obj); 
-			                                $data['num_recreate']++; break;
+			                          case 'Create':
+			                                array_push($objects['create'],$obj); 
+			                                $data['num_create']++; break;
 			                          case 'Remove and Annotate':
 			                                array_push($objects['remove'],$obj);
 			                                $data['num_remove']++; break;
@@ -1849,7 +1849,7 @@ class Coobject extends Model
 		} elseif (preg_match("/(fairuse|general|permission|commission|retain):\w+/",$filter,$m)) {
 				$q_results = $s['objects'][$m[1]];
 		} else {
-				if ($filter=='retain') { $filter = 'retain:nc'; }
+				if ($filter=='retain') { $filter = 'retain:ca'; }
 				$q_results = $s['objects'][$filter]; 
 		}
 
