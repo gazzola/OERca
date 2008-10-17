@@ -241,13 +241,13 @@ class OCW_utils {
 			$dcell = ($shrink) ? 'dcell':'dcellbig';
 			
 			switch ($this->object->coobject->object_progress($oid)) {
-				case 'uncleared':
+				case 'notcleared':
 					$statusclass = 'status_notcleared';
 					break;
 				case 'inprogress':
 					$statusclass = 'status_inprogress';
 					break;
-				case 'notcleared':
+				case 'cleared':
 					$statusclass = 'status_cleared';
 					break;
 				default:
