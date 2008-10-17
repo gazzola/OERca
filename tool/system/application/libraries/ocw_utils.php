@@ -239,9 +239,25 @@ class OCW_utils {
 							:	 '<img title="'.$title.'" src="'.$imgurl.'" style="'. $size .'" />';
 
 			$dcell = ($shrink) ? 'dcell':'dcellbig';
-	   	return '<div class="'.$dcell.' '.$optclass.'">'.$imglnk.
-						 '<div class="coimginfo">'.(($showinfo) ? $locbar.$slide.$editlnk.$magnify:
-																									  '<p>&nbsp;</p>').'</div></div>';
+			
+			switch ($this->object->coobject->object_progress($oid)) {
+				case 'uncleared':
+					$statusclass = 'status_notcleared';
+					break;
+				case 'inprogress':
+					$statusclass = 'status_inprogress';
+					break;
+				case 'notcleared':
+					$statusclass = 'status_cleared';
+					break;
+				default:
+					$statusclass = 'status_unknown';
+					break;				
+			} //end switch
+
+	   	return '<div class="'.$dcell.' '.$optclass.'"><span class="status_flag '.$statusclass.'"></span><div class="co_tile">'.$imglnk.
+						 '<div class="coimginfo '.$statusclass.'">'.(($showinfo) ? $locbar.$slide.$editlnk.$magnify:
+																									  '<p>&nbsp;</p>').'</div></div></div>';
 	}
 
 	function create_slide($cid,$mid,$loc,$text='View context',$useimage=false)
@@ -263,7 +279,7 @@ class OCW_utils {
 						?'<a href="'.$imgurl.'" class="smoothbox" title="" rel="gallery-slide">'.$img.'</a>'
 						:'<a href="'.$imgurl.'" class="smoothbox" title="" rel="gallery-slide">'.$text.'</a>';
 
-	   	return ($thumb_found) ? $aurl : '<a href="javascript:void(0)">&nbsp;No context&nbsp;&nbsp;</a>';
+	   	return ($thumb_found) ? $aurl : '<span class="spanbutton">&nbsp;No context&nbsp;&nbsp;</span>';
 	}
 
 	function remove_dir($dir)

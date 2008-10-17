@@ -228,7 +228,6 @@ ul#navlist li#active a { background-color: #fff; color: #990033; }
   padding: 0 0 0 5px;
   font: normal 100% helvetica, Arial, sans-serif;
 }
-#materials_nav li.normal a { background-color: #fff; color: #e60; }
 
 #materials_nav ul li.active { 
     display: inline;
@@ -324,31 +323,78 @@ a.smoothbox img { border:1px solid #dedede;}
 a.smootbox,
 a.smoothbox:hover { text-decoration:none; }
 
-.coimginfo { float:left;  padding:0; margin-top:-4px; max-width:300px; min-width:152px; height:24px; background-color:#000; }
+.coimginfo { float:left;  padding:0; margin-top:-4px; width: 100%; max-width:300px; min-width:152px; height:23px; background-color: #FFF; position: relative; left: -3px; top: -20px; }
 .coimginfo p { float:left; margin:0; padding:0; color:#fff; font-family:Arial; display:inline; margin-top:7px;}
-p#ciloc { margin:0; padding:0; margin-left:2px; margin-right:3px; margin-top:5px; width:28px;}
+p#ciloc { margin:0; padding:0; margin-left:3px; margin-right:3px; margin-top:3px; width:16px; color: #666;}
 p#cimagnify a { float:right; margin:0; padding:0 5px; text-decoration:none; margin-left:1px; margin-top:-3px;}
-p#cimagnify a img { margin:0; padding:0; height:16px; width16px; border:none; }
+p#cimagnify a img { margin:0; padding:0; height:16px; width:16px; border:none; position: relative; top: 0px; left: 6px; }
 
 p#cislide, p#ciedit {margin:0; padding:0}
-p#cislide a, p#ciedit a { float:left; margin:0; margin-left:5px; margin-top:2px; padding:2px; background-color:#fff; color:black; font-size:10px; text-decoration:none }
-p#cislide a:hover, p#ciedit a:hover { background-color:#fff; color: darkgray; text-decoration:none;}
+p#cislide a, p#ciedit a, p#cislide span.spanbutton { float:left; margin:0; margin-left:3px; margin-top:2px; padding:2px; background:transparent; font-size:10px; text-decoration:none }
+p#cislide span.spanbutton { color: #111; cursor: default; }
+.co_tile {
+	background-color: #bbb;
+	padding: 3px;
+	height: 100%;
+	border: 0px solid #555;
+}
+
+/* status colors for flags */
+span.status_notcleared {
+	background-color: #E0291D;
+}
+span.status_inprogress {
+	background-color: #3399CC;
+}
+span.status_cleared {
+	background-color: #44F622;
+}
+span.status_unknown {
+	background-color: #FFF;
+}
+/* status colors for back of toolbar */
+div.status_notcleared {
+	border: 3px solid #E0291D;
+}
+div.status_inprogress {
+	border: 3px solid #3399CC;
+}
+div.status_cleared {
+	border: 3px solid #44F622;
+}
+div.status_unknown {
+	border: 3px solid #FFF;
+}
+.status_flag {
+	left: 16px;
+	position:relative;
+	width: 16px;
+	height: 16px;
+	float: right;
+	border: 0px solid #555;
+}
 
 div.dcell {
     background-color: #222;
-    height: 175px;
-    width: 152px;
+    height: 181px;
+    width: 158px;
 }
 div.dcellbig {
-    height: 325px;
+    height: 335px;
     max-width: 350px;
+    width: 306px;
 }
 div.dwrap div div.dcell {
     margin: 0;
     margin-left: 30px;
 }
 #myTabs div.dcell .coimginfo { margin-top:-27px; }
-div.dcell img { border: 1px solid #dedede; }
+div.dcell img, .co_tile img { 
+	border: 4px solid #aaa; 
+	position:relative;
+ 	top:-16px;
+ 	left: -3px;
+}
 
 /* Edit CO page */
 div.dwrap {
@@ -357,7 +403,7 @@ div.dwrap {
   float:left;
   overflow:auto;
 }
-div.dwrap div { margin-bottom: 15px; }
+div.dwrap div { margin-bottom: 25px; }
 div.dwrap div div.first { margin-left:0;}
 div.dwrap .coimginfo { margin-top:-24px; } 
 div.dwrap div#edrepl div.edrepl1 { margin-left: 70px;}
@@ -376,7 +422,14 @@ div#rightarrow a, div#leftarrow a { border:none; color:#fff}
 #donebot { position:relative; margin-top: 10px; left: 50px;}
 
 /* end Edit CO  page */
-
+.div_progbar_key {
+	width: 95%;
+	height: 3em;
+	text-align: right; 
+	font-size: 77%; 
+	font-weight: bolder;
+	background-color: #FFF;
+}
 .caption_progbar_key {
 	text-align: right; 
 	font-size: 77%; 
