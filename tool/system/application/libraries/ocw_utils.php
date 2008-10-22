@@ -230,9 +230,15 @@ class OCW_utils {
 	   				 		 '<img title="'.$title.'" src="'.property('app_img').'/search_16.gif" /></a></p>';
 
 		  $editlnk=($show_edit) 
+							? '<p id="ciedit"><a href="'.$editurl.'">'.
+	   				 		 '<img title="'.$title.'" src="'.property('app_img').'/edit_16.gif" /></a></p>' 
+						  :'';
+						  /*
+						  		  $editlnk=($show_edit) 
 							? '<p id="ciedit">'.
 								(anchor($editurl, 'Edit', array('class'=>'smoothbox','id'=>'edit-'.$oid))).'</p>' 
 						  :'';
+						  */
 			$imglnk= ($show_edit) 
 							?	 '<a href="'.$editurl.'" class="smoothbox">'.
 						 		 '<img title="'.$title.'" src="'.$imgurl.'" style="'. $size .'" /></a>'
@@ -255,8 +261,8 @@ class OCW_utils {
 					break;				
 			} //end switch
 
-	   	return '<div class="'.$dcell.' '.$optclass.'"><span class="status_flag '.$statusclass.'"></span><div class="co_tile">'.$imglnk.
-						 '<div class="coimginfo '.$statusclass.'">'.(($showinfo) ? $locbar.$slide.$editlnk.$magnify:
+	   	return '<div class="'.$dcell.' '.$optclass.'"><span class="status_flag '.$statusclass.'"></span><div class="co_tile '.$statusclass.'">'.$imglnk.
+						 '<div class="coimginfo">'.(($showinfo) ? $locbar.$slide.$editlnk.$magnify:
 																									  '<p>&nbsp;</p>').'</div></div></div>';
 	}
 
