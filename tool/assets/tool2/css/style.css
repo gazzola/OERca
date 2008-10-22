@@ -323,7 +323,9 @@ a.smoothbox img { border:1px solid #dedede;}
 a.smootbox,
 a.smoothbox:hover { text-decoration:none; }
 
-.coimginfo { float:left;  padding:0; margin-top:-4px; width: 100%; max-width:300px; min-width:152px; height:23px; background: transparent; position: relative; left: -3px; top: -10px; }
+.coimginfo { float:left; width: 100%; max-width:300px; min-width:152px; height:23px; background: transparent; margin-top: -8px;}
+div.co_tile:hover .coimginfo p#cislide a { color: #FFF; }
+div.co_tile:hover .coimginfo p#cislide span.spanbutton { color: #FFF; }
 .coimginfo p { float:left; margin:0; padding:0; color:#fff; font-family:Arial; display:inline; margin-top:7px;}
 p#ciloc { margin:0; padding:0; margin-left:3px; margin-right:3px; margin-top:3px; width:16px; color: #333;}
 p#cimagnify a, p#ciedit a { float:right; margin:0; padding:0 5px; text-decoration:none; margin-left:1px; margin-top:-3px;}
@@ -337,6 +339,7 @@ p#cislide span.spanbutton { color: #111; cursor: default; }
 	padding: 3px;
 	height: 100%;
 	border: 1px solid #BBB;
+	width: 100%;
 }
 div.status_notcleared:hover {
 	background-color: #E0291D;
@@ -370,7 +373,7 @@ span.status_unknown {
 }
 
 .status_flag {
-	left: 16px;
+	left: 24px;
 	position:relative;
 	width: 16px;
 	height: 16px;
@@ -394,10 +397,9 @@ div.dwrap div div.dcell {
 }
 #myTabs div.dcell .coimginfo { margin-top:-27px; }
 div.dcell img, .co_tile img { 
-	/*border: 4px solid #ccc; */
 	position:relative;
  	top: -12px;
- 	left: 0px;
+ 	margin: 4px;
 }
 
 /* Edit CO page */
