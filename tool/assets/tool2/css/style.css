@@ -323,14 +323,16 @@ a.smoothbox img { border:1px solid #dedede;}
 a.smootbox,
 a.smoothbox:hover { text-decoration:none; }
 
-.coimginfo { float:left; width: 100%; max-width:300px; min-width:152px; height:23px; background: transparent; margin-top: -8px;}
+.coimginfo { float:left; width: 100%; max-width:300px; min-width:152px; height:23px; background: transparent; margin-top: -8px; z-index:88; position: absolute;}
 div.co_tile:hover .coimginfo p#cislide a { color: #FFF; }
 div.co_tile:hover .coimginfo p#cislide span.spanbutton { color: #FFF; }
 .coimginfo p { float:left; margin:0; padding:0; color:#fff; font-family:Arial; display:inline; margin-top:7px;}
 p#ciloc { margin:0; padding:0; margin-left:3px; margin-right:3px; margin-top:3px; width:16px; color: #333;}
-p#cimagnify a, p#ciedit a { float:right; margin:0; padding:0 5px; text-decoration:none; margin-left:1px; margin-top:-3px;}
-p#cimagnify a img, p#ciedit a img { margin:0; padding:0; height:16px; width:16px; border:none; position: relative; top: 0px; left: 6px; }
+p#cimagnify a, p#ciedit a { float:right; margin:0; padding:0 5px; text-decoration:none; z-index: 99; position: absolute; }
 
+p#cimagnify a img, p#ciedit a img { margin:0; padding:0; height:16px; width:16px; border:none; }
+p#ciedit a img {  position: absolute; top: 0px; left: 6px; }
+p#cimagnify a img {  position: absolute; top: 0px; left: 28px; }
 p#cislide {margin:0; padding:0}
 p#cislide a, p#cislide span.spanbutton { float:left; margin:0; margin-left:3px; margin-top:2px; padding:2px; background:transparent; font-size:10px; text-decoration:none }
 p#cislide span.spanbutton { color: #111; cursor: default; }
