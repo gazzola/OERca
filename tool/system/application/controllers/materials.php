@@ -804,7 +804,6 @@ class Materials extends Controller {
 	      $material_list = $this->material->
 	        get_material_paths($cid, $_POST['select_material']);
 	      $file_list = $this->_get_material_files($material_list);
-	      // $this->ocw_utils->dump($file_list);
 	      $this->_download_material($file_list);
 	    } else {
 	      echo "We really shouldn't see this at all!";
@@ -830,13 +829,12 @@ class Materials extends Controller {
 	      /* TODO: change the way materials are named so full names are
 	       * retained in the DB
 	       * construct the path to the materials dir */
-	      $mat_path = $this->config->item('upload_path');
+	      $mat_path = property('app_uploads_path');
 	      $mat_path .= "cdir_" . $material_info['course_dir'];
 	      $mat_path .= "/mdir_" . $material_info['material_dir'];
 	      /* find all items in the $mat_path directory and add to the
 	       * $material_files array if they are files instead of directories */
 	      $all_dir_items = (scandir($mat_path));
-	      // $this->ocw_utils->dump($material_info);
 	      foreach ($all_dir_items as $file_name) {
 	        $rel_path = "$mat_path/$file_name";
 	        if (is_file($rel_path))
@@ -863,9 +861,9 @@ class Materials extends Controller {
 	  
 	  
 	  /**
-	    * Download the files for a selected set of materials. A zip
+	    * Download the files for a selected set of materials. An archive
 	    * file is created if there is more than one file. The organization
-	    * of the zip file is based on total number of files in the
+	    * of the archive file is based on total number of files in the
 	    * archive. There is a configurable threshold, after which
 	    * the files are separated out into subfolders.
 	    *
@@ -878,9 +876,9 @@ class Materials extends Controller {
 	    private function _download_material($file_list, $max_in_single_folder = 10)
 	    {
 	      $this->load->helper('download');
-	      $this->load->library('zip');
 	     
-	      // $user_name = getUserProperty('user_name');
+	      $user_name = getUserProperty('user_name');
+	      $down_name = FALSE; // name of downloaded resource
 	      
 	      // get a timestamp formatted as YYYY-MM-DD-HHMMSS
 	      $timestamp = date($this->date_format);
@@ -890,6 +888,8 @@ class Materials extends Controller {
 	       * as a part of the folder name */
 	      $parent_folder = "oer_materials-$timestamp";
 	      
+	      $archive_name = $parent_folder . "-" . "$user_name";
+	      $archive_cont_info = array();
 	      $num_files = 0;
 	      // calculate the total number of files in the requested materials
 	      foreach ($file_list as $mat_files) {
@@ -898,32 +898,37 @@ class Materials extends Controller {
 	      // directly download the file for a single file
 	      if ($num_files == 1) {
 	        $file_name = $file_list[0]['file_names'][0];
-	        $data = file_get_contents($file_name);
-	        $name = $this->_get_export_file_name($file_name, 0, $file_list[0]);
-	        force_download($name, $data);
+	        $down_name = $this->_get_export_file_name($file_name, 0,
+	          $file_list[0]);
+	      force_file_download($down_name, $file_name);
 	      } else {
 	        foreach ($file_list as $mat_files) {
 	          foreach ($mat_files['file_names'] as $file_num => $file_name) {
-	            $data = file_get_contents($file_name);
-	            $name = $this->
+	            $export_name = $this->
 	              _get_export_file_name($file_name, $file_num, $mat_files);
 	            /* for between 2 and $max_in_single_folder files 
     	         * put everything in 1 folder */  
-	            if (($num_files > 1) && ($num_files <= $max_in_single_folder)) {
-	              $name = "$parent_folder/$name";
+	            if (($num_files > 1) && 
+	                ($num_files <= $max_in_single_folder)) {
+	              $export_name = "$parent_folder/$export_name";
 	            } 
 	            /* for more than $max_in_single_folder files
     	         * create subfolders for materials */
 	            elseif ($num_files > $max_in_single_folder) {
-	              $name = "$parent_folder/" .
+	              $export_name = "$parent_folder/" .
 	                $mat_files['material_name'] . "_" . 
-	                $mat_files['material_date'] . "/" . $name;
+	                $mat_files['material_date'] . "/" . $export_name;
 	            }
-	            $this->zip->add_data($name, $data);
+	            $archive_cont_info[] = array(
+	              "orig_name" => $file_name,
+	              "export_name" => $export_name,
+	              );
 	          }
 	        }
-	        $this->zip->download("$parent_folder.zip");
-   	      $this->zip->clear_data(); // clear cached data
+          $path_to_archive = $this->_make_archive($archive_name,
+            $archive_cont_info);
+          $down_name = pathinfo($path_to_archive, PATHINFO_BASENAME);
+          force_file_download($down_name, $path_to_archive, TRUE);
 	      }
 	    }
 	    
@@ -934,14 +939,17 @@ class Materials extends Controller {
 	      * 
 	      * @access   private
 	      * @param    string the original name of the file
-	      * @param    int the array index value corresponding to the current filename
-	      * @param    array mixed array containing the list of files for a material
-	      *           and related metadata
+	      * @param    int the array index value corresponding to the current
+	      *           filename
+	      * @param    array mixed array containing the list of files for a
+	      *           material and related metadata
 	      * @return   string the more sensible, human readable file name
 	      */
-	    private function _get_export_file_name($orig_file_name, $file_num, $mat_file_list)
+	    private function _get_export_file_name($orig_file_name, 
+	      $file_num, $mat_file_list)
 	    {
 	      $name = "";
+	      
 	      if ($mat_file_list['school_name']) {
           $name .= $mat_file_list['school_name'] . "_";
         }
@@ -954,12 +962,99 @@ class Materials extends Controller {
         if ($mat_file_list['material_name']) {
           $name .= $mat_file_list['material_name'] . "_";
         }
+        
         $name .= $mat_file_list['material_date'] . "_";
         $name .= ($file_num + 1);
         $name .= "." . pathinfo($orig_file_name, PATHINFO_EXTENSION);
         
         return $name;
 	    }
+	    
+	    
+	    /**
+	      * Creates an archive that contains the specified materials
+	      * including any associated image files. Return the name of
+	      * the created file. To allow the creation of multiple archive
+	      * types, this calls a private function to build the actual
+	      * archive.
+	      *
+	      * @access   private
+	      * @param    array in which each element contains the original
+	      *           file name and the name to be used in the archive
+	      * @param    optional, type of archive to be created
+	      *           e.g. zip, tar.bz2, tar.gz
+	      */
+	    private function _make_archive($archive_name, $archive_details,
+	      $archive_type = "zip")
+	    {
+	      // specify the archive building function to be called
+	      $archive_builder = "_build_";
+	      $archive_dir = property('app_mat_download_path');
+	      
+	      switch ($archive_type) {
+	      case "zip":
+	        $archive_builder = $archive_builder . "zip";
+	        $archive_name = $archive_name . ".zip";
+	        break;
+	      }
+	      
+	      if (!file_exists($archive_dir)) {
+	        mkdir($archive_dir, 0700, TRUE);
+        }
+        
+	      chdir($archive_dir);
+	      
+	      return ($this->$archive_builder($archive_name, $archive_details));
+      }
+	    
+	    
+	    // TODO: use exception handling instead of conditionals here
+	    /**
+	      * Builds a zip archive containing the specified files.
+	      * The number of files to be archived is important because
+	      * the archive needs to be closed and reopened if the number
+	      * of files is greater than the number of available file
+	      * descriptors.
+	      *
+	      * @access   private
+	      * @param    string name of the archive file
+	      * @param    array that specifies the file name on the server and
+	      *           the file name used in the archive file
+	      */
+	    private function _build_zip ($archive_name, $archive_details)
+	    {
+	      $arch_results = FALSE;
+	      $zip = new ZipArchive;
+	      $add_counter = 0; // keeps track of number of files added
+	      /* TODO: should we overwrite existing archives? the naming is 
+	       * relatively unique and the file should be unlinked after 
+	       * download */
+	      $arch_opened = $zip->open($archive_name, ZipArchive::OVERWRITE);
+	      if ($arch_opened === TRUE) {
+	        foreach ($archive_details as $arch_entry) {
+	          /* the mysterious check with $add_counter is required because
+	           * the operation can fail if it runs out of file descriptors */
+	          if ($add_counter == 253) {
+	            $zip->close();
+	            $arch_opened = $zip->open($archive_name);
+	            $add_counter = 0;
+	          }
+	          if ($arch_opened === TRUE) {
+	            $file_added = $zip->addFile($arch_entry['orig_name'], 
+  	            $arch_entry['export_name']);
+  	          if ($file_added === FALSE) {
+  	            exit ("File wasn't added! Archive creation aborted!");
+  	          }
+  	          $add_counter++;
+	          }
+          }
+	      }
+	      $zip->close();
+	      
+	      return(getcwd() . "/" . 
+	        pathinfo($archive_name, PATHINFO_BASENAME));
+	    } 
+	    
 	    
 	    /**
 	     * Download all replacement for content objects for this material
