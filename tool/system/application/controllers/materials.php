@@ -876,6 +876,7 @@ class Materials extends Controller {
 	    private function _download_material($file_list, $max_in_single_folder = 10)
 	    {
 	      $this->load->helper('download');
+	      $this->load->library('oer_create_archive');
 	     
 	      $user_name = getUserProperty('user_name');
 	      $down_name = FALSE; // name of downloaded resource
@@ -925,8 +926,8 @@ class Materials extends Controller {
 	              );
 	          }
 	        }
-          $path_to_archive = $this->_make_archive($archive_name,
-            $archive_cont_info);
+          $path_to_archive = $this->oer_create_archive->
+            make_archive($archive_name,$archive_cont_info);
           $down_name = pathinfo($path_to_archive, PATHINFO_BASENAME);
           force_file_download($down_name, $path_to_archive, TRUE);
 	      }
@@ -969,93 +970,8 @@ class Materials extends Controller {
         
         return $name;
 	    }
-	    
-	    
-	    /**
-	      * Creates an archive that contains the specified materials
-	      * including any associated image files. Return the name of
-	      * the created file. To allow the creation of multiple archive
-	      * types, this calls a private function to build the actual
-	      * archive.
-	      *
-	      * @access   private
-	      * @param    array in which each element contains the original
-	      *           file name and the name to be used in the archive
-	      * @param    optional, type of archive to be created
-	      *           e.g. zip, tar.bz2, tar.gz
-	      */
-	    private function _make_archive($archive_name, $archive_details,
-	      $archive_type = "zip")
-	    {
-	      // specify the archive building function to be called
-	      $archive_builder = "_build_";
-	      $archive_dir = property('app_mat_download_path');
-	      
-	      switch ($archive_type) {
-	      case "zip":
-	        $archive_builder = $archive_builder . "zip";
-	        $archive_name = $archive_name . ".zip";
-	        break;
-	      }
-	      
-	      if (!file_exists($archive_dir)) {
-	        mkdir($archive_dir, 0700, TRUE);
-        }
-        
-	      chdir($archive_dir);
-	      
-	      return ($this->$archive_builder($archive_name, $archive_details));
-      }
-	    
-	    
-	    // TODO: use exception handling instead of conditionals here
-	    /**
-	      * Builds a zip archive containing the specified files.
-	      * The number of files to be archived is important because
-	      * the archive needs to be closed and reopened if the number
-	      * of files is greater than the number of available file
-	      * descriptors.
-	      *
-	      * @access   private
-	      * @param    string name of the archive file
-	      * @param    array that specifies the file name on the server and
-	      *           the file name used in the archive file
-	      */
-	    private function _build_zip ($archive_name, $archive_details)
-	    {
-	      $arch_results = FALSE;
-	      $zip = new ZipArchive;
-	      $add_counter = 0; // keeps track of number of files added
-	      /* TODO: should we overwrite existing archives? the naming is 
-	       * relatively unique and the file should be unlinked after 
-	       * download */
-	      $arch_opened = $zip->open($archive_name, ZipArchive::OVERWRITE);
-	      if ($arch_opened === TRUE) {
-	        foreach ($archive_details as $arch_entry) {
-	          /* the mysterious check with $add_counter is required because
-	           * the operation can fail if it runs out of file descriptors */
-	          if ($add_counter == 253) {
-	            $zip->close();
-	            $arch_opened = $zip->open($archive_name);
-	            $add_counter = 0;
-	          }
-	          if ($arch_opened === TRUE) {
-	            $file_added = $zip->addFile($arch_entry['orig_name'], 
-  	            $arch_entry['export_name']);
-  	          if ($file_added === FALSE) {
-  	            exit ("File wasn't added! Archive creation aborted!");
-  	          }
-  	          $add_counter++;
-	          }
-          }
-	      }
-	      $zip->close();
-	      
-	      return(getcwd() . "/" . 
-	        pathinfo($archive_name, PATHINFO_BASENAME));
-	    } 
-	    
-	    
+	   
+	   
 	    /**
 	     * Download all replacement for content objects for this material
 	     */
