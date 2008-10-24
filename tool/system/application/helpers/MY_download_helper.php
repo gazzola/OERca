@@ -34,6 +34,12 @@
 		}
 		
 		$file_size = filesize($resource_name);
+		
+		// turn off output buffering if enabled
+		if (ob_get_level() > 0) {
+		  ob_end_clean();
+		}
+		
 		// Generate the server headers
 		if (strstr($_SERVER['HTTP_USER_AGENT'], "MSIE"))
 		{
@@ -64,10 +70,9 @@
       //reset time limit for big files
       print(fread($fp, $read_chunk));
       flush();
-      //ob_flush();
     }
     fclose($fp);
-    ob_flush();
+    
     // delete the file if requested
     if ($delete_file === TRUE) {
       unlink($resource_name);
