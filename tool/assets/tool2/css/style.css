@@ -335,6 +335,7 @@ p#ciedit a img {  position: absolute; top: 0px; left: 6px; }
 p#cimagnify a img {  position: absolute; top: 0px; left: 28px; }
 p#cislide {margin:0; padding:0}
 p#cislide a, p#cislide span.spanbutton { float:left; margin:0; margin-left:3px; margin-top:2px; padding:2px; background:transparent; font-size:10px; text-decoration:none; color: #EE4400; }
+p#cislide a:hover {text-decoration: underline; }
 p#cislide span.spanbutton { color: #111; cursor: default; }
 .co_tile {
 	background-color: #EEE;

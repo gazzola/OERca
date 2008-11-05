@@ -230,7 +230,7 @@ class OCW_utils {
 	   				 		 '<img title="'.$title.'" src="'.property('app_img').'/search_16.gif" /></a></p>';
 
 		  $editlnk=($show_edit) 
-							? '<p id="ciedit"><a href="'.$editurl.'">'.
+							? '<p id="ciedit"><a class="smoothbox" href="'.$editurl.'">'.
 	   				 		 '<img title="'.$title.'" src="'.property('app_img').'/edit_16.gif" /></a></p>' 
 						  :'';
 						  /*
