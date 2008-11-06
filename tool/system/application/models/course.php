@@ -331,6 +331,7 @@ class Course extends Model
 
         if ($q->num_rows() > 0) {
             foreach($q->result_array() as $row) { 
+                 $row['instructors'] = $this->get_course_instructor_by_id($row['cid']);
                  if (($urole != 'dscribe1')) { 
 		    // bdr OERDEV-173 - count everything like materials list counts
                      $materials =  $this->material->materials($row['cid'],'',true,true);
@@ -349,7 +350,6 @@ class Course extends Model
                           }
                        }
 		     }
-                     $row['instructors'] = $this->get_course_instructor_by_id($row['cid']);
 		     $row['statcount'] = $row['total'].'/'.$row['done'].'/'.$row['ask'].'/'.$row['rem'];
 		     $row['notdone'] = $row['rem'];
 		     // $this->ocw_utils->dump($row);
@@ -383,6 +383,7 @@ class Course extends Model
 
       if ($q_no_curr_id->num_rows() > 0) {
         foreach ($q_no_curr_id->result_array() as $row) {
+                 $row['instructors'] = $this->get_course_instructor_by_id($row['cid']);
                  // bdr OERDEV-140 (which looks similiar to OERDEV-118
                  $uprop = getUserProperty('role');
                  // if (($uprop != 'dscribe1')) { // && ($row['cid'] == 35)) 
@@ -402,7 +403,6 @@ class Course extends Model
                                    $row['total'] += $material['mtotal'];
                           }                
                       }                 
-                     $row['instructors'] = $this->get_course_instructor_by_id($row['cid']);
                      $row['statcount'] = $row['total'].'/'.$row['done'].'/'.$row['ask'].'/'.$row['rem'];
 		     $row['notdone'] = $row['rem'];
                      // $this->ocw_utils->dump($row);

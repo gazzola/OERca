@@ -60,7 +60,7 @@ echo script('ocw_tool.js');
 				<ul class="mootabs_title">
 					<li title="Original" style="padding-left:10px; margin-left:0;"><h2>Original</h2>
 						<center>
-				    	<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],$filter,'orig',true,false);?>
+				    	<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],$filter,'orig',true,true);?>
 						</center>
 			      <br style="clear:both"/>
 						<small>

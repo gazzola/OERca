@@ -733,6 +733,35 @@ class Coobject extends Model
 
 				return $status;
 	}
+	
+		/** 
+	 * return the current progress of an object (what is displayed on the colored progress bars)
+   *
+	* @param int oid object id
+   * @return string status [cleared,inprogress,notcleared]
+	 */
+
+  public function object_progress($oid)
+  {
+	$this->db->select('*')->from('objects')->where('id',$oid)->orderby('modified_on DESC');	
+	$q = $this->db->get();
+	$o = $q->row_array();
+
+	$status = 'notcleared';
+    if ($o['done']=='1') { $status = 'cleared'; }
+    else { 
+    	if ($o['action_type'] != NULL) { 
+          	$status = 'inprogress'; 
+      	}
+     	elseif ($o['action_taken'] != NULL) { 
+          	$status = 'inprogress'; 
+     	}
+     	else { 
+          	$status = 'notcleared'; 
+     	}
+    }
+    return $status; 
+  }
 
 
 	/** 

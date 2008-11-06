@@ -11,8 +11,8 @@
 /**
  * TODO: Possibly change this class to output svg instead of a png.
  */ 
-class OER_progbar {
-  
+class OER_progbar 
+{
   // set default width and height (pixels)
   private $width = 600;
   private $height = 20;

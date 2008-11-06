@@ -132,8 +132,8 @@ td img
 
 td a:hover
 {
-        color:#a84444;
-        border-bottom:1px dotted #a80000;
+       /* color:#a84444;
+        border-bottom:1px dotted #a80000; */
         background:transparent;
 }
 

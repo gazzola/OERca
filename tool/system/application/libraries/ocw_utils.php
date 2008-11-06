@@ -230,18 +230,40 @@ class OCW_utils {
 	   				 		 '<img title="'.$title.'" src="'.property('app_img').'/search_16.gif" /></a></p>';
 
 		  $editlnk=($show_edit) 
+							? '<p id="ciedit"><a class="smoothbox" href="'.$editurl.'">'.
+	   				 		 '<img title="'.$title.'" src="'.property('app_img').'/edit_16.gif" /></a></p>' 
+						  :'';
+						  /*
+						  		  $editlnk=($show_edit) 
 							? '<p id="ciedit">'.
 								(anchor($editurl, 'Edit', array('class'=>'smoothbox','id'=>'edit-'.$oid))).'</p>' 
 						  :'';
+						  */
 			$imglnk= ($show_edit) 
 							?	 '<a href="'.$editurl.'" class="smoothbox">'.
 						 		 '<img title="'.$title.'" src="'.$imgurl.'" style="'. $size .'" /></a>'
 							:	 '<img title="'.$title.'" src="'.$imgurl.'" style="'. $size .'" />';
 
 			$dcell = ($shrink) ? 'dcell':'dcellbig';
-	   	return '<div class="'.$dcell.' '.$optclass.'">'.$imglnk.
+			
+			switch ($this->object->coobject->object_progress($oid)) {
+				case 'notcleared':
+					$statusclass = 'status_notcleared';
+					break;
+				case 'inprogress':
+					$statusclass = 'status_inprogress';
+					break;
+				case 'cleared':
+					$statusclass = 'status_cleared';
+					break;
+				default:
+					$statusclass = 'status_unknown';
+					break;				
+			} //end switch
+
+	   	return '<div class="'.$dcell.' '.$optclass.'"><span class="status_flag '.$statusclass.'"></span><div class="co_tile '.$statusclass.'">'.$imglnk.
 						 '<div class="coimginfo">'.(($showinfo) ? $locbar.$slide.$editlnk.$magnify:
-																									  '<p>&nbsp;</p>').'</div></div>';
+																									  '<p>&nbsp;</p>').'</div></div></div>';
 	}
 
 	function create_slide($cid,$mid,$loc,$text='View context',$useimage=false)
@@ -263,7 +285,7 @@ class OCW_utils {
 						?'<a href="'.$imgurl.'" class="smoothbox" title="" rel="gallery-slide">'.$img.'</a>'
 						:'<a href="'.$imgurl.'" class="smoothbox" title="" rel="gallery-slide">'.$text.'</a>';
 
-	   	return ($thumb_found) ? $aurl : '<a href="javascript:void(0)">&nbsp;No context&nbsp;&nbsp;</a>';
+	   	return ($thumb_found) ? $aurl : '<span class="spanbutton">&nbsp;No context&nbsp;&nbsp;</span>';
 	}
 
 	function remove_dir($dir)

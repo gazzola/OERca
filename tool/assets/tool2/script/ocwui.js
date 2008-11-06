@@ -11,7 +11,7 @@ var Site = {
   	var myTips1 = new MooTips($$('.tooltip'), { maxTitleChars: 50 });
 
 		var cinfolist = $$('.coimginfo');
-   	cinfolist.each( function(litem, i) { var info = litem.setOpacity(0.5); });
+   	cinfolist.each( function(litem, i) { var info = litem.setOpacity(1); });
 		
 		var arrowlist = $$('.parrow');
    	arrowlist.each( function(item, i) { 
