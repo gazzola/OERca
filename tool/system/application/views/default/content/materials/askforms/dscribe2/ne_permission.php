@@ -17,7 +17,7 @@ foreach($cos as $obj) {
 		<!-- new/unseen questions -->
 		<div>
 
-     	<h3>CO Description:</h3>
+     	<h3>Content Object Description:</h3>
    		<p style="margin-bottom:15px;border:1px solid #ccc; padding:5px; background-color:#eee">
 					<?= ($obj['description']=='') ? 'No description provided' : $obj['description'] ?>
 			</p>

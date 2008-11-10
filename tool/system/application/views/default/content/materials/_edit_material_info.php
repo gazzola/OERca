@@ -50,7 +50,7 @@ $copyholder = ($material['author']=='') ? $course['director'] : $material['autho
 
 		<br/>
 
-		<div class="formField">Embedded COs?:&nbsp;&nbsp;
+		<div class="formField">Embedded Content Objects?:&nbsp;&nbsp;
 			<?php if ($material['embedded_co']==1) {
 						if ($co_count != 0)
 							$state = 'disabled="disabled"';

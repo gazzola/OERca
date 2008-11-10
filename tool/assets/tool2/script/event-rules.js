@@ -269,7 +269,7 @@ var Rules = {
 						var done = document.getElementsByName('done');
 						if (done[0].value==1 && done[0].checked)
 						{
-							alert('The CO is currently marked as "Cleared". Please reset the CLEARED status first.');
+							alert('The Content Object is currently marked as "Cleared". Please reset the CLEARED status first.');
 							proceed=false;
 							return false;
 						}
@@ -934,19 +934,19 @@ var Rules = {
 									if (clm_type == 'fairuse' && field=='status') {
 											var ta = document.getElementsByName(oid+'_fairuse_'+clm_id+'_additional_rationale')[0]; 
 								  		if (ta.value=='' && val=='ip review') {
-													check = 'You must provide additional rationale in order to send the CO to the LPR team';
+													check = 'You must provide additional rationale in order to send the Content Object to the LPR team';
 											}
 									}
 									if (clm_type == 'retain' && field=='status') {
 											var ta = document.getElementsByName(oid+'_retain_'+clm_id+'_comments')[2]; 
 								  		if (ta.value=='' && val=='ip review') {
-													check = 'You must provide additional rationale or comments in order to send the CO to the LPR team';
+													check = 'You must provide additional rationale or comments in order to send the Content Object to the LPR team';
 											}
 									}
 									if (clm_type == 'commission' && field=='status') {
 											var ta = document.getElementsByName(oid+'_commission_'+clm_id+'_comments')[1]; 
 								  		if (ta.value=='' && val=='commission review') {
-													check = 'You must provide additional rationale in order to send the CO to the Commission review team';
+													check = 'You must provide additional rationale in order to send the Content Object to the Commission review team';
 											}
 									}
 									if (clm_type == 'permission' && field=='status') {

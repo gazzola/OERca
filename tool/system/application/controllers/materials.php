@@ -999,7 +999,7 @@ class Materials extends Controller {
 			
 				$this->zip->clear_data(); // clear cached data
 			} else {
-					$msg = 'There are no Replacement COs for this material';
+					$msg = 'There are no Replacement Content Objects for this material';
 					flashMsg($msg);
 					redirect("materials/edit/$cid/$mid", 'location');
 			}

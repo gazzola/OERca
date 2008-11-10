@@ -2,7 +2,7 @@
 <table width="558px">
 	<!-- ASK INSTRUCTOR -->
   <tr>
-		<th>Ask instructor about origin of CO?</th>
+		<th>Ask instructor about origin of Content Object?</th>
 		<td>
 			  <?php 
 							  $yes = ($obj['ask']=='yes') ? true : false;
@@ -25,7 +25,7 @@
 
 	<!-- ASK dSCRIBE2 -->
 	<tr>
-		<th>Ask dScribe2 a general question about the CO?</th>
+		<th>Ask dScribe2 a general question about the Content Object?</th>
 		<td>
 			  <?php 
 							  $yes = ($obj['ask_dscribe2']=='yes') ? true : false;
@@ -187,7 +187,7 @@
   </tr>
 
 	<tr>
-		<th>Is this CO cleared for publishing?</th>
+		<th>Is this Content Object cleared for publishing?</th>
 		<td colspan="3">
 						  <?php 
 							  $yes = ($obj['done']=='1') ? true : false;

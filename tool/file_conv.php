@@ -68,7 +68,7 @@ function fix_cos($materials)
 	$cos = array();
 
 	# convert materials
-	print "<br/><br/>Creating CO directories...";
+	print "<br/><br/>Creating Content Object directories...";
 	foreach($materials as $mid => $mdir) {
 				$sql = "SELECT id, name FROM ocw_objects WHERE material_id=$mid";
 				$res = mysql_query($sql) or die (mysql_error());

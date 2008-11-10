@@ -29,8 +29,8 @@
         <th class="sortable">Curriculum</th>
         <th class="sortable">Primary Instructor</th>
         <th class="sortable">Instructor(s)</th>
-	<!-- bdr OERDEV140 - add CO status to CourseListing   -->
-        <th>    CO Status    &nbsp;</th>
+	<!-- bdr OERDEV140 - add Content Object status to CourseListing   -->
+        <th>    Content Object Status    &nbsp;</th>
         <?php if ((getUserProperty('role') == 'admin')) { ?> <th></th> <?php }?>
     </tr>
     </thead>

@@ -49,7 +49,7 @@
   		<th class="sortable"><strong>Material Type</strong></th>
   		<th class="sortable-sortEnglishDateTime"><strong>Date Modified</strong></th>
   		<th class="sortable"><strong>Author</strong></th>
-  		<th class=""><strong>CO Status</strong></th>
+  		<th class=""><strong>Content Object Status</strong></th>
   	</tr>
   	</thead>
 
