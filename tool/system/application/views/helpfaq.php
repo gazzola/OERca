@@ -47,7 +47,8 @@
     <h1>Help/FAQ</h1>
 </div>
 <div class="column span-24 first last">
-  <a href="https://open.umich.edu/wiki/">Open.Michigan wiki</a>
+  <a href="https://open.umich.edu/wiki/index.php5/OERca_Software_Tool_Instructions">
+    OERca help on the Open.Michigan wiki</a>
   <br />
   <?php 
     echo anchor("helpfaq/rad_form",
