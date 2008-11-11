@@ -47,6 +47,8 @@
 	<tr>
 		<th>Recommended Action:</th>
 		<td>
+			 <?php echo anchor_popup("helpfaq/rad_form", "help me recommend an action"); ?>
+			 <br /><br />
 			 <?php echo form_dropdown('action_type', $action_types, $obj['action_type'] ,'id="action_type" class="do_object_update"'); ?>
 				<input type="hidden" value="<?=$obj['action_type']?>" id="raction" name="raction" />
 		</td>

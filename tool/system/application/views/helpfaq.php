@@ -47,8 +47,12 @@
     <h1>Help/FAQ</h1>
 </div>
 <div class="column span-24 first last">
+  <a href="https://open.umich.edu/wiki/">Open.Michigan wiki</a>
   <br />
-  <b>This page is under construction</b>
+  <?php 
+    echo anchor("helpfaq/rad_form",
+      "View Recommended Action Decision (RAD) questions");
+  ?>
 </div>
 <div id="footer" class="column span-24 first last">
      <script type="text/javascript">EventSelectors.start(Rules);</script>
