@@ -69,7 +69,7 @@ function disable(id)
 
 <body class="ver">
 <h2>Recommended Action Decision (RAD) Tree Navigator</h2>
-<h4>Go to <a href="https://open.umich.edu/wiki/">Open.Michigan wiki</a></h4>
+<h4>Link back to <a href="https://open.umich.edu/wiki/">Open.Michigan wiki</a></h4>
 
 <table border="1" cellpadding="5" cellspacing="5" bordercolor="#000000">
 <tr>
