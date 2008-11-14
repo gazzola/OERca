@@ -412,10 +412,10 @@ class OER_progbar
 
 
   /**
-    * Generates a small colored square representing the CO status
+    * Generates a small colored square representing the Content Object status
     *
     * @access   public
-    * @param    string the CO status (done, ask, rem)
+    * @param    string the Content Object status (done, ask, rem)
     * @return   void
     */
   public function build_stat_key($co_status)

@@ -2,7 +2,7 @@
 <table width="558px">
 	<!-- ASK INSTRUCTOR -->
   <tr>
-		<th>Ask instructor about origin of CO?</th>
+		<th>Ask instructor about origin of Content Object?</th>
 		<td>
 			  <?php 
 							  $yes = ($obj['ask']=='yes') ? true : false;
@@ -25,7 +25,7 @@
 
 	<!-- ASK dSCRIBE2 -->
 	<tr>
-		<th>Ask dScribe2 a general question about the CO?</th>
+		<th>Ask dScribe2 a general question about the Content Object?</th>
 		<td>
 			  <?php 
 							  $yes = ($obj['ask_dscribe2']=='yes') ? true : false;
@@ -47,6 +47,8 @@
 	<tr>
 		<th>Recommended Action:</th>
 		<td>
+			 <?php echo anchor_popup("helpfaq/rad_form", "help me recommend an action"); ?>
+			 <br /><br />
 			 <?php echo form_dropdown('action_type', $action_types, $obj['action_type'] ,'id="action_type" class="do_object_update"'); ?>
 				<input type="hidden" value="<?=$obj['action_type']?>" id="raction" name="raction" />
 		</td>
@@ -187,7 +189,7 @@
   </tr>
 
 	<tr>
-		<th>Is this CO cleared for publishing?</th>
+		<th>Is this Content Object cleared for publishing?</th>
 		<td colspan="3">
 						  <?php 
 							  $yes = ($obj['done']=='1') ? true : false;

@@ -80,9 +80,9 @@ class Home extends Controller {
 
   /**
     * Generates a colored square representing the specifed
-    * CO status
+    * Content Object status
     *
-    * @param    string the CO status (done, ask, rem)
+    * @param    string the Content Object status (done, ask, rem)
     * @return   void
     */
   public function make_stat_key($status)
@@ -92,7 +92,7 @@ class Home extends Controller {
   }
 
   /**
-    * bdr - this is for CO status display on the listing 
+    * bdr - this is for Content Object status display on the listing 
     *       or course for a dscribe2, admin, etc.   
     *       (this calls the same routing as make_bar)
     */
@@ -103,7 +103,7 @@ class Home extends Controller {
   }
 
   /**
-    * bdr - this is for CO status display on the listing 
+    * bdr - this is for Content Object status display on the listing
     *       or course for a dscribe2, admin, etc.   
     *       (this calls the same routing as make_bar)
     */
