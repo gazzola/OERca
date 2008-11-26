@@ -27,9 +27,9 @@
 <?php } else { ?>
 
 			<div class="div_progbar_key">
-          		<img src="<?= site_url("/home/make_stat_key/rem") ?>" class="prog-key"> Not Cleared
-          		&nbsp;
-          		<img src="<?= site_url("/home/make_stat_key/ask") ?>" class="prog-key"> In Progress
+          		<img src="<?= site_url("/home/make_stat_key/rem") ?>" class="prog-key"> No Action Assigned
+          		 &nbsp;
+          		<img src="<?= site_url("/home/make_stat_key/ask") ?>" class="prog-key">  In Progress
           		&nbsp;
           		<img src="<?= site_url("/home/make_stat_key/done") ?>" class="prog-key"> Cleared
       		</div>
