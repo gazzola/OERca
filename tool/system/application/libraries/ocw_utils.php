@@ -222,8 +222,8 @@ class OCW_utils {
 	   	$editurl = site_url("materials/object_info/$cid/$mid/$oid/$filter").
 								 '?TB_iframe=true&height=630&width=800';
 
-		if (!function_exists('scaleimage')) {
-		function scaleimage($location, $maxw=NULL, $maxh=NULL){
+		if (!function_exists('scalecoimage')) {
+		function scalecoimage($location, $maxw=NULL, $maxh=NULL){
 		    $img = @getimagesize($location);
 		    if($img){
 		        $w = $img[0];
@@ -242,12 +242,14 @@ class OCW_utils {
 		        $hoffset = ($maxh - $h)/2;
 		        $woffset = ($maxw - $w)/2;
 				$style_line = "width: ".$w."px; height: ".$h."px; margin-top: ".$hoffset."px; margin-bottom: ".$hoffset."px; margin-left: ".$woffset."px; margin-right: ".$woffset."px;";
-		        return($style_line);
+		    } else {
+		    	$style_line = "width: 150px; height: 150px; margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px;";
 		    }
+		    return($style_line);
 		}
 		}
 
-		$size = ($shrink) ? scaleimage($imgurl, 150, 150) : scaleimage($imgurl, 300, 300);
+		$size = ($shrink) ? scalecoimage($imgurl, 150, 150) : scalecoimage($imgurl, 300, 300);
 
 		$title = 'Content Object :: Location: Page '.$loc;
 		$slide=($show_ctx) ? '<li id="cislide">'.($this->create_slide($cid, $mid, $loc)).'</li>' : '';
