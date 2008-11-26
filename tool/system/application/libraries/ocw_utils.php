@@ -210,60 +210,103 @@ class OCW_utils {
 	
 	function create_co_img($cid, $mid, $oid, $loc, $filter,$type='orig', $shrink=true, $show_ctx=true, $show_edit=false, $showinfo=true,$optclass='') 
 	{
-		 	$name = $this->object->coobject->object_filename($oid);
-		 	$path = $this->object->coobject->object_path($cid, $mid,$oid);
-			$defimg = ($type=='orig') ? 'noorig.png' : 'norep.png';
-			$dflag = ($type=='orig') ? 'grab' : 'rep';
-      $image_details = $this->_get_imgurl($path, $name, $dflag);
-      $imgurl = $image_details['imgurl'];
-      $thumb_found = $image_details['thumb_found'];
+		$name = $this->object->coobject->object_filename($oid);
+		$path = $this->object->coobject->object_path($cid, $mid,$oid);
+		$defimg = ($type=='orig') ? 'noorig.png' : 'norep.png';
+		$dflag = ($type=='orig') ? 'grab' : 'rep';
+      	$image_details = $this->_get_imgurl($path, $name, $dflag);
+      	$imgurl = $image_details['imgurl'];
+      	$thumb_found = $image_details['thumb_found'];
       
 	   	$imgurl = ($thumb_found) ? $imgurl : property('app_img').'/'.$defimg;
 	   	$editurl = site_url("materials/object_info/$cid/$mid/$oid/$filter").
 								 '?TB_iframe=true&height=630&width=800';
 
-		  $locbar = '<p id="ciloc">'.$loc.'</p>';
-			$size = ($shrink) ? 'width:150px; height:150px;':'width:300px; height:300px;';
-			$title = 'Content Object :: Location: Page '.$loc;
-			$slide=($show_ctx) ? '<p id="cislide">'.($this->create_slide($cid, $mid, $loc)).'</p>' : '';
-			$magnify = '<p id="cimagnify"><a href="'.$imgurl.'" class="smoothbox" rel="gallery-cos">'.
-	   				 		 '<img title="'.$title.'" src="'.property('app_img').'/search_16.gif" /></a></p>';
+		if (!function_exists('scaleimage')) {
+		function scaleimage($location, $maxw=NULL, $maxh=NULL){
+		    $img = @getimagesize($location);
+		    if($img){
+		        $w = $img[0];
+		        $h = $img[1];
+		
+		        $dim = array('w','h');
+		        foreach($dim AS $val){
+		            $max = "max{$val}";
+		            if(${$val} > ${$max} && ${$max}){
+		                $alt = ($val == 'w') ? 'h' : 'w';
+		                $ratio = ${$alt} / ${$val};
+		                ${$val} = ${$max};
+		                ${$alt} = ${$val} * $ratio;
+		            }
+		        }
+		        $hoffset = ($maxh - $h)/2;
+		        $woffset = ($maxw - $w)/2;
+				$style_line = "width: ".$w."px; height: ".$h."px; margin-top: ".$hoffset."px; margin-bottom: ".$hoffset."px; margin-left: ".$woffset."px; margin-right: ".$woffset."px;";
+		        return($style_line);
+		    }
+		}
+		}
 
-		  $editlnk=($show_edit) 
-							? '<p id="ciedit"><a class="smoothbox" href="'.$editurl.'">'.
-	   				 		 '<img title="'.$title.'" src="'.property('app_img').'/edit_16.gif" /></a></p>' 
+		$size = ($shrink) ? scaleimage($imgurl, 150, 150) : scaleimage($imgurl, 300, 300);
+
+		$title = 'Content Object :: Location: Page '.$loc;
+		$slide=($show_ctx) ? '<li id="cislide">'.($this->create_slide($cid, $mid, $loc)).'</li>' : '';
+		$magnify = '<li id="cimagnify"><a href="'.$imgurl.'" class="smoothbox" rel="gallery-cos">'.
+	   				 		 '<img title="'.$title.'" src="'.property('app_img').'/search_16.gif" /></a></li>';
+
+		$editlnk=($show_edit) 
+							? '<li id="ciedit"><a class="smoothbox" href="'.$editurl.'">'.
+	   				 		 '<img title="'.$title.'" src="'.property('app_img').'/edit_16.gif" /></a></li>' 
 						  :'';
-						  /*
-						  		  $editlnk=($show_edit) 
-							? '<p id="ciedit">'.
-								(anchor($editurl, 'Edit', array('class'=>'smoothbox','id'=>'edit-'.$oid))).'</p>' 
-						  :'';
-						  */
-			$imglnk= ($show_edit) 
+		$imglnk= ($show_edit) 
 							?	 '<a href="'.$editurl.'" class="smoothbox">'.
 						 		 '<img title="'.$title.'" src="'.$imgurl.'" style="'. $size .'" /></a>'
 							:	 '<img title="'.$title.'" src="'.$imgurl.'" style="'. $size .'" />';
 
-			$dcell = ($shrink) ? 'dcell':'dcellbig';
+		$dcell = ($shrink) ? 'dcell':'dcellbig';
 			
-			switch ($this->object->coobject->object_progress($oid)) {
-				case 'notcleared':
-					$statusclass = 'status_notcleared';
-					break;
-				case 'inprogress':
-					$statusclass = 'status_inprogress';
-					break;
-				case 'cleared':
-					$statusclass = 'status_cleared';
-					break;
-				default:
-					$statusclass = 'status_unknown';
-					break;				
-			} //end switch
+		switch ($this->object->coobject->object_progress($oid)) {
+			case 'notcleared':
+				$statusclass = 'status_notcleared';
+				break;
+			case 'inprogress':
+				$statusclass = 'status_inprogress';
+				break;
+			case 'cleared':
+				$statusclass = 'status_cleared';
+				break;
+			default:
+				$statusclass = 'status_unknown';
+				break;				
+		} //end switch
+		
+		$locbar = '<li id="ciloc">'.$loc.'</li>';
+		$flagclass = ($shrink) ? 'status_flag' : 'status_flag300';
+		
+		if ($showinfo) { 
+			$coimginfo_html = "$locbar $slide $editlnk $magnify";
+		} else {
+			$coimginfo_html = '<div>&nbsp;</div>';
+		}
+		$tile_html = <<<htmleoq
+		
+		<div class="$dcell $optclass" style="background-color: #FFF;">
+				<div class="co_tile $statusclass">
+					$imglnk
+					<div class="coimginfo">
+						<ul>
+							$coimginfo_html
+						</ul>
+					</div>
+				</div>
+				<span class="$flagclass $statusclass">
+					&nbsp; 
+				</span>
+		</div>
+		
+htmleoq;
 
-	   	return '<div class="'.$dcell.' '.$optclass.'"><span class="status_flag '.$statusclass.'"></span><div class="co_tile '.$statusclass.'">'.$imglnk.
-						 '<div class="coimginfo">'.(($showinfo) ? $locbar.$slide.$editlnk.$magnify:
-																									  '<p>&nbsp;</p>').'</div></div></div>';
+	   	return $tile_html;
 	}
 
 	function create_slide($cid,$mid,$loc,$text='View context',$useimage=false)
