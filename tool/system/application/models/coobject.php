@@ -121,7 +121,7 @@ class Coobject extends Model
 	public function coobjects($mid, $oid='', $action_type='', $details='*')
 	{
 		$objects = array();
-		$where = "material_id=$mid";
+		($mid == ":") ? $where = "material_id=0" : $where = "material_id=$mid";
 		// retrieve COs sorted by location
 		$sort_order = "CAST(location AS UNSIGNED) ASC, location ASC, modified_on ASC";
 
