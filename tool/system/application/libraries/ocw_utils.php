@@ -208,22 +208,7 @@ class OCW_utils {
 		return $list;
 	}
 	
-	function create_co_img($cid, $mid, $oid, $loc, $filter,$type='orig', $shrink=true, $show_ctx=true, $show_edit=false, $showinfo=true,$optclass='') 
-	{
-		$name = $this->object->coobject->object_filename($oid);
-		$path = $this->object->coobject->object_path($cid, $mid,$oid);
-		$defimg = ($type=='orig') ? 'noorig.png' : 'norep.png';
-		$dflag = ($type=='orig') ? 'grab' : 'rep';
-      	$image_details = $this->_get_imgurl($path, $name, $dflag);
-      	$imgurl = $image_details['imgurl'];
-      	$thumb_found = $image_details['thumb_found'];
-      
-	   	$imgurl = ($thumb_found) ? $imgurl : property('app_img').'/'.$defimg;
-	   	$editurl = site_url("materials/object_info/$cid/$mid/$oid/$filter").
-								 '?TB_iframe=true&height=630&width=800';
-
-		if (!function_exists('scalecoimage')) {
-		function scalecoimage($location, $maxw=NULL, $maxh=NULL){
+	function scalecoimage($location, $maxw=NULL, $maxh=NULL){
 		    $img = @getimagesize($location);
 		    if($img){
 		        $w = $img[0];
@@ -246,10 +231,24 @@ class OCW_utils {
 		    	$style_line = "width: 150px; height: 150px; margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px;";
 		    }
 		    return($style_line);
-		}
-		}
+	}
+	
+	function create_co_img($cid, $mid, $oid, $loc, $filter,$type='orig', $shrink=true, $show_ctx=true, $show_edit=false, $showinfo=true,$optclass='') 
+	{
+		$name = $this->object->coobject->object_filename($oid);
+		$path = $this->object->coobject->object_path($cid, $mid,$oid);
+		$defimg = ($type=='orig') ? 'noorig.png' : 'norep.png';
+		$dflag = ($type=='orig') ? 'grab' : 'rep';
+      	$image_details = $this->_get_imgurl($path, $name, $dflag);
+      	$imgurl = $image_details['imgurl'];
+      	$imgpath = $image_details['imgpath'];
+      	$thumb_found = $image_details['thumb_found'];
+	   	$imgurl = ($thumb_found) ? $imgurl : property('app_img').'/'.$defimg;
+	   	$imgpath = ($thumb_found) ? $imgpath : property('app_img').'/'.$defimg;
+	   	$editurl = site_url("materials/object_info/$cid/$mid/$oid/$filter").
+								 '?TB_iframe=true&height=630&width=800';
 
-		$size = ($shrink) ? scalecoimage($imgurl, 150, 150) : scalecoimage($imgurl, 300, 300);
+		$size = ($shrink) ? $this->scalecoimage($imgpath, 150, 150) : $this->scalecoimage($imgpath, 300, 300);
 
 		$title = 'Content Object :: Location: Page '.$loc;
 		$slide=($show_ctx) ? '<li id="cislide">'.($this->create_slide($cid, $mid, $loc)).'</li>' : '';
@@ -566,36 +565,47 @@ htmleoq;
    	
    	if (is_readable($p_imgpath)) {
    	  $file_details['imgurl'] = $p_imgurl;
+	  $file_details['imgpath'] = $p_imgpath;
    	  $file_details['thumb_found'] = true;
    	} elseif (is_readable($j_imgpath)) {
    	  $file_details['imgurl'] = $j_imgurl;
+	  $file_details['imgpath'] = $j_imgpath;
    	  $file_details['thumb_found'] = true;
    	} elseif (is_readable($g_imgpath)) {
    	  $file_details['imgurl'] = $g_imgurl;
+	  $file_details['imgpath'] = $g_imgpath;
    	  $file_details['thumb_found'] = true;
    	} elseif (is_readable($t_imgpath)) {
    	  $file_details['imgurl'] = $t_imgurl;
+   	  $file_details['imgpath'] = $t_imgpath;
    	  $file_details['thumb_found'] = true;
    	} elseif (is_readable($s_imgpath)) {
    	  $file_details['imgurl'] = $s_imgurl;
+	  $file_details['imgpath'] = $s_imgpath;
    	  $file_details['thumb_found'] = true;
    	}  elseif (is_readable($p_imgpath_upper)) {
    	  $file_details['imgurl'] = $p_imgurl_upper;
+	  $file_details['imgpath'] = $p_imgpath_upper;
    	  $file_details['thumb_found'] = true;
    	} elseif (is_readable($j_imgpath_upper)) {
    	  $file_details['imgurl'] = $j_imgurl_upper;
+	  $file_details['imgpath'] = $j_imgpath_upper;
    	  $file_details['thumb_found'] = true;
    	} elseif (is_readable($g_imgpath_upper)) {
 			$file_details['imgurl'] = $g_imgurl_upper;
+	  		$file_details['imgpath'] = $g_imgpath_upper;
 			$file_details['thumb_found'] = true;
    	} elseif (is_readable($t_imgpath_upper)) {
 			$file_details['imgurl'] = $t_imgurl_upper;
+		  	$file_details['imgpath'] = $t_imgpath_upper;
 			$file_details['thumb_found'] = true;
    	} elseif (is_readable($s_imgpath_upper)) {
 			$file_details['imgurl'] = $s_imgurl_upper;
+			$file_details['imgpath'] = $s_imgpath_upper;
 			$file_details['thumb_found'] = true;
    	} else {
 			$file_details['imgurl'] = '';
+			$file_details['imgpath'] = '';
 			$file_details['thumb_found'] = false;
    	}
    	return $file_details;
