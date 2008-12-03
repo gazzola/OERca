@@ -146,7 +146,7 @@ class Material extends Model
   public function materials($cid, $mid='', $in_ocw=false, $as_listing=false)
   {
     $materials = array();
-    $where1 = (is_numeric($cid)) ? 'ocw_materials.course_id = $cid' : "ocw_materials.course_id = 0";
+    $where1 = (is_numeric($cid)) ? "ocw_materials.course_id = $cid" : "ocw_materials.course_id = 0";
     $where2 = ($mid=='') ? '' : "AND ocw_materials.id='$mid'";
 	
     $sql = "SELECT ocw_materials.*, ocw_mimetypes.mimetype, ocw_mimetypes.name AS mimename, ocw_tags.name AS tagname
