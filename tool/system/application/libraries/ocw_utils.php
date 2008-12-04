@@ -233,7 +233,7 @@ class OCW_utils {
 		    return($style_line);
 	}
 	
-	function create_co_img($cid, $mid, $oid, $loc, $filter,$type='orig', $shrink=true, $show_ctx=true, $show_edit=false, $showinfo=true,$optclass='') 
+	function create_co_img($cid, $mid, $oid, $loc, $filter,$type='orig', $shrink=true, $show_ctx=true, $show_edit=false, $showinfo=true, $optclass='') 
 	{
 		$name = $this->object->coobject->object_filename($oid);
 		$path = $this->object->coobject->object_path($cid, $mid,$oid);
@@ -284,11 +284,15 @@ class OCW_utils {
 		$locbar = '<li id="ciloc">'.$loc.'</li>';
 		$flagclass = ($shrink) ? 'status_flag' : 'status_flag300';
 		
-		if ($showinfo) { 
-			$coimginfo_html = "$locbar $slide $editlnk $magnify";
+		$coimginfo_html = ($showinfo) ? "$locbar $slide $editlnk $magnify" : '<div>&nbsp;</div>';
+
+		if ($type=='orig') {
+			$flag_html = "	<span class=\"$flagclass $statusclass\">&nbsp; </span>";
 		} else {
-			$coimginfo_html = '<div>&nbsp;</div>';
+			$flag_html = "";
+			$statusclass = 'status_unknown'; //remove hover color
 		}
+		
 		$tile_html = <<<htmleoq
 		
 		<div class="$dcell $optclass" style="background-color: #FFF;">
@@ -300,9 +304,7 @@ class OCW_utils {
 						</ul>
 					</div>
 				</div>
-				<span class="$flagclass $statusclass">
-					&nbsp; 
-				</span>
+						$flag_html
 		</div>
 		
 htmleoq;

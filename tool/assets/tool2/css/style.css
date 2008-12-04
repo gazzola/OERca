@@ -348,7 +348,8 @@ li#cislide a:hover { text-decoration: underline; }
 	position: relative;
 	float: right;
 	left: 27px;
-	top: -212px;
+	top: -212px; 
+/*	top: -118%; */
 	width: 16px;
 	height: 16px;
 }
@@ -374,8 +375,8 @@ div.status_cleared:hover {
 	border: 1px solid #44F622;
 }
 div.status_unknown:hover {
-	background-color: #FFF;
-	border: 1px solid #FFF;
+	background-color: #EEE;
+	border: 1px solid #BBB;
 }
 
 /* status colors for flags */

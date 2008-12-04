@@ -58,7 +58,7 @@ echo script('ocw_tool.js');
 
 	<div id="edit-co-content" class="column span-18">
 				<ul class="mootabs_title">
-					<li title="Original" style="padding-left:10px; margin-left:0;"><h2>Original</h2>
+					<li title="Original" style="padding-left:0px; margin-left:0;width:200px;"><h2>Original</h2>
 						<center>
 				    	<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],$filter,'orig',true,true);?>
 						</center>

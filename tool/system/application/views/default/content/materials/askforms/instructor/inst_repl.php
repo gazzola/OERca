@@ -113,7 +113,7 @@ foreach($repl_objects as  $obj) {
 </td>
 
 <!-- Original -->
-<td style="vertical-align:top">
+<td width="350" style="vertical-align:top">
 <div id="new-col2-<?=$obj['id']?>" style="display: <?=($obj['ask_status']=='in progress') ? 'none':'block'?>;">
 	<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['object_id'],$obj['location'],'ask:rco','orig',false);?>
 </div>
@@ -125,7 +125,7 @@ foreach($repl_objects as  $obj) {
 </td>
 
 <!-- Replacement -->
-<td style="vertical-align:top">
+<td width="320" style="vertical-align:top">
 <div id="new-col3-<?=$obj['id']?>" style="display: <?=($obj['ask_status']=='in progress') ? 'none':'block'?>;">
    		<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['object_id'],$obj['location'],'ask:rco','rep',false);?>
 </div>
