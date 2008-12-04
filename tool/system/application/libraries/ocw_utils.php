@@ -195,7 +195,7 @@ class OCW_utils {
 				if ($inclrep) {
 						$class .= ' edrepl2';
 						$y = $this->create_co_img($cid, $mid, 
-									  $objs[$i]['id'], $objs[$i]['location'],$filter,'repl',true,false,false,false,$class);
+									  $objs[$i]['id'], $objs[$i]['location'],$filter,'repl',true,false,false,true,$class);
 		  			$list .= "\n$y\n";
 				}
 
@@ -233,7 +233,7 @@ class OCW_utils {
 		    return($style_line);
 	}
 	
-	function create_co_img($cid, $mid, $oid, $loc, $filter,$type='orig', $shrink=true, $show_ctx=true, $show_edit=false, $showinfo=true, $optclass='') 
+	function create_co_img($cid, $mid, $oid, $loc, $filter,$type='orig', $shrink=true, $show_ctx=true, $show_edit=false, $showinfo=true, $optclass='',$offset='212') 
 	{
 		$name = $this->object->coobject->object_filename($oid);
 		$path = $this->object->coobject->object_path($cid, $mid,$oid);
@@ -282,12 +282,14 @@ class OCW_utils {
 		} //end switch
 		
 		$locbar = '<li id="ciloc">'.$loc.'</li>';
-		$flagclass = ($shrink) ? 'status_flag' : 'status_flag300';
+		$flagclass = 'status_flag';
+		if (!$shrink) $offset = "341";
+		$offsetclass = "status_flag_offset_".$offset;
 		
 		$coimginfo_html = ($showinfo) ? "$locbar $slide $editlnk $magnify" : '<div>&nbsp;</div>';
 
 		if ($type=='orig') {
-			$flag_html = "	<span class=\"$flagclass $statusclass\">&nbsp; </span>";
+			$flag_html = "	<span class=\"$flagclass $statusclass $offsetclass \">&nbsp; </span>";
 		} else {
 			$flag_html = "";
 			$statusclass = 'status_unknown'; //remove hover color

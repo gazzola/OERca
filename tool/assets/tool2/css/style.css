@@ -348,18 +348,17 @@ li#cislide a:hover { text-decoration: underline; }
 	position: relative;
 	float: right;
 	left: 27px;
-	top: -212px; 
-/*	top: -118%; */
 	width: 16px;
 	height: 16px;
 }
-.status_flag300 {
-	position: relative;
-	float: right;
-	left: 27px;
-	top: -341px;
-	width: 16px;
-	height: 16px;
+.status_flag_offset_341 {
+	top: -341px; 	
+}
+.status_flag_offset_212 {
+	top: -212px; 	
+}
+.status_flag_offset_187 {
+	top: -187px; 	
 }
 
 div.status_notcleared:hover {
