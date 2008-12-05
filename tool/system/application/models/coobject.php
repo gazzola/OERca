@@ -2383,13 +2383,14 @@ class Coobject extends Model
 			if ($obj['ask_status'] <> 'done') {
 					return 'This request is still under review by the instructor';
 			}
-
-			$uname = ($obj['modified_by']<>'') ? $this->ocw_user->username($obj['modified_by']) : 'Instructor';
+			//mbleed OERDEV-213 cant base uname on modified by field, will hardcode instructor
+			//$uname = ($obj['modified_by']<>'') ? $this->ocw_user->username($obj['modified_by']) : 'Instructor';
+			$uname = 'The instructor';
 			$uname = '<b>'.$uname.'</b>';
 
 			if ($type=='original') {
 		    	if ($obj['description']) {
-		        	$html .= $uname.' provided the following description:<br/><br/>';
+		        	$html .= $uname.' provided the following description:<br/><br/>'; 
 		        	$html .= '<p style="background-color:#ddd; padding:5px;">'.$obj['description'].'</p><br/><br/>';
 		    	}
 		    	if ($obj['instructor_owns']=='yes') {
