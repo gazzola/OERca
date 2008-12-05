@@ -13,7 +13,7 @@
     if ($printkey == TRUE) { // print the key only if we have COs ?> 
       <div class="column span-24 first last">
         <h2>
-	  <img src="<?= site_url("/home/make_stat_key/rem") ?>" class="prog-key"> Not Cleared
+	  <img src="<?= site_url("/home/make_stat_key/rem") ?>" class="prog-key"> No Action Assigned
           &nbsp; &nbsp; &nbsp;
           <img src="<?= site_url("/home/make_stat_key/ask") ?>" class="prog-key"> In Progress
           &nbsp; &nbsp; &nbsp;

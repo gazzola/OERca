@@ -323,27 +323,44 @@ a.smoothbox img { border:1px solid #dedede;}
 a.smootbox,
 a.smoothbox:hover { text-decoration:none; }
 
-.coimginfo { float:left; width: 100%; max-width:300px; min-width:152px; height:23px; background: transparent; margin-top: -24px; z-index:88; position: relative; font-size: 12pt;}
-div.co_tile:hover .coimginfo p#cislide a { color: #FFF; }
-div.co_tile:hover .coimginfo p#cislide span.spanbutton { color: #FFF; }
-.coimginfo p { float:left; margin:0; padding:0; color:#fff; font-family:Arial; display:inline; margin-top:7px;}
-p#ciloc { margin:0; padding:0; margin-left:3px; margin-right:3px; margin-top:3px; width:16px; color: #333;}
-p#cimagnify a, p#ciedit a { float:right; margin:0; padding:0 5px; text-decoration:none; z-index: 99; position: absolute; }
-
-p#cimagnify a img, p#ciedit a img { margin:0; padding:0; height:16px; width:16px; border:none; }
-p#ciedit a img {  position: absolute; top: 0px; left: 6px; }
-p#cimagnify a img {  position: absolute; top: 0px; left: 28px; }
-p#cislide {margin:0; padding:0}
-p#cislide a, p#cislide span.spanbutton { float:left; margin:0; margin-left:3px; margin-top:2px; padding:2px; background:transparent; font-size:10px; text-decoration:none; color: #EE4400; }
-p#cislide a:hover {text-decoration: underline; }
-p#cislide span.spanbutton { color: #111; cursor: default; }
 .co_tile {
+	margin:0;
+	padding: 2px;
+	padding-left: 8px;
 	background-color: #EEE;
-	padding: 3px;
-	height: 100%;
 	border: 1px solid #BBB;
+	height: 100%;
 	width: 100%;
 }
+
+.coimginfo { height: 20px; width: 100%; max-width:300px; min-width:152px; background: transparent; z-index:88;  font-size: 12pt; position: relative; }
+.coimginfo ul {  list-style-type: none; margin:0; padding:0; font-family:Arial; }
+.coimginfo ul li {display: inline; list-style-type: none; margin:2px; padding:0; border: none; background: transparent; float: none; line-height: 1em;}
+.coimginfo ul li a { font-size: 85%; color: #e60; margin: 0; padding: 0; text-align: right;}
+div.co_tile:hover .coimginfo li#cislide a { color: #FFF; }
+li#ciloc { width:16px; color: #333;}
+li#cimagnify a, li#ciedit a { text-decoration:none; z-index: 99; }
+li#cimagnify a img, li#ciedit a img { top: 0; margin:0; padding:0; height:16px; width:16px; border:none; }
+li#cislide { font-size: 77%; }
+li#cislide a:hover { text-decoration: underline; }
+
+.status_flag {
+	position: relative;
+	float: right;
+	left: 27px;
+	width: 16px;
+	height: 16px;
+}
+.status_flag_offset_341 {
+	top: -341px; 	
+}
+.status_flag_offset_212 {
+	top: -212px; 	
+}
+.status_flag_offset_187 {
+	top: -187px; 	
+}
+
 div.status_notcleared:hover {
 	background-color: #E0291D;
 	border: 1px solid #E0291D;
@@ -357,8 +374,8 @@ div.status_cleared:hover {
 	border: 1px solid #44F622;
 }
 div.status_unknown:hover {
-	background-color: #FFF;
-	border: 1px solid #FFF;
+	background-color: #EEE;
+	border: 1px solid #BBB;
 }
 
 /* status colors for flags */
@@ -375,15 +392,6 @@ span.status_unknown {
 	background-color: #FFF;
 }
 
-.status_flag {
-	left: 24px;
-	position:relative;
-	width: 16px;
-	height: 16px;
-	float: right;
-	border: 0px solid #555;
-}
-
 div.dcell {
     background-color: #222;
     height: 181px;
@@ -398,11 +406,8 @@ div.dwrap div div.dcell {
     margin: 0;
     margin-left: 30px;
 }
-#myTabs div.dcell .coimginfo { margin-top:-27px; }
 div.dcell img, .co_tile img { 
-	position:relative;
- 	top: -12px;
- 	margin: 4px;
+ 	margin: 0;
 }
 
 /* Edit CO page */
@@ -414,8 +419,7 @@ div.dwrap {
 }
 div.dwrap div { margin-bottom: 25px; }
 div.dwrap div div.first { margin-left:0;}
-div.dwrap .coimginfo { margin-top:-24px; } 
-div.dwrap div#edrepl div.edrepl1 { margin-left: 70px;}
+div.dwrap div#edrepl div.edrepl1 { margin-left: 70px; padding-right: 30px;}
 div.dwrap div#edrepl div.edrepl2 { margin-left: 0;}
 div.dwrap div#edrepl div.first { margin: 0px;}
 

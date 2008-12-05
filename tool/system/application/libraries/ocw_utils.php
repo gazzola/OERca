@@ -195,7 +195,7 @@ class OCW_utils {
 				if ($inclrep) {
 						$class .= ' edrepl2';
 						$y = $this->create_co_img($cid, $mid, 
-									  $objs[$i]['id'], $objs[$i]['location'],$filter,'repl',true,false,false,false,$class);
+									  $objs[$i]['id'], $objs[$i]['location'],$filter,'repl',true,false,false,true,$class);
 		  			$list .= "\n$y\n";
 				}
 
@@ -208,62 +208,110 @@ class OCW_utils {
 		return $list;
 	}
 	
-	function create_co_img($cid, $mid, $oid, $loc, $filter,$type='orig', $shrink=true, $show_ctx=true, $show_edit=false, $showinfo=true,$optclass='') 
+	function scalecoimage($location, $maxw=NULL, $maxh=NULL){
+		    $img = @getimagesize($location);
+		    if($img){
+		        $w = $img[0];
+		        $h = $img[1];
+		
+		        $dim = array('w','h');
+		        foreach($dim AS $val){
+		            $max = "max{$val}";
+		            if(${$val} > ${$max} && ${$max}){
+		                $alt = ($val == 'w') ? 'h' : 'w';
+		                $ratio = ${$alt} / ${$val};
+		                ${$val} = ${$max};
+		                ${$alt} = ${$val} * $ratio;
+		            }
+		        }
+		        $hoffset = ($maxh - $h)/2;
+		        $woffset = ($maxw - $w)/2;
+				$style_line = "width: ".$w."px; height: ".$h."px; margin-top: ".$hoffset."px; margin-bottom: ".$hoffset."px; margin-left: ".$woffset."px; margin-right: ".$woffset."px;";
+		    } else {
+		    	$style_line = "width: 150px; height: 150px; margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px;";
+		    }
+		    return($style_line);
+	}
+	
+	function create_co_img($cid, $mid, $oid, $loc, $filter,$type='orig', $shrink=true, $show_ctx=true, $show_edit=false, $showinfo=true, $optclass='',$offset='212') 
 	{
-		 	$name = $this->object->coobject->object_filename($oid);
-		 	$path = $this->object->coobject->object_path($cid, $mid,$oid);
-			$defimg = ($type=='orig') ? 'noorig.png' : 'norep.png';
-			$dflag = ($type=='orig') ? 'grab' : 'rep';
-      $image_details = $this->_get_imgurl($path, $name, $dflag);
-      $imgurl = $image_details['imgurl'];
-      $thumb_found = $image_details['thumb_found'];
-      
+		$name = $this->object->coobject->object_filename($oid);
+		$path = $this->object->coobject->object_path($cid, $mid,$oid);
+		$defimg = ($type=='orig') ? 'noorig.png' : 'norep.png';
+		$dflag = ($type=='orig') ? 'grab' : 'rep';
+      	$image_details = $this->_get_imgurl($path, $name, $dflag);
+      	$imgurl = $image_details['imgurl'];
+      	$imgpath = $image_details['imgpath'];
+      	$thumb_found = $image_details['thumb_found'];
 	   	$imgurl = ($thumb_found) ? $imgurl : property('app_img').'/'.$defimg;
+	   	$imgpath = ($thumb_found) ? $imgpath : property('app_img').'/'.$defimg;
 	   	$editurl = site_url("materials/object_info/$cid/$mid/$oid/$filter").
 								 '?TB_iframe=true&height=630&width=800';
 
-		  $locbar = '<p id="ciloc">'.$loc.'</p>';
-			$size = ($shrink) ? 'width:150px; height:150px;':'width:300px; height:300px;';
-			$title = 'Content Object :: Location: Page '.$loc;
-			$slide=($show_ctx) ? '<p id="cislide">'.($this->create_slide($cid, $mid, $loc)).'</p>' : '';
-			$magnify = '<p id="cimagnify"><a href="'.$imgurl.'" class="smoothbox" rel="gallery-cos">'.
-	   				 		 '<img title="'.$title.'" src="'.property('app_img').'/search_16.gif" /></a></p>';
+		$size = ($shrink) ? $this->scalecoimage($imgpath, 150, 150) : $this->scalecoimage($imgpath, 300, 300);
 
-		  $editlnk=($show_edit) 
-							? '<p id="ciedit"><a class="smoothbox" href="'.$editurl.'">'.
-	   				 		 '<img title="'.$title.'" src="'.property('app_img').'/edit_16.gif" /></a></p>' 
+		$title = 'Content Object :: Location: Page '.$loc;
+		$slide=($show_ctx) ? '<li id="cislide">'.($this->create_slide($cid, $mid, $loc)).'</li>' : '';
+		$magnify = '<li id="cimagnify"><a href="'.$imgurl.'" class="smoothbox" rel="gallery-cos">'.
+	   				 		 '<img title="'.$title.'" src="'.property('app_img').'/search_16.gif" /></a></li>';
+
+		$editlnk=($show_edit) 
+							? '<li id="ciedit"><a class="smoothbox" href="'.$editurl.'">'.
+	   				 		 '<img title="'.$title.'" src="'.property('app_img').'/edit_16.gif" /></a></li>' 
 						  :'';
-						  /*
-						  		  $editlnk=($show_edit) 
-							? '<p id="ciedit">'.
-								(anchor($editurl, 'Edit', array('class'=>'smoothbox','id'=>'edit-'.$oid))).'</p>' 
-						  :'';
-						  */
-			$imglnk= ($show_edit) 
+		$imglnk= ($show_edit) 
 							?	 '<a href="'.$editurl.'" class="smoothbox">'.
 						 		 '<img title="'.$title.'" src="'.$imgurl.'" style="'. $size .'" /></a>'
 							:	 '<img title="'.$title.'" src="'.$imgurl.'" style="'. $size .'" />';
 
-			$dcell = ($shrink) ? 'dcell':'dcellbig';
+		$dcell = ($shrink) ? 'dcell':'dcellbig';
 			
-			switch ($this->object->coobject->object_progress($oid)) {
-				case 'notcleared':
-					$statusclass = 'status_notcleared';
-					break;
-				case 'inprogress':
-					$statusclass = 'status_inprogress';
-					break;
-				case 'cleared':
-					$statusclass = 'status_cleared';
-					break;
-				default:
-					$statusclass = 'status_unknown';
-					break;				
-			} //end switch
+		switch ($this->object->coobject->object_progress($oid)) {
+			case 'notcleared':
+				$statusclass = 'status_notcleared';
+				break;
+			case 'inprogress':
+				$statusclass = 'status_inprogress';
+				break;
+			case 'cleared':
+				$statusclass = 'status_cleared';
+				break;
+			default:
+				$statusclass = 'status_unknown';
+				break;				
+		} //end switch
+		
+		$locbar = '<li id="ciloc">'.$loc.'</li>';
+		$flagclass = 'status_flag';
+		if (!$shrink) $offset = "341";
+		$offsetclass = "status_flag_offset_".$offset;
+		
+		$coimginfo_html = ($showinfo) ? "$locbar $slide $editlnk $magnify" : '<div>&nbsp;</div>';
 
-	   	return '<div class="'.$dcell.' '.$optclass.'"><span class="status_flag '.$statusclass.'"></span><div class="co_tile '.$statusclass.'">'.$imglnk.
-						 '<div class="coimginfo">'.(($showinfo) ? $locbar.$slide.$editlnk.$magnify:
-																									  '<p>&nbsp;</p>').'</div></div></div>';
+		if ($type=='orig') {
+			$flag_html = "	<span class=\"$flagclass $statusclass $offsetclass \">&nbsp; </span>";
+		} else {
+			$flag_html = "";
+			$statusclass = 'status_unknown'; //remove hover color
+		}
+		
+		$tile_html = <<<htmleoq
+		
+		<div class="$dcell $optclass" style="background-color: #FFF;">
+				<div class="co_tile $statusclass">
+					$imglnk
+					<div class="coimginfo">
+						<ul>
+							$coimginfo_html
+						</ul>
+					</div>
+				</div>
+						$flag_html
+		</div>
+		
+htmleoq;
+
+	   	return $tile_html;
 	}
 
 	function create_slide($cid,$mid,$loc,$text='View context',$useimage=false)
@@ -521,36 +569,47 @@ class OCW_utils {
    	
    	if (is_readable($p_imgpath)) {
    	  $file_details['imgurl'] = $p_imgurl;
+	  $file_details['imgpath'] = $p_imgpath;
    	  $file_details['thumb_found'] = true;
    	} elseif (is_readable($j_imgpath)) {
    	  $file_details['imgurl'] = $j_imgurl;
+	  $file_details['imgpath'] = $j_imgpath;
    	  $file_details['thumb_found'] = true;
    	} elseif (is_readable($g_imgpath)) {
    	  $file_details['imgurl'] = $g_imgurl;
+	  $file_details['imgpath'] = $g_imgpath;
    	  $file_details['thumb_found'] = true;
    	} elseif (is_readable($t_imgpath)) {
    	  $file_details['imgurl'] = $t_imgurl;
+   	  $file_details['imgpath'] = $t_imgpath;
    	  $file_details['thumb_found'] = true;
    	} elseif (is_readable($s_imgpath)) {
    	  $file_details['imgurl'] = $s_imgurl;
+	  $file_details['imgpath'] = $s_imgpath;
    	  $file_details['thumb_found'] = true;
    	}  elseif (is_readable($p_imgpath_upper)) {
    	  $file_details['imgurl'] = $p_imgurl_upper;
+	  $file_details['imgpath'] = $p_imgpath_upper;
    	  $file_details['thumb_found'] = true;
    	} elseif (is_readable($j_imgpath_upper)) {
    	  $file_details['imgurl'] = $j_imgurl_upper;
+	  $file_details['imgpath'] = $j_imgpath_upper;
    	  $file_details['thumb_found'] = true;
    	} elseif (is_readable($g_imgpath_upper)) {
 			$file_details['imgurl'] = $g_imgurl_upper;
+	  		$file_details['imgpath'] = $g_imgpath_upper;
 			$file_details['thumb_found'] = true;
    	} elseif (is_readable($t_imgpath_upper)) {
 			$file_details['imgurl'] = $t_imgurl_upper;
+		  	$file_details['imgpath'] = $t_imgpath_upper;
 			$file_details['thumb_found'] = true;
    	} elseif (is_readable($s_imgpath_upper)) {
 			$file_details['imgurl'] = $s_imgurl_upper;
+			$file_details['imgpath'] = $s_imgpath_upper;
 			$file_details['thumb_found'] = true;
    	} else {
 			$file_details['imgurl'] = '';
+			$file_details['imgpath'] = '';
 			$file_details['thumb_found'] = false;
    	}
    	return $file_details;

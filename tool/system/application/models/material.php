@@ -146,15 +146,16 @@ class Material extends Model
   public function materials($cid, $mid='', $in_ocw=false, $as_listing=false)
   {
     $materials = array();
-    $where = ($mid=='') ? '' : "AND ocw_materials.id='$mid'";
-
+    $where1 = (is_numeric($cid)) ? "ocw_materials.course_id = $cid" : "ocw_materials.course_id = 0";
+    $where2 = ($mid=='') ? '' : "AND ocw_materials.id='$mid'";
+	
     $sql = "SELECT ocw_materials.*, ocw_mimetypes.mimetype, ocw_mimetypes.name AS mimename, ocw_tags.name AS tagname
       FROM ocw_materials
       LEFT JOIN ocw_mimetypes 
       ON ocw_mimetypes.id = ocw_materials.mimetype_id
       LEFT JOIN ocw_tags
       ON ocw_tags.id = ocw_materials.tag_id
-      WHERE ocw_materials.course_id = $cid $where
+      WHERE $where1 $where2
       ORDER BY ocw_materials.order";
     $q = $this->db->query($sql);
 
