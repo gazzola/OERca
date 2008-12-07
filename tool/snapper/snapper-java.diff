@@ -1,0 +1,51 @@
+Index: src/java/org/muse/snapper/ClipboardReader.java
+===================================================================
+--- src/java/org/muse/snapper/ClipboardReader.java	(revision 55678)
++++ src/java/org/muse/snapper/ClipboardReader.java	(working copy)
+@@ -106,7 +106,8 @@
+ 			try
+ 			{
+ 				Image rv = (Image) contents.getTransferData(DataFlavor.imageFlavor);
+-				rv = detectChange(rv);
++				// This is only useful when using auto-capture, and ties up a lot of memory
++				// rv = detectChange(rv);
+ 				return rv;
+ 			}
+ 			catch (Throwable e)
+@@ -120,7 +121,8 @@
+ 			{
+ 				InputStream in = (InputStream) contents.getTransferData(pictFlavor);
+ 				Image rv = readPict(in);
+-				rv = detectChange(rv);
++				// This is only useful when using auto-capture, and ties up a lot of memory
++				// rv = detectChange(rv);
+ 				return rv;
+ 			}
+ 			catch (UnsupportedFlavorException e)
+Index: src/java/org/muse/snapper/Snapper.java
+===================================================================
+--- src/java/org/muse/snapper/Snapper.java	(revision 55678)
++++ src/java/org/muse/snapper/Snapper.java	(working copy)
+@@ -155,15 +155,22 @@
+ 			encoder.encode(thumbImage);
+ 			out.close();
+ 			byte[] thumb = byteStream.toByteArray();
++			byteStream.reset();	// Make this eligible for garbage collection
+ 
+ 			// encode to base64
+ 			byte[] encoded = Base64.encodeBase64(thumb, false);
++			thumb = null;		// Make this eligible for garbage collection
+ 			String rv = new String(encoded, "UTF-8");
++			encoded = null;		// Make this eligible for garbage collection
+ 			return rv;
+ 		}
+ 		catch (IOException e)
+ 		{
+ 		}
++		catch (Throwable t)
++		{
++			this.report = t.toString();
++		}
+ 
+ 		return null;
+ 	}
