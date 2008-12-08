@@ -90,11 +90,18 @@ function setAutoCapture(e)
 
 function setType() { $('snap_type').value=this.value; }
 
+function ignoreEnterKey(event)
+{
+	if (event.keyCode == 13) {
+			event.preventDefault();
+	}
+}
 
 var SNAP = {
 snapper: function() {
 		$("snap").addEvent('click',captureClipboard);
 		$("snap_save").addEvent('click',sendImage);
+		$("snap_location").addEvent('keypress', ignoreEnterKey);
 		//$("snap_aCapture").addEvent('change',setAutoCapture);
 		$("snap_aCaptureTypeObject").addEvent('change',setType);
 		$("snap_aCaptureTypeSlide").addEvent('change',setType);
