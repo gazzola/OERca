@@ -51,8 +51,9 @@ class Material extends Model
   {
     $query=$this->db->insert('materials',$details);
     $this->db->select('id');
-    $where = "course_id='".$details['course_id']."' AND name='".$details['name']."' AND in_ocw='1'";
-    $this->db->from('materials')->where($where);
+    $courseId = $details['course_id'];
+    $name = $details['name'];
+    $this->db->from('materials')->where('course_id', $courseId)->where('name', $name)->where('in_ocw', '1');
     $q = $this->db->get();
     $rv = null;
     if ($q->num_rows() > 0)

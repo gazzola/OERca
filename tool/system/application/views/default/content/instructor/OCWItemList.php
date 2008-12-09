@@ -21,7 +21,8 @@ class OCWItemList
 	
 	public function getSupportedToolTitles()
 	{
-		$toolTitles = array(0=>"Assignments", 1=>"Resources", 2=>"Schedule", 3=>"Syllabus");
+		// only support Resources tool for now
+		$toolTitles = array(0=>"Resources"/*0=>"Assignments", 1=>"Resources", 2=>"Schedule", 3=>"Syllabus"*/);
 		return $toolTitles;
 	}
 }	

@@ -108,21 +108,24 @@ class Auth extends Controller
 					$courseDetails['collaborators']='';
 
 					// add course
-					$c=$this->course->new_course($courseDetails);
-					// add user role for the course
-					if(($u = $this->ocw_user->existsByUserName($userId)) != false)
+					$course=$this->course->new_course($courseDetails);
+				}
+				
+				// add user role for the course
+				if(($u = $this->ocw_user->existsByUserName($userId)) != false)
+				{
+					// whether this user has given role in the course
+					if (!$this->ocw_user->has_role($u['id'], $course['id'], $role))
 					{
+						// add user with role into given course
 						$userDetails['user_id'] = $u['id'];
-						$userDetails['course_id'] = $c['id'];
+						$userDetails['course_id'] = $course['id'];
 						$userDetails['role'] = $role; 
 						$this->course->add_user($userDetails);
 					}
-					$courseId= $u['id'];
 				}
-				else
-				{
-					$courseId = $course['id'];
-				}
+				
+				$courseId= $course['id'];
 				redirect($role.'/materials/'.$courseId,'location');
 			}
 			else
