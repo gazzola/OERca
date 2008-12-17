@@ -11,7 +11,7 @@ if ($prov_objects != null) {
 
 <td style="vertical-align:top; width: 300px; padding: 10px;">
   <p>
-	<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],'done','orig',true);?>
+	<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],'done','orig',true,true,true,true,'','187');?>
   </p>
 
 	<!-- citation -->
@@ -73,7 +73,7 @@ if ($repl_objects != null) {
 <td style="vertical-align:top"><?=$count?></td>
 
 <td style="vertical-align:top">
-	<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['object_id'],$obj['location'],'done','orig',true);?>
+	<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['object_id'],$obj['location'],'done','orig',true,true,true,true,'','187');?>
 
 	<!-- citation -->
 	<br/><br/>
@@ -97,7 +97,7 @@ if ($repl_objects != null) {
 </td>
 
 <td style="vertical-align:top">
-	<?php echo $this->coobject->ask_instructor_report($cid, $mid, $obj, 'replacement','done');	?>
+	<?php echo $this->coobject->ask_instructor_report($cid, $mid, $obj, 'replacement','done',true,false,false,true,'','187');	?>
 	<!-- dScribe questions -->
 	<br/><br/>
 	<p style="clear:both"><h3>dScribe Questions:</h3>

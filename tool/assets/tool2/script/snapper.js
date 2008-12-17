@@ -14,6 +14,12 @@ function captureClipboard()
 
 	// get the image into the form field
 	var image = (String) (document.clipboard.getBase64Jpeg());
+	if (image == "null") {
+			report = (String) (document.clipboard.getReport());
+			$('snap_status').setHTML(report);
+			$('snap_image').value = '';
+			return false;
+	}
 	$('snap_image').value = image;
 
 	return true;
@@ -35,7 +41,15 @@ function sendImage()
 {
 	var check = validate();
 	if (check != 'success') { sendDone(check); return false; }
-	$('snapper-form').send({onComplete: function(jsonObj,xml){ sendDone(Json.evaluate(jsonObj)); } });
+	$('snapper-form').send({
+			onComplete: function(jsonObj,xml){ sendDone(Json.evaluate(jsonObj)); },
+			onFailure: function(jsonObj,xml){
+							document.clipboard.clear();
+							$("snap_status").setHTML('<p style="padding: 2px; font-size:small; background: #FBE3E4; color: #D12F19; border-color: #FBC2C4;"> Send failed with error code ' + jsonObj.status + ', "' +  jsonObj.statusText + '"' + '</p>');
+							$("snap_image").value='';
+							return false;
+			}
+	});
 }
 
 function validate()
@@ -76,11 +90,18 @@ function setAutoCapture(e)
 
 function setType() { $('snap_type').value=this.value; }
 
+function ignoreEnterKey(event)
+{
+	if (event.keyCode == 13) {
+			event.preventDefault();
+	}
+}
 
 var SNAP = {
 snapper: function() {
 		$("snap").addEvent('click',captureClipboard);
 		$("snap_save").addEvent('click',sendImage);
+		$("snap_location").addEvent('keypress', ignoreEnterKey);
 		//$("snap_aCapture").addEvent('change',setAutoCapture);
 		$("snap_aCaptureTypeObject").addEvent('change',setType);
 		$("snap_aCaptureTypeSlide").addEvent('change',setType);

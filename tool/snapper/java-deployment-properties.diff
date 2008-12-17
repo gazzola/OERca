@@ -1,0 +1,18 @@
+--- ~/Library/Caches/Java/deployment.properties	2008-12-05 22:55:36.000000000 -0500
++++ ~/Library/Caches/Java/deployment.properties.new	2008-12-07 16:56:27.000000000 -0500
+@@ -43,12 +43,12 @@
+ #Java Plugin jre's
+ #Fri Dec 05 22:55:36 EST 2008
+ deployment.javapi.jre.1.5.0.osname=Mac OS X
+-deployment.javapi.jre.1.4.2.args=
++deployment.javapi.jre.1.4.2.args=-Xmx256m -Xms64m
+ deployment.javapi.jre.1.4.2.osname=Mac OS X
+-deployment.javapi.jre.1.6.0.args=
++deployment.javapi.jre.1.6.0.args=-Xmx256m -Xms64m
+ deployment.javapi.jre.1.5.0.osarch=x86_64
+ deployment.javapi.jre.1.6.0.osname=Mac OS X
+-deployment.javapi.jre.1.5.0.args=
++deployment.javapi.jre.1.5.0.args=-Xmx256m -Xms64m
+ deployment.javapi.jre.1.4.2.path=/System/Library/Frameworks/JavaVM.framework/Versions/1.4.2/Home
+ deployment.javapi.jre.1.4.2.osarch=x86_64
+ deployment.javapi.jre.1.6.0.path=/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Home
