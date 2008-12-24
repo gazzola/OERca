@@ -9,6 +9,7 @@
  * @param   string download name
  * @param   string path to file to be downloaded
  * @param   optional boolean, delete the file if set to yes
+ * @param   optional integer, the size of the read chunk
  */
   function force_file_download($download_name = '', 
     $resource_name = '', $delete_file = FALSE, $read_chunk = NULL)
@@ -18,7 +19,7 @@
     }
     // define the read_chunk if not specified
     if ($read_chunk == NULL) {
-      $read_chunk = 1024 * 8;
+      $read_chunk = 4096 * 8;
     }
     $extension = pathinfo($resource_name, PATHINFO_EXTENSION);
     

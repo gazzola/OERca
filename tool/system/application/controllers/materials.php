@@ -778,17 +778,21 @@ class Materials extends Controller {
 	
 	/**
 	  * Manipulate the materials for a course. This method gets form input and
-	  * calls other functions to do the real work
+	  * calls other functions to do the real work. Specifying the $mid
+	  * (material id) results in the download of just the material file without
+	  * any content objects or context images.
 	  * 
 	  * @access   public
+	  * @param    int course id
+	  * @param    int material id (optional)
 	  * @return   void
 	  */
-	  public function manipulate($cid)
+	  public function manipulate($cid, $mid=NULL)
 	  {
 	    $err_msg = "";
 	    $conf_msg = "";
 	    // TODO: Really think about form validation from the materials table
-	    if (!array_key_exists('select_material', $_POST)) {
+      if (!array_key_exists('select_material', $_POST) && $mid == NULL) {
 	      $err_msg = "No items were selected. Please select at least one item.";
 	      flashMsg($err_msg);
 	      redirect("materials/home/$cid", "location");
@@ -800,10 +804,19 @@ class Materials extends Controller {
         $conf_msg = "Removed selected materials.";
         flashmsg($conf_msg);
         redirect("materials/home/$cid", 'location');
-	    } elseif (array_key_exists('download', $_POST)) {
-	      $material_list = $this->material->
-	        get_material_paths($cid, $_POST['select_material']);
+	    } elseif (array_key_exists('download', $_POST) || $mid) {
+	      if ($mid) {
+	        $material_list = $this->material->
+	          get_material_paths($cid, array($mid));
+	      } else {
+	        $material_list = $this->material->
+  	        get_material_paths($cid, $_POST['select_material']); 
+	      }
 	      $file_list = $this->_get_material_files($material_list);
+	      if ($mid) {
+	        $file_list[0]['file_names'] = 
+	          array_slice($file_list[0]['file_names'], 0, 1);
+	      }
 	      $this->_download_material($file_list);
 	    } else {
 	      echo "We really shouldn't see this at all!";
@@ -827,8 +840,8 @@ class Materials extends Controller {
 	    {
 	      $file_names = array();
 	      /* TODO: change the way materials are named so full names are
-	       * retained in the DB
-	       * construct the path to the materials dir */
+	       * retained in the DB */
+	      /* construct the path to the materials dir */
 	      $mat_path = property('app_uploads_path');
 	      $mat_path .= "cdir_" . $material_info['course_dir'];
 	      $mat_path .= "/mdir_" . $material_info['material_dir'];
@@ -899,9 +912,10 @@ class Materials extends Controller {
 	      // directly download the file for a single file
 	      if ($num_files == 1) {
 	        $file_name = $file_list[0]['file_names'][0];
-	        $down_name = $this->_get_export_file_name($file_name, 0,
-	          $file_list[0]);
-	      force_file_download($down_name, $file_name);
+	        // set the name of the downloaded file
+	        $down_name = $file_list[0]['material_name'] . '.' .
+	          pathinfo($file_name, PATHINFO_EXTENSION);
+	        force_file_download($down_name, $file_name);
 	      } else {
 	        foreach ($file_list as $mat_files) {
 	          foreach ($mat_files['file_names'] as $file_num => $file_name) {

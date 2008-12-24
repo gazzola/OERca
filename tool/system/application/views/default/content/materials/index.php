@@ -73,7 +73,7 @@
 						<a href="<?=site_url("materials/editcomments/$cid/{$material['id']}")?>?TB_iframe=true&height=500&width=350" class="smoothbox" title="Comments for <?=$material['name']?>">Comments (<?=$numcomments?>)</a>&nbsp|
 						<a href="<?=site_url("materials/askforms/$cid/{$material['id']}")?>" title="View Material ASK forms" style="<?=$askcolor?>" target="_blank">ASK Forms</a>&nbsp|
 						<?php if ($material['files'][0]['fileurl']) { ?>
-						  <a href="<?=$material['files'][0]['fileurl']?>">Download</a>
+						  <a href="<?=site_url("materials/manipulate/$cid/{$material['id']}")?>">Download</a>
 					  <?php } else { ?>
 					    No Material <?php } ?>
 				</span>

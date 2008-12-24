@@ -215,6 +215,7 @@ class Material extends Model
     return (sizeof($materials)) ? (($as_listing) ? $this->as_listing($materials):$materials) : null;
   }
 
+
   /**
     * Get files for a material 
     *
@@ -238,10 +239,10 @@ class Material extends Model
     $q = $this->db->get();
 
     if ($q->num_rows() > 0) {
-      foreach($q->result_array() as $row) { 
-							$row['fileurl'] =  property('app_uploads_url').$cname.'/mdir_'.$row['filename'].'/'.$row['filename'];
-							$row['filepath'] = property('app_uploads_path').$cname.'/mdir_'.$row['filename'].'/'.$row['filename'];
-							array_push($files, $row); 
+      foreach($q->result_array() as $row) {
+        $row['fileurl'] =  property('app_uploads_url').$cname.'/mdir_'.$row['filename'].'/'.$row['filename'];
+				$row['filepath'] = property('app_uploads_path').$cname.'/mdir_'.$row['filename'].'/'.$row['filename'];
+				array_push($files, $row); 
 			}
     } 
 
@@ -790,10 +791,11 @@ class Material extends Model
 	  * @param    array of material ids
 	  * @return   array of paths to materials
 	  */
+	// TODO: Make this function shorter if possible
 	public function get_material_paths($cid, $material_ids)
 	{
 	  // format for constructing filename timestamps as YYYY-MM-DD-HHMMSS
-          $download_date_format = "Y-m-d-His";
+    $download_date_format = "Y-m-d-His";
 	  $materials = array();
 	  $last_mat_id = $material_ids[(count($material_ids) - 1)];
 	  // TODO: Change this SQL to active record queries
