@@ -848,15 +848,17 @@ class Materials extends Controller {
       $mat_path .= "/mdir_" . $material_info['material_dir'];
       /* find all items in the $mat_path directory and add to the
        * $material_files array if they are files instead of directories */
-      $all_dir_items = (scandir($mat_path));
-      foreach ($all_dir_items as $file_name) {
-        $rel_path = "$mat_path/$file_name";
-        if (is_file($rel_path)) {
-          if (pathinfo($rel_path, PATHINFO_FILENAME) ==
-            $material_info['material_dir']) {
-            $file_names['material_file'] = $rel_path;
-          } else {
-            $file_names['ctxt_images'][] = $rel_path;
+      if (is_dir($mat_path)) {
+        $all_dir_items = (scandir($mat_path));
+        foreach ($all_dir_items as $file_name) {
+          $rel_path = "$mat_path/$file_name";
+          if (is_file($rel_path)) {
+            if (pathinfo($rel_path, PATHINFO_FILENAME) ==
+              $material_info['material_dir']) {
+              $file_names['material_file'] = $rel_path;
+            } else {
+              $file_names['ctxt_images'][] = $rel_path;
+            }
           }
         }
       }
@@ -1195,22 +1197,25 @@ class Materials extends Controller {
 	      array_search($co_info['action_taken'], $filter_actions) === FALSE) {
 	      $co_dir = property('app_uploads_path');
 	      $co_dir .= $co_info['co_path'];
-	      $co_files = scandir($co_dir);
-	      // define whether we select the original co or the replacement
-	      if (array_search($co_info['action_taken'], $repl_actions) !== FALSE) {
-	        $match_expr = "/(${co_info['name']}_rep)(\..*)/";
-	      } else {
-	        $match_expr = "/(${co_info['name']})(_grab)?(\..*)/";
-	      }
-	      foreach ($co_files as $co_file) {
-	        if (preg_match($match_expr, $co_file, $matches) > 0) {
-	          $co_info['co_file'] = $co_file;
-	          /* TODO: aal - manipulate the original array after passing it
-      	     * in by reference instead of doing an array copy and wasting
-      	     * memory */
-      	    array_push($selected_cos, $co_info);
-	        }
-	      }
+	      if (is_dir($co_dir)) {
+  	      $co_files = scandir($co_dir);
+  	      // define whether we select the original co or the replacement
+  	      if (array_search($co_info['action_taken'], $repl_actions) !==
+  	        FALSE) {
+  	        $match_expr = "/(${co_info['name']}_rep)(\..*)/";
+  	      } else {
+  	        $match_expr = "/(${co_info['name']})(_grab)?(\..*)/";
+  	      }
+  	      foreach ($co_files as $co_file) {
+  	        if (preg_match($match_expr, $co_file, $matches) > 0) {
+  	          $co_info['co_file'] = $co_file;
+  	          /* TODO: aal - manipulate the original array after passing it
+        	     * in by reference instead of doing an array copy and wasting
+        	     * memory */
+        	    array_push($selected_cos, $co_info);
+  	        }
+  	      }
+        }
 	    }
 	  }
 	  return ($selected_cos);
