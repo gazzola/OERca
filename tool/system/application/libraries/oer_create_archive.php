@@ -25,7 +25,6 @@ class OER_create_archive
   
   public function __construct()
   {
-		$this->object =& get_instance();
     log_message('debug', "OER_Filename Class Initialized");
     return $this;
   }
