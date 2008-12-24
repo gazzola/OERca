@@ -50,7 +50,7 @@ class Materials extends Controller {
       'mimetypes'=>$mimetypes,
       'tags'=>$tags,
      );
-      
+     
     $this->layout->buildPage('materials/index', $data);
   }
 

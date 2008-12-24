@@ -20,10 +20,11 @@
 <?php $mat_form_attr = array( 'id' => 'mat_form', 'name' => 'mat_form'); ?>
 
 <?php echo form_open("materials/manipulate/$cid", $mat_form_attr) ?>
-  <div class="column span-7 firstlast">
+  <div class="column span-8 firstlast">
     <input type="submit" name="delete" id="delete" value="Delete" class="confirm"
 					customprompt="You are about to permanently delete ALL the selected materials. ARE YOU SURE?">
-    <input type="submit" name="download" id="download" value="Download"> <br />
+    <input type="submit" name="download" id="download" value="Download">
+          &nbsp;*includes Content Objects<br />
     <span>
       Select:
       &nbsp;
@@ -68,9 +69,13 @@
   			<span style="font-size: 13px;"><a href="<?php echo site_url()."materials/edit/$cid/".$material['id']?>"><?= $material['name']?></a></span>
 				<br/>
 				<span style="font-size:9px; clear:both; margin-top:20px;">
-						<a href="<?=site_url("materials/editinfo/$cid/{$material['id']}")?>?TB_iframe=true&height=500&width=350" class="smoothbox" title="Editing <?=$material['name']?> Info">Edit</a>&nbsp;|&nbsp;
-						<a href="<?=site_url("materials/editcomments/$cid/{$material['id']}")?>?TB_iframe=true&height=500&width=350" class="smoothbox" title="Comments for <?=$material['name']?>">Comments (<?=$numcomments?>)</a>&nbsp;|&nbsp;
-						<a href="<?=site_url("materials/askforms/$cid/{$material['id']}")?>" title="View Material ASK forms" style="<?=$askcolor?>" target="_blank">ASK Forms</a>
+						<a href="<?=site_url("materials/editinfo/$cid/{$material['id']}")?>?TB_iframe=true&height=500&width=350" class="smoothbox" title="Editing <?=$material['name']?> Info">Edit</a>&nbsp|
+						<a href="<?=site_url("materials/editcomments/$cid/{$material['id']}")?>?TB_iframe=true&height=500&width=350" class="smoothbox" title="Comments for <?=$material['name']?>">Comments (<?=$numcomments?>)</a>&nbsp|
+						<a href="<?=site_url("materials/askforms/$cid/{$material['id']}")?>" title="View Material ASK forms" style="<?=$askcolor?>" target="_blank">ASK Forms</a>&nbsp|
+						<?php if ($material['files'][0]['fileurl']) { ?>
+						  <a href="<?=$material['files'][0]['fileurl']?>">Download</a>
+					  <?php } else { ?>
+					    No Material <?php } ?>
 				</span>
   		</td>
 
@@ -119,7 +124,7 @@
   <?php } }?>
   	</tbody>
   </table>
-  <div class="column span-7 firstlast" style="margin-bottom:30px;">
+  <div class="column span-8 firstlast" style="margin-bottom:30px;">
     <span>
       Select:
       &nbsp;
@@ -130,6 +135,7 @@
     <input type="submit" name="delete" id="delete" value="Delete" class="confirm"
 				customprompt="You are about to permanently delete ALL the selected materials. ARE YOU SURE?">
     <input type="submit" name="download" id="download" value="Download">
+        &nbsp;*includes Content Objects<br />
   </div>
 </form>
 <?php }  ?>
