@@ -985,6 +985,11 @@ class Materials extends Controller {
             for($i = 0; $i < count($locations); $i++) {
               $export_name .= trim($locations[$i]) . '_';
             }
+            // add 'replacement_' to the name if the co is a replacement
+            $rep_ident = "[_rep\..*]";
+            if (preg_match($rep_ident, $co_info['co_file']) > 0) {
+              $export_name .= "replacement_";
+            }
             $export_name .= "obj_";
             /* determine which number to assign to the current obj */
             if (count($archive_cont_info) > 0) {
@@ -1012,6 +1017,7 @@ class Materials extends Controller {
           }
         }
       }
+      exit();
       $path_to_archive = $this->oer_create_archive->
         make_archive($archive_name,$archive_cont_info);
       $down_name = pathinfo($path_to_archive, PATHINFO_BASENAME);
