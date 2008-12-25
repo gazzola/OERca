@@ -1017,7 +1017,6 @@ class Materials extends Controller {
           }
         }
       }
-      exit();
       $path_to_archive = $this->oer_create_archive->
         make_archive($archive_name,$archive_cont_info);
       $down_name = pathinfo($path_to_archive, PATHINFO_BASENAME);
