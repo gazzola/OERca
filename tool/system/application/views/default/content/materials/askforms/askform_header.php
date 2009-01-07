@@ -22,7 +22,7 @@ textarea{ font-size: 12px; font-family: Arial, Helvetica, sans-serif; border: 1p
 	<?php echo $material['author']; echo ($material['collaborators']<>'') ? ' with '.$material['collaborators'] : ''?> &nbsp;|&nbsp;
 	<b>Date: </b><?=mdate('%d %M, %Y',mysql_to_unix($course['start_date'])).' - '.  mdate('%d %M, %Y',mysql_to_unix($course['end_date']))?> &nbsp;|&nbsp;
 	<b>Download URL:</b>  <?php if ($material['files'][0]['fileurl'] <> '') { ?>
-	<a href="<?=$material['files'][0]['fileurl']?>"><?= $material['name']?></a>
+	<a href="<?=site_url("materials/manipulate/$cid/{$material['id']}")?>"><?= $material['name']?></a>
   <?php } else { ?>
 	<span style="color: red">no URL found for resource</span>
   <?php } ?>

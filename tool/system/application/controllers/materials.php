@@ -50,7 +50,7 @@ class Materials extends Controller {
       'mimetypes'=>$mimetypes,
       'tags'=>$tags,
      );
-      
+     
     $this->layout->buildPage('materials/index', $data);
   }
 
@@ -223,7 +223,6 @@ class Materials extends Controller {
 		);
 
     $this->layout->buildPage('materials/_edit_material_cos', $data);
-    // echo $this->ocw_utils->dump($data);
 	}
 
 
@@ -777,294 +776,454 @@ class Materials extends Controller {
 	
 	
 	/**
-	  * Manipulate the materials for a course. This method gets form input and
-	  * calls other functions to do the real work
-	  * 
-	  * @access   public
-	  * @return   void
-	  */
-	  public function manipulate($cid)
-	  {
-	    $err_msg = "";
-	    $conf_msg = "";
-	    // TODO: Really think about form validation from the materials table
-	    if (!array_key_exists('select_material', $_POST)) {
-	      $err_msg = "No items were selected. Please select at least one item.";
-	      flashMsg($err_msg);
-	      redirect("materials/home/$cid", "location");
-	    }
-	    if (array_key_exists('delete', $_POST)) {
-	      foreach ($_POST['select_material'] as $material_id) {
-	        $this->material->remove_material($cid, $material_id);
+	 * Manipulate the materials for a course. This method gets form input and
+	 * calls other functions to do the real work. Specifying the $mid
+	 * (material id) results in the download of just the material file without
+	 * any content objects or context images.
+	 * 
+	 * @access   public
+	 * @param    int course id
+	 * @param    int material id (optional)
+	 * @return   void
+	 */
+	public function manipulate($cid, $mid=NULL)
+  {
+    $err_msg = "";
+    $conf_msg = "";
+    // TODO: Really think about form validation from the materials table
+    if (!array_key_exists('select_material', $_POST) && $mid == NULL) {
+      $err_msg = "No items were selected. Please select at least one item.";
+      flashMsg($err_msg);
+      redirect("materials/home/$cid", "location");
+    }
+    if (array_key_exists('delete', $_POST)) {
+      foreach ($_POST['select_material'] as $material_id) {
+        $this->material->remove_material($cid, $material_id);
+      }
+      $conf_msg = "Removed selected materials.";
+      flashmsg($conf_msg);
+      redirect("materials/home/$cid", 'location');
+    } elseif (array_key_exists('download', $_POST) || $mid) {
+      if ($mid) {
+        $material_list = $this->material->
+          get_material_info($cid, array($mid));
+      } else {
+        $material_list = $this->material->
+	        get_material_info($cid, $_POST['select_material']); 
+      }
+      $file_list = $this->_get_material_files($material_list);
+      if ($mid) {
+        $file_list[0]['file_names'] = 
+          array_slice($file_list[0]['file_names'], 0, 1);
+      }
+      $this->_download_material($file_list);
+    } else {
+      echo "We really shouldn't see this at all!";
+    }
+  }
+	  
+	  
+	/**
+   * Locate the files for the specified materials
+   * 
+   * @access   private
+   * @param    array the list of materials
+   * @return   mixed array listing the files for the material along with
+   *           the material_id, course number, course title, 
+   *           material name
+   */
+  /* TODO: change to allow a material only parameter so we don't have
+   * to special case the material only download */
+  private function _get_material_files($material_list)
+  {
+    $material_files = array();
+    foreach ($material_list as $material_info)
+    {
+      $file_names = array();
+      /* TODO: change the way materials are named so full names are
+       * retained in the DB */
+      /* construct the path to the materials dir */
+      $mat_path = property('app_uploads_path');
+      $mat_path .= "cdir_" . $material_info['course_dir'];
+      $mat_path .= "/mdir_" . $material_info['material_dir'];
+      /* find all items in the $mat_path directory and add to the
+       * $material_files array if they are files instead of directories */
+      if (is_dir($mat_path)) {
+        $all_dir_items = (scandir($mat_path));
+        foreach ($all_dir_items as $file_name) {
+          $rel_path = "$mat_path/$file_name";
+          if (is_file($rel_path)) {
+            if (pathinfo($rel_path, PATHINFO_FILENAME) ==
+              $material_info['material_dir']) {
+              $file_names['material_file'] = $rel_path;
+            } else {
+              $file_names['ctxt_images'][] = $rel_path;
+            }
+          }
         }
-        $conf_msg = "Removed selected materials.";
-        flashmsg($conf_msg);
-        redirect("materials/home/$cid", 'location');
-	    } elseif (array_key_exists('download', $_POST)) {
-	      $material_list = $this->material->
-	        get_material_paths($cid, $_POST['select_material']);
-	      $file_list = $this->_get_material_files($material_list);
-	      $this->_download_material($file_list);
-	    } else {
-	      echo "We really shouldn't see this at all!";
-	    }
-	  }
+      }
+      if ($material_info['material_cos_info']) {
+        $co_info = $this->_select_cos($material_info['material_cos_info']);
+        if ($co_info) {
+          $file_names['co_info'] = $co_info;
+        }
+      }
+      /* TODO: Figure out what fields we need from the DB to allow
+       * sensible organization of the zip archives created for multiple
+       * material downloads */
+      $material_files[] = array(
+        'material_id' => $material_info['material_id'],
+        'school_name' => $material_info['school_name'],
+        'course_number' => $material_info['course_number'],
+        'course_title' => $material_info['course_title'],
+        'material_name' => $material_info['material_name'],
+        'material_date' => $material_info['material_date'],
+        'material_dir' => $material_info['material_dir'],
+        'file_names' => $file_names,
+        );
+    }
+    return($material_files);
+  }
 	  
 	  
-	  /**
-	    * Locate the files for the specified materials
-	    * 
-	    * @access   private
-	    * @param    array the list of materials
-	    * @return   mixed array listing the files for the material along with
-	    *           the material_id, course number, course title, 
-	    *           material name
-	    */
-	  private function _get_material_files($material_list)
-	  {
-	    $material_files = array();
-	    foreach ($material_list as $material_info)
-	    {
-	      $file_names = array();
-	      /* TODO: change the way materials are named so full names are
-	       * retained in the DB
-	       * construct the path to the materials dir */
-	      $mat_path = property('app_uploads_path');
-	      $mat_path .= "cdir_" . $material_info['course_dir'];
-	      $mat_path .= "/mdir_" . $material_info['material_dir'];
-	      /* find all items in the $mat_path directory and add to the
-	       * $material_files array if they are files instead of directories */
-	      $all_dir_items = (scandir($mat_path));
-	      foreach ($all_dir_items as $file_name) {
-	        $rel_path = "$mat_path/$file_name";
-	        if (is_file($rel_path))
-	        {
-	          $file_names[] = $rel_path;
-	        }
-	      }
-	      
-	      /* TODO: Figure out what fields we need from the DB to allow
-         * sensible organization of the zip archives created for multiple
-         * material downloads */
-	      $material_files[] = array(
-          'material_id' => $material_info['material_id'],
-          'school_name' => $material_info['school_name'],
-          'course_number' => $material_info['course_number'],
-          'course_title' => $material_info['course_title'],
-          'material_name' => $material_info['material_name'],
-          'material_date' => $material_info['material_date'],
-          'file_names' => $file_names,
-          );
-	    }
-	    return($material_files);
-	  }
-	  
-	  
-	  /**
-	    * Download the files for a selected set of materials. An archive
-	    * file is created if there is more than one file. The organization
-	    * of the archive file is based on total number of files in the
-	    * archive. There is a configurable threshold, after which
-	    * the files are separated out into subfolders.
-	    *
-	    * @access   private
-	    * @param    array a list of files
-	    * @param    int (optional) the max number of files that will be
-	    *           put in a zip composed of a single folder
-	    * @return   void
-	    */
-	    private function _download_material($file_list, $max_in_single_folder = 10)
-	    {
-	      $this->load->helper('download');
-	      $this->load->library('oer_create_archive');
-	     
-	      $user_name = getUserProperty('user_name');
-	      $down_name = FALSE; // name of downloaded resource
-	      
-	      // get a timestamp formatted as YYYY-MM-DD-HHMMSS
-	      $timestamp = date($this->date_format);
-	      
-	      /* add a top level folder in zip files so files aren't sprayed all 
-	       * over the filesystem. Use "$timestamp" defined above
-	       * as a part of the folder name */
-	      $parent_folder = "oer_materials-$timestamp";
-	      
-	      $archive_name = $parent_folder . "-" . "$user_name";
-	      $archive_cont_info = array();
-	      $num_files = 0;
-	      // calculate the total number of files in the requested materials
-	      foreach ($file_list as $mat_files) {
-	        $num_files += count($mat_files['file_names']);
-	      }
-	      // directly download the file for a single file
-	      if ($num_files == 1) {
-	        $file_name = $file_list[0]['file_names'][0];
-	        $down_name = $this->_get_export_file_name($file_name, 0,
-	          $file_list[0]);
-	      force_file_download($down_name, $file_name);
-	      } else {
-	        foreach ($file_list as $mat_files) {
-	          foreach ($mat_files['file_names'] as $file_num => $file_name) {
-	            $export_name = $this->
-	              _get_export_file_name($file_name, $file_num, $mat_files);
-	            /* for between 2 and $max_in_single_folder files 
-    	         * put everything in 1 folder */  
-	            if (($num_files > 1) && 
-	                ($num_files <= $max_in_single_folder)) {
-	              $export_name = "$parent_folder/$export_name";
-	            } 
-	            /* for more than $max_in_single_folder files
-    	         * create subfolders for materials */
-	            elseif ($num_files > $max_in_single_folder) {
-	              $export_name = "$parent_folder/" .
-	                $mat_files['material_name'] . "_" . 
-	                $mat_files['material_date'] . "/" . $export_name;
-	            }
-	            $archive_cont_info[] = array(
-	              "orig_name" => $file_name,
-	              "export_name" => $export_name,
-	              );
-	          }
-	        }
-          $path_to_archive = $this->oer_create_archive->
-            make_archive($archive_name,$archive_cont_info);
-          $down_name = pathinfo($path_to_archive, PATHINFO_BASENAME);
-          force_file_download($down_name, $path_to_archive, TRUE);
-	      }
-	    }
+  /**
+   * Download the files for a selected set of materials. An archive
+   * file is created if there is more than one file.
+   *
+   * @access   private
+   * @param    array a list of files
+   * @return   void
+   */
+  /* TODO: refactor this function, it is turning into a monster!
+   */
+  /* TODO: change the file naming to correspond to the new proposed
+   * naming scheme */
+  private function _download_material($file_list)
+  {
+    $this->load->helper('download');
+    $this->load->library('oer_create_archive');
+    
+    $user_name = getUserProperty('user_name');
+    $down_name = FALSE; // name of downloaded resource
+    $obj_num = 0; // number attached to co suffix
+    
+    // get a timestamp formatted as YYYY-MM-DD-HHMMSS
+    $timestamp = date($this->date_format);
+    
+    /* add a top level folder in zip files so files aren't sprayed all 
+     * over the filesystem. Use "$timestamp" defined above
+     * as a part of the folder name */
+    $parent_folder = "oer_materials-$timestamp";
+    
+    $archive_name = $parent_folder . "-" . "$user_name";
+    $archive_cont_info = array();
+    $num_files = 0;
+    /* TODO: aal - figure out if we can traverse the array only once
+     * instead of doing it once to count files and then again for the 
+     * real work.
+     */
+    // calculate the total number of files in the requested materials
+    foreach ($file_list as $mat_files) {
+      $num_files += count($mat_files['file_names'], 1);
+    }
+    // directly download the file for a single file
+    if ($num_files == 1) {
+      $file_name = $file_list[0]['file_names']['material_file'];
+      // set the name of the downloaded file
+      $down_name = $file_list[0]['material_name'] . '.' .
+        pathinfo($file_name, PATHINFO_EXTENSION);
+      force_file_download($down_name, $file_name);
+    } else {
+      foreach ($file_list as $mat_files) {
+        $export_name = NULL;
+        // include any material files
+        if (array_key_exists("material_file", $mat_files['file_names'])) {
+          // define the name of the material file
+          $export_name = $mat_files['material_name'] . '.' .
+            pathinfo($mat_files['file_names']['material_file'],
+              PATHINFO_EXTENSION);
+          $archive_cont_info[] = array(
+            'orig_name' => $mat_files['file_names']['material_file'],
+            'export_name' => $export_name,
+            );
+        }
+        // include any context images
+        if (array_key_exists("ctxt_images", $mat_files['file_names'])) {
+          foreach ($mat_files['file_names']['ctxt_images'] as $ctxt_image) {
+            /* define the export name for the context image which includes
+               the slide number of the image */
+            $ctxt_image_match = 
+              "/(${mat_files['material_dir']})(_slide_)(.*)(\..*)/";
+            if (preg_match($ctxt_image_match, $ctxt_image, $matches) > 0) {
+              $export_name = $mat_files['material_name'] . $matches[2] .
+                $matches[3] . $matches[4];
+              $export_name = $mat_files['material_name'] . '/' .
+                'context_images/' .
+                $export_name;
+              /* end definition of context image export name */  
+              $archive_cont_info[] = array(
+                'orig_name' => $ctxt_image,
+                'export_name' => $export_name,
+                );
+            }  
+          }
+        }
+        // include any content objects
+        if (array_key_exists("co_info", $mat_files['file_names'])) {
+          foreach ($mat_files['file_names']['co_info'] as $co_info) {
+            /* define the export name for the content object. the
+             * existing values in the array are searched to see if the
+             * export_name is unique and a number is added if the name
+             * isn't unique 
+             */
+            // define the directory location and initial co name
+            $export_name = $mat_files['material_name'] . '/' .
+              'content_objects/' . $mat_files['material_name'] . '_slide_';
+            // break apart the object location information 
+            // TODO: possibly predefine the split regexp
+            $locations = preg_split("/\s*,\s*/", $co_info['location']);
+            for($i = 0; $i < count($locations); $i++) {
+              $export_name .= trim($locations[$i]) . '_';
+            }
+            // add 'replacement_' to the name if the co is a replacement
+            $rep_ident = "[_rep\..*]";
+            if (preg_match($rep_ident, $co_info['co_file']) > 0) {
+              $export_name .= "replacement_";
+            }
+            $export_name .= "obj_";
+            /* determine which number to assign to the current obj */
+            if (count($archive_cont_info) > 0) {
+              $obj_num = 0; // to ensure we don't get counts for old searches
+              foreach($archive_cont_info as $archive_entry) {
+                $cont_obj_string = ("[($export_name)]");
+                $existing_file_info = pathinfo($archive_entry['export_name']);
+                $existing_name = $existing_file_info['dirname'] . '/' .
+                  $existing_file_info['filename'];
+                if (preg_match($cont_obj_string, $existing_name) > 0) {
+                  $obj_num++;
+                }
+              }
+            }
+            // append object number to $export_name
+            $export_name .= $obj_num + 1;
+            // append the extension to $export_name
+            $export_name .= '.' . pathinfo($co_info['co_file'],
+              PATHINFO_EXTENSION);
+            $archive_cont_info[] = array(
+              'orig_name' => property('app_uploads_path') . '/' .
+                $co_info['co_path'] . '/' . $co_info['co_file'],
+              'export_name' => $export_name,
+              );
+          }
+        }
+      }
+      $path_to_archive = $this->oer_create_archive->
+        make_archive($archive_name,$archive_cont_info);
+      $down_name = pathinfo($path_to_archive, PATHINFO_BASENAME);
+      force_file_download($down_name, $path_to_archive, TRUE);
+    }
+  }
 	    
 	    
-	    /**
-	      * Determine the name for the material files from the metadata
-	      * this function attempts to do the best it can.
-	      * 
-	      * @access   private
-	      * @param    string the original name of the file
-	      * @param    int the array index value corresponding to the current
-	      *           filename
-	      * @param    array mixed array containing the list of files for a
-	      *           material and related metadata
-	      * @return   string the more sensible, human readable file name
-	      */
-	    private function _get_export_file_name($orig_file_name, 
-	      $file_num, $mat_file_list)
-	    {
-	      $name = "";
-	      
-	      if ($mat_file_list['school_name']) {
-          $name .= $mat_file_list['school_name'] . "_";
-        }
-        if ($mat_file_list['course_number']) {
-          $name .= $mat_file_list['course_number'] . "_";
-        }
-        if ($mat_file_list['course_title']) {
-          $name .= $mat_file_list['course_title'] . "_";
-        }
-        if ($mat_file_list['material_name']) {
-          $name .= $mat_file_list['material_name'] . "_";
-        }
-        
-        $name .= $mat_file_list['material_date'] . "_";
-        $name .= ($file_num + 1);
-        $name .= "." . pathinfo($orig_file_name, PATHINFO_EXTENSION);
-        
-        return $name;
-	    }
+  /**
+    * Determine the name for the material files from the metadata
+    * this function attempts to do the best it can.
+    * 
+    * @access   private
+    * @param    string the original name of the file
+    * @param    int the array index value corresponding to the current
+    *           filename
+    * @param    array mixed array containing the list of files for a
+    *           material and related metadata
+    * @return   string the more sensible, human readable file name
+    */
+  /* TODO: make changes to support new material download naming
+   * scheme */
+  private function _get_export_file_name($orig_file_name, 
+    $file_num, $mat_file_list)
+  {
+    $name = "";
+    
+    if ($mat_file_list['school_name']) {
+      $name .= $mat_file_list['school_name'] . "_";
+    }
+    if ($mat_file_list['course_number']) {
+      $name .= $mat_file_list['course_number'] . "_";
+    }
+    if ($mat_file_list['course_title']) {
+      $name .= $mat_file_list['course_title'] . "_";
+    }
+    if ($mat_file_list['material_name']) {
+      $name .= $mat_file_list['material_name'] . "_";
+    }
+    
+    $name .= $mat_file_list['material_date'] . "_";
+    $name .= ($file_num + 1);
+    $name .= "." . pathinfo($orig_file_name, PATHINFO_EXTENSION);
+    
+    return $name;
+  }
 	   
 	   
-	    /**
-	     * Download all replacement for content objects for this material
-	     */
-	    public function	download_all_rcos($cid, $mid)
-		{
-			$name = $this->material->getMaterialName($mid);
-			
-			$rcos = $this->coobject->replacements($mid);
-			if ($rcos != null) {
-			    foreach($rcos as $rco) {
-					$object_id=$rco['object_id'];
-					// object file path and name
-					$object_filepath = $this->coobject->object_path($cid, $mid, $object_id);
-					$object_filename = $this->coobject->object_filename($object_id);
-					// the replacement file extension
-					$rep_name = $rco['name'];
-					$rep_name_parts=explode(".", $rep_name);
-					$rep_extension = ".".$rep_name_parts[1];
-					// the file path to the replacement data
-					$rep_filepath=$object_filepath."/".$object_filename."_rep".$rep_extension;
-					$this->zip->read_file(getcwd().'/uploads/'.$rep_filepath);
-				}
-				// Download the file to your desktop. Name it "SITENAME_IMSCP.zip"
-				$this->zip->download($name.'_RCOs.zip');
-			
-				$this->zip->clear_data(); // clear cached data
-			} else {
-					$msg = 'There are no Replacement Content Objects for this material';
-					flashMsg($msg);
-					redirect("materials/edit/$cid/$mid", 'location');
-			}
-		}
+  /**
+   * Download all replacement for content objects for this material
+   */
+  public function	download_all_rcos($cid, $mid)
+	{
+		$name = $this->material->getMaterialName($mid);
 		
-		
-		/**
-	     * Download the replacement content object
-	     */
-	    public function	download_rco($cid, $mid, $oid, $rid)
-		{
-			$name = $this->material->getMaterialName($mid);
-			
-			$rcos = $this->coobject->replacements($mid, $oid, $rid);
-			if ($rcos != null) {
-				// should be just one object
-			    $rco=$rcos[0];
+		$rcos = $this->coobject->replacements($mid);
+		if ($rcos != null) {
+		    foreach($rcos as $rco) {
 				$object_id=$rco['object_id'];
 				// object file path and name
 				$object_filepath = $this->coobject->object_path($cid, $mid, $object_id);
 				$object_filename = $this->coobject->object_filename($object_id);
-				// the replacement file extension, try all three: png, gif, jpg
+				// the replacement file extension
+				$rep_name = $rco['name'];
+				$rep_name_parts=explode(".", $rep_name);
+				$rep_extension = ".".$rep_name_parts[1];
 				// the file path to the replacement data
-				$ext_array = array(".png", ".gif", ".jpg");
-				$rep_filepath=$object_filepath."/".$object_filename."_rep";
-				$foundExt = "";
-				foreach ($ext_array as $ext)
+				$rep_filepath=$object_filepath."/".$object_filename."_rep".$rep_extension;
+				$this->zip->read_file(getcwd().'/uploads/'.$rep_filepath);
+			}
+			// Download the file to your desktop. Name it "SITENAME_IMSCP.zip"
+			$this->zip->download($name.'_RCOs.zip');
+		
+			$this->zip->clear_data(); // clear cached data
+		} else {
+				$msg = 'There are no Replacement Content Objects for this material';
+				flashMsg($msg);
+				redirect("materials/edit/$cid/$mid", 'location');
+		}
+	}
+		
+		
+	/**
+   * Download the replacement content object
+   */
+  public function	download_rco($cid, $mid, $oid, $rid)
+	{
+		$name = $this->material->getMaterialName($mid);
+		
+		$rcos = $this->coobject->replacements($mid, $oid, $rid);
+		if ($rcos != null) {
+			// should be just one object
+		    $rco=$rcos[0];
+			$object_id=$rco['object_id'];
+			// object file path and name
+			$object_filepath = $this->coobject->object_path($cid, $mid, $object_id);
+			$object_filename = $this->coobject->object_filename($object_id);
+			// the replacement file extension, try all three: png, gif, jpg
+			// the file path to the replacement data
+			$ext_array = array(".png", ".gif", ".jpg");
+			$rep_filepath=$object_filepath."/".$object_filename."_rep";
+			$foundExt = "";
+			foreach ($ext_array as $ext)
+			{
+				if (strlen($foundExt) == 0)
 				{
-					if (strlen($foundExt) == 0)
+					$rep_filepath_final = $rep_filepath.$ext;
+					if (is_readable(property('app_uploads_path').$rep_filepath_final))
 					{
-						$rep_filepath_final = $rep_filepath.$ext;
-						if (is_readable(property('app_uploads_path').$rep_filepath_final))
-						{
-							// find the replacement file
-							$foundExt = $ext;
-						}
+						// find the replacement file
+						$foundExt = $ext;
 					}
-				}
-				
-				// get the replacement file name and data and download]
-				if (strlen($foundExt) != 0)
-				{
-					$name = $rco['name'];
-					// check to see whether file name is end with the extension. If not, append the extension to it
-					$extLen = strlen($foundExt);
-					// Look at the end of file for the substring the size of EndStr
-					$nameStrEnd = substr($name, strlen($name) - $extLen);
-					if ($nameStrEnd != $foundExt)
-					{
-						$name = $name.$foundExt;
-					}
-					
-					$data = file_get_contents(getcwd().'/uploads/'.$rep_filepath_final); // Read the file's contents
-					force_download($name, $data);
 				}
 			}
+			
+			// get the replacement file name and data and download]
+			if (strlen($foundExt) != 0)
+			{
+				$name = $rco['name'];
+				// check to see whether file name is end with the extension. If not, append the extension to it
+				$extLen = strlen($foundExt);
+				// Look at the end of file for the substring the size of EndStr
+				$nameStrEnd = substr($name, strlen($name) - $extLen);
+				if ($nameStrEnd != $foundExt)
+				{
+					$name = $name.$foundExt;
+				}
+				
+				$data = file_get_contents(getcwd().'/uploads/'.$rep_filepath_final); // Read the file's contents
+				force_download($name, $data);
+			}
 		}
+	}
 
-		public function valid_recommendation($oid, $recommendation) 
-		{
-				$res = $this->coobject->valid_recommendation($oid, $recommendation);	
-				return ($res===true) ?
-    						$this->ocw_utils->send_response('success'):
-    						$this->ocw_utils->send_response($res);
-				exit;
-		}		
+
+	public function valid_recommendation($oid, $recommendation) 
+	{
+			$res = $this->coobject->valid_recommendation($oid, $recommendation);	
+			return ($res===true) ?
+  						$this->ocw_utils->send_response('success'):
+  						$this->ocw_utils->send_response($res);
+			exit;
+	}
+		
+		
+	/** 
+	  * Determine which cos will be downloaded by looking at the 
+	  * action taken value and choosing the orig or replacement
+	  *
+	  * @access   private
+	  * @param    array of content object info (handles multiple cos)
+	  * @param    array of action types that will be filtered out (optional)
+	  * @param    array of action types that indicate presence of 
+	  *           replacement content objects
+	  * @return   mixed array of co info that includes details on files to 
+	  *           download based on specified selection criteria
+	  */
+	private function _select_cos($cos_info, $filter_actions = NULL, $repl_actions = NULL)
+	{
+	  $selected_cos = array();
+	  if (!$filter_actions) {
+	    $filter_actions = array(
+	      "Permission",
+	      "Commission",
+	      "Fair Use",
+	      "Remove and Annotate",
+	    );
+	  }
+	  
+	  if (!$repl_actions) {
+	    $repl_actions = array(
+	      "Search",
+	      "Create",
+	      );
+	  }
+	  /* TODO: aal - this fails for some of the endocrine courses because the
+  	 * action_taken field is blank in the DB. Should we look at the action_type 
+  	 * field if no action_taken action is in the DB and done == 1? 
+  	 */  
+	  foreach ($cos_info as $co_info) {
+	    // filter out unwanted 'action_taken' content objects
+	    if ($co_info['action_taken'] && 
+	      array_search($co_info['action_taken'], $filter_actions) === FALSE) {
+	      $co_dir = property('app_uploads_path');
+	      $co_dir .= $co_info['co_path'];
+	      if (is_dir($co_dir)) {
+  	      $co_files = scandir($co_dir);
+  	      // define whether we select the original co or the replacement
+  	      if (array_search($co_info['action_taken'], $repl_actions) !==
+  	        FALSE) {
+  	        $match_expr = "/(${co_info['name']}_rep)(\..*)/";
+  	      } else {
+  	        $match_expr = "/(${co_info['name']})(_grab)?(\..*)/";
+  	      }
+  	      foreach ($co_files as $co_file) {
+  	        if (preg_match($match_expr, $co_file, $matches) > 0) {
+  	          $co_info['co_file'] = $co_file;
+  	          /* TODO: aal - manipulate the original array after passing it
+        	     * in by reference instead of doing an array copy and wasting
+        	     * memory */
+        	    array_push($selected_cos, $co_info);
+  	        }
+  	      }
+        }
+	    }
+	  }
+	  return ($selected_cos);
+	}
 }
 ?>

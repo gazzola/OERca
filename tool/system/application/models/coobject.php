@@ -118,7 +118,7 @@ class Coobject extends Model
      * @param   string	details 
      * @return  array
      */
-	public function coobjects($mid, $oid='', $action_type='', $details='*')
+ 	public function coobjects($mid, $oid='', $action_type='', $details='*')
 	{
 		$objects = array();
 		$where = (is_numeric($mid)) ? "material_id=$mid" : "material_id=0";
@@ -737,10 +737,11 @@ class Coobject extends Model
 		/** 
 	 * return the current progress of an object (what is displayed on the colored progress bars)
    *
-	* @param int oid object id
-   * @return string status [cleared,inprogress,notcleared]
+	 * @param   int oid object id
+   * @return  string status [cleared,inprogress,notcleared]
 	 */
-
+	/* TODO: rewrite the query to allow checking of status of multiple 
+	 * objects in a single query instead of a query per object */
   public function object_progress($oid)
   {
 	$this->db->select('*')->from('objects')->where('id',$oid)->orderby('modified_on DESC');	
@@ -2147,6 +2148,8 @@ class Coobject extends Model
 			return $name;
 	}
 
+	/* TODO: rewrite this function to allow lookups of multiple filenames 
+	 * in a single query */
 	public function object_filename($oid)
 	{
 			$this->db->select('filename')->from('object_files')->where("object_id=$oid")->order_by('created_on desc')->limit(1);
