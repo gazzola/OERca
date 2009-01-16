@@ -17,6 +17,12 @@
     if ($download_name == '' || $resource_name == '') {
       return FALSE;
     }
+    // exit and display an error if the resource_name is undefined
+    /* TODO: see if we should display errors in a standard way and
+     * redirect somewhere instead of using the exit() function. */
+    if (!file_exists($resource_name)) {
+      exit("Error. The selected materials could not be found.");
+    }
     // define the read_chunk if not specified
     if ($read_chunk == NULL) {
       $read_chunk = 4096 * 8;
