@@ -358,5 +358,16 @@ $config['max_height']           = '768';
 */
 //   $config['remote_user']     = "some_registered_user";
 
+/*
+|--------------------------------------------------------------------------
+| Log to Apache Error log
+|--------------------------------------------------------------------------
+|
+| If this set to TRUE, debugging output that checks for this setting
+| is sent to the Apache error log. Options are TRUE or FALSE (boolean)
+|
+*/
+$config['log_to_apache'] = FALSE;
+
 
 ?>

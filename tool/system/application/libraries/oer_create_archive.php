@@ -114,11 +114,11 @@ class OER_create_archive
     */
   private function _build_zip ($archive_name, $archive_details)
   { 
-    $DEBUG = FALSE; // send stuff to apache log if true
+    $CI =& get_instance();
+    $DEBUG = $CI->config->item('log_to_apache');
     
     if ($DEBUG === TRUE) {
       // load the oer_utils within our library
-      $CI =& get_instance();
       $CI->load->library('ocw_utils');
     }
    

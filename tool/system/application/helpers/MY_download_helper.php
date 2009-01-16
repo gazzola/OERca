@@ -14,6 +14,9 @@
   function force_file_download($download_name = '', 
     $resource_name = '', $delete_file = FALSE, $read_chunk = NULL)
   {
+    $CI =& get_instance();
+    $DEBUG = $CI->config->item('log_to_apache');
+    
     if ($download_name == '' || $resource_name == '') {
       return FALSE;
     }
@@ -21,7 +24,12 @@
     /* TODO: see if we should display errors in a standard way and
      * redirect somewhere instead of using the exit() function. */
     if (!file_exists($resource_name)) {
-      exit("Error. The selected materials could not be found.");
+      $error_msg = "Error. The selected materials could not be found.";
+      if ($DEBUG === TRUE) {
+        $CI->load->library('ocw_utils');
+        $CI->ocw_utils->log_to_apache("debug", $error_msg);
+      }
+      exit($error_msg);
     }
     // define the read_chunk if not specified
     if ($read_chunk == NULL) {
