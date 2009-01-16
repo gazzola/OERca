@@ -894,10 +894,7 @@ class Materials extends Controller {
    * @param    array a list of files
    * @return   void
    */
-  /* TODO: refactor this function, it is turning into a monster!
-   */
-  /* TODO: change the file naming to correspond to the new proposed
-   * naming scheme */
+  // TODO: refactor this function, it is turning into a monster!
   private function _download_material($file_list)
   {
     $this->load->helper('download');
@@ -939,7 +936,8 @@ class Materials extends Controller {
         // include any material files
         if (array_key_exists("material_file", $mat_files['file_names'])) {
           // define the name of the material file
-          $export_name = $mat_files['material_name'] . '.' .
+          $export_name = $archive_name . '/' .
+            $mat_files['material_name'] . '.' .
             pathinfo($mat_files['file_names']['material_file'],
               PATHINFO_EXTENSION);
           $archive_cont_info[] = array(
@@ -957,9 +955,9 @@ class Materials extends Controller {
             if (preg_match($ctxt_image_match, $ctxt_image, $matches) > 0) {
               $export_name = $mat_files['material_name'] . $matches[2] .
                 $matches[3] . $matches[4];
-              $export_name = $mat_files['material_name'] . '/' .
-                'context_images/' .
-                $export_name;
+              $export_name = $archive_name . '/' . 
+                $mat_files['material_name'] . '/' .
+                'context_images/' . $export_name;
               /* end definition of context image export name */  
               $archive_cont_info[] = array(
                 'orig_name' => $ctxt_image,
@@ -977,7 +975,8 @@ class Materials extends Controller {
              * isn't unique 
              */
             // define the directory location and initial co name
-            $export_name = $mat_files['material_name'] . '/' .
+            $export_name = $archive_name . '/' .
+              $mat_files['material_name'] . '/' .
               'content_objects/' . $mat_files['material_name'] . '_slide_';
             // break apart the object location information 
             // TODO: possibly predefine the split regexp
@@ -1168,8 +1167,8 @@ class Materials extends Controller {
 	  *
 	  * @access   private
 	  * @param    array of content object info (handles multiple cos)
-	  * @param    array of action types that will be filtered out (optional)
-	  * @param    array of action types that indicate presence of 
+	  * @param    (optional) array of action types that will be filtered out
+	  * @param    (optional) array of action types that indicate presence of 
 	  *           replacement content objects
 	  * @return   mixed array of co info that includes details on files to 
 	  *           download based on specified selection criteria
@@ -1194,7 +1193,7 @@ class Materials extends Controller {
 	  }
 	  /* TODO: aal - this fails for some of the endocrine courses because the
   	 * action_taken field is blank in the DB. Should we look at the action_type 
-  	 * field if no action_taken action is in the DB and done == 1? 
+  	 * field if there is no action_taken action in the DB and done == 1?
   	 */  
 	  foreach ($cos_info as $co_info) {
 	    // filter out unwanted 'action_taken' content objects

@@ -40,23 +40,25 @@ class Dscribe1 extends Controller
     $data['id'] = getUserProperty('id');
     $data['courses'] = $this->ocw_user->get_courses_simple($data['id']);
 		if (is_array($data['courses'])) {
-      			foreach ($data['courses'] as $key => &$value) {
-        				// bdr OERDEV-173 let's go count all the CO's the same way as for materials page
-        				$materials =  $this->material->materials($value['id'],'',true,true);
-					$value['num']['total'] = 0;
-					$value['num']['done']  = 0;
-					$value['num']['ask']   = 0;
-					$value['num']['rem']   = 0;
-					foreach($materials as $category => $cmaterial) {
-					   foreach($cmaterial as $material) {
-						$value['num']['rem'] += $material['mrem'];
-						$value['num']['ask'] += $material['mask'];
-						$value['num']['done'] += $material['mdone'];
-						//if ($material['mtotal'] != 1000000)						//OERDEV-181 mbleed: removed hardcoded total=1000000 logic
-						$value['num']['total'] += $material['mtotal'];		
-					   }
-					}
-      			}
+      foreach ($data['courses'] as $key => &$value) {
+        // bdr OERDEV-173 let's go count all the CO's the same way as for materials page
+      	$materials =  $this->material->materials($value['id'],'',true,true);
+				$value['num']['total'] = 0;
+				$value['num']['done']  = 0;
+				$value['num']['ask']   = 0;
+				$value['num']['rem']   = 0;
+				if ($materials) {
+  				foreach($materials as $category => $cmaterial) {
+  				  foreach($cmaterial as $material) {
+  					  $value['num']['rem'] += $material['mrem'];
+  					  $value['num']['ask'] += $material['mask'];
+  					  $value['num']['done'] += $material['mdone'];
+  					  //if ($material['mtotal'] != 1000000)						//OERDEV-181 mbleed: removed hardcoded total=1000000 logic
+  					  $value['num']['total'] += $material['mtotal'];		
+				    }
+				  }
+			  }
+      }
 		}
    	$this->layout->buildpage('dscribe1/index', $data);
 	}
