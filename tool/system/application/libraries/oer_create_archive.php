@@ -134,7 +134,7 @@ class OER_create_archive
     /* TODO: should we overwrite existing archives? the naming is 
      * relatively unique and the file should be unlinked after 
      * download */
-    $arch_opened = $zip->open($archive_name, ZipArchive::OVERWRITE);
+    $arch_opened = $zip->open($archive_name, ZIPARCHIVE::CREATE | ZIPARCHIVE::OVERWRITE);
     if ($arch_opened !== TRUE) {
       if ($DEBUG === TRUE) {
         $CI->ocw_utils->log_to_apache("debug",
