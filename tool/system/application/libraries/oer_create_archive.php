@@ -25,7 +25,7 @@ class OER_create_archive
   
   public function __construct()
   {
-    log_message('debug', "OER_Filename Class Initialized");
+    log_message('debug', "OER_create_archive Class Initialized");
     return $this;
   }
   
@@ -76,6 +76,8 @@ class OER_create_archive
   public function make_archive($archive_name, $archive_details,
     $archive_type = "zip")
   {
+    log_message('debug', "in make_archive function");
+    
     // specify the archive building function to be called
     $archive_builder = "_build_";
     
@@ -94,7 +96,7 @@ class OER_create_archive
     }
     
     chdir($this->staging_dir);
-    
+    log_message('debug', "exiting make_archive function");
     return ($this->$archive_builder($archive_name, $archive_details));
   }
   
@@ -114,6 +116,7 @@ class OER_create_archive
     */
   private function _build_zip ($archive_name, $archive_details)
   { 
+    log_message('debug', "in _build_zip function");
     $CI =& get_instance();
     $DEBUG = $CI->config->item('log_to_apache');
     
@@ -132,7 +135,13 @@ class OER_create_archive
      * relatively unique and the file should be unlinked after 
      * download */
     $arch_opened = $zip->open($archive_name, ZipArchive::OVERWRITE);
-    if ($arch_opened === TRUE) {
+    if ($arch_opened !== TRUE) {
+      if ($DEBUG === TRUE) {
+        $CI->ocw_utils->log_to_apache("debug",
+          "the zip archive didn't open $arch_opened so we abort");
+      }
+      exit("the zip archive didn't open $arch_opened so we abort");
+    } elseif ($arch_opened === TRUE) {
       if ($DEBUG === TRUE) {
         $CI->ocw_utils->log_to_apache("debug", "opened the zip archive");
       }
@@ -184,6 +193,7 @@ class OER_create_archive
       }
     }
     
+    log_message('debug', "exiting _build_zip function");
     return(getcwd() . "/" . 
       pathinfo($archive_name, PATHINFO_BASENAME));
   }
