@@ -1,0 +1,146 @@
+#!/usr/bin/perl -w
+
+########################################################################
+# 
+#  @package oercacleanup
+#  @author Kevin Coffman <kwc@umich.edu>
+#  @date 20 January 2009
+#  @copyright Copyright (c) 2009, University of Michigan
+#
+#  This script is intended to be run from cron to clean up
+#  temporary files left around in the "tmp" directory by
+#  various operations.  This is an interim solution until
+#  the code is fixed to self-clean this stuff.
+#
+########################################################################
+
+use lib qw(
+        /usr/lib/perl5/5.8.8
+        /usr/lib/perl5/5.8.8/x86_64-linux-thread-multi
+        /usr/lib/perl5/5.8.8/i586-linux-thread-multi
+        /usr/lib/perl5/5.8.8/i586-linux-thread-multi/auto
+        /usr/lib/perl5/vendor_perl/5.8.8
+        /usr/lib/perl5/vendor_perl/5.8.8/x86_64-linux-thread-multi
+        /usr/lib/perl5/vendor_perl/5.8.8/i586-linux-thread-multi
+        /usr/lib/perl5/site_perl/5.8.8
+        /usr/lib/perl5/site_perl/5.8.8/x86_64-linux-thread-multi
+        /usr/lib/perl5/site_perl/5.8.8/i586-linux-thread-multi
+);
+
+package oercacleanup;
+
+use strict;
+
+# Make use of the Getopt::Long package to check for input options.
+use Getopt::Long;
+use File::Find;
+
+
+#------------------------------------------------------------------------
+# Global variable declarations
+#------------------------------------------------------------------------
+
+my $debug;
+my %opts;
+
+my $days = 2;		# default is two days
+my $findtop = "/srv/www/open.umich.edu_website/oerca/tmp";
+
+my ($f, $findcmd, @findout);
+
+#########################################################################
+#############           S U B R O U T I N E S           #################
+#########################################################################
+
+#------------------------------------------------------------------------
+# Parse for input options.  Ignore flags we don't know about.
+#------------------------------------------------------------------------
+sub process_arguments {
+        my $error_msg = "";
+        my $errors = 0;
+
+        if (GetOptions( \%opts,
+                                "debug:i",
+                                "days:i",
+                  )
+                == 0 ) { die "Error processing arguments\n"; }
+
+        # If --debug was specified, but $debug is zero, then set $debug to 1
+        $debug = 0;
+        if ( exists $opts{debug} ) {
+                if ( $opts{debug} == 0 ) { $debug = 1; }
+                else { $debug = $opts{debug} }
+        }
+        print "debug = $debug\n" if ($debug > 0);
+
+        # --days is optional
+        if ( exists $opts{days} ) {
+                $days = $opts{days};
+        }
+
+        # parsing errors are fatal
+        if ($errors) {
+                print "$error_msg\n";
+                die("Fix arguments!\n");
+        }
+}
+
+
+#------------------------------------------------------------------------
+# Clean up old files
+#------------------------------------------------------------------------
+sub clean_up {
+	my ($type, @args) = @_;
+	my $tstring;
+
+	if ($type eq "f") {
+		$tstring = "file";
+	} elsif ($type eq "d") {
+		$tstring = "directory";
+	} else {
+		die("clean_up: Invalid type provided: $type\n");
+	}
+
+	$findcmd = "find $findtop -type $type -mtime +$days -print";
+	print "Find command is '$findcmd'\n" if ($debug > 0);
+
+	@findout = `$findcmd`;
+	foreach $f (@findout) {
+		my $count = 0;
+
+		chomp($f);
+		print "Checking       $tstring: $f\n" if ($debug > 0);
+
+		# skip ".svn" directories
+		next if ($f =~ /\/\.svn/);
+
+		# skip index.html files
+		next if ($f =~ /\/tmp\/index\.html/);
+
+		print "    Processing $tstring: $f\n" if ($debug > 0);
+		print "    Removing $tstring: $f\n" if ($debug > 0);
+		if ($type eq "f") {
+			$count = unlink($f);
+		} elsif ($type eq "d") {
+			$count = rmdir($f);
+		}
+		if ($count != 1) {
+			print "ERROR removing $tstring \"$f\"\n";
+		}
+	}
+}
+
+#########################################################################
+#############           M A I N   E X E C U T I O N     #################
+#########################################################################
+
+process_arguments();
+
+print "Cleaning up old files\n" if ($debug > 0);
+clean_up('f');	# Clean up files
+
+print "Cleaning up old directories\n" if ($debug > 0);
+clean_up('d');	# Clean up directories
+
+exit 0;
+
