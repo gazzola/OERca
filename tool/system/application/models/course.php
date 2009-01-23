@@ -25,12 +25,11 @@ class Course extends Model
    public function new_course($details)
    {
 			$this->db->insert('courses', $details);
-			$this->db->select('*')->from('courses')->where('title',$details['title']);
+			$this->db->select('*')->from('courses')->where($details);
 			$q = $this->db->get();
 			$course = $q->row_array();
 			$curr_mysql_time = $this->ocw_utils->get_curr_mysql_time();
-	
-			if ($q->num_rows() > 0) {
+			if ($q->num_rows() == 1) {
 					$filename = $this->generate_course_name($course['title'].$course['start_date'].
 																								 $course['end_date']);
 					$dirname = property('app_uploads_path') . 'cdir_' . $filename; 
@@ -42,7 +41,7 @@ class Course extends Model
 														    'course_id'=>$course['id']));
 			}
 
-			return ($q->num_rows() > 0) ? $course : null;
+			return ($q->num_rows() == 1) ? $course : null;
 	}
 
 	/**
