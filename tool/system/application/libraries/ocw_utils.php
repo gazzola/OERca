@@ -616,7 +616,34 @@ htmleoq;
   }
 
 	/**
+		* Convert string level value to numeric value
+		* @access private
+		* @param string level
+		*/
+	private function _level_to_numeral($level)
+	{
+		switch ($level) {
+			case 'debug':	    // Most likely case
+				return 1;
+			case 'info':
+				return 2;
+			case 'warn':
+				return 3;
+			case 'error':
+				return 4;
+			default:
+				return FALSE;
+		}
+	}
+
+	/**
 		* Log a message to the apache error log
+		* based on the logging level selected
+		*
+		* If no config option is set, then only 'error'
+		* messages are logged.  Otherwise, if the message
+		* is at or 'above' the level of the config option,
+		* then it is logged.
 		*
 		* @access public
 		* @param string level - message level indicator (i.e. 'error', 'warn', 'info', 'debug')
@@ -624,6 +651,18 @@ htmleoq;
 		*/
 	public function log_to_apache($level, $message)
 	{
+		static $config_level = -1;
+
+		// Attempt to only set this once
+		if ($config_level == -1) {
+		    $config_level = $this->_level_to_numeral($this->object->config->item('log_to_apache'));
+		    if ($config_level === FALSE)
+			$config_level = $this->_level_to_numeral('error');
+		}
+		$user_level = $this->_level_to_numeral($level);
+		
+		if ($user_level < $config_level)
+				return;
 		$now = date("D M j G:i:s Y");
 		$message = "[" . $now . "] [" . $level . "] " . $message . "\n";
 		$stderr = @fopen('php://stderr', 'w');

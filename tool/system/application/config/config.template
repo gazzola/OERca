@@ -360,14 +360,14 @@ $config['max_height']           = '768';
 
 /*
 |--------------------------------------------------------------------------
-| Log to Apache Error log
+| Apache Logging Level
 |--------------------------------------------------------------------------
 |
-| If this set to TRUE, debugging output that checks for this setting
-| is sent to the Apache error log. Options are TRUE or FALSE (boolean)
+| Apache Logging Level.  Can be 'error', 'warn', 'info', or 'debug'.
+| By default only 'error' messages are logged.  This can be changed
+| to increase the verbosity.  Messages are logged to the apache error log.
 |
 */
-$config['log_to_apache'] = FALSE;
-
+$config['log_to_apache'] = 'error';
 
 ?>
