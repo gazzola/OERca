@@ -670,6 +670,82 @@ htmleoq;
 		fclose($stderr);
 	}
 
+	/**
+	 * Get File Extension by Mimetype
+	 *
+	 * Translates a mime type into a file extension based on config/mimes.php. 
+	 * Returns FALSE if it can't determine the extension or open the mime config file
+	 *
+	 * Note: This is a complementary function to get_mime_by_extension() provided by CodeIgniter
+	 *
+	 * @access	public
+	 * @param	string	mimetype
+	 * @return	mixed
+	 */	
+	public function get_extension_by_mime($mimetype)
+	{
+		global $mimes;
+
+		if ( ! $mimetype || $mimetype == '') {
+			return FALSE;
+		}
+
+		// Try a short-cut of comparing some common values first
+		$ext = FALSE;
+		switch (strtolower($mimetype)) {
+			case 'image/pjpeg':
+			case 'image/jpeg':
+				$ext= 'jpg';
+				break;
+			case 'image/png':
+				$ext= 'png';
+				break;
+			case 'image/gif':
+				$ext= 'gif';
+				break;
+			case 'image/tiff':
+				$ext= 'tiff';
+				break;
+			case 'image/svg+xml':
+				$ext='svg';
+				break;
+    }
+	  if ($ext) {
+			//$this->log_to_apache('debug', "get_extension_by_mime: returning early with " . $ext);
+			return $ext;
+		}
+
+		// Otherwise, do it the long way, looking "backward" through the mimes array
+		if ( ! is_array($mimes))
+		{
+			if ( ! require_once(APPPATH . 'config/mimes.php'))
+			{
+				return FALSE;
+			}
+		}
+
+		//$this->log_to_apache('debug', "\n\nget_extension_by_mime: the list:\n");
+		foreach ($mimes as $x => $mt) {
+			//$this->log_to_apache('debug', "\t\t $x \t\t $mt");
+			if (is_array($mt)) {
+				foreach ($mt as $xx => $mmtt) {
+					//$this->log_to_apache('debug', "Comparing given mimetype'" . $mimetype . "' with '" . $mmtt ."'");
+					if ($mimetype == $mmtt) {
+						//$this->log_to_apache('debug', "get_extension_by_mime: extension is " . $x);
+						return $x;
+					}
+				}
+			}
+			//$this->log_to_apache('debug', "Comparing given mimetype'" . $mimetype . "' with '" . $mt ."'");
+			if ($mimetype == $mt) {
+				//$this->log_to_apache('debug', "get_extension_by_mime: extension is " . $x);
+				return $x;
+			}
+		}
+		//$this->log_to_apache('debug', "get_extension_by_mime: NO MATCH");
+		return FALSE;
+	}
+
 }
 
 ?>

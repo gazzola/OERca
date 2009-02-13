@@ -601,58 +601,6 @@ class Material extends Model
     return($this->get_co_count($cid, 'no'));
   }
 
-	/**
-	 * Add material functionality from add form
-	 * may include zip files. This will go away
-	 * when ctools import comes on line
-	 */
-	public function manually_add_materials($cid, $type, $details, $files)
-	{
-		if ($details['collaborators']=='') { unset($details['collaborators']);}
-		if ($details['ctools_url']=='') { unset($details['ctools_url']); }
-		$details['course_id'] = $cid;
-		$details['created_on'] = date('Y-m-d h:i:s');
-	
-		// add new material
-		$idx = ($type=='bulk') ? 'zip_userfile' : 'single_userfile';
-		
-		if ($type=='single') {
-				preg_match('/(\.\w+)$/',$files[$idx]['name'],$match);
-				$details['name'] = (isset($match[1])) ? basename($files[$idx]['name'],$match[1]):basename($files[$idx]['name']);
-				$details['`order`'] = $this->get_nextorder_pos($cid);
-				$this->db->insert('materials',$details);
-				$mid = $this->db->insert_id();
-				$this->upload_materials($cid, $mid, $files[$idx]);
-		} else {
-					// handle zip files
-				if ($files[$idx]['error']==0) {
-		        $zipfile = $files[$idx]['tmp_name'];
-		        $files = $this->ocw_utils->unzip($zipfile, property('app_mat_upload_path')); 
-		    		if ($files !== false) {
-		            foreach($files as $newfile) {
-									if (is_file($newfile) && !preg_match('/^\./',basename($newfile))) {
-											preg_match('/(\.\w+)$/',$newfile,$match);
-											$details['name'] = (isset($match[1])) ? basename($newfile,$match[1]):basename($newfile);
-											$details['`order`'] = $this->get_nextorder_pos($cid);
-											$details['mimetype_id'] = $this->mimetype->get_mimetype_id_from_filename($newfile);
-											$this->db->insert('materials',$details);
-											$mid = $this->db->insert_id();
-                     	$filedata = array();
-											$filedata['name'] = $newfile;
-                      $filedata['tmp_name'] = $newfile;
-											$this->upload_materials($cid, $mid, $filedata);
-									}
-								}
-		        }
-		    } else {
-					return('Cannot upload file: an error occurred while uploading file. Please contact administrator.');
-		    }
-		}
-		
-		return true;
-	}
-
-	
 	/** 
 	 * upload materials to correct path
 	 */
@@ -687,7 +635,7 @@ class Material extends Model
 		
 		$this->oer_filename->mkdir($path);
 
-		# get material direcotry name
+		# get material directory name
 		$name = $this->generate_material_name($tmpname);
 		$path .= '/mdir_'.$name;
 		$this->oer_filename->mkdir($path);
@@ -709,6 +657,8 @@ class Material extends Model
 			          'filename'=>$name,
 				  'modified_on'=>date('Y-m-d h:i:s'),
 			          'created_on'=>date('Y-m-d h:i:s')));
+			
+		return $path.'/'.$name.$ext;
 	}
 
 	/* return the path to a material on the file system 
@@ -749,10 +699,21 @@ class Material extends Model
 			return $path;
 	}
 	
+	/**
+	  * Insert material info into DB and return resulting material id
+	  *
+	  * @param    array detail information for new material
+	  * @return   integer material id
+	  */
+	public function insert_material($details)
+	{
+		$this->db->insert('materials', $details);
+		return $this->db->insert_id();
+	}
 	
 	// TODO: change the SQL query to check for null and return 0? is that a good
 	//      idea
-	private function get_nextorder_pos($cid)
+	public function get_nextorder_pos($cid)
 	{
 		$q = $this->db->query("SELECT MAX(`order`) + 1 AS nextpos FROM ocw_materials WHERE course_id=$cid"); 
 		$row = $q->result_array();

@@ -26,6 +26,7 @@ class Materials extends Controller {
     $this->load->model('dbmetadata');
     $this->load->model('instructors');
     $this->load->library('zip');
+    $this->load->library('oer_decompose');
 
     // $this->ocw_utils->dump($_SERVER);	// kwc debugging
     // do this check in the constructor to make sure we always check!
@@ -110,6 +111,63 @@ class Materials extends Controller {
      exit;
 	}
 
+	/**
+	 * Add material functionality from add form
+	 * may include zip files. This will go away
+	 * when ctools import comes on line
+	 */
+	private function _manually_add_materials($cid, $type, $details, $files)
+	{
+		//$this->ocw_utils->dump($details);		// KWC
+		if ($details['collaborators']=='') { unset($details['collaborators']);}
+		if ($details['ctools_url']=='') { unset($details['ctools_url']); }
+		$details['course_id'] = $cid;
+		$details['created_on'] = date('Y-m-d h:i:s');
+	
+		// add new material
+		$idx = ($type=='bulk') ? 'zip_userfile' : 'single_userfile';
+		
+		if ($type=='single') {
+				preg_match('/(\.\w+)$/',$files[$idx]['name'],$match);
+				$details['name'] = (isset($match[1])) ? basename($files[$idx]['name'],$match[1]):basename($files[$idx]['name']);
+				$details['`order`'] = $this->material->get_nextorder_pos($cid);
+				$mid = $this->material->insert_material($details);
+				//$this->ocw_utils->dump($files); exit();		// KWC
+				$newmatfile = $this->material->upload_materials($cid, $mid, $files[$idx]);
+				if ($details['embedded_co']) {
+					$this->oer_decompose->decompose_material($cid, $mid, $newmatfile);
+				}
+		} else {
+					// handle zip files
+				if ($files[$idx]['error']==0) {
+		        $zipfile = $files[$idx]['tmp_name'];
+		        $files = $this->ocw_utils->unzip($zipfile, property('app_mat_upload_path')); 
+		    		if ($files !== false) {
+		            foreach($files as $newfile) {
+									if (is_file($newfile) && !preg_match('/^\./',basename($newfile))) {
+											preg_match('/(\.\w+)$/',$newfile,$match);
+											$details['name'] = (isset($match[1])) ? basename($newfile,$match[1]):basename($newfile);
+											$details['`order`'] = $this->material->get_nextorder_pos($cid);
+											$details['mimetype_id'] = $this->mimetype->get_mimetype_id_from_filename($newfile);
+											$mid = $this->material->insert_material($details);
+                     	$filedata = array();
+											$filedata['name'] = $newfile;
+                      $filedata['tmp_name'] = $newfile;
+											$newmatfile = $this->material->upload_materials($cid, $mid, $filedata);
+											if ($details['embedded_co']) {
+												$this->oer_decompose->decompose_material($cid, $mid, $newmatfile);
+											}
+									}
+								}
+		        }
+		    } else {
+					return('Cannot upload file: an error occurred while uploading file. Please contact administrator.');
+		    }
+		}
+		
+		return true;
+	}
+
 	// add material 
 	public function	add_material($cid,$type,$action='add')
 	{
@@ -138,7 +196,7 @@ class Materials extends Controller {
 							flashMsg($errmsg);
 							redirect("materials/add_material/$cid/$type/view", 'location');
 					}	else {
-							$r = $this->material->manually_add_materials($cid, $type, $_POST,$_FILES);
+							$r = $this->_manually_add_materials($cid, $type, $_POST,$_FILES);
 							if ($r !== true) {
 									flashMsg($r);
 							} else {

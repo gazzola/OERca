@@ -1,0 +1,18 @@
+2/12/2009:
+
+I obtained the current subversion trunk version of
+the necessary hachoir components (core, regex, and subfile)
+using the following commands:
+
+% svn co http://hachoir.org/svn/trunk/hachoir-core
+% svn co http://hachoir.org/svn/trunk/hachoir-regex
+% svn co http://hachoir.org/svn/trunk/hachoir-subfile
+
+(NOTE that the current subversion trunk version does a
+better job than the packaged downloads.  That is the
+reason the next steps are necessary.)
+
+Remove the existing subversion information so we can check
+this code into _our_ subversion.
+
+% find . -type d -name .svn -exec rm -rf {} \;

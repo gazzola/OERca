@@ -167,7 +167,6 @@ function Get_OCW_from_XMP( $XMP_array )
                 } else {
                         return $ocw;
                 }
-
                 // Cycle through each of the items in the RDF tree array, and process them
                 foreach ($RDF_Contents as $RDF_Item)
                 {
@@ -193,7 +192,8 @@ function Get_OCW_from_XMP( $XMP_array )
                                 foreach( $RDF_Item['children'] as $rdf_child) {
                                     // Check for the xmlns: namespace attribute
                                           $k = $rdf_child['tag'];
-                                          $v = $rdf_child['children'][0]['children'][0]['value'];
+																					if (isset($rdf_child['children'][0]['children'][0]['value']))
+																									$v = $rdf_child['children'][0]['children'][0]['value'];
                                           list($tag_caption, $value_str) = Interpret_RDF_Item(array('tag'=>$k, 
                                                                                                  'value'=>$v));
                                           if (!preg_match('/^Unknown/', $tag_caption)) {
@@ -209,7 +209,6 @@ function Get_OCW_from_XMP( $XMP_array )
                         }
                 }
         }
-
         return $ocw;
 }
 
