@@ -20,11 +20,11 @@ class OER_decompose {
 		$this->CI->load->model('coobject');
 		$this->CI->load->library('ocw_utils');
 
-		$this->poi_libpath = APPPATH . "libraries/OER_decompose_apache_poi.php";
+		$this->poi_libpath = APPPATH . "libraries/oer_decompose_apache_poi.php";
 		$this->have_poi_lib = 0;
-		$this->hachoir_libpath = APPPATH . "libraries/OER_decompose_hachoir.php";
+		$this->hachoir_libpath = APPPATH . "libraries/oer_decompose_hachoir.php";
 		$this->have_hachoir_lib = 0;
-		$this->oo_libpath = APPPATH . "libraries/OER_decompose_openoffice.php";
+		$this->oo_libpath = APPPATH . "libraries/oer_decompose_openoffice.php";
 		$this->have_oo_lib = 0;
 		
 		// Check which deomp libraries are available

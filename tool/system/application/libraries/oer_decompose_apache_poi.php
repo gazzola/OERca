@@ -125,7 +125,7 @@ class OER_decompose_apache_poi
 		$poiout = array();
 		// Redirect stderr to /dev/null to eliminate "random" messages from the apache log file
 		// See note above about DYLD_LIBRARY_PATH
-		exec("export DYLD_LIBRARY_PATH=\"\"; $this->java_path -Xmx500m -jar $this->poi_jar_path $materials_file $this->staging_dir >& /dev/null", &$poiout, &$poicode);
+		exec("export DYLD_LIBRARY_PATH=\"\"; $this->java_path -Xmx500m -jar $this->poi_jar_path $materials_file $this->staging_dir &> /dev/null", &$poiout, &$poicode);
 		unset($poiout);
 		$this->CI->ocw_utils->log_to_apache('debug', "poi::do_decomp: returning '{$poicode}'");
 

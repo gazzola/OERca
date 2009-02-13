@@ -152,7 +152,7 @@ class OER_decompose_hachoir
 		$hcode = -1;
 		$hout = array();	// dummy array to hold output
 		// Redirect stderr to /dev/null to eliminate messages in the apache log file
-		exec("$this->python_path $this->hachoir_script $this->hachoir_options $materials_file $this->staging_dir >& /dev/null", &$hout, &$hcode);
+		exec("$this->python_path $this->hachoir_script $this->hachoir_options $materials_file $this->staging_dir &> /dev/null", &$hout, &$hcode);
 		unset($hout);
 		$this->CI->ocw_utils->log_to_apache('debug', "hachoir::do_decomp: returning '{$hcode}'");
 
