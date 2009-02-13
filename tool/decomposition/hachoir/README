@@ -7,6 +7,7 @@ using the following commands:
 % svn co http://hachoir.org/svn/trunk/hachoir-core
 % svn co http://hachoir.org/svn/trunk/hachoir-regex
 % svn co http://hachoir.org/svn/trunk/hachoir-subfile
+% svn co http://hachoir.org/svn/trunk/hachoir-parser
 
 (NOTE that the current subversion trunk version does a
 better job than the packaged downloads.  That is the
