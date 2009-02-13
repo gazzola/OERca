@@ -45,6 +45,7 @@ class OER_decompose_hachoir
 		//$this->CI->ocw_utils->log_to_apache('debug', "hachoir-subfile is located at '{$this->hachoir_script}'");
 
 		$this->hachoir_python_path = $this->hachoir_inst_base . "hachoir-core" . ":" .
+																 $this->hachoir_inst_base . "hachoir-parser" . ":" .
 																 $this->hachoir_inst_base . "hachoir-regex";
 
 		// Limit the hachoir search to file categories we care about
