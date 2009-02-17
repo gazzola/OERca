@@ -22,6 +22,8 @@ class OER_decompose {
 
 		$this->poi_libpath = APPPATH . "libraries/oer_decompose_apache_poi.php";
 		$this->have_poi_lib = 0;
+		$this->pdf_libpath = APPPATH . "libraries/oer_decompose_pdfparse.php";
+		$this->have_pdf_lib = 0;
 		$this->hachoir_libpath = APPPATH . "libraries/oer_decompose_hachoir.php";
 		$this->have_hachoir_lib = 0;
 		$this->oo_libpath = APPPATH . "libraries/oer_decompose_openoffice.php";
@@ -33,6 +35,12 @@ class OER_decompose {
 			$this->have_poi_lib = 1;
 		} else {
 			//$this->CI->ocw_utils->log_to_apache('debug', "decompose_material: library, {$this->poi_libpath}, doesn't exist");
+		}
+		if (file_exists($this->pdf_libpath)) {
+			$this->CI->load->library('OER_decompose_pdfparse');
+			$this->have_pdf_lib = 1;
+		} else {
+			//$this->CI->ocw_utils->log_to_apache('debug', "decompose_material: library, {$this->pdf_libpath}, doesn't exist");
 		}
 		if (file_exists($this->hachoir_libpath)) {
 			$this->CI->load->library('OER_decompose_hachoir');
@@ -74,10 +82,18 @@ class OER_decompose {
 		if ($this->have_poi_lib && (stristr($material_file, ".doc") || stristr($material_file, ".ppt"))) {
 			//$this->CI->ocw_utils->log_to_apache('debug', "decompose_material: instantiating apache_poi instance");
 			$dcomp = new OER_decompose_apache_poi();
-		} else if ($this->have_hachoir_lib) {
+		}
+		// Try to use pdfparse for pdf files
+		else if ($this->have_pdf_lib && (stristr($material_file, ".pdf"))) {
+			//$this->CI->ocw_utils->log_to_apache('debug', "decompose_material: instantiating pdfparse instance");
+			$dcomp = new OER_decompose_pdfparse();
+		}
+		// If nothing else fits, try hachoir
+		else if ($this->have_hachoir_lib) {
 			//$this->CI->ocw_utils->log_to_apache('debug', "decompose_material: instantiating hachoir instance");
 			$dcomp = new OER_decompose_hachoir();
 		}
+
 		if ($dcomp) {
 			//$this->CI->ocw_utils->log_to_apache('debug', "decompose_material: new decomp instance created");
 	
@@ -108,6 +124,33 @@ class OER_decompose {
 	}
 
 	/**
+		* Parse the given CO filename and obtain a page number if possible
+		* If the page number cannot be determined, return zero
+		*
+		* @access public
+		* @param string cofile The filename of the Content Object
+		* @return integer
+		*/
+	private function _parse_out_page_number($cofile)
+	{
+		//$this->CI->ocw_utils->log_to_apache('debug', "_parse_out_page_number for '{$cofile}'");
+		$base = basename($cofile);
+
+		// Currently only pdfparse leaves the images in a format with page numbers available
+		// that pattern is "image-<ppppp>-<nnnn>.png" where "<ppppp>" is the 5-digit page
+		// number (with leading zeros), and "<nnnn>" is the image number within the page.
+		$matches = array();
+		if (preg_match('/image-(\d{5,5})-(\d*)\.(.*)/', $base, $matches)) {
+			$page = $matches[1] * 1;	// coerce into numeric value
+			//$number = $matches[2];
+			//$suffix = $matches[3];
+			return $page;
+		}
+
+		return 0;
+	}
+
+	/**
 		* Process the decomposed Content Objects from an uploaded Material
 		*
 		* @access public
@@ -129,7 +172,6 @@ class OER_decompose {
 		}
 
 		// The post data is the same for each file
-		$postdata['location'] = 0;			// Specify location of "0" for now. This can be edited later.
 		$postdata['ask'] = "no";
 		$postdata['citation'] = "none";
 		$postdata['contributor'] = "";
@@ -149,6 +191,8 @@ class OER_decompose {
 		foreach ($co_array as $key => $cofile) {			
 			$filedata['userfile_0']['name'] = basename($cofile);
 			$filedata['userfile_0']['tmp_name'] = $cofile;
+			$pagenumber = $this->_parse_out_page_number($cofile);
+			$postdata['location'] = $pagenumber;
 			$filedata['userfile_0']['type'] = get_mime_by_extension($cofile);
 			//$this->CI->ocw_utils->log_to_apache('debug', "_process_decomposed_COs: file: {$cofile}, mime {$filedata['userfile_0']['type']}");
 			

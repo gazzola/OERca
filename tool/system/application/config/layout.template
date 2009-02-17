@@ -74,6 +74,7 @@ $config['app_python_path'] = '/usr/bin/python';
 $config['app_java_path'] = '/usr/bin/java';
 $config['app_hachoir_base']	= $_SERVER['DOCUMENT_ROOT'].'/@OERTOP@/decomposition/hachoir/';
 $config['app_poi_jar_path'] = $_SERVER['DOCUMENT_ROOT'].'/@OERTOP@/decomposition/apache_poi/ImageExtractor.jar';
+$config['app_pdfparse_path']	= $_SERVER['DOCUMENT_ROOT'].'/@OERTOP@/decomposition/pdfutils/pdfparse';
 $config['app_co_upload_path'] = $_SERVER['DOCUMENT_ROOT'].'/@OERTOP@/tmp/couploads/';
 $config['app_mat_upload_path'] = $_SERVER['DOCUMENT_ROOT'].'/@OERTOP@/tmp/matuploads/';
 $config['app_mat_download_path'] = $_SERVER['DOCUMENT_ROOT'].'/@OERTOP@/tmp/matdownloads/';
