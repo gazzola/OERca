@@ -73,7 +73,7 @@ if (isset($flash) AND $flash!='') {
 
 			<br/>
 
-			<div class="formField">Embedded Content Objects?:&nbsp;&nbsp;
+			<div class="formField">Automatically Extract Embedded Content Objects?:<br/>
 		        <input type="radio" name="embedded_co" id="emip_yes" class="update_material" value="1" checked="checked" />&nbsp;Yes
 		        <input type="radio" name="embedded_co" id="emip_no" class="update_material" value="0" />&nbsp;No
 			</div>
