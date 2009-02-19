@@ -109,7 +109,14 @@ my %opts;
 # Print usage message and exit
 #------------------------------------------------------------------------
 sub usage {
-	print "Usage: $0 <input-pdf-file> <output-directory>\n";
+	print "Usage: $0 [options] <input-pdf-file> <output-directory>\n";
+	print "Supported options are:\n";
+	print "  --debug[=<debug-level>]\n";
+	print "  --maxperpage=<maximum number of images before a page is ignored>\n";
+	print "  --minimagesize=<minimum size of a \"useful\" image>\n";
+	print "  --noconvert\n";
+	print "  --verbose\n";
+	print "  --help\n";
 	exit(1);
 }
 
@@ -121,11 +128,18 @@ sub process_arguments {
 	my $errors = 0;
 
 	if (GetOptions( \%opts,
-			   "debug:i",
-			   "noconvert",
-			   "verbose",
-			)
-		   == 0 ) { die "Error processing arguments\n"; }
+					"debug:i",
+					"maxperpage=i",
+					"minimagesize=i",
+					"noconvert",
+					"verbose",
+					"help",
+			) == 0 ) { usage(); }
+
+	# --help is optional
+	if ( exists $opts{help} ) {
+		usage();
+	}
 
 	# If --debug was specified, but $debug is zero, then set $debug to 1
 	$debug = 0;
@@ -134,6 +148,16 @@ sub process_arguments {
 		else { $debug = $opts{debug} }
 	}
 	print "debug = $debug\n" if ($debug > 0);
+
+	# --maxperpage  maximum number of images on a page before ignoring all of them
+	if ( exists $opts{maxperpage} ) {
+		$ARBITRARY_MAXIMUM_PER_PAGE = $opts{maxperpage};
+	}
+
+	# --minimagesize  images less than this size will be ignored
+	if ( exists $opts{minimagesize} ) {
+		$ARBITRARY_MINIMUM_FILE_SIZE = $opts{minimagesize};
+	}
 
 	# --noconvert is optional
 	if ( exists $opts{noconvert} ) {
