@@ -113,9 +113,13 @@ class OER_decompose {
 				$this->_process_decomposed_COs($cid, $mid, $dcomp->get_staging_dir());
 			}
 
-			// Clean up any temporary directory regardless of success or failure
-			if (is_dir($dcomp->get_staging_dir())) {
-				$dcomp->rm_staging_dir();
+			if (0) {
+				$this->CI->ocw_utils->log_to_apache('error', "decompose_material: skipping removal of directory: " . $decomp_dir);
+			} else {
+				// Clean up any temporary directory regardless of success or failure
+				if (is_dir($dcomp->get_staging_dir())) {
+					$dcomp->rm_staging_dir();
+				}
 			}
 		}
 
@@ -131,9 +135,9 @@ class OER_decompose {
 		* @param string cofile The filename of the Content Object
 		* @return integer
 		*/
-	private function _parse_out_page_number($cofile)
+	private function _parse_image_page_number($cofile)
 	{
-		//$this->CI->ocw_utils->log_to_apache('debug', "_parse_out_page_number for '{$cofile}'");
+		//$this->CI->ocw_utils->log_to_apache('debug', "_parse_image_page_number for '{$cofile}'");
 		$base = basename($cofile);
 
 		// Currently only pdfparse leaves the images in a format with page numbers available
@@ -191,7 +195,7 @@ class OER_decompose {
 		foreach ($co_array as $key => $cofile) {			
 			$filedata['userfile_0']['name'] = basename($cofile);
 			$filedata['userfile_0']['tmp_name'] = $cofile;
-			$pagenumber = $this->_parse_out_page_number($cofile);
+			$pagenumber = $this->_parse_image_page_number($cofile);
 			$postdata['location'] = $pagenumber;
 			$filedata['userfile_0']['type'] = get_mime_by_extension($cofile);
 			//$this->CI->ocw_utils->log_to_apache('debug', "_process_decomposed_COs: file: {$cofile}, mime {$filedata['userfile_0']['type']}");
@@ -213,21 +217,8 @@ class OER_decompose {
 	{
 		//$this->CI->ocw_utils->log_to_apache('debug', "_get_COs_from_directory: entered with directory: " . $dir);
 		$out_array = array();
-		
-		/*
-		// XXX Should this array be global and/or configurable??
-		// XXX This should come from the global mimes array!!!
-		$allowed_exts = array(
-				// Image files
-					"bmp", "gif", "jpg", "png", "tif",
-				// Audio files
-					"aac", "aif", "iff", "m3u", "mid", "mp3", "mpa", "ra", "ram", "wav", "wma",
-				// Video files
-					"3gp", "asf", "asx", "avi", "mov", "mp4", "mpg", "qt", "rm", "swf", "wmv",
-				// Other files
-					"wmf",
-		);
-		*/
+
+		// Get list of supported mime types
 		global $mimes;
 		if ( ! is_array($mimes))
 		{
@@ -236,8 +227,6 @@ class OER_decompose {
 				return FALSE;
 			}
 		}
-
-		// XXX Should we take this list and remove items, or just specify exactly what we can handle?
 		$allowed_exts = array_keys($mimes);
 		
 		$full_list = scandir($dir);
@@ -246,26 +235,53 @@ class OER_decompose {
 			$path = $dir . '/' . $filename;
 			//$this->CI->ocw_utils->log_to_apache('debug', "_get_COs_from_directory: processing {$filename}");
 
-			// Skip directories or unreadable stuff
+			// Skip directories and unreadable stuff
 			if (!is_file($path) || !is_readable($path)) {
 				continue;
 			}
 
-			/* Don't bother with this for now...
-			// Skip things that are too small (XXX Should the minsize vary by filetype?)
-			$size = filesize($path);
-			//$this->CI->ocw_utils->log_to_apache('debug', "_get_COs_from_directory: {$filename}, size {$size}");
-			if ($size < 1024) {
-				//$this->CI->ocw_utils->log_to_apache('debug', "_get_COs_from_directory: {$filename}, size {$size} is too small");
-				continue;
-			}
-			*/
+			/*
+			 * This is currently done within specific decomposition libraries,
+			 * so it is currently disabled here.
+			 *
+			 *	// Skip things that are too small (XXX Should the minsize vary by filetype?)
+			 *	$size = filesize($path);
+			 *	//$this->CI->ocw_utils->log_to_apache('debug', "_get_COs_from_directory: {$filename}, size {$size}");
+			 *	if ($size < 1024) {
+			 *		//$this->CI->ocw_utils->log_to_apache('debug', "_get_COs_from_directory: {$filename}, size {$size} is too small");
+			 *		continue;
+			 *	}
+			 */
 
-			// Skip files with extensions we don't support
+			/*
+			 * Attempt to transform images of unsupported types to something supported (png)
+			 *
+			 * Note there is a known issue converting some PICT files:
+			 * http://www.imagemagick.org/discourse-server/viewtopic.php?f=3&t=10718
+			 */
 			$name_parts = explode(".", $filename);
 			$ext = $name_parts[count($name_parts) - 1];				
 			if (! in_array($ext, $allowed_exts)) {
-				$this->CI->ocw_utils->log_to_apache('debug', "_get_COs_from_directory: ${filename} has unsupported extension");
+
+				// Transform the original <name>.<ext> into <name>.png
+				$pattern = '/(.*)\.' . $ext . '$/';
+				$newpath = preg_replace($pattern, '${1}.png', $path);
+				// $this->CI->ocw_utils->log_to_apache('debug', "_get_COs_from_directory: Attempting to convert '{$path}' to '{$newpath}'");
+
+				// Try to convert from the original type to png
+				$convert_pgm = property('app_convert_pgm_path');
+				$convert_out = array();
+				//$this->CI->ocw_utils->log_to_apache('debug', "_get_COs_from_directory: running '{$convert_pgm} {$path} {$newpath}'");
+				exec("export DYLD_LIBRARY_PATH=\"\"; $convert_pgm $path $newpath 2>1", &$convert_out, &$convert_code);
+
+				if ($convert_code == 0) {
+					//$this->CI->ocw_utils->log_to_apache('debug', "_get_COs_from_directory: ### Adding file '{$newpath}'");
+					$out_array[] = $newpath;
+				} else {
+					$this->CI->ocw_utils->log_to_apache('debug', "_get_COs_from_directory: converting {$path} to {$newpath} returned '{$convert_code}'");
+				}
+
+				unlink($path);	// remove original version
 				continue;
 			}
 			

@@ -37,6 +37,7 @@ import org.apache.poi.hslf.usermodel.SlideShow;
 import org.apache.poi.hslf.usermodel.PictureData;
 import org.apache.poi.hslf.HSLFSlideShow;
 import org.apache.poi.hslf.model.Picture;
+import org.apache.poi.hslf.model.Slide;
 
 public class ImageExtractorPowerPoint extends ImageExtractor {
 
@@ -65,51 +66,55 @@ public class ImageExtractorPowerPoint extends ImageExtractor {
         //extract all pictures contained in the presentation
 
 		int code = 0;
-		
-		PictureData[] pdata = this.ppt.getPictureData();
-		if (pdata != null) {
-	        for (int i = 0; i < pdata.length; i++) {
-	            PictureData pict = pdata[i];
-	
-	            // picture data
-	            byte[] data = pict.getData();
-	
-	            int type = pict.getType();
-	            String ext;
-	            switch (type) {
-	                case Picture.JPEG:
-	                    ext = ".jpg";
-	                    break;
-	                case Picture.PNG:
-	                    ext = ".png";
-	                    break;
-	                case Picture.WMF:
-	                    ext = ".wmf";
-	                    break;
-	                case Picture.EMF:
-	                    ext = ".emf";
-	                    break;
-	                case Picture.PICT:
-	                    ext = ".pict";
-	                    break;
-	                case Picture.DIB:
-	                    ext = ".dib";
-	                    break;
-	                default:
-	                    continue;
-	            }
-	            //System.out.println("Creating image file " + this.outDir + "/image_"
-				//		+ (i+1) + ext);
-	            try {
-		            FileOutputStream out = new FileOutputStream(this.outDir + "/image_" + (i+1) + ext);
-		            out.write(data);
-		            out.close();
-	            } catch (IOException e) {
-	                System.err.println("Caught IOException: " +  e.getMessage());
-	            	code = 2;
-	            }
-	        }
+
+		Slide slides[] = ppt.getSlides();
+
+		for (int i = 0; i < slides.length; i++) {
+			Slide slide = slides[i];
+			org.apache.poi.hslf.model.Shape[] sh = slide.getShapes();
+
+			for (int j = 0; j < sh.length; j++) {
+				String ext;
+				
+				if (sh[j] instanceof Picture) {
+					Picture p = (Picture) sh[j];
+					PictureData pd = p.getPictureData();
+					byte[] data = pd.getData();
+					int type = pd.getType();
+					switch (type) {
+		                case Picture.JPEG:
+		                    ext = ".jpg";
+		                    break;
+		                case Picture.PNG:
+		                    ext = ".png";
+		                    break;
+		                case Picture.WMF:
+		                    ext = ".wmf";
+		                    break;
+		                case Picture.EMF:
+		                    ext = ".emf";
+		                    break;
+		                case Picture.PICT:
+		                    ext = ".pict";
+		                    break;
+		                case Picture.DIB:
+		                    ext = ".dib";
+		                    break;
+		                default:
+		                    continue;
+					}
+					try {
+						String fname = String.format("%s/%s-%05d-%03d%s", this.outDir, "image", slide.getSlideNumber(), j, ext);
+						FileOutputStream out = new FileOutputStream(fname);
+						out.write(data);
+						out.close();
+					} catch (IOException e) {
+		                System.err.println("Caught IOException: " +  e.getMessage());
+		            	code = 2;
+					}
+				}
+			}
 		}
-        return code;
+		return code;
 	}
 }
