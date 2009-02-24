@@ -272,7 +272,7 @@ class OER_decompose {
 				$convert_pgm = property('app_convert_pgm_path');
 				$convert_out = array();
 				//$this->CI->ocw_utils->log_to_apache('debug', "_get_COs_from_directory: running '{$convert_pgm} {$path} {$newpath}'");
-				exec("export DYLD_LIBRARY_PATH=\"\"; $convert_pgm $path $newpath &>/dev/null", &$convert_out, &$convert_code);
+				exec("export DYLD_LIBRARY_PATH=\"\"; $convert_pgm $path $newpath", &$convert_out, &$convert_code);
 
 				if ($convert_code == 0) {
 					//$this->CI->ocw_utils->log_to_apache('debug', "_get_COs_from_directory: ### Adding file '{$newpath}'");
