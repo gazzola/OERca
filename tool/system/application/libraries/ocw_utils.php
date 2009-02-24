@@ -746,6 +746,48 @@ htmleoq;
 		return FALSE;
 	}
 
+	/**
+	 * Convert numeric string value from php.ini,
+	 * possibly containing some scale factors as K, M, and G.
+	 * Example taken from the PHP manual.
+	 *
+	 * @access  private
+	 * @param string  php.ini size value
+	 * @return  int
+	 */
+	private function _string_to_int($s)
+	{
+		$v = (int) $s;
+		$last = strtolower($s[strlen($s)-1]);
+		switch($last) {
+			// The 'G' modifier is available since PHP 5.1.0
+			case 'g': $v *= 1024; /*. missing_break; .*/
+			case 'm': $v *= 1024; /*. missing_break; .*/
+			case 'k': $v *= 1024; /*. missing_break; .*/
+			/*. missing_default: .*/
+		}
+		return $v;
+	}
+
+	/**
+	 * Examine maximum values from php.ini and determine
+	 * whether the maximum allowed has been exceeded.
+	 *
+	 * @access  public
+	 * @return  boolean
+	 */
+	public function is_invalid_upload_size()
+	{
+		$upload_max = $this->_string_to_int(trim(ini_get("upload_max_filesize")));
+		$post_max = $this->_string_to_int(trim(ini_get("post_max_size")));
+		$max_allowed = min($upload_max, $post_max);
+
+		if ($_SERVER['CONTENT_LENGTH'] > $max_allowed) {
+			return TRUE;
+		}
+		return FALSE;
+	}
+
 }
 
 ?>

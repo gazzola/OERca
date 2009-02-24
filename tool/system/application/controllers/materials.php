@@ -175,6 +175,12 @@ class Materials extends Controller {
 					$valid = true;
 					$errmsg = '';
 			
+					// Catch issues of filesize early (since $FILES and $_POST are empty in that case)
+					if ($this->ocw_utils->is_invalid_upload_size()) {
+							flashMsg("The file you attempted to upload is larger than the maximum allowed!");
+							redirect("materials/add_material/$cid/$type/view", 'location');
+					}
+
 					$idx = ($type=='bulk') ? 'zip_userfile' : 'single_userfile';
 					
 					if (!isset($_FILES[$idx]['name']) || $_FILES[$idx]['name']=='') {
@@ -185,7 +191,7 @@ class Materials extends Controller {
 							$errmsg .= (($errmsg=='') ? '':'<br/>')."Can only upload ZIP files for bulk uploads";
 							$valid = false;
 					}
-			
+
 					if ($_POST['author']=='') {
 							$errmsg .= (($errmsg=='') ? '':'<br/>')."Author field is required.";
 							$valid = false;
@@ -493,6 +499,12 @@ class Materials extends Controller {
 					$valid = true;
 					$errmsg = '';
 			
+					// Catch issues of filesize early (since $FILES and $_POST are empty in that case)
+					if ($this->ocw_utils->is_invalid_upload_size()) {
+							flashMsg("The file you attempted to upload is larger than the maximum allowed!");
+							redirect("materials/add_object/$cid/$mid/$type", 'location');
+					}
+
 					$idx = ($type=='bulk') ? 'userfile' : 'userfile_0';
 					
 					$valid = true;
