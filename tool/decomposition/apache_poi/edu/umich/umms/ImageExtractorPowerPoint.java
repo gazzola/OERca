@@ -79,38 +79,48 @@ public class ImageExtractorPowerPoint extends ImageExtractor {
 				if (sh[j] instanceof Picture) {
 					Picture p = (Picture) sh[j];
 					PictureData pd = p.getPictureData();
-					byte[] data = pd.getData();
-					int type = pd.getType();
-					switch (type) {
-		                case Picture.JPEG:
-		                    ext = ".jpg";
-		                    break;
-		                case Picture.PNG:
-		                    ext = ".png";
-		                    break;
-		                case Picture.WMF:
-		                    ext = ".wmf";
-		                    break;
-		                case Picture.EMF:
-		                    ext = ".emf";
-		                    break;
-		                case Picture.PICT:
-		                    ext = ".pict";
-		                    break;
-		                case Picture.DIB:
-		                    ext = ".dib";
-		                    break;
-		                default:
-		                    continue;
-					}
-					try {
-						String fname = String.format("%s/%s-%05d-%03d%s", this.outDir, "image", slide.getSlideNumber(), j, ext);
-						FileOutputStream out = new FileOutputStream(fname);
-						out.write(data);
-						out.close();
-					} catch (IOException e) {
-		                System.err.println("Caught IOException: " +  e.getMessage());
-		            	code = 2;
+					if (pd != null) {
+						byte[] data;
+						int type;
+						try {
+							data = pd.getData();
+							type = pd.getType();
+						} catch (Exception e) {
+							System.err.println("Caught Exception: "
+									+ e.getMessage());
+							continue;
+						}
+						switch (type) {
+			                case Picture.JPEG:
+			                    ext = ".jpg";
+			                    break;
+			                case Picture.PNG:
+			                    ext = ".png";
+			                    break;
+			                case Picture.WMF:
+			                    ext = ".wmf";
+			                    break;
+			                case Picture.EMF:
+			                    ext = ".emf";
+			                    break;
+			                case Picture.PICT:
+			                    ext = ".pict";
+			                    break;
+			                case Picture.DIB:
+			                    ext = ".dib";
+			                    break;
+			                default:
+			                    continue;
+						}
+						try {
+							String fname = String.format("%s/%s-%05d-%03d%s", this.outDir, "image", slide.getSlideNumber(), j, ext);
+							FileOutputStream out = new FileOutputStream(fname);
+							out.write(data);
+							out.close();
+						} catch (IOException e) {
+			                System.err.println("Caught IOException: " +  e.getMessage());
+			            	code = 2;
+						}
 					}
 				}
 			}
