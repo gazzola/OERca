@@ -274,7 +274,7 @@ class OER_decompose {
 				//$this->CI->ocw_utils->log_to_apache('debug', "_get_COs_from_directory: running '{$convert_pgm} {$path} {$newpath}'");
 				exec("export DYLD_LIBRARY_PATH=\"\"; $convert_pgm $path $newpath", &$convert_out, &$convert_code);
 
-				if ($convert_code == 0) {
+				if ($convert_code == 0 && file_exists($newpath)) {
 					//$this->CI->ocw_utils->log_to_apache('debug', "_get_COs_from_directory: ### Adding file '{$newpath}'");
 					$out_array[] = $newpath;
 				} else {
