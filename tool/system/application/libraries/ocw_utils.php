@@ -616,7 +616,34 @@ htmleoq;
   }
 
 	/**
+		* Convert string level value to numeric value
+		* @access private
+		* @param string level
+		*/
+	private function _level_to_numeral($level)
+	{
+		switch ($level) {
+			case 'debug':	    // Most likely case
+				return 1;
+			case 'info':
+				return 2;
+			case 'warn':
+				return 3;
+			case 'error':
+				return 4;
+			default:
+				return FALSE;
+		}
+	}
+
+	/**
 		* Log a message to the apache error log
+		* based on the logging level selected
+		*
+		* If no config option is set, then only 'error'
+		* messages are logged.  Otherwise, if the message
+		* is at or 'above' the level of the config option,
+		* then it is logged.
 		*
 		* @access public
 		* @param string level - message level indicator (i.e. 'error', 'warn', 'info', 'debug')
@@ -624,11 +651,141 @@ htmleoq;
 		*/
 	public function log_to_apache($level, $message)
 	{
+		static $config_level = -1;
+
+		// Attempt to only set this once
+		if ($config_level == -1) {
+		    $config_level = $this->_level_to_numeral($this->object->config->item('log_to_apache'));
+		    if ($config_level === FALSE)
+			$config_level = $this->_level_to_numeral('error');
+		}
+		$user_level = $this->_level_to_numeral($level);
+		
+		if ($user_level < $config_level)
+				return;
 		$now = date("D M j G:i:s Y");
 		$message = "[" . $now . "] [" . $level . "] " . $message . "\n";
 		$stderr = @fopen('php://stderr', 'w');
 		fwrite($stderr, $message);
 		fclose($stderr);
+	}
+
+	/**
+	 * Get File Extension by Mimetype
+	 *
+	 * Translates a mime type into a file extension based on config/mimes.php. 
+	 * Returns FALSE if it can't determine the extension or open the mime config file
+	 *
+	 * Note: This is a complementary function to get_mime_by_extension() provided by CodeIgniter
+	 *
+	 * @access	public
+	 * @param	string	mimetype
+	 * @return	mixed
+	 */	
+	public function get_extension_by_mime($mimetype)
+	{
+		global $mimes;
+
+		if ( ! $mimetype || $mimetype == '') {
+			return FALSE;
+		}
+
+		// Try a short-cut of comparing some common values first
+		$ext = FALSE;
+		switch (strtolower($mimetype)) {
+			case 'image/pjpeg':
+			case 'image/jpeg':
+				$ext= 'jpg';
+				break;
+			case 'image/png':
+				$ext= 'png';
+				break;
+			case 'image/gif':
+				$ext= 'gif';
+				break;
+			case 'image/tiff':
+				$ext= 'tiff';
+				break;
+			case 'image/svg+xml':
+				$ext='svg';
+				break;
+    }
+	  if ($ext) {
+			//$this->log_to_apache('debug', "get_extension_by_mime: returning early with " . $ext);
+			return $ext;
+		}
+
+		// Otherwise, do it the long way, looking "backward" through the mimes array
+		if ( ! is_array($mimes))
+		{
+			if ( ! require_once(APPPATH . 'config/mimes.php'))
+			{
+				return FALSE;
+			}
+		}
+
+		//$this->log_to_apache('debug', "\n\nget_extension_by_mime: the list:\n");
+		foreach ($mimes as $x => $mt) {
+			//$this->log_to_apache('debug', "\t\t $x \t\t $mt");
+			if (is_array($mt)) {
+				foreach ($mt as $xx => $mmtt) {
+					//$this->log_to_apache('debug', "Comparing given mimetype'" . $mimetype . "' with '" . $mmtt ."'");
+					if ($mimetype == $mmtt) {
+						//$this->log_to_apache('debug', "get_extension_by_mime: extension is " . $x);
+						return $x;
+					}
+				}
+			}
+			//$this->log_to_apache('debug', "Comparing given mimetype'" . $mimetype . "' with '" . $mt ."'");
+			if ($mimetype == $mt) {
+				//$this->log_to_apache('debug', "get_extension_by_mime: extension is " . $x);
+				return $x;
+			}
+		}
+		//$this->log_to_apache('debug', "get_extension_by_mime: NO MATCH");
+		return FALSE;
+	}
+
+	/**
+	 * Convert numeric string value from php.ini,
+	 * possibly containing some scale factors as K, M, and G.
+	 * Example taken from the PHP manual.
+	 *
+	 * @access  private
+	 * @param string  php.ini size value
+	 * @return  int
+	 */
+	private function _string_to_int($s)
+	{
+		$v = (int) $s;
+		$last = strtolower($s[strlen($s)-1]);
+		switch($last) {
+			// The 'G' modifier is available since PHP 5.1.0
+			case 'g': $v *= 1024; /*. missing_break; .*/
+			case 'm': $v *= 1024; /*. missing_break; .*/
+			case 'k': $v *= 1024; /*. missing_break; .*/
+			/*. missing_default: .*/
+		}
+		return $v;
+	}
+
+	/**
+	 * Examine maximum values from php.ini and determine
+	 * whether the maximum allowed has been exceeded.
+	 *
+	 * @access  public
+	 * @return  boolean
+	 */
+	public function is_invalid_upload_size()
+	{
+		$upload_max = $this->_string_to_int(trim(ini_get("upload_max_filesize")));
+		$post_max = $this->_string_to_int(trim(ini_get("post_max_size")));
+		$max_allowed = min($upload_max, $post_max);
+
+		if ($_SERVER['CONTENT_LENGTH'] > $max_allowed) {
+			return TRUE;
+		}
+		return FALSE;
 	}
 
 }

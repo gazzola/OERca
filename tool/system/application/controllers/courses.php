@@ -56,7 +56,21 @@ class Courses extends Controller {
 		}
 		return TRUE;
 	}
-
+	
+	/**
+	 * validation check to force a valid course length value and
+	 * prevent "-1" which is the default form field selection from
+	 * being selected as a value
+	 */
+   public function course_length_check($course_length) {
+     if ($course_length == -1) {
+       $this->validation->set_message('course_length_check', 'Please select Length');
+       return FALSE;
+     }
+     return TRUE;
+   }
+   
+   
 	/**
 	 * return curriculum and subject information for a given school
 	 * to populate the curriculum and subject select boxes with only
@@ -114,10 +128,10 @@ class Courses extends Controller {
 	
 						if ($validation_error == 0) {
 							// create the course
-							$cid = NULL;
-							$cid = $this->course->new_course($data);
-							if ($cid != false)
-								$msg = "Successfully created course '" . $data['title'] . "'";
+							$new_course = NULL;
+							$new_course = $this->course->new_course($data);
+							if ($new_course)
+								$msg = "Successfully created course '" . $new_course['title'] . "'";
 							else
 								$msg = "Error creating course";
 						}

@@ -57,7 +57,11 @@
 			$data['subject_id'] = $_POST['subj_id'];
 		}
 		$data['level'] = $_POST['courselevel'];
-		$data['length'] = $_POST['courselength'];
+		if ($_POST['courselength'] == -1) {
+		  $data['length'] = NULL;
+		} else {
+		  $data['length'] = $_POST['courselength'];
+	  }
 		$data['term'] = $_POST['term'];
 		$data['year'] = $_POST['year'];
 		$data['start_date'] = $_POST['start_date'];

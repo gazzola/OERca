@@ -73,7 +73,7 @@ if (isset($flash) AND $flash!='') {
         </div>
 				<br>
       
-        <div class="formLabel">Length:</div>
+        <div class="formLabel"><span style="color:red">*</span>Length:</div>
         <div class="formField">
           <?php echo form_dropdown('courselength', $courselength, 
           $coursedetails['length'], 'id="courselength" tabindex="7"'); ?>

@@ -1,0 +1,309 @@
+#! /usr/bin/perl -w
+
+#-----------------------------------------------------------------------
+#
+# COPYRIGHT (c) 2009
+# The Regents of the University of Michigan
+# ALL RIGHTS RESERVED
+# 
+# Permission is granted to use, copy, create derivative works
+# and redistribute this software and such derivative works
+# for any purpose, so long as the name of The University of
+# Michigan is not used in any advertising or publicity
+# pertaining to the use of distribution of this software
+# without specific, written prior authorization.  If the
+# above copyright notice or any other identification of the
+# University of Michigan is included in any copy of any
+# portion of this software, then the disclaimer below must
+# also be included.
+# 
+# THIS SOFTWARE IS PROVIDED AS IS, WITHOUT REPRESENTATION
+# FROM THE UNIVERSITY OF MICHIGAN AS TO ITS FITNESS FOR ANY
+# PURPOSE, AND WITHOUT WARRANTY BY THE UNIVERSITY OF
+# MICHIGAN OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING
+# WITHOUT LIMITATION THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE
+# REGENTS OF THE UNIVERSITY OF MICHIGAN SHALL NOT BE LIABLE
+# FOR ANY DAMAGES, INCLUDING SPECIAL, INDIRECT, INCIDENTAL, OR
+# CONSEQUENTIAL DAMAGES, WITH RESPECT TO ANY CLAIM ARISING
+# OUT OF OR IN CONNECTION WITH THE USE OF THE SOFTWARE, EVEN
+# IF IT HAS BEEN OR IS HEREAFTER ADVISED OF THE POSSIBILITY OF
+# SUCH DAMAGES.
+#-----------------------------------------------------------------------
+
+#-----------------------------------------------------------------------
+#
+# Parse a PDF file, extracting images into the given directory
+#
+# All the images are converted from the native pbm or ppm format
+# to png format
+#
+# The resulting file names are formatted as
+#   "image-<ppppp>-<nnn>.png"
+# where "<ppppp>" is the page number where the image appeared in
+# the document, and "<nnn>" is the image number within the page.
+#
+#-----------------------------------------------------------------------
+
+use strict;
+use Getopt::Long;
+use File::Path;
+use File::Basename;
+
+#
+# Configurable optimization values to eliminate "useless" files.
+#
+
+# If this many images are found on single page, ignore them
+my $ARBITRARY_MAXIMUM_PER_PAGE = 150;
+
+# If a resulting file is less than this size (bytes) ignore it
+my $ARBITRARY_MINIMUM_FILE_SIZE = 2500;
+
+#
+# Configurable binary file locations
+#
+my ($pdfinfo, $pdfimages, $pnmtopng);
+if (-x "/usr/bin/pdfinfo") {
+	$pdfinfo = "/usr/bin/pdfinfo";
+} elsif (-x "/opt/local/bin/pdfinfo") {
+	$pdfinfo = "/opt/local/bin/pdfinfo";
+} else {
+	die "Could not locate pdfinfo";
+}
+
+if (-x "/usr/bin/pdfimages") {
+	$pdfimages = "/usr/bin/pdfimages";
+} elsif (-x "/opt/local/bin/pdfimages") {
+	$pdfimages = "/opt/local/bin/pdfimages";
+} else {
+	die "Could not locate pdfimages";
+}
+
+if (-x "/usr/bin/pnmtopng") {
+	$pnmtopng = "/usr/bin/pnmtopng";
+} elsif (-x "/opt/local/bin/pnmtopng") {
+	$pnmtopng = "/opt/local/bin/pnmtopng";
+} else {
+	die "Could not locate pnmtopng";
+}
+
+
+#########################################################################
+# The following should not need to be changed
+#########################################################################
+
+#
+# Global options
+#
+my $debug = 0;
+my $convert = 1;
+my $verbose = 0;
+my %opts;
+
+#########################################################################
+#############           S U B R O U T I N E S           #################
+#########################################################################
+
+#------------------------------------------------------------------------
+# Print usage message and exit
+#------------------------------------------------------------------------
+sub usage {
+	print "Usage: $0 [options] <input-pdf-file> <output-directory>\n";
+	print "Supported options are:\n";
+	print "  --debug[=<debug-level>]\n";
+	print "  --maxperpage=<maximum number of images before a page is ignored>\n";
+	print "  --minimagesize=<minimum size of a \"useful\" image>\n";
+	print "  --noconvert\n";
+	print "  --verbose\n";
+	print "  --help\n";
+	exit(1);
+}
+
+#------------------------------------------------------------------------
+# Parse for input options.  Ignore flags we don't know about.
+#------------------------------------------------------------------------
+sub process_arguments {
+	my $error_msg = "";
+	my $errors = 0;
+
+	if (GetOptions( \%opts,
+					"debug:i",
+					"maxperpage=i",
+					"minimagesize=i",
+					"noconvert",
+					"verbose",
+					"help",
+			) == 0 ) { usage(); }
+
+	# --help is optional
+	if ( exists $opts{help} ) {
+		usage();
+	}
+
+	# If --debug was specified, but $debug is zero, then set $debug to 1
+	$debug = 0;
+	if ( exists $opts{debug} ) {
+		if ( $opts{debug} == 0 ) { $debug = 1; }
+		else { $debug = $opts{debug} }
+	}
+	print "debug = $debug\n" if ($debug > 0);
+
+	# --maxperpage  maximum number of images on a page before ignoring all of them
+	if ( exists $opts{maxperpage} ) {
+		$ARBITRARY_MAXIMUM_PER_PAGE = $opts{maxperpage};
+	}
+
+	# --minimagesize  images less than this size will be ignored
+	if ( exists $opts{minimagesize} ) {
+		$ARBITRARY_MINIMUM_FILE_SIZE = $opts{minimagesize};
+	}
+
+	# --noconvert is optional
+	if ( exists $opts{noconvert} ) {
+		$convert = 0;
+	}
+
+	# --verbose is optional
+	if ( exists $opts{verbose} ) {
+		$verbose = 1;
+	}
+
+	# parsing errors are fatal
+	if ($errors) {
+		print "$error_msg\n";
+		die("Fix arguments!\n");
+	}
+}
+
+#------------------------------------------------------------------------
+# Run pdfimages on each page of the input file
+#------------------------------------------------------------------------
+sub run_pdfimages {
+	my ($infile, $outdir, @args) = @_;
+
+	my ($cmdstring, $pages, $outpattern);
+	my ($p);
+
+	print "$0: Processing file $infile into directory $outdir\n" if ($debug);
+
+	# Create the output directory if necessary
+	if (! -d $outdir) {
+		print "Creating output directory $outdir\n" if ($debug);
+		mkpath($outdir);
+		if (! -d $outdir) {
+			print "Error creating path for $outdir\n";
+			return 3;
+		}
+	}
+
+	$cmdstring = "$pdfinfo \"$infile\" ";
+	$cmdstring .= "2>/dev/null" if (! $verbose);
+	$cmdstring .= " | grep Pages | awk '{print \$2}'";
+
+	print "Executing command: $cmdstring\n" if ($debug);
+
+	$pages = `$cmdstring`;
+	chomp($pages);
+
+	if ($pages eq '') {
+		print "No pages found in file '$infile'! (Maybe it isn't really a PDF???)\n";
+		return 4;
+	}
+	if ($pages == 0) {
+		print "No pages found in file '$infile'!\n" if ($debug);
+		return 5;
+	}
+	printf "There are %d pages in %s\n", $pages, $infile if ($debug); 
+
+	for ($p = 1; $p <= $pages; $p++) {
+		my (@filescreated, $countpattern);
+
+		$outpattern = sprintf("%s/image-%05i", $outdir, $p);
+		$countpattern = sprintf('-name "image-%05i-*.p[bp]m"', $p);
+		print "Processing page $p of $pages into $outpattern\n" if ($debug);
+		system ($pdfimages, "-f", $p, "-l", $p, $infile, $outpattern);
+
+		# If there are more than NNN images on a page, there is probably
+		# a problem and we should just ignore all of them
+		push(@filescreated, split("\n", `find \"$outdir\" $countpattern -print`));
+		my $numcreated =  $#filescreated + 1;
+		print "For page $p there were $numcreated files created\n" if ($debug);
+		if ($numcreated >= $ARBITRARY_MAXIMUM_PER_PAGE) {
+			print "IGNORING $numcreated files created for page $p\n";
+			my $i;
+			for ($i = 0; $i <= $#filescreated; $i++) {
+				print "Removing junk file '$filescreated[$i]'\n" if ($debug);
+				unlink($filescreated[$i]); 
+			}
+		}
+
+		# To prevent too many files building up,
+		# convert images to png a page at a time
+		if ($convert) {
+			convert_to_png($outdir);
+		}
+	}
+	return 0;
+}
+
+#------------------------------------------------------------------------
+# Convert ppm and pbm files to png
+#------------------------------------------------------------------------
+sub convert_to_png {
+	my ($outdir, @args) = @_;
+
+	my (@ppmfiles, $ppmfile, $pngfile, $filebase);
+	my ($nfile, $npath, $nsuffix);
+	my ($cmdstring);
+	my @suffixlist = qr {\.p[bp]m};
+
+	push(@ppmfiles, split("\n", `find \"$outdir\" -name \"*.p[bp]m\" -print`));
+
+	foreach $ppmfile (@ppmfiles) {
+		# eliminate files that are too small to be useful Content Objects
+		my $filesize = -s $ppmfile;
+		if ($filesize < $ARBITRARY_MINIMUM_FILE_SIZE) {
+			print "SKIPPING small file $ppmfile (size $filesize)\n" if ($debug);
+			unlink ($ppmfile);
+			next;
+		}
+		($nfile, $npath, $nsuffix) = fileparse($ppmfile, @suffixlist);
+		$pngfile = $npath . $nfile . ".png";
+		print "CONVERTING $ppmfile into $pngfile\n" if ($debug);
+
+		$cmdstring = "$pnmtopng \"$ppmfile\" > \"$pngfile\"";
+		$cmdstring .= " 2>/dev/null" if (! $verbose);;
+
+		`$cmdstring`;
+
+		if ($?) {
+			print "Error converting \"$ppmfile\" to \"$pngfile\"\n" if ($debug);
+		} else {
+			# eliminate resulting files that are too small as well
+			$filesize = -s $pngfile;
+			if ($filesize < $ARBITRARY_MINIMUM_FILE_SIZE) {
+				print "SKIPPING small file $pngfile (size $filesize)\n" if ($debug);
+				unlink ($pngfile);
+			}
+		}
+		unlink($ppmfile);
+	}
+}
+
+#########################################################################
+#############  M A I N   E X E C U T I O N   P O I N T  #################
+#########################################################################
+
+my $code;
+
+process_arguments();
+
+if ($#ARGV + 1 < 2) {
+	usage();
+}
+
+$code = run_pdfimages($ARGV[0], $ARGV[1]);
+
+exit $code;
+

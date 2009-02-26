@@ -1320,17 +1320,11 @@ class Coobject extends Model
 				$name = $this->generate_object_name($tmpname);
 				$path = $this->prep_path($this->material_path($cid, $mid).'/odir_'.$name);
 
-			  $ext = '';
-  			switch (strtolower($type))
-        	{
-                case 'image/gif':  $ext= '.gif'; break;
-                case 'image/tiff':  $ext= '.tiff'; break;
-                case 'image/svg+xml': $ext='.svg';break;
-                case 'jpg':
-                case 'image/jpeg': $ext= '.jpg'; break;
-                case 'image/png':  $ext= '.png'; break;
-                default: $ext='.jpg';
-        	}
+				$ext = $this->ocw_utils->get_extension_by_mime($type);
+				if ( ! $ext) {
+					$ext = 'jpg';		// Default for unknown mimetype
+				}
+				$ext = '.' . $ext;
 
 				// move file to new location
 				if (is_uploaded_file($tmpname)) {
