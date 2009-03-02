@@ -197,6 +197,8 @@ class Materials extends Controller {
 							$valid = false;
 					}
 					
+					if (!isset($_POST['embedded_co'])) { $_POST['embedded_co'] = 0; }
+
 					$role = getUserProperty('role');
 					if ($valid == FALSE) {
 							flashMsg($errmsg);

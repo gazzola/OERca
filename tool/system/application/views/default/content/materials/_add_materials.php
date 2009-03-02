@@ -73,9 +73,8 @@ if (isset($flash) AND $flash!='') {
 
 			<br/>
 
-			<div class="formField">Automatically Extract Embedded Content Objects?:<br/>
-		        <input type="radio" name="embedded_co" id="emip_yes" class="update_material" value="1" />&nbsp;Yes
-		        <input type="radio" name="embedded_co" id="emip_no" class="update_material" value="0" checked="checked" />&nbsp;No
+			<div class="formField">Automatically Extract Embedded Content Objects?
+		       <?php echo form_checkbox('embedded_co', 1, FALSE); ?> 
 			</div>
 
 			<br/>
@@ -97,7 +96,6 @@ if (isset($flash) AND $flash!='') {
 		<input type="hidden" name="ctools_url" value="" />
 		<input type="hidden" name="mimetype_id" value="6" />
 		<input type="hidden" name="tag_id" value="15" />
-		<input type="hidden" name="embedded_co" value="1" />
 		
 		
 		<div class="formLabel">Author: (required)</div>
@@ -113,6 +111,11 @@ if (isset($flash) AND $flash!='') {
 		</div>
 				
 			<br/>
+
+		<div class="formField">Automatically Extract Embedded Content Objects?
+	       <?php echo form_checkbox('embedded_co', 1, FALSE); ?> 
+		</div>
+		<br/>
 
 		<div class="formField">Zip file of Materials: (required)</div>
 		<div class="formField">
