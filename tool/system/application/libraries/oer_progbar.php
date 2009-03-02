@@ -407,7 +407,6 @@ class OER_progbar
   {
     header("Content-type: image/png\n\n");
     imagepng($this->im);
-    imagepng($this->imtot);
   }
 
 
