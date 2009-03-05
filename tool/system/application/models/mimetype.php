@@ -80,14 +80,14 @@ class Mimetype extends Model
  */
 	function get_mime($filename)
 	{
-    preg_match("/\.(.*?)$/", $filename, $m);    # Get File extension for a better match
-    switch(strtolower($m[1])){
+    $m = pathinfo($filename, PATHINFO_EXTENSION);	# Get File extension for a better match
+    switch(strtolower($m)){
         case "js": return "application/javascript";
         case "json": return "application/json";
         case "jpg": case "jpeg": case "jpe": return "image/jpeg";
         case "tif": case "tiff": return "image/tiff";
         case "svg": case "svgz": return "image/svg+xml";
-        case "png": case "gif": case "bmp": return "image/".strtolower($m[1]);
+        case "png": case "gif": case "bmp": return "image/".strtolower($m);
         case "css": return "text/css";
         case "pdf": return "application/pdf";
         case "ppt": return "application/mspowerpoint";
