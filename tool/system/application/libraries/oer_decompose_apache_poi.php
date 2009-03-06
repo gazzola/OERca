@@ -124,8 +124,14 @@ class OER_decompose_apache_poi
 		$poicode = -1;
 		$poiout = array();
 		// Redirect stderr to /dev/null to eliminate "random" messages from the apache log file
-		// See note above about DYLD_LIBRARY_PATH
-		exec("export DYLD_LIBRARY_PATH=\"\"; $this->java_path -Xmx500m -jar $this->poi_jar_path $materials_file $this->staging_dir &> /dev/null", &$poiout, &$poicode);
+		// Local MAMP server needs some extra parameters
+		$SET_DYLD_PATH = "";
+		if ($this->CI->config->item('is_local_mamp_server')) {
+			//$this->CI->ocw_utils->log_to_apache('debug', __FUNCTION__.": *** Using LOCAL Settings ***");
+			$SET_DYLD_PATH .= "export DYLD_LIBRARY_PATH=\"\";";
+		}
+
+		exec("$SET_DYLD_PATH $this->java_path -Xmx500m -jar $this->poi_jar_path $materials_file $this->staging_dir &> /dev/null", &$poiout, &$poicode);
 		unset($poiout);
 		$this->CI->ocw_utils->log_to_apache('debug', "poi::do_decomp: returning '{$poicode}'");
 

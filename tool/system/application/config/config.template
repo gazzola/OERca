@@ -370,4 +370,14 @@ $config['max_height']           = '768';
 */
 $config['log_to_apache'] = 'error';
 
+/*
+|--------------------------------------------------------------------------
+| Local MAMP server configuration
+|--------------------------------------------------------------------------
+|
+| Set this to TRUE if running on a local Macintosh MAMP installation.
+|
+*/
+$config['is_local_mamp_server'] = FALSE;
+
 ?>

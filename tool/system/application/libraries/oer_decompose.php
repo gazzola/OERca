@@ -113,6 +113,9 @@ class OER_decompose {
 				$this->_process_decomposed_COs($cid, $mid, $dcomp->get_staging_dir());
 			}
 
+			// Attempt to get context objects
+			$this->_add_context_images($cid, $mid, $material_file, $dcomp->get_staging_dir());
+
 			if (0) {
 				$this->CI->ocw_utils->log_to_apache('error', "decompose_material: skipping removal of directory: " . $decomp_dir);
 			} else {
@@ -268,11 +271,21 @@ class OER_decompose {
 				$newpath = preg_replace($pattern, '${1}.png', $path);
 				// $this->CI->ocw_utils->log_to_apache('debug', "_get_COs_from_directory: Attempting to convert '{$path}' to '{$newpath}'");
 
+				// Local MAMP server needs some extra parameters
+				$SET_DYLD_PATH = "";
+				$SET_MAMP_PATH = "";
+				if ($this->CI->config->item('is_local_mamp_server')) {
+					//$this->CI->ocw_utils->log_to_apache('debug', __FUNCTION__.": *** Using LOCAL Settings ***");
+					$SET_DYLD_PATH .= "export DYLD_LIBRARY_PATH=\"\";";
+					$SET_MAMP_PATH .= "export PATH=\"/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/X11/bin\";";
+				}
+
 				// Try to convert from the original type to png
+
 				$convert_pgm = property('app_convert_pgm_path');
 				$convert_out = array();
 				//$this->CI->ocw_utils->log_to_apache('debug', "_get_COs_from_directory: running '{$convert_pgm} {$path} {$newpath}'");
-				exec("export DYLD_LIBRARY_PATH=\"\"; $convert_pgm $path $newpath", &$convert_out, &$convert_code);
+				exec("$SET_DYLD_PATH $SET_MAMP_PATH $convert_pgm $path $newpath", &$convert_out, &$convert_code);
 
 				if ($convert_code == 0 && file_exists($newpath)) {
 					//$this->CI->ocw_utils->log_to_apache('debug', "_get_COs_from_directory: ### Adding file '{$newpath}'");
@@ -293,6 +306,72 @@ class OER_decompose {
 		return $out_array;
 	}
 
+	/**
+		* Attempt to obtain context images from an uploaded Material
+		*
+		* @access public
+		* @param int cid The course ID
+		* @param int mid The material ID
+		* @param string material_file The name of the file containing the uploaded material
+		* @param string work_dir The name of a working directory to use when creating the context images
+		* @return boolean
+		*/
+	private function _add_context_images($cid, $mid, $material_file, $work_dir)
+	{
+		//$this->CI->ocw_utils->log_to_apache('debug', __FUNCTION__.": entered with material '{$material_file}' and directory '{$work_dir}'");
+
+		// We only support PDF files at this time
+		$name_parts = explode(".", $material_file);
+		$ext = $name_parts[count($name_parts) - 1];				
+		if ($ext != "pdf") {
+			$this->CI->ocw_utils->log_to_apache('debug', __FUNCTION__.": skipping unsupported file type '{$material_file}'");
+			return FALSE;
+		}
+
+		if (!is_dir($work_dir)) {
+			mkdir($work_dir, 0700, TRUE);
+		}
+
+		// Local MAMP server needs some extra parameters
+		$SET_DYLD_PATH = "";
+		if ($this->CI->config->item('is_local_mamp_server')) {
+			//$this->CI->ocw_utils->log_to_apache('debug', __FUNCTION__.": *** Using LOCAL Settings ***");
+			$SET_DYLD_PATH .= "export DYLD_LIBRARY_PATH=\"\";";
+		}
+
+		// ImageMagick (convert) creates the page numbers with a base of zero.
+		// We really want a base of one.  Insteady, use Ghostscript directly.
+		$ghostscript_pgm = property('app_ghostscript_pgm_path');
+		$gs_out = array();
+		$out_path = $work_dir . "/Slide%03d.jpg";
+		$ghostscript_cmd = "$ghostscript_pgm -dSAFER -dBATCH -dNOPAUSE -sDEVICE=jpeg -r150 -dTextAlphaBits=4 ";
+		$ghostscript_cmd .= "-dGraphicsAlphaBits=4 -dMaxStripSize=8192 -sOutputFile={$out_path} {$material_file}";
+		//$this->CI->ocw_utils->log_to_apache('debug', __FUNCTION__.": ghostscript command '{$ghostscript_cmd}'");
+
+		$this->CI->ocw_utils->log_to_apache('debug', __FUNCTION__.": running ghostscript on '{$material_file}'");
+		exec("$SET_DYLD_PATH $ghostscript_cmd", &$gs_out, &$gs_code);
+		$this->CI->ocw_utils->log_to_apache('debug', __FUNCTION__.": ghostscript returned code '{$gs_code}'");
+
+		if ($gs_code != 0) {
+			return FALSE;
+		}
+
+		$full_list = scandir($work_dir);
+
+		foreach ($full_list as $key => $filename) {
+			$path = $work_dir . '/' . $filename;
+
+			// Skip directories and unreadable stuff
+			if (!is_file($path) || !is_readable($path)) {
+				continue;
+			}
+
+			//$this->CI->ocw_utils->log_to_apache('debug', __FUNCTION__.": Adding slide {$path}");
+			$this->CI->coobject->add_slide($cid, $mid, $filename, $path);
+		}
+
+		return TRUE;
+	}
 }
 
 ?>
