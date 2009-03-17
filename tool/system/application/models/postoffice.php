@@ -37,7 +37,8 @@ class Postoffice extends Model
 		 if ($this->ocw_user->get_user_by_id($from_id) !== false) {	
 		 		 $dscribe2 = $this->ocw_user->get_users_by_relationship($from_id,'dscribe2',$cid); 
 
-     		 if ($dscribe2 !== false) {
+     		 if ($dscribe2 !== false && is_array($dscribe2)) {
+$this->ocw_utils->dump($dscribe2);
 							foreach ($dscribe2 as $to_id) {
 									if ($this->course->has_access($to_id, $cid) != null) {
 											 $this->add($from_id, $to_id, 'dscribe1_to_dscribe2', $cid, $mid, $oid, $type);
@@ -70,7 +71,7 @@ class Postoffice extends Model
 		 if ($this->ocw_user->get_user_by_id($from_id) !== false) {	
 		 		 $dscribe1 = $this->ocw_user->get_users_by_relationship($from_id,'dscribe1'); 
 
-     		 if ($dscribe1 !== false) {
+     		 if ($dscribe1 !== false && is_array($dscribe1)) {
 							foreach ($dscribe1 as $to_id) {
 									if ($this->course->has_access($to_id, $cid) != null) {
 											 $this->add($from_id, $to_id, 'dscribe2_to_dscribe1', $cid, $mid, $oid, $type);
@@ -103,7 +104,7 @@ class Postoffice extends Model
 		 if ($this->ocw_user->get_user_by_id($from_id) !== false) {	
 		 		 $dscribe1 = $this->ocw_user->get_users_by_relationship($from_id,'dscribe1',$cid); 
 
-     		 if ($dscribe1 !== false) {
+     		 if ($dscribe1 !== false && is_array($dscribe1)) {
 							foreach ($dscribe1 as $to_id) {
 									if ($this->course->has_access($to_id, $cid) != null) {
 											 $this->add($from_id, $to_id, 'instructor_to_dscribe1', $cid, $mid, $oid, $type);
