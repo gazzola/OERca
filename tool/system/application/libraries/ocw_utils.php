@@ -847,9 +847,14 @@ htmleoq;
 
 	/**
 	 * Create a thumbnail image for an existing full-size image.
+	 * If the imagick php extension is available, use it to create
+	 * the thumbnail.  Otherwise, we assume that ImageMagick is
+	 * available and exec() the "convert" program.
 	 *
 	 * @access  public
-	 * @param   string original - full path of original image name
+	 * @param  string original - full path of original image name
+	 * @param  integer maxWidth - optional width to make the thumbnail
+	 * @param  integer maxHeight - optional height to make the thumbnail
 	 * @return  boolean
 	 */
 	public function create_thumbnail($original, $maxWidth='300', $maxHeight='300')
@@ -870,61 +875,72 @@ htmleoq;
 			return $this->_local_symlink($original, $linkfile);
 		}
 
-		try {
+		if (extension_loaded('imagick')) {
+			try {
+				$im = new Imagick();
+				if ($im == NULL) {
+					$this->log_to_apache('error', __FUNCTION__.
+							": error creating instance of Imagick.");
+					return FALSE;
+				}
 
-			$im = new Imagick();
-			if ($im == NULL) {
-				$this->log_to_apache('debug', __FUNCTION__.
-						": error creating instance of Imagick.");
-				return FALSE;
-			}
-
-			if ($im->readImage($original) !== TRUE) {
-				$this->log_to_apache('debug', __FUNCTION__.
+				if ($im->readImage($original) !== TRUE) {
+					$this->log_to_apache('error', __FUNCTION__.
 						": error reading original image, '{$original}'");
-				return FALSE;
-			}
+					return FALSE;
+				}
 
-			// Assure that the current aspect ratio is maintained
-			$origWidth = $im->getImageWidth();
-			$origHeight = $im->getImageHeight();
-			list($width, $height) = $this->_scale_image($origWidth, $origHeight,
-																									$maxWidth, $maxHeight);
-			if ($im->thumbnailImage($width, $height) !== TRUE) {
-				$this->log_to_apache('debug', __FUNCTION__.
-						": error converting original image, '{$original}'");
-				$im->destroy();
-				return FALSE;
-			}
+				// Assure that the current aspect ratio is maintained
+				$origWidth = $im->getImageWidth();
+				$origHeight = $im->getImageHeight();
+				list($width, $height) = $this->_scale_image($origWidth, $origHeight,
+																										$maxWidth, $maxHeight);
 
-			if ($im->writeImage($thumbnail) !== TRUE) {
-				$this->log_to_apache('debug', __FUNCTION__.
+				if ($im->thumbnailImage($width, $height) !== TRUE) {
+					$this->log_to_apache('error', __FUNCTION__.
+							": error converting original image, '{$original}'");
+					$im->destroy();
+					return FALSE;
+				}
+
+				if ($im->writeImage($thumbnail) !== TRUE) {
+					$this->log_to_apache('error', __FUNCTION__.
 						": error writing thumbnail image, '{$thumbnail}'");
+					$im->destroy();
+					return FALSE;
+				}
+
+				$im->clear();
 				$im->destroy();
-				return FALSE;
+
+			} catch (Exception $e) {
+				$this->log_to_apache('error', __FUNCTION__.
+						": Exception, '" . $e->getMessage() . "', creating a symlink.");
+				if ($im != NULL)
+					$im->destroy();
+				return $this->_local_symlink($original, $linkfile);
 			}
+		} else {
+			$convert_pgm = property('app_convert_pgm_path');
+			$convert_out = array();
+			$convert_cmd = "{$convert_pgm} {$original} -thumbnail {$maxWidth}x{$maxHeight} {$thumbnail}";
+			exec($convert_cmd, &$convert_out, &$convert_code);
 
-			$im->clear();
-			$im->destroy();
-
-			$orig_size = filesize($original);
-			$thumb_size = filesize($thumbnail);
-
-			// If the thumbnail isn't a space savings of at least half, throw it away and use a symlink instead
-			if ($thumb_size > ($orig_size / 2)) {
-				@unlink($thumbnail);
-				$this->_local_symlink($original, $linkfile);
+			if ($convert_code != 0 || !file_exists($thumbnail)) {
+				return $this->_local_symlink($original, $linkfile);
 			}
-			return TRUE;
-
-		} catch (Exception $e) {
-			$this->log_to_apache('error', __FUNCTION__.
-					": Exception, '" . $e->getMessage() . "', creating a symlink.");
-			if ($im != NULL)
-				$im->destroy();
-			$this->_local_symlink($original, $linkfile);
-			return TRUE;
 		}
+
+		// A thumbnail was successfully created.  If it isn't a space savings
+		// of at least half, throw it away and use a symlink instead
+		$orig_size = filesize($original);
+		$thumb_size = filesize($thumbnail);
+
+		if ($thumb_size > ($orig_size / 2)) {
+			@unlink($thumbnail);
+			return $this->_local_symlink($original, $linkfile);
+		}
+		return TRUE;
 	}
 
 }
