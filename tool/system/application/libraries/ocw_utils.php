@@ -239,20 +239,28 @@ class OCW_utils {
 		$path = $this->object->coobject->object_path($cid, $mid,$oid);
 		$defimg = ($type=='orig') ? 'noorig.png' : 'norep.png';
 		$dflag = ($type=='orig') ? 'grab' : 'rep';
-      	$image_details = $this->_get_imgurl($path, $name, $dflag);
-      	$imgurl = $image_details['imgurl'];
-      	$imgpath = $image_details['imgpath'];
-      	$img_found = $image_details['img_found'];
-	   	$imgurl = ($img_found) ? $imgurl : property('app_img').'/'.$defimg;
-	   	$imgpath = ($img_found) ? $imgpath : property('app_img').'/'.$defimg;
-	   	$editurl = site_url("materials/object_info/$cid/$mid/$oid/$filter").
+		$image_details = $this->_get_imgurl($path, $name, $dflag);
+		if ($image_details['thumb_found'] === true) {
+			$imgurl = $image_details['thumburl'];
+			$imgpath = $image_details['thumbpath'];
+		} else  if ($image_details['img_found'] === true) {
+			$imgurl = $image_details['imgurl'];
+			$imgpath = $image_details['imgpath'];
+		} else {
+			$imgurl = property('app_img').'/'.$defimg;
+			$imgpath = property('app_img').'/'.$defimg;
+		}
+		// Show the original image for "magnify", unless there is no original image
+		$magurl = $image_details['img_found'] ? $image_details['imgurl'] : $imgurl;
+
+		$editurl = site_url("materials/object_info/$cid/$mid/$oid/$filter").
 								 '?TB_iframe=true&height=630&width=800';
 
 		$size = ($shrink) ? $this->scalecoimage($imgpath, 150, 150) : $this->scalecoimage($imgpath, 300, 300);
 
 		$title = 'Content Object :: Location: Page '.$loc;
 		$slide=($show_ctx) ? '<li id="cislide">'.($this->create_slide($cid, $mid, $loc)).'</li>' : '';
-		$magnify = '<li id="cimagnify"><a href="'.$imgurl.'" class="smoothbox" rel="gallery-cos">'.
+		$magnify = '<li id="cimagnify"><a href="'.$magurl.'" class="smoothbox" rel="gallery-cos">'.
 	   				 		 '<img title="'.$title.'" src="'.property('app_img').'/search_16.gif" /></a></li>';
 
 		$editlnk=($show_edit) 
@@ -550,6 +558,9 @@ htmleoq;
 		$file_details['imgurl'] = '';
 		$file_details['imgpath'] = '';
 		$file_details['img_found'] = false;
+		$file_details['thumburl'] = '';
+		$file_details['thumbpath'] = '';
+		$file_details['thumb_found'] = false;
 
 		// Search for lower-case first, then upper-case.
 		// These are also listed in order of likely-hood
@@ -562,10 +573,34 @@ htmleoq;
 				$file_details['imgpath'] = $path;
 				$file_details['imgurl'] = $base_url . $ext;
 				$file_details['img_found'] = true;
+
+				// See if there is a corresponding thumbnail file
+				// If none is found, try to create one and look again
+				// XXX Make this a function and simplify this???
+				$tried_create = 0;
+				while ($pre_ext != "slide" && $file_details['thumb_found'] == false && $tried_create <= 1 ) {
+					$thumb_extensions = array(".png", $ext);
+					foreach ($thumb_extensions as $te) {
+						$thumbpath = $base_path . "_thumb" . $te;
+						if (is_readable($thumbpath)) {
+							$file_details['thumbpath'] = $thumbpath;
+							$file_details['thumburl'] = $base_url . "_thumb" . $te;
+							$file_details['thumb_found'] = true;
+							break;
+						}
+					}
+					// If no thumbnail found, try to create one
+					if ($file_details['thumb_found'] == false && $tried_create == 0) {
+						$this->create_thumbnail($path);
+					}
+					$tried_create++;
+				}
 				break;
 			}
 		}
 
+		if ($pre_ext != "slide" && $file_details['thumb_found'] == false)
+			$this->log_to_apache('debug', __FUNCTION__.": Failed to create a thumbnail for {$path}!");
    	return $file_details;
   }
 
@@ -740,6 +775,156 @@ htmleoq;
 			return TRUE;
 		}
 		return FALSE;
+	}
+
+	/**
+	 * Given the full path names for an original file
+	 * and a symlink, create the symlink "locally".
+	 * i.e instead of creating a symlink like:
+	 *   /fee/fie/foe/linktofum --> /fee/fie/foe/fum
+	 * it is created locally so that:
+	 *   /fee/fie/foe/linktofum --> fum
+	 * Obviously, the original file and the link
+	 * must be in the same directory.  Otherwise,
+	 * the "non-local" symlink is created.
+	 *
+	 * @access private
+	 * @param string original - full path of original file
+	 * @param string linkfile - full path of symlink (to original file)
+	 * @return boolean
+	 */
+
+	private function _local_symlink($original, $linkfile)
+	{
+		$o = pathinfo($original);
+		$s = pathinfo($linkfile);
+
+		if ($o['dirname'] == $s['dirname']) {
+				$savedir = getcwd();
+				chdir($o['dirname']);
+				$retval = @symlink($o['basename'], $s['basename']);
+				chdir($savedir);
+				return $retval;
+		} else {
+				return @symlink($original, $linkfile);
+		}
+	}
+
+	/**
+	 * Calculate new image dimensions to new constraints
+	 *
+	 * @param Original X size in pixels
+	 * @param Original Y size in pixels
+	 * @return New X maximum size in pixels
+	 * @return New Y maximum size in pixels
+	 */
+	function _scale_image($x, $y, $cx, $cy) {
+		//Set the default NEW values to be the old, in case it doesn't even need scaling
+		list($nx, $ny) = array($x, $y);
+   
+		//If image is generally smaller, don't even bother
+		if ($x >= $cx || $y >= $cx) {
+           
+			//Work out ratios
+			if ($x > 0) $rx = $cx / $x;
+			if ($y > 0) $ry = $cy / $y;
+       
+			//Use the lowest ratio, to ensure we don't go over the wanted image size
+			if ($rx > $ry) {
+				$r = $ry;
+			} else {
+				$r = $rx;
+			}
+       
+			//Calculate the new size based on the chosen ratio
+			$nx = intval($x * $r);
+			$ny = intval($y * $r);
+		}   
+   
+		//Return the results
+		return array($nx,$ny);
+	}
+
+	/**
+	 * Create a thumbnail image for an existing full-size image.
+	 *
+	 * @access  public
+	 * @param   string original - full path of original image name
+	 * @return  boolean
+	 */
+	public function create_thumbnail($original, $maxWidth='300', $maxHeight='300')
+	{
+		$supported_exts = array ("png", "jpg", "gif", "tiff"); # ImageMagick has trouble with ".svn" files
+		$default_thumb_extension = "png";
+
+		if (!is_file($original))
+			return FALSE;
+
+		$pinfo = pathinfo($original);
+
+		$linkfile = "{$pinfo['dirname']}/{$pinfo['filename']}_thumb.{$pinfo['extension']}";
+		$thumbnail = "{$pinfo['dirname']}/{$pinfo['filename']}_thumb.{$default_thumb_extension}";
+
+		// Just create symlinks for files that ImageMagick has trouble with
+		if (in_array(strtolower($pinfo['extension']), $supported_exts) === FALSE) {
+			return $this->_local_symlink($original, $linkfile);
+		}
+
+		try {
+
+			$im = new Imagick();
+			if ($im == NULL) {
+				$this->log_to_apache('debug', __FUNCTION__.
+						": error creating instance of Imagick.");
+				return FALSE;
+			}
+
+			if ($im->readImage($original) !== TRUE) {
+				$this->log_to_apache('debug', __FUNCTION__.
+						": error reading original image, '{$original}'");
+				return FALSE;
+			}
+
+			// Assure that the current aspect ratio is maintained
+			$origWidth = $im->getImageWidth();
+			$origHeight = $im->getImageHeight();
+			list($width, $height) = $this->_scale_image($origWidth, $origHeight,
+																									$maxWidth, $maxHeight);
+			if ($im->thumbnailImage($width, $height) !== TRUE) {
+				$this->log_to_apache('debug', __FUNCTION__.
+						": error converting original image, '{$original}'");
+				$im->destroy();
+				return FALSE;
+			}
+
+			if ($im->writeImage($thumbnail) !== TRUE) {
+				$this->log_to_apache('debug', __FUNCTION__.
+						": error writing thumbnail image, '{$thumbnail}'");
+				$im->destroy();
+				return FALSE;
+			}
+
+			$im->clear();
+			$im->destroy();
+
+			$orig_size = filesize($original);
+			$thumb_size = filesize($thumbnail);
+
+			// If the thumbnail isn't a space savings of at least half, throw it away and use a symlink instead
+			if ($thumb_size > ($orig_size / 2)) {
+				@unlink($thumbnail);
+				$this->_local_symlink($original, $linkfile);
+			}
+			return TRUE;
+
+		} catch (Exception $e) {
+			$this->log_to_apache('error', __FUNCTION__.
+					": Exception, '" . $e->getMessage() . "', creating a symlink.");
+			if ($im != NULL)
+				$im->destroy();
+			$this->_local_symlink($original, $linkfile);
+			return TRUE;
+		}
 	}
 
 }
