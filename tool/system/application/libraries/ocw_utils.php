@@ -242,9 +242,9 @@ class OCW_utils {
       	$image_details = $this->_get_imgurl($path, $name, $dflag);
       	$imgurl = $image_details['imgurl'];
       	$imgpath = $image_details['imgpath'];
-      	$thumb_found = $image_details['thumb_found'];
-	   	$imgurl = ($thumb_found) ? $imgurl : property('app_img').'/'.$defimg;
-	   	$imgpath = ($thumb_found) ? $imgpath : property('app_img').'/'.$defimg;
+      	$img_found = $image_details['img_found'];
+	   	$imgurl = ($img_found) ? $imgurl : property('app_img').'/'.$defimg;
+	   	$imgpath = ($img_found) ? $imgpath : property('app_img').'/'.$defimg;
 	   	$editurl = site_url("materials/object_info/$cid/$mid/$oid/$filter").
 								 '?TB_iframe=true&height=630&width=800';
 
@@ -320,20 +320,20 @@ htmleoq;
 			$path = $this->object->coobject->material_path($cid, $mid);
       
       $imgurl = '';
-      $thumb_found = false;
+      $img_found = false;
 	   	      
       $image_details = $this->_get_imgurl($path, $name, 'slide', $loc);
-      // TODO: see if we can simply check for the 'thumb_found' array value
+      // TODO: see if we can simply check for the 'img_found' array value
       if(array_key_exists('imgurl', $image_details)) {
         $imgurl = $image_details['imgurl'];
-        $thumb_found = $image_details['imgurl'];
+        $img_found = $image_details['imgurl'];
       }
 	   	$img = '<small style="clear:both">'.$text.'</small><br>'.'<img src="'.$imgurl.'" width="150" height="150" />';
 	   	$aurl = ($useimage) 
 						?'<a href="'.$imgurl.'" class="smoothbox" title="" rel="gallery-slide">'.$img.'</a>'
 						:'<a href="'.$imgurl.'" class="smoothbox" title="" rel="gallery-slide">'.$text.'</a>';
 
-	   	return ($thumb_found) ? $aurl : '<span class="spanbutton">&nbsp;No context&nbsp;&nbsp;</span>';
+	   	return ($img_found) ? $aurl : '<span class="spanbutton">&nbsp;No context&nbsp;&nbsp;</span>';
 	}
 
 	function remove_dir($dir)
@@ -529,7 +529,7 @@ htmleoq;
     *           a screen grab
     * @param    int (optional) location (page or slide number) of the image
     * @return   array:
-    *             'thumb_found' boolean, set true if we match
+    *             'img_found' boolean, set true if we match
     *             'imgurl' string url to image
     */
   private function _get_imgurl($path, $name, $pre_ext = '', $location = NULL) {
@@ -546,72 +546,26 @@ htmleoq;
       $base_url .= $name . "_" . $pre_ext;
     }
     
-    $p_imgurl = $base_url . ".png";
-   	$p_imgurl_upper = $base_url . ".PNG";
-   	$p_imgpath = $base_path . ".png";
-   	$p_imgpath_upper = $base_path . ".PNG";
-   	$j_imgurl = $base_url . ".jpg";
-   	$j_imgurl_upper = $base_url . ".JPG";
-   	$j_imgpath = $base_path . ".jpg";
-   	$j_imgpath_upper = $base_path . ".JPG";
-   	$g_imgurl = $base_url . ".gif";
-   	$g_imgurl_upper = $base_url . ".GIF";
-   	$g_imgpath = $base_path . ".gif";
-   	$g_imgpath_upper = $base_path . ".GIF";
-   	$t_imgurl = $base_url . ".tiff";
-   	$t_imgurl_upper = $base_url . ".TIFF";
-   	$t_imgpath = $base_path . ".tiff";
-   	$t_imgpath_upper = $base_path . ".TIFF";
-   	$s_imgurl = $base_url . ".svg";
-   	$s_imgurl_upper = $base_url . ".SVG";
-   	$s_imgpath = $base_path . ".svg";
-   	$s_imgpath_upper = $base_path . ".SVG";
-   	
-   	if (is_readable($p_imgpath)) {
-   	  $file_details['imgurl'] = $p_imgurl;
-	  $file_details['imgpath'] = $p_imgpath;
-   	  $file_details['thumb_found'] = true;
-   	} elseif (is_readable($j_imgpath)) {
-   	  $file_details['imgurl'] = $j_imgurl;
-	  $file_details['imgpath'] = $j_imgpath;
-   	  $file_details['thumb_found'] = true;
-   	} elseif (is_readable($g_imgpath)) {
-   	  $file_details['imgurl'] = $g_imgurl;
-	  $file_details['imgpath'] = $g_imgpath;
-   	  $file_details['thumb_found'] = true;
-   	} elseif (is_readable($t_imgpath)) {
-   	  $file_details['imgurl'] = $t_imgurl;
-   	  $file_details['imgpath'] = $t_imgpath;
-   	  $file_details['thumb_found'] = true;
-   	} elseif (is_readable($s_imgpath)) {
-   	  $file_details['imgurl'] = $s_imgurl;
-	  $file_details['imgpath'] = $s_imgpath;
-   	  $file_details['thumb_found'] = true;
-   	}  elseif (is_readable($p_imgpath_upper)) {
-   	  $file_details['imgurl'] = $p_imgurl_upper;
-	  $file_details['imgpath'] = $p_imgpath_upper;
-   	  $file_details['thumb_found'] = true;
-   	} elseif (is_readable($j_imgpath_upper)) {
-   	  $file_details['imgurl'] = $j_imgurl_upper;
-	  $file_details['imgpath'] = $j_imgpath_upper;
-   	  $file_details['thumb_found'] = true;
-   	} elseif (is_readable($g_imgpath_upper)) {
-			$file_details['imgurl'] = $g_imgurl_upper;
-	  		$file_details['imgpath'] = $g_imgpath_upper;
-			$file_details['thumb_found'] = true;
-   	} elseif (is_readable($t_imgpath_upper)) {
-			$file_details['imgurl'] = $t_imgurl_upper;
-		  	$file_details['imgpath'] = $t_imgpath_upper;
-			$file_details['thumb_found'] = true;
-   	} elseif (is_readable($s_imgpath_upper)) {
-			$file_details['imgurl'] = $s_imgurl_upper;
-			$file_details['imgpath'] = $s_imgpath_upper;
-			$file_details['thumb_found'] = true;
-   	} else {
-			$file_details['imgurl'] = '';
-			$file_details['imgpath'] = '';
-			$file_details['thumb_found'] = false;
-   	}
+		// Prepare for failure
+		$file_details['imgurl'] = '';
+		$file_details['imgpath'] = '';
+		$file_details['img_found'] = false;
+
+		// Search for lower-case first, then upper-case.
+		// These are also listed in order of likely-hood
+		$supported_exts = array (".png", ".jpg", ".gif", ".tiff", ".svg",
+		                         ".PNG", ".JPG", ".GIF", ".TIFF", ".SVG");
+
+		foreach ($supported_exts as $ext) {
+			$path = $base_path . $ext;
+			if (is_readable($path)) {
+				$file_details['imgpath'] = $path;
+				$file_details['imgurl'] = $base_url . $ext;
+				$file_details['img_found'] = true;
+				break;
+			}
+		}
+
    	return $file_details;
   }
 

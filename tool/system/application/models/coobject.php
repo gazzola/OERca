@@ -1800,12 +1800,12 @@ class Coobject extends Model
 	   $s_imgpath = property('app_uploads_path').$path.'/'.$name.'_rep.svg';
 
 	   if (is_readable($p_imgpath) || is_readable($j_imgpath) || is_readable($g_imgpath) || is_readable($t_imgpath) || is_readable($s_imgpath)) {
-				 $thumb_found = true;	
+				 $found = true;	
 	   } else {
-				 $thumb_found = false;	
+				 $found = false;	
 	   }
 
-     return ($thumb_found) ? true : false; 
+     return ($found) ? true : false; 
 	}
 
 
@@ -2090,8 +2090,10 @@ class Coobject extends Model
 
 	/* return the path to an object on the file system 
 	 *
-   * returns path to latest version of material unless
-   * all is true and then it returns paths to all versions	
+	 * @param    int the course id
+	 * @param    int the material id
+	 * @param    int the content object id
+	 *
 	 */
 	public function object_path($cid, $mid, $oid)
 	{
