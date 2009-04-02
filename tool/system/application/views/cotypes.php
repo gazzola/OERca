@@ -31,7 +31,7 @@ $select_html .= "</select>";
 */
 echo "| ";
 foreach ($co_types as $t) {
-    echo " <a href=".$server."/cotypes/cotypes/".$t['id'].">".$t['name']."</a> |";
+    echo " <a href=".$server."cotypes/cotypes/".$t['id'].">".$t['name']."</a> |";
 }
 ?>
 <!--
@@ -57,61 +57,28 @@ foreach ($co_types as $t) {
 
 <?php
 
-   function get_imgurl($path, $name, $pre_ext = '', $location = NULL) {
-    $base_url = property('app_uploads_url') . $path . "/";
-    $base_path = property('app_uploads_path') . $path . "/";
-    
-    $file_details;      
-    if ($location) {
-      $base_path .= "{$name}_" . $pre_ext . "_" . $location;
-      $base_url .= "{$name}_" . $pre_ext . "_" . $location;
-    } else {
-      $base_path .= $name . "_" . $pre_ext;
-      $base_url .= $name . "_" . $pre_ext;
-    }
-    
-		// Prepare for failure
-		$file_details['imgurl'] = '';
-		$file_details['imgpath'] = '';
-		$file_details['img_found'] = false;
-		$file_details['thumburl'] = '';
-		$file_details['thumbpath'] = '';
-		$file_details['thumb_found'] = false;
-
-		// Search for lower-case first, then upper-case.
-		// These are also listed in order of likely-hood
-		$supported_exts = array (".png", ".jpg", ".gif", ".tiff", ".svg",
-		                         ".PNG", ".JPG", ".GIF", ".TIFF", ".SVG");
-
+   function get_imgurl($imgpath) {
+		global $server;
+		$file_details = array();
+		$supported_exts = array (".png", ".jpg", ".gif", ".tiff", ".svg",".PNG", ".JPG", ".GIF", ".TIFF", ".SVG");
+		$imgurl = property('app_img').'/noorig.png';
 		foreach ($supported_exts as $ext) {
-			$path = $base_path . $ext;
+			$path = $server.$imgpath . $ext;
 			if (is_readable($path)) {
-				$file_details['imgpath'] = $path;
-				$file_details['imgurl'] = $base_url . $ext;
+				$imgurl = $path;
 				$file_details['img_found'] = true;
-/*
-				// See if there is a corresponding thumbnail file
-				// If none is found, try to create one and look again
-				$tried_create = 0;
-				while ($pre_ext != "slide" && $file_details['thumb_found'] == false && $tried_create <= 1 ) {
-					$thumb_extensions = array(".png", $ext);
-					foreach ($thumb_extensions as $te) {
-						$thumbpath = $base_path . "_thumb" . $te;
-						if (is_readable($thumbpath)) {
-							$file_details['thumbpath'] = $thumbpath;
-							$file_details['thumburl'] = $base_url . "_thumb" . $te;
-							$file_details['thumb_found'] = true;
-							break;
-						}
+				$thumb_extensions = array(".png", $ext);
+				foreach ($thumb_extensions as $te) {
+					$thumbpath = $base_path . "_thumb" . $te;
+					if (is_readable($thumbpath)) {
+						$imgurl = $thumbpath;
 					}
-
+					break;
 				}
-				break;
-				*/
 			}
+			break;
 		}
-
-   	return $file_details;
+   	return $imgurl;
   }
   
   
@@ -120,20 +87,10 @@ foreach ($co_types as $t) {
 	if ($count > 0) {
 		foreach ($cos as $c) {
 			foreach ($c as $var=>$val) $$var = $val;
-			
-			$name = $this->coobject->object_filename($oid);
-			$path = $this->coobject->object_path($cid, $mid,$oid);
-			$defimg = ($type=='orig') ? 'noorig.png' : 'norep.png';
-			$dflag = ($type=='orig') ? 'grab' : 'rep';
-      		$image_details = get_imgurl($path, $name, $dflag);
-      		$imgurl = $image_details['imgurl'];
-      		$imgpath = $image_details['imgpath'];
-      		$thumb_found = $image_details['thumb_found'];
-	   		$imgurl = ($thumb_found) ? $imgurl : property('app_img').'/'.$defimg;
-	   		$imgpath = ($thumb_found) ? $imgpath : property('app_img').'/'.$defimg;
     		$link = $server."/uploads/cdir_".$cfilename."/mdir_".$mfilename."/odir_".$ofilename."/".$ofilename."_grab";
-    		$link = $imgurl;
-    		$img_html = "<a href=$link><img src=$link width=150/></a>";
+    		$imgurl = get_imgurl($link);
+    		
+    		$img_html = "<a href=\"$imgurl\"><img src=\"$imgurl\" width=150 /></a>";
     
     		$results_html .= <<<htmleoq
     

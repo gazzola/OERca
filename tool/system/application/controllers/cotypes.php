@@ -28,9 +28,7 @@ class Cotypes extends Controller {
 		$count = sizeof($cos);
 		$co_types = $this->coobject->coobject_types();
 		$data = array('cos'=>$cos,'count'=>$count,'co_types'=>$co_types);
-		//echo "<pre>"; print_r($data); echo "</pre>";
-		$this->freakauth_light->check();
-    	$this->load->view('/cotypes', $data);
+    	$this->load->view('cotypes', $data);
 	}
 }
 ?>
