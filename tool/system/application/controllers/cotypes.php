@@ -7,7 +7,7 @@
  * @date    april 2nd 2009
  */
 
-class cotypes extends Controller {
+class Cotypes extends Controller {
 
 	/**
 	 * Default constructor
@@ -15,17 +15,22 @@ class cotypes extends Controller {
 	public function __construct()
 	{
 		parent::Controller();	
+		$this->load->model('coobject');
 	}
 	
 	
 	/**
 	 * Loads a view that lists content objects by type
 	 */
-	public function index()
+	public function index($cotype)
 	{
-		$data = array();
+		$cos =  $this->coobject->coobjects_by_type($cotype);
+		$count = sizeof($cos);
+		$co_types = $this->coobject->coobject_types();
+		$data = array('cos'=>$cos,'count'=>$count,'co_types'=>$co_types);
+		//echo "<pre>"; print_r($data); echo "</pre>";
 		$this->freakauth_light->check();
-    	$this->load->view('cotypes');
+    	$this->load->view('/cotypes', $data);
 	}
 }
 ?>
