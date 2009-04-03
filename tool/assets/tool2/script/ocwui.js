@@ -55,7 +55,7 @@ var Site = {
 			};
       repl_q_ap.hide();
     }
-  },
+  }
 
 //  setuptabs: function () {
 //    myCOTabs = new MorphTabs('myTabs',{height: '', width: '', changeTransition: 'none'});

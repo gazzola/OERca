@@ -15,8 +15,6 @@ var OERcaTabs = new Class({
 
   version: '0.1',
   
-  //var myThis = null,
-
   // define the default options
   options: {
     defId: 'oercatabs',
@@ -35,7 +33,7 @@ var OERcaTabs = new Class({
     this.hideAll(); // initially hide all the panels
     this.makeActive();
     // attach event handler to tabItems
-    this.tabItems.forEach(this.clickEvent.bind(this));
+    this.tabItems.forEach(this.clickEvent, this);
   },
   
   hideAll: function() {
