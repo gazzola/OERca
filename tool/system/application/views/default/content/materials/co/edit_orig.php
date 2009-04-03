@@ -36,12 +36,12 @@ $tab = $tab[0];
 $data['loc_tip'] = "For textual materials like Powerpoints or PDFs, please enter the slide or page number. For videos, please enter a time stamp.";
 ?>
 
-<div id="Original" class="mootabs_panel" style="display:block;">
+<div id="Original" class="morphtabs_panel" style="display:block;">
 
 <form method="post">
      <div id="accordion_orig">
 		<h4 class="toggler">
-	    	Status
+	    	Status <img src="<?php echo property('app_img'); ?>/add.png" title="Open This" style="margin: 0;" />
 	 	</h4>
 	
 	 	<div class="element">
@@ -52,7 +52,7 @@ $data['loc_tip'] = "For textual materials like Powerpoints or PDFs, please enter
 		</div>
 		
 		<h4 class="toggler">
-	    	Comments
+	    	Comments <img src="<?php echo property('app_img'); ?>/add.png" title="Open This" style="margin: 0;" />
 	 	</h4>
 	
 	 	<div class="element">
@@ -62,7 +62,7 @@ $data['loc_tip'] = "For textual materials like Powerpoints or PDFs, please enter
 		</div>
 		
 		<h4 class="toggler">
-	    	History
+	    	History <img src="<?php echo property('app_img'); ?>/add.png" title="Open This" style="margin: 0;" />
 	 	</h4>
 	
 	 	<div class="element">

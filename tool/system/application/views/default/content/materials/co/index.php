@@ -11,8 +11,7 @@ echo '<!--[if IE]>'.style('blueprint/lib/ie.css',array('media'=>"screen, project
 echo style('style.css',array('media'=>"screen, projection"));
 echo style('table.css',array('media'=>"screen, projection"));
 echo style('multiupload.css',array('media'=>"screen, projection"));
-echo style('mootabs1.2.css',array('media'=>"screen, projection"));
-//echo style('sidetabs.css',array('media'=>"screen, projection"));
+echo style('morphtabs.css',array('media'=>"screen, projection"));
 echo style('smoothbox.css',array('media'=>"screen, projection"));
 echo '<style type="text/css">body { background-color:white; padding:0; margin:auto; width:800px; height:550px; color:#999}</style>';
 
@@ -20,12 +19,14 @@ echo script('mootools.js');
 echo script('mootools-1.2-more.js');
 echo script('smoothbox.js'); 
 echo script('tablesort.js');
-echo script('mootabs1.2.js');
+//echo script('mootabs1.2.js');
 echo script('mootips.js'); 
 echo script('event-selectors.js');
 echo script('event-rules.js');
 echo script('ocwui.js');
 echo script('ocw_tool.js');
+echo script ('oercatabs.js');
+
 ?>
 <script type="text/javascript">
 	var re = new RegExp(/\d+\/\d+\/0/);
@@ -38,15 +39,23 @@ window.addEvent('domready', function() {
 	//create our Accordion instance
 	var myAccordion = new Accordion($('accordion_orig'), 'h4.toggler', 'div.element', {
 		opacity: true,
-		display: 5,
+		display: 0,
+		alwaysHide: true,
 		onActive: function(toggler, element){
-			toggler.setStyle('color', '#41464D');
+			toggler.setStyle('color', '#333333');
 		},
 		onBackground: function(toggler, element){
-			toggler.setStyle('color', '#528CE0');
+			toggler.setStyle('color', '#333333');
 		}
 	});
+	
+	//create Tabs
+  window.addEvent('domready', function() {
+    var myOERcaTabs = new OERcaTabs('myOERcaTabs');
+  });
 });
+
+
 </script>
 <style>
 h4.toggler {
@@ -57,9 +66,23 @@ h4.toggler {
 	font-weight: bolder;
 	font-size: 18px;
 	background: lightgreen;
-	color: #222;
+	color: darkgreen;
 	margin: 0 0 4px 0;
 	padding: 3px 5px 1px;
+}
+
+.morphtabs_title {
+	list-style-type: none;	
+}
+
+.morphtabs_title li {
+	text-align: center;
+	width: 220px;
+	margin: 0px 15px;
+}
+
+.morphtabs_title li h2 {
+	color: darkgreen;
 }
 </style>
 </head>
@@ -77,15 +100,15 @@ h4.toggler {
   <h3 style="font-size: 1em; color:#666;">OER Content Object: <?=$obj['name']?></h3>
 </div>
 
-<div id="myTabs" class="column span-20 first last">
+<div id="myOERcaTabs" class="column span-20 first last">
 
 	<div id="leftarrow" class="column span-1 first">
 			<?= $this->coobject->prev_next($cid, $mid, $obj['id'], $filter,'prev','image');?>
 	</div>
 
 	<div id="edit-co-content" class="column span-18">
-				<ul class="mootabs_title">
-					<li title="Original" style="padding-left:0px; margin-left:0;width:200px;"><h2>Original</h2>
+				<ul class="morphtabs_title">
+					<li title="Original"><h2>Original</h2>
 						<center>
 				    	<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],$filter,'orig',true,true,false,true,'','187');?>
 						</center>
@@ -95,7 +118,7 @@ h4.toggler {
 						</small>
 			    </li>
 			
-					<li title="Replacement" style="margin-left: 13px;"><h2>Replacement</h2>
+					<li title="Replacement"><h2>Replacement</h2>
 						<center>
 			      <?php 
 							$x = $this->coobject->replacement_exists($cid,$mid,$obj['id']);

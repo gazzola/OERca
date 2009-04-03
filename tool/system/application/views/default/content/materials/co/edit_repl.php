@@ -13,7 +13,7 @@ $tab = $tab[0];
 $data['loc_tip'] = "For textual materials like Powerpoints or PDFs, please enter the slide or page number. For videos, please enter a time stamp.";
 ?>
 
-<div id="Replacement" class="mootabs_panel">
+<div id="Replacement" class="morphtabs_panel">
 
 <?php if ($this->coobject->replacement_exists($cid, $mid, $obj['id'])) { ?>
 
