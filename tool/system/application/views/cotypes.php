@@ -27,6 +27,10 @@
 		background-color: #AAA;
 		color: #EEE;	
 	}
+	.filterlist li.activeli {
+		background-color: #FFF;
+		border-bottom: 1px solid white;	
+	}
 </style>
 </head>
 
@@ -38,14 +42,15 @@
 
 $select_html = "<select name=\"posted_type\" onChange=\"document.location=options[selectedIndex].value;\">";
 foreach ($co_types as $t) {
-	//if ($co_type['id'] == $posted_type) $selected = 'SELECTED'; else $selected = '';
-    $select_html .= "<option value=\"".$server."cotypes/cotypes/".$t['id']."\">".$t['name']."</option>";
+	if ($t['id'] == $co_type_selected) $selected = 'SELECTED'; else $selected = '';
+    $select_html .= "<option $selected value=\"".$server."cotypes/cotypes/".$t['id']."\">".$t['name']."</option>";
 }
 $select_html .= "</select>";
 
 echo "<ul class=filterlist>";
 foreach ($co_types as $t) {
-    echo "<li><a href=".$server."cotypes/cotypes/".$t['id'].">".$t['name']."</a></li>";
+	if ($t['id'] == $co_type_selected) $activeclass = 'class=activeli'; else $activeclass = '';
+    echo "<li $activeclass><a href=".$server."cotypes/cotypes/".$t['id'].">".$t['name']."</a></li>";
 }
 echo "</ul>";
 ?>
@@ -94,39 +99,83 @@ echo "</ul>";
 		    return($style_line);
 	}
 
-   function get_imgurl($imgpath) {
-		global $server;
-		$file_details = array();
-		$supported_exts = array (".png", ".jpg", ".gif", ".tiff", ".svg",".PNG", ".JPG", ".GIF", ".TIFF", ".SVG");
-		$imgurl = property('app_img').'/noorig.png';
+  function get_imgurl($path, $name, $pre_ext = '', $location = NULL) {
+   	$base_url = property('app_uploads_url') . $path . "/";
+    $base_path = property('app_uploads_path') . $path . "/";
+
+    $file_details;    
+    
+    if ($location) {
+      $base_path .= "{$name}_" . $pre_ext . "_" . $location;
+      $base_url .= "{$name}_" . $pre_ext . "_" . $location;
+    } else {
+      $base_path .= $name . "_" . $pre_ext;
+      $base_url .= $name . "_" . $pre_ext;
+    }
+
+		// Prepare for failure
+		$file_details['imgurl'] = '';
+		$file_details['imgpath'] = '';
+		$file_details['img_found'] = false;
+		$file_details['thumburl'] = '';
+		$file_details['thumbpath'] = '';
+		$file_details['thumb_found'] = false;
+
+		// Search for lower-case first, then upper-case.
+		// These are also listed in order of likely-hood
+		$supported_exts = array (".png", ".jpg", ".gif", ".tiff", ".svg",
+		                         ".PNG", ".JPG", ".GIF", ".TIFF", ".SVG");
+
 		foreach ($supported_exts as $ext) {
-			$path = $server.$imgpath . $ext;
-			if (@file_get_contents($path,0,NULL,0,1)) {
-				$imgurl = $path;
+			$path = $base_path . $ext;
+			//echo $path."<br>";
+			if (file_exists($path)) {
+				$file_details['imgpath'] = $path;
+				$file_details['imgurl'] = $base_url . $ext;
+				$file_details['img_found'] = true;
+
 				$thumb_extensions = array(".png", $ext);
 				foreach ($thumb_extensions as $te) {
-					$thumbpath = $path . "_thumb" . $te;
-					if (@file_get_contents($thumbpath,0,NULL,0,1)) {
-						$imgurl = $thumbpath;
+					$thumbpath = $base_path . "_thumb" . $te;
+					if (@getimagesize($thumbpath)) {
+						$file_details['thumbpath'] = $thumbpath;
+						$file_details['thumburl'] = $base_url . "_thumb" . $te;
+						$file_details['thumb_found'] = true;
 						break;
 					}
 				}
-				break;
+			break;
 			}
 		}
-   	return $imgurl;
+
+   	return $file_details;
   }
-  
-  
+    
 	$results_html = "";
+	$this->object =& get_instance();
+	$this->object->load->model('coobject');
 		//echo "<pre>"; print_r($cos); echo "</pre>";
 	if ($count > 0) {
 		foreach ($cos as $c) {
 			foreach ($c as $var=>$val) $$var = $val;
-    		$link = $server."/uploads/cdir_".$cfilename."/mdir_".$mfilename."/odir_".$ofilename."/".$ofilename."_grab";
-    		$imgurl = get_imgurl($link);
+    		$name = $this->object->coobject->object_filename($oid);
+			$path = $this->object->coobject->object_path($cid, $mid,$oid);
+			$defimg = 'noorig.png';
+			$dflag = 'grab';
+    		$image_details = get_imgurl($path, $name, $dflag);
+    		if ($image_details['thumb_found'] === true) {
+				$imgurl = $image_details['thumburl'];
+				$imgpath = $image_details['thumbpath'];
+			} else  if ($image_details['img_found'] === true) {
+				$imgurl = $image_details['imgurl'];
+				$imgpath = $image_details['imgpath'];
+			} else {
+				$imgurl = property('app_img').'/'.$defimg;
+				$imgpath = property('app_img').'/'.$defimg;
+			}
+			//echo "$imgurl <br>";
     		$imgstyle = scalecoimage($imgurl, 150, 150);
-    		$img_html = "<a href=\"$imgurl\"><img class=\"bot\" src=\"$imgurl\" style=\"$imgstyle\" /></a>";
+    		$img_html = "<a href=\"$imgurl\"><img src=\"$imgurl\" style=\"$imgstyle\" /></a>";
     
     		$results_html .= <<<htmleoq
     
@@ -141,12 +190,15 @@ echo "</ul>";
 
 htmleoq;
 		}
-	} else {
+	} elseif ($cos == NULL) {
 		$results_html .= "<tr><td colspan=6>No Content Objects of this Type</td></tr>";
+	} else {
+		$results_html .= "<tr><td colspan=6>No Content Objects Type Selected</td></tr>";	
 	}
 
 	echo $results_html;
-?>
+	
+	?>
 
 	</table>
 </div>
