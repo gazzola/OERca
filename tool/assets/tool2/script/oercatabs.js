@@ -63,6 +63,7 @@ var OERcaTabs = new Class({
     if (item == 'first') {
       item = this.tabItems[0].getProperty('title');
     }
+    this.activeTab(item);
     this.showPanel(item);
   },
   
@@ -71,7 +72,17 @@ var OERcaTabs = new Class({
   },
   
   activeTab: function(item) {
-    
+    // if we have a click event as parameter, get target title
+    var item = (item.type == 'click') ? item.target.getParent().
+      getProperty('title') : item;
+    for (var tabNum = 0; tabNum < this.tabItems.length; tabNum++) {
+      if (this.tabItems[tabNum].getProperty('title') == item) {
+        this.tabItems[tabNum].addClass('active');
+      }
+      else {
+        this.tabItems[tabNum].removeClass('active');
+      }
+    }
   }
 
 });
