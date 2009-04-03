@@ -21,7 +21,7 @@ echo script('mootools-1.2-more.js');
 echo script('smoothbox.js'); 
 echo script('tablesort.js');
 echo script('mootabs1.2.js');
-//echo script('mootips.js'); 
+echo script('mootips.js'); 
 echo script('event-selectors.js');
 echo script('event-rules.js');
 echo script('ocwui.js');
@@ -137,12 +137,12 @@ h4.toggler {
 <script type="text/javascript">
 	EventSelectors.start(Rules);
 	<?php if($viewing=='replacement') {?>showreptab = true;<?php }?>
-	/*
+	
 	window.addEvent('domready', function() { 
 			var myTips = new MooTips($$('.ine_tip'), { maxTitleChars: 50 }); 
 			var myTips2 = new MooTips($$('.tooltips'), { maxTitleChars: 50 }); 
 	});
-	*/
+	
 </script>
 <div id="feedback" style="display:none"></div>
 <input type="hidden" id="imgurl" value="<?=property('app_img')?>" />
