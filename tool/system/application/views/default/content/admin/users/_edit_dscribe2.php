@@ -15,8 +15,8 @@ echo script ('oercatabs.js');
 
 <div id="myTabs" class="column span-24 first last">
 	<ul class="morphtabs_title">
-		<li title="Dscribe" style="padding-left:10px; margin-left:0;"><h2>Manage dScribes</h2></li>
-		<li title="Course" style="padding-left:10px; margin-left:0;"><h2>Manage Courses</h2></li>
+		<li title="Dscribe"><h2>Manage dScribes</h2></li>
+		<li title="Course"><h2>Manage Courses</h2></li>
 	</ul>
 
 	<div id="Dscribe" class="morphtabs_panel">
