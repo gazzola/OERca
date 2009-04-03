@@ -1,20 +1,4 @@
 <?php		
-// echo style('blueprint/screen.css',array('media'=>"screen, projection"));
-// echo style('blueprint/print.css',array('media'=>"print"));
-// echo '<!--[if IE]>'.style('blueprint/lib/ie.css',array('media'=>"screen, projection")).'<![endif]-->';
-// echo style('style.css',array('media'=>"screen, projection"));
-// echo style('mootabs1.2.css',array('media'=>"screen, projection"));
-// echo style('morphtabs.css', array('media'=>"screen, projection"));
-// echo '<style type="text/css">body { background-color: #222; padding: 15px; margin:auto; width: 340px; border:0px solid blue; height:450px; color:#999}</style>';
-
-// echo script('mootools.js');
-// echo script('mootabs1.2.js');
-// echo script('morphtabs.js');
-// echo script('event-selectors.js');
-// echo script('event-rules.js');
-
-// echo script('flash.js'); 
-
 $tags[0] = '-- select --';
 
 $flash=$this->db_session->flashdata('flashMessage');
@@ -135,17 +119,12 @@ if (isset($flash) AND $flash!='') {
 	</form>
 </div>
 
-<br style="clear:both"/>
-<input type="button" style="float:right" value="Close" onclick="parent.window.location.reload(); parent.TB_remove();"/>
-</div>
-  
-
 <div id="feedback" style="display:none"></div>
 <input type="hidden" id="cid" name="cid" value="<?=$cid?>" />
 <input type="hidden" id="imgurl" value="<?=property('app_img')?>" />
 <input type="hidden" id="server" value="<?=site_url();?>" />
 <script type="text/javascript">
  	EventSelectors.start(Rules);
-	myCOTabs = new MorphTabs('myTabs',{height: '450px', width: '340px', changeTransition: 'none'});
+	myCOTabs = new OERcaTabs('myTabs');
 	<?php if($view=='bulk') {?>myCOTabs.activate('Bulk');<?php }?>
 </script>

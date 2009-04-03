@@ -15,11 +15,9 @@
 	   echo style('morphtabs.css',array('media'=>"screen, projection"));
      	echo style('jquery/theme/ui.all.css');
      
-     //echo script('manual_foreach.js');
 	   echo script('mootools.js');
-	   echo script('morphtabs.js'); 
-	   echo script('oercatabs.js');
 	   echo script('smoothbox.js'); 
+	   echo script('oercatabs.js');
 	   echo script('mootips.js'); 
      echo script('tablesort.js');
 
