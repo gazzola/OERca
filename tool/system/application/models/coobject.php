@@ -1333,6 +1333,7 @@ class Coobject extends Model
 						@copy($tmpname, $path.'/'.$name.'_grab'.$ext);
 						@unlink($tmpname);
 				}
+				$this->ocw_utils->create_thumbnail($path.'/'.$name.'_grab'.$ext);
 				# store new filename
 				$this->db->insert('object_files', array('object_id'=>$oid,
 																								'filename'=>$name,
@@ -1614,6 +1615,36 @@ class Coobject extends Model
 	}
 
   /**
+    * remove existing replacement files from filesystem
+    * 
+    */
+  private function _remove_replacement_files($cid, $mid, $oid)
+  {
+		$name = $this->object_filename($oid);
+		$path = property('app_uploads_path').$this->object_path($cid, $mid, $oid);
+
+		$supported_extensions = array("png", "jpg", "gif", "tiff", "svg",
+																		"PNG", "JPG", "GIF", "TIFF", "SVG");
+
+		# remove the replacement and any thumbnail from the filesystem
+		foreach ($supported_extensions as $ext) {
+			$reppath = "{$path}/{$name}_rep.{$ext}";
+			if (file_exists($reppath)) {
+				$thumb_extensions = array($ext, "png");
+				foreach ($thumb_extensions as $te) {
+					$thumbpath = "{$path}/{$name}_rep_thumb.{$te}";
+					if (file_exists($thumbpath)) {
+						@unlink($thumbpath);
+						break;
+					}
+				}
+				@unlink($reppath);
+				break;
+			}
+		}
+	}
+
+  /**
     * remove replacement based on information given
     * 
     */
@@ -1626,16 +1657,7 @@ class Coobject extends Model
 			$this->db->delete('object_replacement_log', array('object_id'=>$rid));
 			$this->db->delete('object_replacements', array('id'=>$rid));
 	   
-			$name = $this->object_filename($oid);
-			$path = property('app_uploads_path').$this->object_path($cid, $mid, $oid);
-	   	$p_imgpath = $path."/{$name}_rep.png";
-	   	$j_imgpath = $path."/{$name}_rep.jpg";
-	   	$g_imgpath = $path."/{$name}_rep.gif";
-
-			if (file_exists($p_imgpath)) { @unlink($p_imgpath); } 
-			elseif (file_exists($j_imgpath)) { @unlink($j_imgpath); }
-			elseif (file_exists($g_imgpath)) { @unlink($g_imgpath); }
-
+		  $this->_remove_replacement_files($cid, $mid, $oid);
 			return true;
   }
 
@@ -1758,6 +1780,9 @@ class Coobject extends Model
 			 $this->add_copyright($oid,$copy,'replacement');
 		}
 		
+		// remove existing replacement file(s)
+		$this->_remove_replacement_files($cid, $mid, $oid);
+
 		// add files
 		if (is_array($files['userfile_0'])) {
 				$type = $files['userfile_0']['type'];
@@ -1785,27 +1810,19 @@ class Coobject extends Model
 
 	public function replacement_exists($cid, $mid, $oid) 
 	{
-		 $name = $this->object_filename($oid);
-		 $path = $this->object_path($cid, $mid, $oid);
+		$name = $this->object_filename($oid);
+		$path = $this->object_path($cid, $mid, $oid);
 
-	   $p_imgurl = property('app_uploads_url').$path.'/'.$name.'_rep.png';
-	   $p_imgpath = property('app_uploads_path').$path.'/'.$name.'_rep.png';
-	   $j_imgurl = property('app_uploads_url').$path.'/'.$name.'_rep.jpg';
-	   $j_imgpath = property('app_uploads_path').$path.'/'.$name.'_rep.jpg';
-	   $g_imgurl = property('app_uploads_url').$path.'/'.$name.'_rep.gif';
-	   $g_imgpath = property('app_uploads_path').$path.'/'.$name.'_rep.gif';
-	   $t_imgurl = property('app_uploads_url').$path.'/'.$name.'_rep.tiff';
-	   $t_imgpath = property('app_uploads_path').$path.'/'.$name.'_rep.tiff';
-	   $s_imgurl = property('app_uploads_url').$path.'/'.$name.'_rep.svg';
-	   $s_imgpath = property('app_uploads_path').$path.'/'.$name.'_rep.svg';
+		$supported_extensions = array("png", "jpg", "gif", "tiff", "svg",
+																	"PNG", "JPG", "GIF", "TIFF", "SVG");
 
-	   if (is_readable($p_imgpath) || is_readable($j_imgpath) || is_readable($g_imgpath) || is_readable($t_imgpath) || is_readable($s_imgpath)) {
-				 $thumb_found = true;	
-	   } else {
-				 $thumb_found = false;	
-	   }
+		foreach ($supported_extensions as $ext) {
+			$reppath = property('app_uploads_path')."{$path}/{$name}_rep.{$ext}";
+			if (is_readable($reppath))
+				return true;
+		}
 
-     return ($thumb_found) ? true : false; 
+		return false;
 	}
 
 
@@ -2090,8 +2107,10 @@ class Coobject extends Model
 
 	/* return the path to an object on the file system 
 	 *
-   * returns path to latest version of material unless
-   * all is true and then it returns paths to all versions	
+	 * @param    int the course id
+	 * @param    int the material id
+	 * @param    int the content object id
+	 *
 	 */
 	public function object_path($cid, $mid, $oid)
 	{

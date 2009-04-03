@@ -733,6 +733,7 @@ class Material extends Model
 			$generate_own = false;
 			do {
 					if ($generate_own) {
+							$this->ocw_utils->log_to_apache('debug', __FUNCTION__.": Using random name for '{$filename}'");	// XXX XXX XXX
 							$digest = $this->oer_filename->random_name($filename);
 					} else {
 							$digest = $this->oer_filename->file_digest($filename);
