@@ -18,12 +18,12 @@ var Site = {
 				item.addEvent('mouseover',function() { if (this.id=='pyes') { this.setOpacity(1); } });
 				item.addEvent('mouseout',function() {  if (this.id=='pyes') { this.setOpacity(0.8); }  });
 		});
-	
+/*	
     if ($('orig_com_addpanel')) {
       orig_com_ap = new Fx.Slide($('orig_com_addpanel'), {duration: 500, transition: Fx.Transitions.linear });
       orig_com_ap.hide();
     }	
-
+*/
     if ($('orig_q_addpanel')) {
       orig_q_ap = new Fx.Slide($('orig_q_addpanel'), {duration: 500, transition: Fx.Transitions.linear });
 			orig_q_ap.setrole = function (role) { 
@@ -36,12 +36,12 @@ var Site = {
 			};
       orig_q_ap.hide();
     }
-    
+   /* 
     if ($('repl_com_addpanel')) {
       repl_com_ap = new Fx.Slide($('repl_com_addpanel'), {duration: 500, transition: Fx.Transitions.linear });
       repl_com_ap.hide();
     }	
-
+*/
     if ($('repl_q_addpanel')) {
       repl_q_ap = new Fx.Slide($('repl_q_addpanel'), {duration: 500, transition: Fx.Transitions.linear });
 			repl_q_ap.setrole = function (role) { 
