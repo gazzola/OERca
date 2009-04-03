@@ -12,15 +12,16 @@ echo style('style.css',array('media'=>"screen, projection"));
 echo style('table.css',array('media'=>"screen, projection"));
 echo style('multiupload.css',array('media'=>"screen, projection"));
 echo style('mootabs1.2.css',array('media'=>"screen, projection"));
-echo style('sidetabs.css',array('media'=>"screen, projection"));
+//echo style('sidetabs.css',array('media'=>"screen, projection"));
 echo style('smoothbox.css',array('media'=>"screen, projection"));
 echo '<style type="text/css">body { background-color:white; padding:0; margin:auto; width:800px; height:550px; color:#999}</style>';
 
 echo script('mootools.js'); 
+echo script('mootools-1.2-more.js');
 echo script('smoothbox.js'); 
 echo script('tablesort.js');
 echo script('mootabs1.2.js');
-echo script('mootips.js'); 
+//echo script('mootips.js'); 
 echo script('event-selectors.js');
 echo script('event-rules.js');
 echo script('ocwui.js');
@@ -32,25 +33,51 @@ echo script('ocw_tool.js');
 	var cpurl = parent.window.location.href; 
 	var purl  = (cpurl.match(re) || cpurl.match(re2)) ?  parent.window.location.href 
 																: '<?= site_url("materials/edit/$cid/$mid/0/all"); ?>';
+																
+window.addEvent('domready', function() {
+	//create our Accordion instance
+	var myAccordion = new Accordion($('accordion_orig'), 'h4.toggler', 'div.element', {
+		opacity: true,
+		display: 5,
+		onActive: function(toggler, element){
+			toggler.setStyle('color', '#41464D');
+		},
+		onBackground: function(toggler, element){
+			toggler.setStyle('color', '#528CE0');
+		}
+	});
+});
 </script>
+<style>
+h4.toggler {
+	cursor: pointer;
+	border: 1px solid #f5f5f5;
+	border-right-color: #ddd;
+	border-bottom-color: #ddd;
+	font-weight: bolder;
+	font-size: 18px;
+	background: lightgreen;
+	color: #222;
+	margin: 0 0 4px 0;
+	padding: 3px 5px 1px;
+}
+</style>
 </head>
 
 <body>
 
-<div id="mainPage" class="container" style="margin:0; padding:0;">
+<div id="mainPage" style="margin:0; padding:0;">
 
 <input type="hidden" id="cid" name="cid" value="<?=$cid?>" />
 <input type="hidden" id="mid" name="mid" value="<?=$mid?>" />
 <input type="hidden" id="oid" name="oid" value="<?=$obj['id']?>" />
 <input type="hidden" id="user" name="user" value="<?=$user?>" />
 	
-<button id="donetop" onclick="parent.window.location.replace(purl); parent.TB_remove()">Close</button>
-
-<div class="column span-24 first last" style="text-align:left; margin-bottom:10px;">
-  <h3 style="font-size: 1.5em; color:#666;">OER Content Object: <?=$obj['name']?></h3>
+<div class="column span-20 first last" style="text-align:left; margin-bottom:10px;">
+  <h3 style="font-size: 1em; color:#666;">OER Content Object: <?=$obj['name']?></h3>
 </div>
 
-<div id="myTabs" class="column span-24 first last">
+<div id="myTabs" class="column span-20 first last">
 
 	<div id="leftarrow" class="column span-1 first">
 			<?= $this->coobject->prev_next($cid, $mid, $obj['id'], $filter,'prev','image');?>
@@ -105,19 +132,17 @@ echo script('ocw_tool.js');
 
 </div>
 
-<div class="column span-17 first last" style="text-align: center">
-	<button id="donebot" onclick="parent.window.location.replace(purl); parent.TB_remove()">Close</button>
-</div>
-
 </div>
 
 <script type="text/javascript">
 	EventSelectors.start(Rules);
 	<?php if($viewing=='replacement') {?>showreptab = true;<?php }?>
+	/*
 	window.addEvent('domready', function() { 
 			var myTips = new MooTips($$('.ine_tip'), { maxTitleChars: 50 }); 
 			var myTips2 = new MooTips($$('.tooltips'), { maxTitleChars: 50 }); 
 	});
+	*/
 </script>
 <div id="feedback" style="display:none"></div>
 <input type="hidden" id="imgurl" value="<?=property('app_img')?>" />
