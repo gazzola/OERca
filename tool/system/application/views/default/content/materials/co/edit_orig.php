@@ -36,7 +36,7 @@ $tab = $tab[0];
 $data['loc_tip'] = "For textual materials like Powerpoints or PDFs, please enter the slide or page number. For videos, please enter a time stamp.";
 ?>
 
-<div id="Original" class="morphtabs_panel" style="display:block;">
+<div id="Original" class="morphtabs_panel" style="display: block;">
 
 <form method="post">
      <div id="accordion_orig">
