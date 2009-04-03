@@ -2,11 +2,10 @@ var orig_com_ap, orig_q_ap, repl_com_ap, repl_q_ap; // references for add panel 
 
 // for edit content object page: sets up the tabbing between original and replacement
 var myCOTabs;
-var showreptab = false;
 
 var Site = {
   start: function(){
-    // if($('myTabs')) Site.setuptabs();
+    if($('myTabs')) Site.setuptabs();
 
   	var myTips1 = new MooTips($$('.tooltip'), { maxTitleChars: 50 });
 
@@ -55,14 +54,14 @@ var Site = {
 			};
       repl_q_ap.hide();
     }
-  }
+  },
 
-//  setuptabs: function () {
-//    myCOTabs = new MorphTabs('myTabs',{height: '', width: '', changeTransition: 'none'});
-//    if (showreptab) { myCOTabs.activate('Replacement'); }
-//    
-//    // set up morphtabs which replaces mootabs for mootools 1.2
-//    var myMorphTabs = new MorphTabs('morphtabs_panel');
-//  }
+  setuptabs: function () {
+    myCOTabs = new OERcaTabs('myTabs');
+    //if (showreptab) { myCOTabs.activate('Replacement'); }
+    
+    // set up morphtabs which replaces mootabs for mootools 1.2
+    var myMorphTabs = new MorphTabs('morphtabs_panel');
+  }
 };
 window.addEvent('domready', Site.start);

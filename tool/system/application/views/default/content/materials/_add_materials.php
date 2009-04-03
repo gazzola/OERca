@@ -27,6 +27,13 @@ if (isset($flash) AND $flash!='') {
 <!--END FLASH-->
 <?php } ?>
 
+<style>
+	.morphtabs_panel {
+		background-color: lightgreen;
+		color: #111;
+	}
+</style>
+
 <div id="myTabs" class="column span-8 first last">
 
   <ul class="morphtabs_title">
