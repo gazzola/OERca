@@ -18,7 +18,7 @@ echo script('snapper.js');
 echo script('flash.js');
 
 
-$types = '<select id="subtype_id" name="subtype_id" class="do_object_update">';
+$types = '<select id="subtype_id" name="subtype_id">';
 foreach($subtypes as $type => $subtype) {
 		$types .= '<optgroup label="'.$type.'">';
 		foreach($subtype as $st) { $types .= '<option value="'.$st['id'].'">'.$st['name'].'</option>'; }
@@ -169,8 +169,8 @@ if (isset($flash) AND $flash!='') {
 	window.addEvent('domready', function() {
   		//myCOTabs = new mootabs('myTabs',{height: '450px', width: '340px'});
 			var myTips1 = new MooTips($$('.tooltip'), { maxTitleChars: 100 });
-  		//<?php if($view=='single') {?>myCOTabs.activate('Single');<?php }?>
-  		//<?php if($view=='bulk') {?>myCOTabs.activate('Bulk');<?php }?>
+  		<?php if($view=='single') {?>myCOTabs.activate('Single');<?php }?>
+  		<?php if($view=='bulk') {?>myCOTabs.activate('Bulk');<?php }?>
 
       var appv =  ($('snapper-form')) ? true : false;
       var appletview = (appv)  ? document.clipboard : '';

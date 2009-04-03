@@ -5,7 +5,7 @@
 		<td width="50%">
 			 <?php echo anchor_popup("helpfaq/rad_form", "help me recommend an action"); ?>
 			 <br /><br />
-			 <?php echo form_dropdown('action_type', $action_types, $obj['action_type'] ,'id="action_type" class="do_object_update"'); ?>
+			 <?php echo form_dropdown('action_type', $action_types, $obj['action_type'] ,'id="action_type"'); ?>
 				<input type="hidden" value="<?=$obj['action_type']?>" id="raction" name="raction" />
 		</td>
   </tr>
@@ -17,7 +17,7 @@
   				<p>
 						<b>Please provide the dScribe2 with your rationale for the fair use of this content object in the space below. (REQUIRED)</b><br/>
 			       	<textarea name="fairuse_rationale" id="fairuse_rationale" style="width: 100%; height: 50px;" class="do_object_rationale"><?=$fairuse_rationale?></textarea>
-							<input type="button" value="Send to dScribe2" class="do_update_action_type" />
+							<input type="button" value="Send to dScribe2"/>
 					</p>
 	  		</div>
 
@@ -32,7 +32,7 @@
 						       				<label for="contact_name">Name: (required)</label>
 						       			</th>
 						       			<td>
-						       				<input type="text"  name="contact_name" id="contact_name"  class="do_update_contact" size="50" value="<?=isset($contact_name)?$contact_name:''?>" />
+						       				<input type="text"  name="contact_name" id="contact_name" size="50" value="<?=isset($contact_name)?$contact_name:''?>" />
 						       			</td>
 						       		</tr>
 						       		<tr>
@@ -40,14 +40,14 @@
 						       				<label for="contact_address_1">Address:</label>
 						       			</th>
 						       			<td>
-						       				<input type="text"  name="contact_line1" id="contact_line1" class="do_update_contact" size="50" value="<?=isset($contact_line1)?$contact_line1:''?>"/>
+						       				<input type="text"  name="contact_line1" id="contact_line1" size="50" value="<?=isset($contact_line1)?$contact_line1:''?>"/>
 						       			</td>
 						       		</tr>
 						       		<tr>
 						       			<th>
 						       			</th>
 						       			<td>
-						       				<input type="text"  name="contact_line2" id="contact_line2"  class="do_update_contact" size="50" value="<?=isset($contact_line2)?$contact_line2:''?>"/>
+						       				<input type="text"  name="contact_line2" id="contact_line2" size="50" value="<?=isset($contact_line2)?$contact_line2:''?>"/>
 						       			</td>
 						       		</tr>
 						       		<tr>
@@ -55,7 +55,7 @@
 						       				<label for="contact_city">City:</label>
 						       			</th>
 						       			<td>
-						       				<input type="text"  name="contact_city" id="contact_city"  class="do_update_contact" size="50" value="<?=isset($contact_city)?$contact_city:''?>"/>
+						       				<input type="text"  name="contact_city" id="contact_city" size="50" value="<?=isset($contact_city)?$contact_city:''?>"/>
 						       			</td>
 						       		</tr>
 						       		<tr>
@@ -63,7 +63,7 @@
 						       				<label for="contact_state">State:</label>
 						       			</th>
 						       			<td>
-						       				<input type="text"  name="contact_state" id="contact_state"  class="do_update_contact" size="50" value="<?=isset($contact_state)?$contact_state:''?>"/>
+						       				<input type="text"  name="contact_state" id="contact_state" size="50" value="<?=isset($contact_state)?$contact_state:''?>"/>
 						       			</td>
 						       		</tr>
 						       		<tr>
@@ -71,7 +71,7 @@
 						       				<label for="contact_country">Country:</label>
 						       			</th>
 						       			<td>
-						       				<input type="text"  name="contact_country" id="contact_country"  class="do_update_contact" size="50" value="<?=isset($contact_country)?$contact_country:''?>"/>
+						       				<input type="text"  name="contact_country" id="contact_country" size="50" value="<?=isset($contact_country)?$contact_country:''?>"/>
 						       			</td>
 						       		</tr>
 						       		<tr>
@@ -79,7 +79,7 @@
 						       				<label for="contact_postalcode">Postal Code:</label>
 						       			</th>
 						       			<td>
-						       				<input type="text"  name="contact_postalcode" id="contact_postalcode"  class="do_update_contact" size="50" value="<?=isset($contact_postalcode)?$contact_postalcode:''?>"/>
+						       				<input type="text"  name="contact_postalcode" id="contact_postalcode" size="50" value="<?=isset($contact_postalcode)?$contact_postalcode:''?>"/>
 						       			</td>
 						       		</tr>
 						       		<tr>
@@ -87,7 +87,7 @@
 						       				<label for="contact_phone">Phone:(required) </label>
 						       			</th>
 						       			<td>
-						       				<input type="text"  name="contact_phone" id="contact_phone"  class="do_update_contact" size="50" value="<?=isset($contact_phone)?$contact_phone:''?>"/>
+						       				<input type="text"  name="contact_phone" id="contact_phone" size="50" value="<?=isset($contact_phone)?$contact_phone:''?>"/>
 						       			</td>
 						       		</tr>
 						       		<tr>
@@ -95,7 +95,7 @@
 						       				<label for="contact_fax">Fax:</label>
 						       			</th>
 						       			<td>
-						       				<input type="text"  name="contact_fax" id="contact_fax"  class="do_update_contact" size="50" value="<?=isset($contact_fax)?$contact_fax:''?>"/>
+						       				<input type="text"  name="contact_fax" id="contact_fax" size="50" value="<?=isset($contact_fax)?$contact_fax:''?>"/>
 						       			</td>
 						       		</tr>
 						       		<tr>
@@ -103,7 +103,7 @@
 						       				<label for="contact_email">Email: (required)</label>
 						       			</th>
 						       			<td>
-						       				<input type="text"  name="contact_email" id="contact_email"  class="do_update_contact" size="50" value="<?=isset($contact_email)?$contact_email:''?>"/>
+						       				<input type="text"  name="contact_email" id="contact_email" size="50" value="<?=isset($contact_email)?$contact_email:''?>"/>
 						       			</td>
 						       		</tr>
 						       	</table>	

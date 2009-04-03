@@ -10,14 +10,14 @@
 				<tr>
 						<th><span style="color:red">*</span> Location in material:</th>
 	    			<td>
-      			<input type="text" name="location" id="location" size="10" value="<?=$obj['location']?>" class="do_object_update"/>
+      			<input type="text" name="location" id="location" size="10" value="<?=$obj['location']?>"/>
 						&nbsp;<img src="<?=property('app_img')?>/info.gif" style="margin:0; padding:0" class="ine_tip" title="<?=$loc_tip?>" />
 						</td>
 				</tr>
 				<tr>
 					<th><span style="vertical-align:top; color:red">*</span> Citation:</th>
 					<td>
-		    		<textarea name="citation" id="citation" class="do_object_update" style="height: 50px; width: 100%;"><?=$obj['citation']?></textarea>
+		    		<textarea name="citation" id="citation" style="height: 50px; width: 100%;"><?=$obj['citation']?></textarea>
 					</td>
 				</tr>
 			</table>
@@ -35,7 +35,7 @@
 				<tr>
 					<th width="50%">Author:</th>
 					<td width="50%">
-      			<input type="text" name="author" id="author" size="50" value="<?=$obj['author']?>" class="do_object_update"/>
+      			<input type="text" name="author" id="author" size="50" value="<?=$obj['author']?>"/>
 					</td>
 				</tr>
 				<tr>
@@ -47,13 +47,13 @@
 				<tr>
 					<th style="vertical-align: top">Description:</th>
 					<td>
-		    		<input type="text" name="description" id="description" size="50" class="do_object_update" value="<?=$obj['description']?>" />
+		    		<input type="text" name="description" id="description" size="50" value="<?=$obj['description']?>" />
 					</td>
 				</tr>
 				<tr>
 					<th style="vertical-align: top">Keywords:</th>
 					<td>
-		    		<input type="text" name="tags" id="tags" size="50" class="do_object_update" value="<?=$obj['tags']?>" />
+		    		<input type="text" name="tags" id="tags" size="50" value="<?=$obj['tags']?>" />
 					</td>
 				</tr>
 			
