@@ -56,8 +56,8 @@
 		    		<input type="text" name="tags" id="tags" size="50" class="do_object_update" value="<?=$obj['tags']?>" />
 					</td>
 				</tr>
-			</table>
 			
-			$this->load->view(property('app_views_path').'/materials/co/_edit_orig_copy.php', $data); 
+			<?php $this->load->view(property('app_views_path').'/materials/co/_edit_orig_copy.php', $data); ?> 
 
+			</table>
 </div>

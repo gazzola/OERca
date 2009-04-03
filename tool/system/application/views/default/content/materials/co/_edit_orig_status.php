@@ -143,37 +143,8 @@
 				?>
 
 				<div id="ask_yes_orig_i"> 
-							<br/><br/>
+							<br/>
 							<a target="_new" href="<?=site_url("materials/askforms/$cid/$mid/general/instructor")?>">View ASK form</a> to see the default questions.
-							<br/><br/>
-							<a id="orig_q_addpanel_i_toggle" href="#">Ask instructor additional questions</a>&nbsp;&raquo;
-
-			<!-- QUESTIONS -->
-			<div id="orig_q_addpanel_i" style="margin: 10px;">
-				<label for="origrole">Ask:</label>
-				<select name="origrole" id="origrole">
-					<option SELECTED value="instructor">Instructor</option>
-					<option value="dscribe2">dScribe2</option>
-				</select><br/>
-	 			<textarea name="question" id="question" style="width: 100%; height: 50px;"></textarea>
-	 			<p>
-	     						<input type="button" value="Save" class="do_add_object_question" />
-			     				<input type="button" value="Cancel" onclick="orig_q_addpanel_i_slide.hide()" />
-	 			</p>
-			</div>
-			<script>
-				var orig_q_addpanel_i_slide = new Fx.Slide('orig_q_addpanel_i');
-				orig_q_addpanel_i_slide.hide();
-				$('orig_q_addpanel_i_toggle').addEvent('click', function(e){
-					e.stop();
-					orig_q_addpanel_i_slide.toggle();
-				});
-			</script>
-			<!-- end QUESTIONS -->
-			
-			
-							<a href="#origquestions">View answers</a>&nbsp;&raquo;
-							<br/><br/>
 				</div>
 				
 			<script>
@@ -202,10 +173,8 @@
 				?>
 
 				<div id="ask_yes_orig_d"> 
-							<br/><br/>
+							<br/>
 							<a target="_new" href="<?=site_url("materials/askforms/$cid/$mid/general/dscribe2")?>">View dScribe2 ASK form</a>
-							<br/><br/>
-							<a id="orig_q_addpanel_d_toggle" href="#">Ask dScribe2 additional questions</a>&nbsp;&raquo;
 
 			<!-- ASK DSCRIBE QUESTION BOX -->
 			<script>
@@ -218,34 +187,40 @@
 					ask_yes_orig_d_slide.hide();
 				});
 			</script>
-				
-			<div id="orig_q_addpanel_d" style="margin: 10px;">
-				<label for="origrole">Ask:</label>
-				<select name="origrole" id="origrole">
-					<option value="instructor">Instructor</option>
-					<option SELECTED value="dscribe2">dScribe2</option>
-				</select><br/>
-	 			<textarea name="question" id="question" style="width: 100%; height: 50px;"></textarea>
-	 			<p>
-	     						<input type="button" value="Save" class="do_add_object_question" />
-			     				<input type="button" value="Cancel" onclick="orig_q_addpanel_d_slide.hide()" />
-	 			</p>
-			</div>
-			<script>
-				var orig_q_addpanel_d_slide = new Fx.Slide('orig_q_addpanel_d');
-				orig_q_addpanel_d_slide.hide();
-				$('orig_q_addpanel_d_toggle').addEvent('click', function(e){
-					e.stop();
-					orig_q_addpanel_d_slide.toggle();
-				});
-			</script>							
-			<!-- end ASK DSCRIBE QUESTION BOX -->
-			
-							<a href="#origquestions">View answers</a>&nbsp;&raquo;
 							
 				</div>
 			
 	  </td>
+	</tr>
+	
+<tr>
+	<th></th>
+	<td>
+			<a id="orig_q_addpanel_i_toggle" href="#">I want to ask someone a question</a>&nbsp;&raquo;
+
+			<!-- QUESTIONS -->
+			<div id="orig_q_addpanel_i" >
+				<label for="origrole">Ask:</label>
+				<select name="origrole" id="origrole">
+					<option SELECTED value="instructor">Instructor</option>
+					<option value="dscribe2">dScribe2</option>
+				</select><br/>
+	 			<textarea name="question" id="question" style="width: 100%; height: 50px;"></textarea>
+	 			<p>
+	     						<input type="button" value="Save" class="do_add_object_question" />
+			     				<input type="button" value="Cancel" onclick="orig_q_addpanel_i_slide.hide()" />
+	 			</p>
+			</div>
+			<script>
+				var orig_q_addpanel_i_slide = new Fx.Slide('orig_q_addpanel_i');
+				orig_q_addpanel_i_slide.hide();
+				$('orig_q_addpanel_i_toggle').addEvent('click', function(e){
+					e.stop();
+					orig_q_addpanel_i_slide.toggle();
+				});
+			</script>
+			<!-- end QUESTIONS -->
+		</td>
 	</tr>
 
   <tr>
