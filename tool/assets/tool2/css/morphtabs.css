@@ -7,37 +7,35 @@ MorphTabs styles
 	list-style-type: none;
 	margin: 0px;
 	padding: 0px;
-	height: 24px;
+	/*height: 24px;*/
 }
+
+.morphtabs_title h2 { color: black; text-align: center; }
 
 .morphtabs_title li {
 	float: left;
-  	margin: 0 0 0 20px;
-  	padding: 0;
-  	padding-left: 5px;
-  	padding-right: 5px;
+  margin: 0 0 0 20px;
+  padding: 0;
+  padding-left: 5px;
+  padding-right: 5px;
 	cursor: pointer;
 	line-height: 24px;
+	background-color: #fff;
 	border: 1px dotted darkgray;
-	background-color: lightgray;
+}
+
+.morphtabs_title li.active,
+.morphtabs_title li.active h2 {
+	background-color: darkgray;
 	color: #666;
 }
 
-.morphtabs_title li.over {
-	font-weight: bold;
-}
-
-.morphtabs_title li.active {
-	background-color: lightgreen;
-	color: darkgreen;
-}
-
-.morphtabs_panelwrap { 
+/*.morphtabs_panelwrap { 
 	position: relative;	
 	top: -1px;
 	clear: both;
 	overflow: hidden;
-}
+}*/
 
 .morphtabs_panel {
 	position: relative;
@@ -48,11 +46,25 @@ MorphTabs styles
 	clear: both;
 	overflow: auto;
 	padding: 5px;
-	background-color: lightgreen;
-	color: darkgreen;
 }
 
-.morpthtabs_panel p {
+/*.morpthtabs_panel p {
 	margin-left:5px;
+}*/
+
+#Course.morphtabs_panel.active,
+#Dscribe.morphtabs_panel.active 
+{ border: 1px solid #dedede;  background-color: white; color: black;}
+#Dscribe.morphtabs_panel.active h3 a,
+.morphtabs_title li[title="Dscribe"].active,
+.morphtabs_title li[title="Dscribe"].active h2 {
+	background-color: #dedede;
+	color: black;
+}
+#Course.morphtabs_panel.active h3 a,
+.morphtabs_title li[title="Course"].active,
+.morphtabs_title li[title="Course"].active h2 {
+	background-color: #dedede;
+	color: black;
 }
 

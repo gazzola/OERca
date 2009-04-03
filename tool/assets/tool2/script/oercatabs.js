@@ -34,9 +34,8 @@ var OERcaTabs = new Class({
       getElements('li');
     this.hideAll(); // initially hide all the panels
     this.makeActive();
-    this.tabItems.forEach(this.clickEvent.bind(this)); // attach event handler to tabItems
-    //this.tabItems.forEach(function() {alert('1')}); // attach event handler to tabItems
-
+    // attach event handler to tabItems
+    this.tabItems.forEach(this.clickEvent.bind(this));
   },
   
   hideAll: function() {
@@ -46,13 +45,16 @@ var OERcaTabs = new Class({
   },
   
   hidePanel: function(item) {
-    item.setStyle('display', 'none');
+    // TODO: should we check to see if it has the "active" class?
+    item.setStyle('display', 'none').removeClass('active');
   },
   
   showPanel: function(item) {
-    var currElement = (item.type == 'click') ? this.tabContainer.getElementById(item.target.getParent().getProperty('title')) : this.tabContainer.getElementById(item);
+    var currElement = (item.type == 'click') ? this.tabContainer.
+      getElementById(item.target.getParent().getProperty('title')) :
+      this.tabContainer.getElementById(item);
     this.hideAll();
-    currElement.setStyle('display', 'inline');
+    currElement.setStyle('display', 'block').addClass('active');
   },
   
   makeActive: function(item) {
