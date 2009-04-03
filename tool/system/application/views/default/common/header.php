@@ -13,8 +13,7 @@
 	   echo style('multiupload.css',array('media'=>"screen, projection"));
 	   echo style('smoothbox.css',array('media'=>"screen, projection"));
 	   echo style('morphtabs.css',array('media'=>"screen, projection"));
-	   echo style('dojo/dijit/themes/tundra/tundra.css');
-     echo style('dojo/dojo/resources/dojo.css');
+     	echo style('jquery/theme/ui.all.css');
      
 	   echo script('mootools.js'); 
 	   echo script('smoothbox.js'); 
@@ -30,17 +29,24 @@
 
 	   echo script('flash.js');
 	   
+	   echo script('jquery/jquery-1.3.1.js');
+	   echo script('jquery/jquery-ui-personalized-1.6rc6.js');
+
+	   
 	   // load morphtabs
 	   echo script('morphtabs-compressed.js');
 
 	  $ci_uri = trim($this->uri->uri_string(), '/'); 
 	?>
-	<script type="text/javascript" src="<?php site_url() ?>/tool/assets/tool2/script/dojo/dojo/dojo.js"
-	  djConfig="parseOnLoad: true"></script>
-	<script type="text/javascript">
-	  dojo.require("dijit.layout.TabContainer");
-	  dojo.require("dijit.layout.ContentPane");
-	</script>
+	<script>
+     jQuery.noConflict();
+ 
+     jQuery(function() {
+		jQuery("#jqTabs").tabs();
+	});
+
+
+</script>
 </head>
 
 <body>

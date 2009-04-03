@@ -6,13 +6,13 @@ echo style('morphtabs.css',array('media'=>"screen, projection"));
 echo script ('morphtabs.js');
 ?>
 
-<div id="myTabs" class="column span-24 first last">
-	<ul class="morphtabs_title">
-		<li title="Dscribe" style="padding-left:10px; margin-left:0;"><h2>Manage dScribes</h2></li>
-		<li title="Course" style="padding-left:10px; margin-left:0;"><h2>Manage Courses</h2></li>
+<div id="jqTabs" class="column span-24 first last">
+	<ul>
+		<li><a href="#manage-dscribe">Manage dScribes</a></li>
+		<li><a href="#manage-course">Manage Courses</a></li>
 	</ul>
 
-	<div id="Dscribe" class="morphtabs_panel">
+	<div id="manage-dscribe">
 			<div class="column span-24 first last" style="margin-bottom: 10px; margin-top: 10px; padding-bottom: 20px; border-bottom:1px solid #aaa;">
 				<form method="post" action="<?php echo site_url("admin/users/edit/$defuser/{$user['id']}")?>" enctype="multipart/form-data" style="margin:0px;padding:0">
 					<input type="hidden" name="task" value="assigndscribe1" />
@@ -69,7 +69,7 @@ echo script ('morphtabs.js');
 			</div>
 	</div>
 
-	<div id="Course" class="morphtabs_panel">
+	<div id="manage-course">
 
 			<div class="column span-24 first last" style="margin-bottom: 10px; margin-top: 10px; padding-bottom: 20px; border-bottom:1px solid #aaa;">
 				<form name="adminform" method="post" action="<?php echo site_url("admin/users/edit/$defuser/{$user['id']}")?>" enctype="multipart/form-data" style="margin:0px;padding:0">
