@@ -14,6 +14,8 @@ var OERcaTabs = new Class({
   Implements: [Options, Chain],
 
   version: '0.1',
+  
+  //var myThis = null,
 
   // define the default options
   options: {
@@ -32,7 +34,9 @@ var OERcaTabs = new Class({
       getElements('li');
     this.hideAll(); // initially hide all the panels
     this.makeActive();
-    this.tabItems.forEach(this.clickEvent); // attach event handler to tabItems
+    this.tabItems.forEach(this.clickEvent.bind(this)); // attach event handler to tabItems
+    //this.tabItems.forEach(function() {alert('1')}); // attach event handler to tabItems
+
   },
   
   hideAll: function() {
@@ -46,28 +50,23 @@ var OERcaTabs = new Class({
   },
   
   showPanel: function(item) {
-    var currElement = this.tabContainer.getElementById(item);
+    var currElement = (item.type == 'click') ? this.tabContainer.getElementById(item.target.getParent().getProperty('title')) : this.tabContainer.getElementById(item);
+    this.hideAll();
     currElement.setStyle('display', 'inline');
+    currElement.setStyle('color', 'red');
   },
   
   makeActive: function(item) {
-    alert('We called the function makeActive');
     var item = (item == null) ? this.options.activateOnLoad : item;
     // set the first pane active by default
     if (item == 'first') {
       item = this.tabItems[0].getProperty('title');
     }
-    
     this.showPanel(item);
   },
   
   clickEvent: function(item) {
-    //item.addEvent('click', this.makeActive);
-    item.addEvent('click', function(){
-      alert('The clickevent function works.');
-      this.makeActive;
-    });
+    item.addEvent('click', this.makeActive.bind(this));
   }
 
 });
-
