@@ -23,32 +23,36 @@ var OERcaTabs = new Class({
     activateOnLoad: 'first'
   },
 
+  /*
+   * Set up the initial tab state
+   */
   initialize: function(element, options) {
+    // combine the defaults defined in 'options' with user specified ones
     this.setOptions(options);
+    
+    // select elements and define as properties
     this.tabContainer = $(element);
     this.tabId = element;
     this.tabClasses = this.tabContainer.getElements(this.options.tabClass);
     this.tabItems = this.tabContainer.getElement(this.options.titleClass).
       getElements('li');
-    this.hideAll(); // initially hide all the panels
-    this.makeActive();
+        
+    this.hideAll(); // hide all the panels
+    this.makeActive(); // make activateOnLoad element active
     // attach event handler to tabItems
     this.tabItems.forEach(this.clickEvent, this);
   },
   
   hideAll: function() {
-    // check for useragent and use the mootools array operation function if
-    // not present in the UA
     this.tabClasses.forEach(this.hidePanel);
   },
   
   hidePanel: function(item) {
-    // TODO: should we check to see if it has the "active" class?
     item.setStyle('display', 'none').removeClass('active');
   },
   
   showPanel: function(item) {
-    //
+    // check to see 'item' is an event and select parent if so
     var currElement = (item.type == 'click') ? this.tabContainer.
       getElementById($(item.target).getParent().getProperty('title')) :
       this.tabContainer.getElementById(item);
@@ -74,6 +78,8 @@ var OERcaTabs = new Class({
     // if we have a click event as parameter, get target title
     var item = (item.type == 'click') ? $(item.target).getParent().
       getProperty('title') : item;
+      
+    // set the 'active' class on the active tab and remove on all others  
     for (var tabNum = 0; tabNum < this.tabItems.length; tabNum++) {
       if (this.tabItems[tabNum].getProperty('title') == item) {
         this.tabItems[tabNum].addClass('active');
