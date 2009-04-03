@@ -13,8 +13,7 @@
 	   echo style('multiupload.css',array('media'=>"screen, projection"));
 	   echo style('smoothbox.css',array('media'=>"screen, projection"));
 	   echo style('morphtabs.css',array('media'=>"screen, projection"));
-     	echo style('jquery/theme/ui.all.css');
-     
+          
 	   echo script('mootools.js');
 	   echo script('smoothbox.js'); 
 	   echo script('oercatabs.js');
