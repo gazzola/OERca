@@ -4,10 +4,12 @@ echo style('blueprint/print.css',array('media'=>"print"));
 echo '<!--[if IE]>'.style('blueprint/lib/ie.css',array('media'=>"screen, projection")).'<![endif]-->';
 echo style('style.css',array('media'=>"screen, projection"));
 echo style('mootabs1.2.css',array('media'=>"screen, projection"));
+echo style('morphtabs.css', array('media'=>"screen, projection"));
 echo '<style type="text/css">body { background-color: #222; padding: 15px; margin:auto; width: 340px; border:0px solid blue; height:450px; color:#999}</style>';
 
 echo script('mootools.js');
-echo script('mootabs1.2.js');
+//echo script('mootabs1.2.js');
+echo script('morphtabs.js');
 echo script('event-selectors.js');
 echo script('event-rules.js');
 
@@ -27,12 +29,12 @@ if (isset($flash) AND $flash!='') {
 
 <div id="myTabs" class="column span-8 first last">
 
-  <ul class="mootabs_title">
+  <ul class="morphtabs_title">
     <li title="Single" style="margin-left:0;"><h2>Single Upload</h2></li>
     <li title="Bulk" style="margin-left: 13px;"><h2>Bulk Upload</h2></li>
   </ul>
 
-	<div id="Single" class="mootabs_panel">
+	<div id="Single" class="morphtabs_panel">
 		<form action="<?=site_url("materials/add_material/$cid/single")?>" enctype="multipart/form-data" method="post"  id="add_new_material_single">
 			<input type="hidden" name="category" value="Materials" />
 			<input type="hidden" name="in_ocw" value="1" />
@@ -88,7 +90,7 @@ if (isset($flash) AND $flash!='') {
 	</form>
 </div>
 	
-<div id="Bulk" class="mootabs_panel"> 
+<div id="Bulk" class="morphtabs_panel"> 
 	<form action="<?=site_url("materials/add_material/$cid/bulk")?>" enctype="multipart/form-data" method="post" id="add_new_material_bulk">
 		<input type="hidden" name="category" value="Materials" />
 		<input type="hidden" name="in_ocw" value="1" />
@@ -137,6 +139,6 @@ if (isset($flash) AND $flash!='') {
 <input type="hidden" id="server" value="<?=site_url();?>" />
 <script type="text/javascript">
  	EventSelectors.start(Rules);
-	myCOTabs = new mootabs('myTabs',{height: '450px', width: '340px'});
+	myCOTabs = new MorphTabs('myTabs',{height: '450px', width: '340px', changeTransition: 'none'});
 	<?php if($view=='bulk') {?>myCOTabs.activate('Bulk');<?php }?>
 </script>

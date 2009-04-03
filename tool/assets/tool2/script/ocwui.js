@@ -60,6 +60,9 @@ var Site = {
   setuptabs: function () {
     myCOTabs = new mootabs('myTabs',{height: '300px', width: '40%'});
     if (showreptab) { myCOTabs.activate('Replacement'); }
+    
+    // set up morphtabs which replaces mootabs for mootools 1.2
+    var myMorphTabs = new MorphTabs('morphtabs_panel');
   }
 };
 window.addEvent('domready', Site.start);
