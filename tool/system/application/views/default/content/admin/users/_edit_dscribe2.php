@@ -2,8 +2,8 @@
 
 // echo style('mootabs1.2.css',array('media'=>"screen, projection"));
 // echo script('mootabs1.2.js');
-echo style('morphtabs.css',array('media'=>"screen, projection"));
-echo script ('morphtabs.js');
+// echo style('morphtabs.css',array('media'=>"screen, projection"));
+// echo script ('morphtabs.js');
 echo script ('oercatabs.js');
 ?>
 

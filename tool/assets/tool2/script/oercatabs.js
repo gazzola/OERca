@@ -12,18 +12,62 @@
 
 var OERcaTabs = new Class({
   Implements: [Options, Chain],
-  
+
   version: '0.1',
-  
+
   // define the default options
   options: {
-    mouseOverClass: 'over',
+    defId: 'oercatabs',
+    titleClass: '.morphtabs_title',
+    tabClass: '.morphtabs_panel',
     activateOnLoad: 'first',
   },
+
+  initialize: function(element, options) {
+    this.setOptions(options);
+    this.tabContainer = $(element);
+    this.tabId = element;
+    this.tabClasses = this.tabContainer.getElements(this.options.tabClass);
+    this.tabItems = this.tabContainer.getElement(this.options.titleClass).
+      getElements('li');
+    this.hideAll(); // initially hide all the panels
+    this.makeActive();
+    this.tabItems.forEach(this.clickEvent); // attach event handler to tabItems
+  },
   
-  initialize: function(element) {
-    var ourStuff = $$(element);
-    alert("testing alert again " + ourStuff);
+  hideAll: function() {
+    // check for useragent and use the mootools array operation function if
+    // not present in the UA
+    this.tabClasses.forEach(this.hidePanel);
+  },
+  
+  hidePanel: function(item) {
+    item.setStyle('display', 'none');
+  },
+  
+  showPanel: function(item) {
+    var currElement = this.tabContainer.getElementById(item);
+    currElement.setStyle('display', 'inline');
+  },
+  
+  makeActive: function(item) {
+    alert('We called the function makeActive');
+    var item = (item == null) ? this.options.activateOnLoad : item;
+    // set the first pane active by default
+    if (item == 'first') {
+      item = this.tabItems[0].getProperty('title');
+    }
+    
+    this.showPanel(item);
+  },
+  
+  clickEvent: function(item) {
+    //item.addEvent('click', this.makeActive);
+    item.addEvent('click', function(){
+      alert('The clickevent function works.');
+      this.makeActive;
+    });
   }
-  
+
 });
+

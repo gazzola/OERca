@@ -6,7 +6,7 @@ var showreptab = false;
 
 var Site = {
   start: function(){
-    if($('myTabs')) Site.setuptabs();
+    // if($('myTabs')) Site.setuptabs();
 
   	var myTips1 = new MooTips($$('.tooltip'), { maxTitleChars: 50 });
 
@@ -57,12 +57,12 @@ var Site = {
     }
   },
 
-  setuptabs: function () {
-    myCOTabs = new MorphTabs('myTabs',{height: '', width: '', changeTransition: 'none'});
-    if (showreptab) { myCOTabs.activate('Replacement'); }
-    
-    // set up morphtabs which replaces mootabs for mootools 1.2
-    var myMorphTabs = new MorphTabs('morphtabs_panel');
-  }
+//  setuptabs: function () {
+//    myCOTabs = new MorphTabs('myTabs',{height: '', width: '', changeTransition: 'none'});
+//    if (showreptab) { myCOTabs.activate('Replacement'); }
+//    
+//    // set up morphtabs which replaces mootabs for mootools 1.2
+//    var myMorphTabs = new MorphTabs('morphtabs_panel');
+//  }
 };
 window.addEvent('domready', Site.start);
