@@ -13,6 +13,7 @@
 	   echo style('table.css',array('media'=>"screen, projection"));
 	   echo style('multiupload.css',array('media'=>"screen, projection"));
 	   echo style('smoothbox.css',array('media'=>"screen, projection"));
+	   echo style('morphtabs.css',array('media'=>"screen, projection"));
 
 	   echo script('mootools.js'); 
 	   echo script('smoothbox.js'); 
@@ -26,7 +27,10 @@
      echo script('ocw_tool.js');
 	   echo script('multiupload.js'); 
 
-	   echo script('flash.js'); 
+	   echo script('flash.js');
+	   
+	   // load morphtabs
+	   echo script('morphtabs.js');
 
 	  $ci_uri = trim($this->uri->uri_string(), '/'); 
 	?>
