@@ -17,18 +17,18 @@ MorphTabs styles
   padding: 0 5px;
 	cursor: pointer;
 	line-height: 24px;
-	background-color: #fff;
+	background-color: darkgray;
 	border: 1px dotted darkgray;
 }
 
 .morphtabs_title li.active,
 .morphtabs_title li.active h2 {
-	background-color: darkgray;
+	background-color: #fff;
 	color: #666;
 }
 
-.morphtabs_title li.over {
-  color: #0000ff;
+.morphtabs_title li:hover {
+  background-color: #fff;
 }
 
 .morphtabs_panel {
@@ -49,13 +49,13 @@ MorphTabs styles
 #Dscribe.morphtabs_panel.active h3 a,
 .morphtabs_title li[title="Dscribe"].active,
 .morphtabs_title li[title="Dscribe"].active h2 {
-	background-color: #dedede;
+	background-color: #fff;
 	color: black;
 }
 #Course.morphtabs_panel.active h3 a,
 .morphtabs_title li[title="Course"].active,
 .morphtabs_title li[title="Course"].active h2 {
-	background-color: #dedede;
+	background-color: #fff;
 	color: black;
 }
 
