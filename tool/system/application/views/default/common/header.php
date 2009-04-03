@@ -4,7 +4,6 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<title>OERca &raquo; <?php echo $title ?></title>
-
 	<?php 
 	   echo style('blueprint/screen.css',array('media'=>"screen, projection"));
 	   echo style('blueprint/print.css',array('media'=>"print"));
@@ -14,7 +13,9 @@
 	   echo style('multiupload.css',array('media'=>"screen, projection"));
 	   echo style('smoothbox.css',array('media'=>"screen, projection"));
 	   echo style('morphtabs.css',array('media'=>"screen, projection"));
-
+	   echo style('dojo/dijit/themes/tundra/tundra.css');
+     echo style('dojo/dojo/resources/dojo.css');
+     
 	   echo script('mootools.js'); 
 	   echo script('smoothbox.js'); 
 	   echo script('mootips.js'); 
@@ -34,6 +35,12 @@
 
 	  $ci_uri = trim($this->uri->uri_string(), '/'); 
 	?>
+	<script type="text/javascript" src="<?php site_url() ?>/tool/assets/tool2/script/dojo/dojo/dojo.js"
+	  djConfig="parseOnLoad: true"></script>
+	<script type="text/javascript">
+	  dojo.require("dijit.layout.TabContainer");
+	  dojo.require("dijit.layout.ContentPane");
+	</script>
 </head>
 
 <body>
