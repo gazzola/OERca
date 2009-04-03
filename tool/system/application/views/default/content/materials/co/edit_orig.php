@@ -41,7 +41,7 @@ $data['loc_tip'] = "For textual materials like Powerpoints or PDFs, please enter
 <form method="post">
      <div id="accordion_orig">
 		<h4 class="toggler">
-	    	Status <img src="<?php echo property('app_img'); ?>/add.png" title="Open This" style="margin: 0;" />
+	    	Status
 	 	</h4>
 	
 	 	<div class="element">
@@ -52,7 +52,7 @@ $data['loc_tip'] = "For textual materials like Powerpoints or PDFs, please enter
 		</div>
 		
 		<h4 class="toggler">
-	    	Comments <img src="<?php echo property('app_img'); ?>/add.png" title="Open This" style="margin: 0;" />
+	    	Comments
 	 	</h4>
 	
 	 	<div class="element">
@@ -62,7 +62,7 @@ $data['loc_tip'] = "For textual materials like Powerpoints or PDFs, please enter
 		</div>
 		
 		<h4 class="toggler">
-	    	History <img src="<?php echo property('app_img'); ?>/add.png" title="Open This" style="margin: 0;" />
+	    	History
 	 	</h4>
 	
 	 	<div class="element">

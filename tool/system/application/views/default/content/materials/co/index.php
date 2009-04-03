@@ -19,7 +19,6 @@ echo script('mootools.js');
 echo script('mootools-1.2-more.js');
 echo script('smoothbox.js'); 
 echo script('tablesort.js');
-//echo script('mootabs1.2.js');
 echo script('mootips.js'); 
 echo script('event-selectors.js');
 echo script('event-rules.js');
@@ -42,10 +41,10 @@ window.addEvent('domready', function() {
 		display: 0,
 		alwaysHide: true,
 		onActive: function(toggler, element){
-			toggler.setStyle('color', '#333333');
+			toggler.setStyle('background-image', "url(<?php echo property('app_img'); ?>/collapse.gif)")	
 		},
 		onBackground: function(toggler, element){
-			toggler.setStyle('color', '#333333');
+			toggler.setStyle('background-image', "url(<?php echo property('app_img'); ?>/expand.gif)")
 		}
 	});
 	
@@ -54,9 +53,8 @@ window.addEvent('domready', function() {
     var myOERcaTabs = new OERcaTabs('myOERcaTabs');
   });
 });
-
-
 </script>
+
 <style>
 h4.toggler {
 	cursor: pointer;
@@ -65,10 +63,11 @@ h4.toggler {
 	border-bottom-color: #ddd;
 	font-weight: bolder;
 	font-size: 18px;
-	background: lightgreen;
-	color: darkgreen;
 	margin: 0 0 4px 0;
-	padding: 3px 5px 1px;
+	padding: 3px 20px;
+	background-color: lightgreen;
+	background-repeat: no-repeat;
+	background-position:  0% 50%;
 }
 
 .morphtabs_title {
