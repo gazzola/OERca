@@ -20,7 +20,7 @@ var OERcaTabs = new Class({
     defId: 'oercatabs',
     titleClass: '.morphtabs_title',
     tabClass: '.morphtabs_panel',
-    activateOnLoad: 'first',
+    activateOnLoad: 'first'
   },
 
   initialize: function(element, options) {
@@ -48,8 +48,9 @@ var OERcaTabs = new Class({
   },
   
   showPanel: function(item) {
+    //
     var currElement = (item.type == 'click') ? this.tabContainer.
-      getElementById(item.target.getParent().getProperty('title')) :
+      getElementById($(item.target).getParent().getProperty('title')) :
       this.tabContainer.getElementById(item);
     this.hideAll();
     currElement.setStyle('display', 'block').addClass('active');
@@ -71,7 +72,7 @@ var OERcaTabs = new Class({
   
   activeTab: function(item) {
     // if we have a click event as parameter, get target title
-    var item = (item.type == 'click') ? item.target.getParent().
+    var item = (item.type == 'click') ? $(item.target).getParent().
       getProperty('title') : item;
     for (var tabNum = 0; tabNum < this.tabItems.length; tabNum++) {
       if (this.tabItems[tabNum].getProperty('title') == item) {
