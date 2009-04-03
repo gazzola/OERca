@@ -14,6 +14,20 @@
      
      	$server = base_url();
 	?>
+	
+<style>
+	.filterlist { list-style-type:none; }
+	.filterlist li {
+		padding: 3px 5px;
+		background-color: #EFEFEF;
+		border: 1px solid #998;
+		display: inline;
+	}
+	.filterlist li:hover {
+		background-color: #AAA;
+		color: #EEE;	
+	}
+</style>
 </head>
 
 <body>
@@ -21,28 +35,26 @@
 <h2>Content Object Types</h2>
 
 <?php
-/*
-$select_html = "<select name=\"posted_type\">";
+
+$select_html = "<select name=\"posted_type\" onChange=\"document.location=options[selectedIndex].value;\">";
 foreach ($co_types as $t) {
 	//if ($co_type['id'] == $posted_type) $selected = 'SELECTED'; else $selected = '';
-    $select_html .= "<option value=\"".$t['id']."\">".$t['name']."</option>";
+    $select_html .= "<option value=\"".$server."cotypes/cotypes/".$t['id']."\">".$t['name']."</option>";
 }
 $select_html .= "</select>";
-*/
-echo "| ";
+
+echo "<ul class=filterlist>";
 foreach ($co_types as $t) {
-    echo " <a href=".$server."cotypes/cotypes/".$t['id'].">".$t['name']."</a> |";
+    echo "<li><a href=".$server."cotypes/cotypes/".$t['id'].">".$t['name']."</a></li>";
 }
+echo "</ul>";
 ?>
-<!--
+
 <form method="post">
 <label for="posted_type\">Subtype to list: </label>
 <?php echo $select_html; ?>
-<br />
-<br />
-<input type="submit" name="submit" value="Show Results" />
 </form>
--->
+
 <div style="margin: 25px;">
    	<h1><?php echo $count; ?> Objects Found:</h1>
    	<table class="sortable-onload-1 rowstyle-alt no-arrow">
@@ -57,6 +69,31 @@ foreach ($co_types as $t) {
 
 <?php
 
+	function scalecoimage($location, $maxw=NULL, $maxh=NULL){
+		    $img = @getimagesize($location);
+		    if($img){
+		        $w = $img[0];
+		        $h = $img[1];
+		
+		        $dim = array('w','h');
+		        foreach($dim AS $val){
+		            $max = "max{$val}";
+		            if(${$val} > ${$max} && ${$max}){
+		                $alt = ($val == 'w') ? 'h' : 'w';
+		                $ratio = ${$alt} / ${$val};
+		                ${$val} = ${$max};
+		                ${$alt} = ${$val} * $ratio;
+		            }
+		        }
+		        $hoffset = ($maxh - $h)/2;
+		        $woffset = ($maxw - $w)/2;
+				$style_line = "width: ".$w."px; height: ".$h."px; margin-top: ".$hoffset."px; margin-bottom: ".$hoffset."px; margin-left: ".$woffset."px; margin-right: ".$woffset."px;";
+		    } else {
+		    	$style_line = "width: 150px; height: 150px; margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px;";
+		    }
+		    return($style_line);
+	}
+
    function get_imgurl($imgpath) {
 		global $server;
 		$file_details = array();
@@ -64,19 +101,19 @@ foreach ($co_types as $t) {
 		$imgurl = property('app_img').'/noorig.png';
 		foreach ($supported_exts as $ext) {
 			$path = $server.$imgpath . $ext;
-			if (is_readable($path)) {
+			if (@file_get_contents($path,0,NULL,0,1)) {
 				$imgurl = $path;
 				$file_details['img_found'] = true;
 				$thumb_extensions = array(".png", $ext);
 				foreach ($thumb_extensions as $te) {
-					$thumbpath = $base_path . "_thumb" . $te;
-					if (is_readable($thumbpath)) {
+					$thumbpath = $path . "_thumb" . $te;
+					if (@getimagesize($thumbpath)) {
 						$imgurl = $thumbpath;
+						break;
 					}
-					break;
 				}
-			}
 			break;
+			}
 		}
    	return $imgurl;
   }
@@ -89,8 +126,8 @@ foreach ($co_types as $t) {
 			foreach ($c as $var=>$val) $$var = $val;
     		$link = $server."/uploads/cdir_".$cfilename."/mdir_".$mfilename."/odir_".$ofilename."/".$ofilename."_grab";
     		$imgurl = get_imgurl($link);
-    		
-    		$img_html = "<a href=\"$imgurl\"><img src=\"$imgurl\" width=150 /></a>";
+    		$imgstyle = scalecoimage($imgurl, 150, 150);
+    		$img_html = "<a href=\"$imgurl\"><img src=\"$imgurl\" style=\"$imgstyle\" /></a>";
     
     		$results_html .= <<<htmleoq
     
