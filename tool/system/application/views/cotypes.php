@@ -99,19 +99,14 @@ echo "</ul>";
 		    return($style_line);
 	}
 
-  function get_imgurl($path, $name, $pre_ext = '', $location = NULL) {
+  function get_imgurl($path, $name, $pre_ext = '') {
    	$base_url = property('app_uploads_url') . $path . "/";
     $base_path = property('app_uploads_path') . $path . "/";
 
     $file_details;    
     
-    if ($location) {
-      $base_path .= "{$name}_" . $pre_ext . "_" . $location;
-      $base_url .= "{$name}_" . $pre_ext . "_" . $location;
-    } else {
-      $base_path .= $name . "_" . $pre_ext;
-      $base_url .= $name . "_" . $pre_ext;
-    }
+    $base_path .= $name . "_" . $pre_ext;
+    $base_url .= $name . "_" . $pre_ext;
 
 		// Prepare for failure
 		$file_details['imgurl'] = '';
@@ -158,8 +153,10 @@ echo "</ul>";
 	if ($count > 0) {
 		foreach ($cos as $c) {
 			foreach ($c as $var=>$val) $$var = $val;
-    		$name = $this->object->coobject->object_filename($oid);
-			$path = $this->object->coobject->object_path($cid, $mid,$oid);
+    		//$name = $this->object->coobject->object_filename($oid);
+			//$path = $this->object->coobject->object_path($cid, $mid,$oid);
+			$name = $c['ofilename'];
+			$path = "cdir_".$c['cfilename']."/mdir_".$c['mfilename']."/odir_".$c['ofilename'];
 			$defimg = 'noorig.png';
 			$dflag = 'grab';
     		$image_details = get_imgurl($path, $name, $dflag);
@@ -174,8 +171,8 @@ echo "</ul>";
 				$imgpath = property('app_img').'/'.$defimg;
 			}
 			//echo "$imgurl <br>";
-    		$imgstyle = scalecoimage($imgurl, 150, 150);
-    		$img_html = "<a href=\"$imgurl\"><img src=\"$imgurl\" style=\"$imgstyle\" /></a>";
+    		//$imgstyle = scalecoimage($imgurl, 150, 150);
+    		$img_html = "<a href=\"$imgurl\"><img src=\"$imgurl\" width=150 /></a>";
     
     		$results_html .= <<<htmleoq
     
