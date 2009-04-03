@@ -58,7 +58,7 @@ var Site = {
   },
 
   setuptabs: function () {
-    myCOTabs = new mootabs('myTabs',{height: '300px', width: '40%'});
+    myCOTabs = new MorphTabs('myTabs',{height: '', width: '', changeTransition: 'none'});
     if (showreptab) { myCOTabs.activate('Replacement'); }
     
     // set up morphtabs which replaces mootabs for mootools 1.2

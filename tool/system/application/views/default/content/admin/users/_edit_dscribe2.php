@@ -1,16 +1,18 @@
 <?php $this->load->view(property('app_views_path').'/admin/admin_header.php', $data); 
 
-echo style('mootabs1.2.css',array('media'=>"screen, projection"));
-echo script('mootabs1.2.js');
+// echo style('mootabs1.2.css',array('media'=>"screen, projection"));
+// echo script('mootabs1.2.js');
+echo style('morphtabs.css',array('media'=>"screen, projection"));
+echo script ('morphtabs.js');
 ?>
 
 <div id="myTabs" class="column span-24 first last">
-	<ul class="mootabs_title">
+	<ul class="morphtabs_title">
 		<li title="Dscribe" style="padding-left:10px; margin-left:0;"><h2>Manage dScribes</h2></li>
 		<li title="Course" style="padding-left:10px; margin-left:0;"><h2>Manage Courses</h2></li>
 	</ul>
 
-	<div id="Dscribe" class="mootabs_panel">
+	<div id="Dscribe" class="morphtabs_panel">
 			<div class="column span-24 first last" style="margin-bottom: 10px; margin-top: 10px; padding-bottom: 20px; border-bottom:1px solid #aaa;">
 				<form method="post" action="<?php echo site_url("admin/users/edit/$defuser/{$user['id']}")?>" enctype="multipart/form-data" style="margin:0px;padding:0">
 					<input type="hidden" name="task" value="assigndscribe1" />
@@ -67,7 +69,7 @@ echo script('mootabs1.2.js');
 			</div>
 	</div>
 
-	<div id="Course" class="mootabs_panel">
+	<div id="Course" class="morphtabs_panel">
 
 			<div class="column span-24 first last" style="margin-bottom: 10px; margin-top: 10px; padding-bottom: 20px; border-bottom:1px solid #aaa;">
 				<form name="adminform" method="post" action="<?php echo site_url("admin/users/edit/$defuser/{$user['id']}")?>" enctype="multipart/form-data" style="margin:0px;padding:0">

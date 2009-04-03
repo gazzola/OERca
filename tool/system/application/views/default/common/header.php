@@ -30,7 +30,7 @@
 	   echo script('flash.js');
 	   
 	   // load morphtabs
-	   echo script('morphtabs.js');
+	   echo script('morphtabs-compressed.js');
 
 	  $ci_uri = trim($this->uri->uri_string(), '/'); 
 	?>
