@@ -27,12 +27,9 @@ MorphTabs styles
 	color: #666;
 }
 
-/*.morphtabs_panelwrap { 
-	position: relative;	
-	top: -1px;
-	clear: both;
-	overflow: hidden;
-}*/
+.morphtabs_title li.over {
+  color: #0000ff;
+}
 
 .morphtabs_panel {
 	position: relative;
@@ -45,9 +42,6 @@ MorphTabs styles
 	padding: 5px;
 }
 
-/*.morpthtabs_panel p {
-	margin-left:5px;
-}*/
 
 #Course.morphtabs_panel.active,
 #Dscribe.morphtabs_panel.active 
