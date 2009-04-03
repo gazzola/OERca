@@ -53,7 +53,6 @@ var OERcaTabs = new Class({
     var currElement = (item.type == 'click') ? this.tabContainer.getElementById(item.target.getParent().getProperty('title')) : this.tabContainer.getElementById(item);
     this.hideAll();
     currElement.setStyle('display', 'inline');
-    currElement.setStyle('color', 'red');
   },
   
   makeActive: function(item) {

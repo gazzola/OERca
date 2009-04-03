@@ -28,25 +28,9 @@
 	   echo script('multiupload.js'); 
 
 	   echo script('flash.js');
-	   
-	   echo script('jquery/jquery-1.3.1.js');
-	   echo script('jquery/jquery-ui-personalized-1.6rc6.js');
-
-	   
-	   // load morphtabs
-	   //echo script('morphtabs-compressed.js');
 
 	  $ci_uri = trim($this->uri->uri_string(), '/'); 
 	?>
-	<script>
-     jQuery.noConflict();
- 
-     jQuery(function() {
-		jQuery("#jqTabs").tabs();
-	});
-
-
-</script>
 </head>
 
 <body>
