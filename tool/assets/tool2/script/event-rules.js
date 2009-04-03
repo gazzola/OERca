@@ -114,24 +114,19 @@ var Rules = {
 				if (comments == '') {
                 alert('Please enter a comment');
 				} else {
-                var fb = $('feedback');
-                var response;
-
                 new Request(
                     {
                     	url: requestUrl,
 					 	method: 'post', 
 						data: { 'comments':comments},
-					 	update: fb,
-                     	onComplete:function() {
-                        response = fb.innerHTML;
-                        if (response=='success') {
-                            requestUrl = $('server').value+'materials/editcomments/'+course_id+'/'+material_id;
-                            window.location.replace(requestUrl);
-                        } else {
-                            alert(response);
-                        }
-               }}).send();
+                     	onComplete:function(response) {
+                        	if (response=='success') {
+                            	requestUrl = $('server').value+'materials/editcomments/'+course_id+'/'+material_id;
+                            	window.location.replace(requestUrl);
+                        	} else {
+                            	alert(response);
+                        	}
+               		}}).send();
 			}
 		}
 	},
@@ -150,8 +145,6 @@ var Rules = {
 			if (comments == '') {
           alert('Please enter a comment');
 			} else {
-          var fb = $('feedback');
-          var response;
 					var once = true;
 
           new Request(
@@ -159,25 +152,23 @@ var Rules = {
                   	url: requestUrl,
 					method: 'post', 
 					data: {'comments':comments},
-					update: fb,
-                    onComplete:function() {
-                       response = fb.innerHTML;
-											if (once) {						
-                       	if (response=='success') {
-														orig_com_ap.toggle();
-														var tr = new Element('tr');
-														var td1 = new Element('td').setText(unescape(comments)); 
-														var td2 = new Element('td').setText($('user').value); 
-														var td3 = new Element('td').setText('Today'); 
-														tr.adopt(td1); tr.adopt(td2); tr.adopt(td3); 
-														tr.injectTop( $('objectcomments') );
-														$('comments').value = '';
-														if ($('nocomments')) { $('nocomments').remove(); }
-                        } else {
-                            alert(response);
-                       	}
-												once = false;
-					  					}
+                    onComplete:function(response) {
+						if (once) {						
+                       		if (response=='success') {
+								//orig_com_addpanel.toggle();
+								var tr = new Element('tr');
+								var td1 = new Element('td').set('text', unescape(comments)); 
+								var td2 = new Element('td').set('text', $('user').value); 
+								var td3 = new Element('td').set('text', 'Today'); 
+								tr.adopt(td1); tr.adopt(td2); tr.adopt(td3); 
+								tr.injectTop( $('objectcomments') );
+								$('comments').value = '';
+								if ($('nocomments')) { $('nocomments').remove(); }
+                       		} else {
+                            	alert(response);
+                       		}
+						once = false;
+					  }
            }}).send();
 			  }
 		}
@@ -196,8 +187,6 @@ var Rules = {
 			if (qs == '') {
           alert('Please enter a question');
 			} else {
-          var fb = $('feedback');
-          var response;
 					var once = true;
 					requestUrl += '/'+role; 
 			
@@ -206,20 +195,18 @@ var Rules = {
                   	url: requestUrl,
 					 					method: 'post', 
 										data: {'question':qs},
-									 	update: fb,
-                    onComplete:function() {
-                       response = fb.innerHTML;
+                    onComplete:function(response) {
 											if (once) {						
                        	if (response=='success') {
 														//orig_q_addpanel_i.toggle();
 														var tr = new Element('tr');
-														var td1 = new Element('td').setText(role); 
-														var td2 = new Element('td').setText(unescape(qs)); 
-														var td3 = new Element('td').setText('No answer'); 
-														var td4 = new Element('td').setText($('user').value); 
+														var td1 = new Element('td').set('text', role); 
+														var td2 = new Element('td').set('text', unescape(qs)); 
+														var td3 = new Element('td').set('text', 'No answer'); 
+														var td4 = new Element('td').set('text', $('user').value); 
 														var td5 = new Element('td'); 
-														var td6 = new Element('td').setText('Today'); 
-														var td7 = new Element('td').setText('Today'); 
+														var td6 = new Element('td').set('text', 'Today'); 
+														var td7 = new Element('td').set('text', 'Today'); 
 														tr.adopt(td1); tr.adopt(td2); tr.adopt(td3); tr.adopt(td4);
 														tr.adopt(td5); tr.adopt(td6); tr.adopt(td7);
 														tr.injectTop( $('objectqs') );
@@ -662,9 +649,9 @@ var Rules = {
                        	if (response=='success') {
 														repl_com_ap.toggle();
 														var tr = new Element('tr');
-														var td1 = new Element('td').setText(unescape(comments)); 
-														var td2 = new Element('td').setText($('user').value); 
-														var td3 = new Element('td').setText('Today'); 
+														var td1 = new Element('td').set('text', unescape(comments)); 
+														var td2 = new Element('td').set('text', $('user').value); 
+														var td3 = new Element('td').set('text', 'Today'); 
 														tr.adopt(td1); tr.adopt(td2); tr.adopt(td3); 
 														tr.injectTop( $('replcomments') );
 														$('repl_comments').value = '';
@@ -709,13 +696,13 @@ var Rules = {
                        	if (response=='success') {
 														repl_q_ap.toggle();
 														var tr = new Element('tr');
-														var td1 = new Element('td').setText(role); 
-														var td2 = new Element('td').setText(unescape(qs)); 
-														var td3 = new Element('td').setText('No answer'); 
-														var td4 = new Element('td').setText($('user').value); 
+														var td1 = new Element('td').set('text', role); 
+														var td2 = new Element('td').set('text', unescape(qs)); 
+														var td3 = new Element('td').set('text', 'No answer'); 
+														var td4 = new Element('td').set('text', $('user').value); 
 														var td5 = new Element('td'); 
-														var td6 = new Element('td').setText('Today'); 
-														var td7 = new Element('td').setText('Today'); 
+														var td6 = new Element('td').set('text', 'Today'); 
+														var td7 = new Element('td').set('text', 'Today'); 
 														tr.adopt(td1); tr.adopt(td2); tr.adopt(td3); tr.adopt(td4);
 														tr.adopt(td5); tr.adopt(td6); tr.adopt(td7);
 														tr.injectTop( $('replqs') );
