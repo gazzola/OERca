@@ -2,8 +2,8 @@ function valid_recommendation(oid,recommendation)
 {
 	if (recommendation=='') { return 'Please recommend an action'; }
 	var response = null;
-	var requestUrl = $('server').value+'materials/valid_recommendation/'+oid+'/'+recommendation;
-	var xhr = new XHR({ method: 'get', async: false }).send(requestUrl);
+	var url = $('server').value+'materials/valid_recommendation/'+oid+'/'+recommendation;
+	var xhr = new XHR({ method: 'get', async: false }).send(url);
 	return (response || xhr.transport.responseText);
 }
 
@@ -30,18 +30,17 @@ var Rules = {
 			var course_id = $('cid').getValue();
 			var tag_id = this.value;
 			var material_id = (this.name).replace(/selectname_/g,'');
-			var requestUrl = $('server').value+'materials/update/'+course_id+'/'+
+			var url = $('server').value+'materials/update/'+course_id+'/'+
 					  material_id+'/tag_id/'+tag_id;	
 
-			new Request(
+			new Ajax(url,
             	{
-            	url: requestUrl,
 				 method: 'get',
 				 update: $('feedback'),
 			 	 onComplete:function(request){
                   	response = $('feedback').innerHTML;
                   	if (response != 'success') { alert(response); }
-            	} }).send();
+            	} }).request();
 		}
 	},
 
@@ -72,19 +71,16 @@ var Rules = {
 			var check = this.check(field, value);
 
 			if (check=='success') {
-				var requestUrl = $('server').value+'materials/update/'+course_id+'/'+material_id;
+				var url = $('server').value+'materials/update/'+course_id+'/'+material_id;
 
-				new Request(
-            		{ 
-            			url: requestUrl,
-            			method: 'post',
-						data: {'field':field,'val':value},
-					  	update: $('feedback'),
-			 	 	  	onComplete:function(request){
-                  			response = $('feedback').innerHTML;
-                  			if (response != 'success') { alert(response); }
-            			} 
-            		}).send();
+				new Ajax(url,
+            		{ method: 'post',
+									postBody: 'field='+field+'&val='+value,
+					  update: $('feedback'),
+			 	 	  onComplete:function(request){
+                  		response = $('feedback').innerHTML;
+                  		if (response != 'success') { alert(response); }
+            		} }).request();
 			} else {
 				alert(check);
 			}
@@ -108,25 +104,29 @@ var Rules = {
 		element.onclick = function() {
 				var course_id = $('cid').value;
 				var material_id = $('mid').value; 
-      	var requestUrl = $('server').value+'materials/add_comment/'+course_id+'/'+material_id;
+      	var url = $('server').value+'materials/add_comment/'+course_id+'/'+material_id;
 
 				var comments = escape($('comments').value);
 				if (comments == '') {
                 alert('Please enter a comment');
 				} else {
-                new Request(
+                var fb = $('feedback');
+                var response;
+
+                new Ajax(url,
                     {
-                    	url: requestUrl,
-					 	method: 'post', 
-						data: { 'comments':comments},
-                     	onComplete:function(response) {
-                        	if (response=='success') {
-                            	requestUrl = $('server').value+'materials/editcomments/'+course_id+'/'+material_id;
-                            	window.location.replace(requestUrl);
-                        	} else {
-                            	alert(response);
-                        	}
-               		}}).send();
+					 						method: 'post', 
+											postBody: 'comments='+comments,
+					 						update: fb,
+                     	onComplete:function() {
+                        response = fb.innerHTML;
+                        if (response=='success') {
+                            url = $('server').value+'materials/editcomments/'+course_id+'/'+material_id;
+                            window.location.replace(url);
+                        } else {
+                            alert(response);
+                        }
+               }}).request();
 			}
 		}
 	},
@@ -139,37 +139,40 @@ var Rules = {
 		element.onclick = function(e) {
 		  new Event(e).stop();
 			var object_id = $('oid').value; 
-      var requestUrl = $('server').value+'materials/add_object_comment/'+object_id;
+      var url = $('server').value+'materials/add_object_comment/'+object_id;
 
 			var comments = escape($('comments').value);
 			if (comments == '') {
           alert('Please enter a comment');
 			} else {
+          var fb = $('feedback');
+          var response;
 					var once = true;
 
-          new Request(
+          new Ajax(url,
                   {
-                  	url: requestUrl,
-					method: 'post', 
-					data: {'comments':comments},
-                    onComplete:function(response) {
-						if (once) {						
-                       		if (response=='success') {
-								//orig_com_addpanel.toggle();
-								var tr = new Element('tr');
-								var td1 = new Element('td').set('text', unescape(comments)); 
-								var td2 = new Element('td').set('text', $('user').value); 
-								var td3 = new Element('td').set('text', 'Today'); 
-								tr.adopt(td1); tr.adopt(td2); tr.adopt(td3); 
-								tr.injectTop( $('objectcomments') );
-								$('comments').value = '';
-								if ($('nocomments')) { $('nocomments').remove(); }
-                       		} else {
-                            	alert(response);
-                       		}
-						once = false;
-					  }
-           }}).send();
+					 					method: 'post', 
+										postBody: 'comments='+comments,
+									 	update: fb,
+                    onComplete:function() {
+                       response = fb.innerHTML;
+											if (once) {						
+                       	if (response=='success') {
+														orig_com_ap.toggle();
+														var tr = new Element('tr');
+														var td1 = new Element('td').setText(unescape(comments)); 
+														var td2 = new Element('td').setText($('user').value); 
+														var td3 = new Element('td').setText('Today'); 
+														tr.adopt(td1); tr.adopt(td2); tr.adopt(td3); 
+														tr.injectTop( $('objectcomments') );
+														$('comments').value = '';
+														if ($('nocomments')) { $('nocomments').remove(); }
+                        } else {
+                            alert(response);
+                       	}
+												once = false;
+					  					}
+           }}).request();
 			  }
 		}
 	},
@@ -180,44 +183,57 @@ var Rules = {
 			var course_id = $('cid').value;
 			var material_id = $('mid').value; 
 			var object_id = $('oid').value; 
-      var requestUrl = $('server').value+'materials/add_object_question/'+course_id+'/'+material_id+'/'+object_id;
+      var url = $('server').value+'materials/add_object_question/'+course_id+'/'+material_id+'/'+object_id;
 			var role = $('origrole').value;
 				
 			var qs = escape($('question').value);
 			if (qs == '') {
           alert('Please enter a question');
 			} else {
+          var fb = $('feedback');
+          var response;
 					var once = true;
-					requestUrl += '/'+role; 
+					url += '/'+role; 
 			
-          new Request(
+          new Ajax(url,
                   {
-                  	url: requestUrl,
 					 					method: 'post', 
-										data: {'question':qs},
-                    onComplete:function(response) {
+										postBody: 'question='+qs,
+									 	update: fb,
+                    onComplete:function() {
+                       response = fb.innerHTML;
 											if (once) {						
                        	if (response=='success') {
-														//orig_q_addpanel_i.toggle();
+														orig_q_ap.toggle();
 														var tr = new Element('tr');
-														var td1 = new Element('td').set('text', role); 
-														var td2 = new Element('td').set('text', unescape(qs)); 
-														var td3 = new Element('td').set('text', 'No answer'); 
-														var td4 = new Element('td').set('text', $('user').value); 
+														var td1 = new Element('td').setText(role); 
+														var td2 = new Element('td').setText(unescape(qs)); 
+														var td3 = new Element('td').setText('No answer'); 
+														var td4 = new Element('td').setText($('user').value); 
 														var td5 = new Element('td'); 
-														var td6 = new Element('td').set('text', 'Today'); 
-														var td7 = new Element('td').set('text', 'Today'); 
+														var td6 = new Element('td').setText('Today'); 
+														var td7 = new Element('td').setText('Today'); 
 														tr.adopt(td1); tr.adopt(td2); tr.adopt(td3); tr.adopt(td4);
 														tr.adopt(td5); tr.adopt(td6); tr.adopt(td7);
 														tr.injectTop( $('objectqs') );
 														$('question').value = '';
+														if (role=='dscribe2') {
+																		$('ask_dscribe2r_yes').checked=true;
+																		$('ask_dscribe2r_no').checked=false;
+																		$('ask_dscribe2_yes').style.display='block';	
+														}
+														if (role=='instructor') {
+																		$('ask_inst_yes').checked=true;
+																		$('ask_inst_no').checked=false;
+																		$('ask_yes').style.display='block';	
+														}
 														if ($('noquestions')) { $('noquestions').remove(); }
                         } else {
                             alert(response);
                        	}
 												once = false;
 					  					}
-           }}).send();
+           }}).request();
 			  }
 		}
 	},
@@ -229,7 +245,7 @@ var Rules = {
 				var material_id = $('mid').value; 
 				var object_id = $('oid').value;
 				var field = this.name; 
-				var requestUrl = $('server').value+'materials/update_object/'+course_id+'/'+material_id+'/'+object_id;
+				var url = $('server').value+'materials/update_object/'+course_id+'/'+material_id+'/'+object_id;
 				var val = this.value;
 	     	var fb = $('feedback');
 				var proceed = true;
@@ -244,7 +260,7 @@ var Rules = {
 							 return false;
 						}
 					}
-					new Request({ url: requestUrl,method: 'post', data: {'field':field,'val':val}, update: fb }).send();
+					new Ajax(url, { method: 'post', postBody: 'field='+field+'&val='+val, update: fb }).request();
 
 				} else if (field=='ask_inst') {
 					if(val == 'yes')
@@ -258,7 +274,7 @@ var Rules = {
 							return false;
 						}
 					}
-					new Request({ url: requestUrl,method: 'post', data: {'field':field,'val':val}, update: fb }).send();
+					new Ajax(url, { method: 'post', postBody: 'field='+field+'&val='+val, update: fb }).request();
 					
 					// show the div
 					var id = this.id;
@@ -289,13 +305,13 @@ var Rules = {
 							return false;
 						} else {
 								if (val == 'Search' || val == 'Create' || val=='Remove and Annotate') {
-										new Request({ url: requestUrl,method: 'post', data: {'field':field,'val':val}, update: fb }).send();
+										new Ajax(url, { method: 'post', postBody: 'field='+field+'&val='+val, update: fb }).request();
 										var ask_dscrib2 = document.getElementsByName('ask_dscribe2');
 										for ( var i = 0 ; i < ask_dscrib2.length ; i++ ) {
 												 ask_dscrib2[i].checked = (ask_dscrib2[i].value == 'no') ? 'checked' : '';
 										}
       							var fb1 = $('feedback');
-										new Request({ url: requestUrl, method: 'post', data: {'field':'ask_dscribe2', 'val':'no'}, update: fb1 }).send();
+										new Ajax(url, { method: 'post', postBody: 'field=ask_dscribe2&val=no', update: fb1 }).request();
 
 										if ($('Fair Use')) { $('Fair Use').style.display = 'none';	}
 										if ($('Permission')) { $('Permission').style.display = 'none';}
@@ -338,7 +354,7 @@ var Rules = {
 						}	
 
 				} else {	
-					new Request({url: requestUrl, method: 'post', data: {'field':field,'val':val}, update: fb }).send();
+					new Ajax(url, { method: 'post', postBody: 'field='+field+'&val='+val, update: fb }).request();
 				}	
 		}
 		//element.onclick = element.onchange;
@@ -351,14 +367,14 @@ var Rules = {
 				var material_id = $('mid').value; 
 				var object_id = $('oid').value;
 				var field = 'action_type'; 
-				var requestUrl = $('server').value+'materials/update_object/'+course_id+'/'+material_id+'/'+object_id;
+				var url = $('server').value+'materials/update_object/'+course_id+'/'+material_id+'/'+object_id;
 				var val = $('action_type').value;
 	     	var fb = $('feedback');
 
 				var check = this.validate(val);
 				if (check != 'success') { alert(check); return false; }
 
-				new Request({ url: requestUrl, method: 'post', data: {'field':field,'val':val}, update: fb, 
+				new Ajax(url, { method: 'post', postBody: 'field='+field+'&val='+val, update: fb, 
                      		onComplete:function() {
                         		response = fb.innerHTML;
                         		if (response=='success') {
@@ -378,19 +394,18 @@ var Rules = {
 																						ask_dscrib2[i].checked = 'checked';
 																					}
 																			}
-																			// reset requestUrl
+																			// reset url
       																var fb1 = $('feedback');
-																			new Request({ url: requestUrl,
-																								method: 'post', 
-																											data: {'field':'ask_dscribe2','val':'yes'}, 
-																											update: fb1 }).send();
+																			new Ajax(url, { method: 'post', 
+																											postBody: 'field=ask_dscribe2&val=yes', 
+																											update: fb1 }).request();
 																	}
 														} else {
 																alert(response); return false;
 														}
 												}
 											}
-						).send();
+						).request();
 
 		}
 		element.validate = function(action) {
@@ -407,6 +422,39 @@ var Rules = {
 		}
 	},
 	
+	'.do_replacement_ask_yesno' : function(element) {
+		element.onclick = function() {
+			var id = this.id;
+			id = id.replace(/\w+_/g,'');
+			if (this.value == 'yes') {
+				if ($('repl_ask_yes')) {
+					$('repl_ask_yes').style.display = 'block';	
+				}
+			} else {
+			   if ($('repl_ask_yes')) {$('repl_ask_yes').style.display = 'none';	}
+			}
+		}
+	},
+	
+	'.do_object_ask_dscribe2_yesno' : function(element) {
+		element.onclick = function() {
+			var id = this.id;
+			id = id.replace(/\w+_/g,'');
+			if (this.value == 'yes') {
+				if ($('ask_dscribe2_yes')) {
+					$('ask_dscribe2_yes').style.display = 'inline';	
+				 	orig_q_ap.setrole('dscribe2');
+				 	orig_q_ap.show();
+					$('orig_q_addpanel').scrollIntoView();
+				}
+			} else {
+			   if ($('ask_dscribe2_yes')) { 
+				 			orig_q_ap.hide();
+						$('ask_dscribe2_yes').style.display = 'none';	}
+			}
+		}
+	},
+	
 	'.do_object_rationale' : function(element) {
 		element.onchange = function () {
 				var response;
@@ -414,12 +462,12 @@ var Rules = {
 				var material_id = $('mid').value; 
 				var object_id = $('oid').value;
 				var field = this.name; 
-				var requestUrl = $('server').value+'materials/update_object/'+course_id+'/'+material_id;
+				var url = $('server').value+'materials/update_object/'+course_id+'/'+material_id;
 				var val = this.value;
-				requestUrl += '/'+object_id;
+				url += '/'+object_id;
 			
       	var fb = $('feedback');
-				new Request({ url: requestUrl, method: 'post', data: {'field':field,'val':val}, update: fb }).send();
+				new Ajax(url, { method: 'post', postBody: 'field='+field+'&val='+val, update: fb }).request();
 		}
 	},
 	
@@ -430,12 +478,12 @@ var Rules = {
 				var material_id = $('mid').value; 
 				var object_id = $('oid').value;
 				var field = this.name; 
-				var requestUrl = $('server').value+'materials/update_object/'+course_id+'/'+material_id;
+				var url = $('server').value+'materials/update_object/'+course_id+'/'+material_id;
 				var val = this.value;
-				requestUrl += '/'+object_id;
+				url += '/'+object_id;
 			
       	var fb = $('feedback');
-				new Request({ url: requestUrl, method: 'post', data: {'field':field,'val':val}, update: fb }).send();
+				new Ajax(url, { method: 'post', postBody: 'field='+field+'&val='+val, update: fb }).request();
 		}
 	},
 	
@@ -447,25 +495,25 @@ var Rules = {
 				var object_id = $('oid').value;
 				var field = this.name; 
 				var val = escape(this.value);
-				var requestUrl = $('server').value+'materials/update_contact/'+course_id+'/'+material_id+'/'+object_id;
+				var url = $('server').value+'materials/update_contact/'+course_id+'/'+material_id+'/'+object_id;
 			
 				
 				var fb = $('feedback');
                 var response;
 
-                new Request({ url: requestUrl, method: 'post',
-							data: {'field':field,'val':val},
+                new Ajax(url, { method: 'post',
+							postBody: 'field='+field+'&val='+val,
 							update: fb, 
                      		onComplete:function() {
                         		response = fb.innerHTML;
                         		if (response=='success') {
-                            		//requestUrl = $('server').value+'materials/askforms/'+course_id+'/'+material_id;
-                            		//window.location.replace(requestUrl);
+                            		//url = $('server').value+'materials/askforms/'+course_id+'/'+material_id;
+                            		//window.location.replace(url);
                         		} else {
                             		alert(response);
                         		}
 							}
-				}).send();
+				}).request();
 		}
 	},
 
@@ -477,10 +525,10 @@ var Rules = {
 			var object_id = this.name.replace(/copy_\w+_/g,'');
 			var field = this.name.replace(/copy_/g,'');
 			field = field.replace(/_\d+$/g,'');
-			var requestUrl = $('server').value+'materials/update_object_copyright/'+
+			var url = $('server').value+'materials/update_object_copyright/'+
 					  		object_id+'/original';
       var fb = $('feedback');
-      new Request({ url: requestUrl, method: 'post', data: {'field':field,'val':val}, update: fb}).send();
+      new Ajax(url, {	method: 'post', postBody: 'field='+field+'&val='+val, update: fb}).request();
 		}
 	},
 
@@ -502,9 +550,9 @@ var Rules = {
 			}
 			if (field == 'unique') { field = 'is_unique'; }
 
-			var requestUrl = $('server').value+'materials/update_object/'+course_id+'/'+material_id+'/'+object_id;
+			var url = $('server').value+'materials/update_object/'+course_id+'/'+material_id+'/'+object_id;
       var fb = $('feedback');
-			new Request({ url: requestUrl, method: 'post', data: { 'field':field,'val':val}, update: fb }).send();
+			new Ajax(url, { method: 'post', postBody: 'field='+field+'&val='+val, update: fb }).request();
 		}
 	},
 
@@ -517,23 +565,23 @@ var Rules = {
 			var material_id = $('mid').value; 
 			var view = $('view').value; 
 			var object_id = this.name.replace(/status_/g,'');
-			var requestUrl = $('server').value+'materials/update_object/'+course_id+'/'+material_id+'/'+object_id;
+			var url = $('server').value+'materials/update_object/'+course_id+'/'+material_id+'/'+object_id;
             var fb = $('feedback');
 			var response;
-            new Request({ url: requestUrl, method: 'post',
-														data: {'field':'ask_status','val':val},
+            new Ajax(url, { method: 'post',
+														postBody: 'field=ask_status&val='+val,
 							update: fb, 
                      		onComplete:function() {
                         		response = fb.innerHTML;
                         		if (response=='success') {
-                            		requestUrl = $('server').value+'materials/askforms/'+
+                            		url = $('server').value+'materials/askforms/'+
 										course_id+'/'+material_id+'/'+view;
-                            		window.location.replace(requestUrl);
+                            		window.location.replace(url);
                         		} else {
                             		alert(response);
                         		}
 							}
-			}).send();
+			}).request();
 		}
 	},
 
@@ -546,9 +594,9 @@ var Rules = {
 			var question_id = object_id;
 			object_id = object_id.replace(/_\d+$/g,'');
 			question_id = question_id.replace(/^\d+_/g,'');
-			var requestUrl = $('server').value+'materials/update_object_question/'+object_id+'/'+question_id;
+			var url = $('server').value+'materials/update_object_question/'+object_id+'/'+question_id;
       var fb = $('feedback');
-			new Request( { url: requestUrl, method: 'post', data: {'answer':val}, update: fb }).send();
+			new Ajax(url, { method: 'post', postBody: 'answer='+val, update: fb }).request();
 		}
 	},
 
@@ -617,8 +665,8 @@ var Rules = {
 			if (field=='rep_ok') { field = 'suitable'; }
 			if (field == 'notsuitable') { field = 'unsuitable_reason'; }
 
-			var requestUrl = $('server').value+'materials/update_replacement/'+course_id+'/'+material_id+'/'+object_id+'/'+repl_id;
-			new Request({ url: requestUrl, method: 'post', data: { 'field':field,'val':val}, update: fb }).send();
+			var url = $('server').value+'materials/update_replacement/'+course_id+'/'+material_id+'/'+object_id+'/'+repl_id;
+			new Ajax(url, { method: 'post', postBody: 'field='+field+'&val='+val, update: fb }).request();
 		}
 	},
 
@@ -626,7 +674,7 @@ var Rules = {
 		element.onclick = function(e) {
 		  new Event(e).stop();
 			var object_id = $('rid').value; 
-      var requestUrl = $('server').value+'materials/add_object_comment/'+object_id;
+      var url = $('server').value+'materials/add_object_comment/'+object_id;
 				
 			var comments = escape($('repl_comments').value);
 			if (comments == '') {
@@ -635,13 +683,12 @@ var Rules = {
           var fb = $('feedback');
           var response;
 					var once = true;
-					requestUrl += '/replacement'; 
+					url += '/replacement'; 
 
-          new Request(
+          new Ajax(url,
                   {
-                  	url: requestUrl,
 					 					method: 'post', 
-										data: {'comments':comments},
+										postBody: 'comments='+comments,
 									 	update: fb,
                     onComplete:function() {
                        response = fb.innerHTML;
@@ -649,9 +696,9 @@ var Rules = {
                        	if (response=='success') {
 														repl_com_ap.toggle();
 														var tr = new Element('tr');
-														var td1 = new Element('td').set('text', unescape(comments)); 
-														var td2 = new Element('td').set('text', $('user').value); 
-														var td3 = new Element('td').set('text', 'Today'); 
+														var td1 = new Element('td').setText(unescape(comments)); 
+														var td2 = new Element('td').setText($('user').value); 
+														var td3 = new Element('td').setText('Today'); 
 														tr.adopt(td1); tr.adopt(td2); tr.adopt(td3); 
 														tr.injectTop( $('replcomments') );
 														$('repl_comments').value = '';
@@ -661,7 +708,7 @@ var Rules = {
                        	}
 												once = false;
 					  					}
-           }}).send();
+           }}).request();
 			  }
 		}
 	},
@@ -672,7 +719,7 @@ var Rules = {
 			var course_id = $('cid').value;
 			var material_id = $('mid').value; 
 			var object_id = $('rid').value; 
-      var requestUrl = $('server').value+'materials/add_object_question/'+course_id+'/'+material_id+'/'+object_id;
+      var url = $('server').value+'materials/add_object_question/'+course_id+'/'+material_id+'/'+object_id;
 			var role = $('replrole').value;
 
 			var qs = escape($('repl_question').value);
@@ -682,13 +729,12 @@ var Rules = {
           var fb = $('feedback');
           var response;
 					var once = true;
-					requestUrl += '/'+role+'/replacement'; 
+					url += '/'+role+'/replacement'; 
 
-          new Request(
+          new Ajax(url,
                   {
-                  	url: requestUrl,
 					 					method: 'post', 
-										data: { 'question':qs},
+										postBody: 'question='+qs,
 									 	update: fb,
                     onComplete:function() {
                        response = fb.innerHTML;
@@ -696,16 +742,22 @@ var Rules = {
                        	if (response=='success') {
 														repl_q_ap.toggle();
 														var tr = new Element('tr');
-														var td1 = new Element('td').set('text', role); 
-														var td2 = new Element('td').set('text', unescape(qs)); 
-														var td3 = new Element('td').set('text', 'No answer'); 
-														var td4 = new Element('td').set('text', $('user').value); 
+														var td1 = new Element('td').setText(role); 
+														var td2 = new Element('td').setText(unescape(qs)); 
+														var td3 = new Element('td').setText('No answer'); 
+														var td4 = new Element('td').setText($('user').value); 
 														var td5 = new Element('td'); 
-														var td6 = new Element('td').set('text', 'Today'); 
-														var td7 = new Element('td').set('text', 'Today'); 
+														var td6 = new Element('td').setText('Today'); 
+														var td7 = new Element('td').setText('Today'); 
 														tr.adopt(td1); tr.adopt(td2); tr.adopt(td3); tr.adopt(td4);
 														tr.adopt(td5); tr.adopt(td6); tr.adopt(td7);
 														tr.injectTop( $('replqs') );
+														if (role=='instructor') {
+																$('ask_yes').checked=true;
+																$('ask_no').checked=false;
+																$('ask_yes').style.display='block';	
+																$('repl_ask_yes').style.display='block';	
+                            }
 														$('repl_question').value = '';
 														if($('noreplquestions')) { $('noreplquestions').remove(); }
                         } else {
@@ -713,7 +765,7 @@ var Rules = {
                        	}
 												once = false;
 					  					}
-           }}).send();
+           }}).request();
 			  }
 		}
 	},
@@ -727,9 +779,9 @@ var Rules = {
 			var question_id = object_id;
 			object_id = object_id.replace(/_\d+$/g,'');
 			question_id = question_id.replace(/^\d+_/g,'');
-			var requestUrl = $('server').value+'materials/update_object_question/'+object_id+'/'+question_id+'/replacement';
+			var url = $('server').value+'materials/update_object_question/'+object_id+'/'+question_id+'/replacement';
       var fb = $('feedback');
-			new Request({ url: requestUrl, method: 'post', data: { 'answer':val}, update: fb }).send();
+			new Ajax(url, { method: 'post', postBody: 'answer='+val, update: fb }).request();
 		}
 	},
 
@@ -741,10 +793,10 @@ var Rules = {
 			var object_id = this.name.replace(/copy_\w+_/g,'');
 			var field = this.name.replace(/copy_/g,'');
 			field = field.replace(/_\d+$/g,'');
-			var requestUrl = $('server').value+'materials/update_object_copyright/'+
+			var url = $('server').value+'materials/update_object_copyright/'+
 					  		object_id+'/replacement';
       var fb = $('feedback');
-      new Request( { url: requestUrl, method: 'post', data: { 'field':field,'val':val}, update: fb}).send();
+      new Ajax(url, {	method: 'post', postBody: 'field='+field+'&val='+val, update: fb}).request();
 		}
 	},
 
@@ -759,25 +811,24 @@ var Rules = {
 			var repl_id = this.name.replace(/status_/g,'');
 		  var object_id = ($('oid')) ? $('oid').value : $('oid-'+repl_id).value;
 
-			var requestUrl = $('server').value+'materials/update_replacement/'+course_id+'/'+material_id+'/'+object_id+'/'+repl_id;
+			var url = $('server').value+'materials/update_replacement/'+course_id+'/'+material_id+'/'+object_id+'/'+repl_id;
       var fb = $('feedback');
 			var response;
-            new Request( {
-            	url: requestUrl, 
+            new Ajax(url, { 
 											method: 'post',
-											data: {'field':'ask_status','val':val},
+											postBody: 'field=ask_status&val='+val,
 											update: fb, 
                      		onComplete:function() {
                         		response = fb.innerHTML;
                         		if (response=='success') {
-                            		requestUrl = $('server').value+'materials/askforms/'+
+                            		url = $('server').value+'materials/askforms/'+
 										course_id+'/'+material_id+'/'+view;
-                            		window.location.replace(requestUrl);
+                            		window.location.replace(url);
                         		} else {
                             		alert(response);
                         		}
 							}
-			}).send();
+			}).request();
 		}
 	},
 
@@ -798,8 +849,8 @@ var Rules = {
 							var view = $('view').value; 
 							var val = this.value;
 							view = (val=='instructor') ? 'provenance' : 'general';
-              requestUrl = $('server').value+'materials/askforms/'+cid+'/'+mid+'/'+view+'/'+val;
-             	window.location.replace(requestUrl);
+              url = $('server').value+'materials/askforms/'+cid+'/'+mid+'/'+view+'/'+val;
+             	window.location.replace(url);
 			}
 	},
 	'#response_type' : function (element) {
@@ -807,8 +858,8 @@ var Rules = {
 							var cid = $('cid').value;
 							var mid = $('mid').value; 
 							var val = this.value;
-              requestUrl = $('server').value+'materials/askforms/'+cid+'/'+mid+'/aitems/dscribe2/'+val;
-             	window.location.replace(requestUrl);
+              url = $('server').value+'materials/askforms/'+cid+'/'+mid+'/aitems/dscribe2/'+val;
+             	window.location.replace(url);
 			}
 	},
 
@@ -817,7 +868,7 @@ var Rules = {
 							var cid = $('cid').value;
 							var mid = $('mid').value; 
             	var fb = $('feedback');
-							var requestUrl = $('server').value+'materials/';
+							var url = $('server').value+'materials/';
 
 							var field = this.name.replace(/^\d+_\w+_\d+_(\w+)$/,"$1");
 							var clm_id = this.name.replace(/^\d+_\w+_(\d+)_\w+$/,"$1");
@@ -827,8 +878,8 @@ var Rules = {
 
 							// update question answer
 							if (field != 'status') {
-									requestUrl = requestUrl+'update_object_claim/'+cid+'/'+mid+'/'+object_id+'/'+clm_type+'/'+clm_id;
-      						new Request({	url: requestUrl, method: 'post', data: {'field':field,'val':val}, update: fb}).send();
+									url = url+'update_object_claim/'+cid+'/'+mid+'/'+object_id+'/'+clm_type+'/'+clm_id;
+      						new Ajax(url, {	method: 'post', postBody: 'field='+field+'&val='+val, update: fb}).request();
 							}
 			}
 			element.onclick = function () {
@@ -836,7 +887,7 @@ var Rules = {
 							var mid = $('mid').value; 
 							var view = $('view').value; 
             	var fb = $('feedback');
-							var requestUrl = $('server').value+'materials/';
+							var url = $('server').value+'materials/';
 
 							var field = this.name.replace(/^\d+_\w+_\d+_(\w+)$/,"$1");
 							var clm_id = this.name.replace(/^\d+_\w+_(\d+)_\w+$/,"$1");
@@ -849,12 +900,12 @@ var Rules = {
 									val = (val.toLowerCase() == 'send to dscribe') ? 'done' : val;
 									val = (val.toLowerCase() == 'send to legal & policy review') ? 'ip review' : val;
 									val = (val.toLowerCase() == 'send to commission review') ? 'commission review' : val;
-									requestUrl = requestUrl+'update_object_claim/'+cid+'/'+mid+'/'+object_id+'/'+clm_type+'/'+clm_id;
+									url = url+'update_object_claim/'+cid+'/'+mid+'/'+object_id+'/'+clm_type+'/'+clm_id;
 	
 									var check = this.validate(object_id, clm_id, clm_type, field, val);
 									if (check != 'success') { alert(check); return false; }
 
-            							new Request({	url: requestUrl, method: 'post', data:{'field':field,'val':val}, update: fb,
+            							new Ajax(url, {	method: 'post', postBody:'field='+field+'&val='+val, update: fb,
                      							onComplete: function() {
                         							response = fb.innerHTML;
                         							if (response=='success') {
@@ -863,19 +914,19 @@ var Rules = {
 															{
 																// at this time, if the val is not the "in progress one"
 																// clear the ask d2 setting to 'No'																		
-																requestUrl = $('server').value +'materials/update_object/'+cid+'/'+ mid+'/'+object_id;
-      													new Request({	url: requestUrl, method: 'post', data: { 'field':'ask_dscribe2','val':'no'}, update: fb}).send();
+																url = $('server').value +'materials/update_object/'+cid+'/'+ mid+'/'+object_id;
+      													new Ajax(url, {	method: 'post', postBody: 'field=ask_dscribe2&val=no', update: fb}).request();
 												       }
 												    }
 											            			
 								            			// refresh the page
 			                         								
-			                         					requestUrl = $('server').value+'materials/askforms/'+cid+'/'+mid+'/'+view;
-			                         					window.location.replace(requestUrl);
+			                         					url = $('server').value+'materials/askforms/'+cid+'/'+mid+'/'+view;
+			                         					window.location.replace(url);
                         							} else {
                             							alert(response);
                         							}
-												} }).send();
+												} }).request();
 							}
 			}
 			element.validate = function(oid, clm_id, clm_type, field, val) {
@@ -941,7 +992,7 @@ var Rules = {
 	'.do_d2_question_update' : function(element) {
 			element.onchange = function () {
             	var fb = $('feedback');
-							var requestUrl = $('server').value+'materials/';
+							var url = $('server').value+'materials/';
 
 							var val = this.value;
 							val = (val.toLowerCase() == 'save for later') ? 'in progress' : val;
@@ -954,8 +1005,8 @@ var Rules = {
 									var object_id = this.name.replace(/^(original|replacement)_/g,'');
 									object_id = object_id.replace(/_\d+$/g,'');
 									
-									requestUrl = requestUrl+'update_object_question/'+object_id+'/'+question_id+'/'+object_type;
-									new Request({ url: requestUrl, method: 'post', data: { 'answer':val}, update: fb }).send();
+									url = url+'update_object_question/'+object_id+'/'+question_id+'/'+object_type;
+									new Ajax(url, { method: 'post', postBody: 'answer='+val, update: fb }).request();
 							}
 			}
 			element.onclick = function () {
@@ -963,7 +1014,7 @@ var Rules = {
 							var mid = $('mid').value; 
 							var view = $('view').value; 
             	var fb = $('feedback');
-							var requestUrl = $('server').value+'materials/';
+							var url = $('server').value+'materials/';
 
 							var val = this.value;
 							val = (val.toLowerCase() == 'save for later') ? 'in progress' : val;
@@ -973,17 +1024,17 @@ var Rules = {
 							if (val=='done' || val=='in progress') {
 									var object_id = this.name.replace(/^\w+_status_/g,'');
 									var object_type = this.name.replace(/_status_\d+$/g,'');
-									requestUrl = requestUrl+'update_questions_status/'+cid+'/'+mid+'/'+object_id+'/'+val+'/dscribe2/'+object_type;
-            			new Request(requestUrl, {	method: 'get', update: fb,
+									url = url+'update_questions_status/'+cid+'/'+mid+'/'+object_id+'/'+val+'/dscribe2/'+object_type;
+            			new Ajax(url, {	method: 'get', update: fb,
                      							onComplete: function() {
                         							response = fb.innerHTML;
                         							if (response=='success') {
-                            							requestUrl = $('server').value+'materials/askforms/'+cid+'/'+mid+'/'+view;
-                            							window.location.replace(requestUrl);
+                            							url = $('server').value+'materials/askforms/'+cid+'/'+mid+'/'+view;
+                            							window.location.replace(url);
                         							} else {
                             							alert(response);
                         							}
-																} }).send();
+																} }).request();
 							}
 			} 
 	},
@@ -991,7 +1042,7 @@ var Rules = {
 	'.do_curriculum_subject_update' : function(element) {
 			element.onchange = function () {
             	var fb = $('feedback');
-							var requestUrl = $('server').value+'courses/';
+							var url = $('server').value+'courses/';
 							var school_id = this.value;
 							var currbox = document.getElementById("curriculum_id");
 							var subjbox = document.getElementById("subj_id");
@@ -1003,12 +1054,11 @@ var Rules = {
 								subjbox.disabled = true;
 								return;
 							}
-							requestUrl += 'return_values_for_school/' + school_id;
-							new Request(
+							url += 'return_values_for_school/' + school_id;
+							new Ajax(url,
 												{
-													url: requestUrl,
 												method: 'post', 
-												data: { 'sid':school_id },
+												postBody: 'sid='+school_id,
 												update: fb,
 												onComplete:function(jsonObj, xml) {
 													response = Json.evaluate(jsonObj);
@@ -1049,13 +1099,13 @@ var Rules = {
 		                       	}
 														once = false;
 							  					}
-		           }}).send();
+		           }}).request();
 			}
 	}
 }
 
 // Remove/Comment this if you do not wish to reapply Rules automatically
-// on Request request.
-//Request.Responders.register({
+// on Ajax request.
+//Ajax.Responders.register({
 // onComplete: function() { EventSelectors.assign(Rules);}
 //});
