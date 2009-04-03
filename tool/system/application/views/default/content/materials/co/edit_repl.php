@@ -21,31 +21,39 @@ $data['loc_tip'] = "For textual materials like Powerpoints or PDFs, please enter
 	<input type="hidden" id="rid" name="rid" value="<?=$repl_obj['id']?>" />
 	<input type="hidden" name="viewing" value="replacement" />
 
-
-  <div class="tabcontainer">
-    <div class="tabs">
-      <input type="submit" <?=($tab=='Status') ? 'class="activesubmit"':''?> name="tab[]" value="Status" />
-      <input type="submit" <?=($tab=='Information') ? 'class="activesubmit"':''?> name="tab[]" value="Information" />
-      <input type="submit" <?=($tab=='Copyright') ? 'class="activesubmit"':''?> name="tab[]" value="Copyright" />
-      <input type="submit" <?=($tab=='Comments') ? 'class="activesubmit"':''?> name="tab[]" value="Comments" />
-      <input type="submit" <?=($tab=='History') ? 'class="activesubmit"':''?> name="tab[]" value="History" />
-    </div>
+     <div id="accordion_repl">
+		<h4 class="toggler">
+	    	Status
+	 	</h4>
 	
-    <div class="tabformcontent">
-    <?php
-        switch($tab) {
-            case 'Status': $this->load->view(property('app_views_path').'/materials/co/_edit_repl_status.php', $data); break;
-            case 'Information': $this->load->view(property('app_views_path').'/materials/co/_edit_repl_info.php', $data); break;
-            case 'Copyright': $this->load->view(property('app_views_path').'/materials/co/_edit_repl_copy.php', $data); break;
-            case 'Comments': $this->load->view(property('app_views_path').'/materials/co/_edit_repl_comments.php', $data); break;
-            case 'History': $this->load->view(property('app_views_path').'/materials/co/_edit_repl_log.php', $data); break;
-            default: $this->load->view(property('app_views_path').'/materials/co/_edit_repl_status.php', $data); break;
-        }
-    ?>
-    </div>
-
-    <br class="clear" />
-  </div>
+	 	<div class="element">
+	  	<?php 
+	  		$this->load->view(property('app_views_path').'/materials/co/_edit_repl_info.php', $data); 	
+			$this->load->view(property('app_views_path').'/materials/co/_edit_repl_status.php', $data);
+		?>
+		</div>
+		
+		<h4 class="toggler">
+	    	Comments
+	 	</h4>
+	
+	 	<div class="element">
+	  	<?php 
+			$this->load->view(property('app_views_path').'/materials/co/_edit_repl_comments.php', $data);
+		?>
+		</div>
+		
+		<h4 class="toggler">
+	    	History
+	 	</h4>
+	
+	 	<div class="element">
+	  	<?php 
+			$this->load->view(property('app_views_path').'/materials/co/_edit_repl_log.php', $data); 	
+		?>
+		</div>
+	</div>
+	
 </form>
 
 <?php } ?>
