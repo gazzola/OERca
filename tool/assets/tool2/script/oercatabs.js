@@ -68,6 +68,10 @@ var OERcaTabs = new Class({
   
   clickEvent: function(item) {
     item.addEvent('click', this.makeActive.bind(this));
+  },
+  
+  activeTab: function(item) {
+    
   }
 
 });
