@@ -61,7 +61,7 @@ echo "</ul>";
     <tr>
     	<th>Obj Name</th>
     	<th>Location</th>
-    	<th width=50>Citation</th>
+    	<th width=250>Citation</th>
     	<th>Action_type</th>
     	<th>Done?</th>
     	<th>Link</th>
@@ -103,16 +103,15 @@ echo "</ul>";
 			$path = $server.$imgpath . $ext;
 			if (@file_get_contents($path,0,NULL,0,1)) {
 				$imgurl = $path;
-				$file_details['img_found'] = true;
 				$thumb_extensions = array(".png", $ext);
 				foreach ($thumb_extensions as $te) {
 					$thumbpath = $path . "_thumb" . $te;
-					if (@getimagesize($thumbpath)) {
+					if (@file_get_contents($thumbpath,0,NULL,0,1)) {
 						$imgurl = $thumbpath;
 						break;
 					}
 				}
-			break;
+				break;
 			}
 		}
    	return $imgurl;
@@ -127,17 +126,17 @@ echo "</ul>";
     		$link = $server."/uploads/cdir_".$cfilename."/mdir_".$mfilename."/odir_".$ofilename."/".$ofilename."_grab";
     		$imgurl = get_imgurl($link);
     		$imgstyle = scalecoimage($imgurl, 150, 150);
-    		$img_html = "<a href=\"$imgurl\"><img src=\"$imgurl\" style=\"$imgstyle\" /></a>";
+    		$img_html = "<a href=\"$imgurl\"><img class=\"bot\" src=\"$imgurl\" style=\"$imgstyle\" /></a>";
     
     		$results_html .= <<<htmleoq
     
     <tr>
-    	<td>$oname</td>
-    	<td>$location</td>
-    	<td>$citation</td>
-    	<td>$action_type</td>
-    	<td>$done</td>
-    	<td>$img_html</td>
+    	<td style="vertical-align: top;">$oname</td>
+    	<td style="vertical-align: top;">$location</td>
+    	<td style="vertical-align: top;">$citation</td>
+    	<td style="vertical-align: top;">$action_type</td>
+    	<td style="vertical-align: top;">$done</td>
+    	<td style="vertical-align: top;">$img_html</td>
     </tr>
 
 htmleoq;
