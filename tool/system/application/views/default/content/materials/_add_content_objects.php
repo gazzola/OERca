@@ -1,14 +1,13 @@
 <?php
-
 echo style('blueprint/screen.css',array('media'=>"screen, projection"));
 echo style('blueprint/print.css',array('media'=>"print"));
 echo '<!--[if IE]>'.style('blueprint/lib/ie.css',array('media'=>"screen, projection")).'<![endif]-->';
 echo style('style.css',array('media'=>"screen, projection"));
-echo style('morphtabs.css',array('media'=>"screen, projection"));
+echo style('mootabs1.2.css',array('media'=>"screen, projection"));
 echo '<style type="text/css">body { background-color: #222; padding: 15px; margin:auto; width: 400px; border:0px solid blue; height:550px; color:#999}</style>';
 
 echo script('mootools.js');
-echo script('oercatabs.js');
+echo script('mootabs1.2.js');
 echo script('mootips.js');
 echo script('event-selectors.js');
 echo script('event-rules.js');
@@ -17,8 +16,7 @@ echo script('snapper.js');
 
 echo script('flash.js');
 
-
-$types = '<select id="subtype_id" name="subtype_id">';
+$types = '<select id="subtype_id" name="subtype_id" class="do_object_update">';
 foreach($subtypes as $type => $subtype) {
 		$types .= '<optgroup label="'.$type.'">';
 		foreach($subtype as $st) { $types .= '<option value="'.$st['id'].'">'.$st['name'].'</option>'; }
@@ -40,28 +38,16 @@ if (isset($flash) AND $flash!='') {
 
 <?php } ?>
 
-<script type="text/javascript">
-  window.addEvent('domready', function() {
-    var myOERcaTabs = new OERcaTabs('myTabs');
-  });
-</script>
-<style>
-	.morphtabs_panel {
-		background-color: lightgreen;
-		color: #111;
-	}
-</style>
-
 <div id="myTabs" class="column span-10 first last">
 
-  <ul class="morphtabs_title">
+  <ul class="mootabs_title">
     <li title="Snapper" style="margin-left:0;"><h2>Snapper Upload</h2></li>
     <li title="Single" style="margin-left:13px;"><h2>Single Upload</h2></li>
     <li title="Bulk" style="margin-left: 13px;"><h2>Bulk Upload</h2></li>
   </ul>
 
 
-  <div id="Snapper" class="morphtabs_panel"> 
+  <div id="Snapper" class="mootabs_panel"> 
 			
 				<?php print form_open_multipart("materials/snapper/$cid/$mid/submit",array('id'=>'snapper-form')) ?>	
 				<div id="capture">
@@ -103,7 +89,7 @@ if (isset($flash) AND $flash!='') {
 				<?php print form_close(); ?>
   </div>
 
-  <div id="Single" class="morphtabs_panel"> 
+  <div id="Single" class="mootabs_panel"> 
 		<form action="<?=site_url("materials/add_object/$cid/$mid/single/add")?>" enctype="multipart/form-data" id="add_co_single" method="post">
 			<input type="hidden" name="citation" value="none" />
 			<input type="hidden" name="contributor" value="" />
@@ -144,7 +130,7 @@ if (isset($flash) AND $flash!='') {
 		</form>
 	</div>
 	
-  <div id="Bulk" class="morphtabs_panel"> 
+  <div id="Bulk" class="mootabs_panel"> 
 
 		<div class="formField">
 			<form action="<?=site_url("materials/add_object/$cid/$mid/bulk/add")?>" enctype="multipart/form-data" id="add_co_zip" method="post">
@@ -167,7 +153,7 @@ if (isset($flash) AND $flash!='') {
 <script type="text/javascript">
   EventSelectors.start(Rules);
 	window.addEvent('domready', function() {
-  		//myCOTabs = new mootabs('myTabs',{height: '450px', width: '340px'});
+  		myCOTabs = new mootabs('myTabs',{height: '450px', width: '340px'});
 			var myTips1 = new MooTips($$('.tooltip'), { maxTitleChars: 100 });
   		<?php if($view=='single') {?>myCOTabs.activate('Single');<?php }?>
   		<?php if($view=='bulk') {?>myCOTabs.activate('Bulk');<?php }?>

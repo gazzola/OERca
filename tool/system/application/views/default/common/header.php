@@ -4,6 +4,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<title>OERca &raquo; <?php echo $title ?></title>
+
 	<?php 
 	   echo style('blueprint/screen.css',array('media'=>"screen, projection"));
 	   echo style('blueprint/print.css',array('media'=>"print"));
@@ -12,11 +13,9 @@
 	   echo style('table.css',array('media'=>"screen, projection"));
 	   echo style('multiupload.css',array('media'=>"screen, projection"));
 	   echo style('smoothbox.css',array('media'=>"screen, projection"));
-	   echo style('morphtabs.css',array('media'=>"screen, projection"));
-          
-	   echo script('mootools.js');
+
+	   echo script('mootools.js'); 
 	   echo script('smoothbox.js'); 
-	   echo script('oercatabs.js');
 	   echo script('mootips.js'); 
      echo script('tablesort.js');
 
@@ -27,7 +26,7 @@
      echo script('ocw_tool.js');
 	   echo script('multiupload.js'); 
 
-	   echo script('flash.js');
+	   echo script('flash.js'); 
 
 	  $ci_uri = trim($this->uri->uri_string(), '/'); 
 	?>

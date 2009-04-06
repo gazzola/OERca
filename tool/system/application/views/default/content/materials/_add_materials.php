@@ -1,4 +1,18 @@
 <?php		
+echo style('blueprint/screen.css',array('media'=>"screen, projection"));
+echo style('blueprint/print.css',array('media'=>"print"));
+echo '<!--[if IE]>'.style('blueprint/lib/ie.css',array('media'=>"screen, projection")).'<![endif]-->';
+echo style('style.css',array('media'=>"screen, projection"));
+echo style('mootabs1.2.css',array('media'=>"screen, projection"));
+echo '<style type="text/css">body { background-color: #222; padding: 15px; margin:auto; width: 340px; border:0px solid blue; height:450px; color:#999}</style>';
+
+echo script('mootools.js');
+echo script('mootabs1.2.js');
+echo script('event-selectors.js');
+echo script('event-rules.js');
+
+echo script('flash.js'); 
+
 $tags[0] = '-- select --';
 
 $flash=$this->db_session->flashdata('flashMessage');
@@ -11,21 +25,14 @@ if (isset($flash) AND $flash!='') {
 <!--END FLASH-->
 <?php } ?>
 
-<style>
-	.morphtabs_panel {
-		background-color: lightgreen;
-		color: #111;
-	}
-</style>
-
 <div id="myTabs" class="column span-8 first last">
 
-  <ul class="morphtabs_title">
+  <ul class="mootabs_title">
     <li title="Single" style="margin-left:0;"><h2>Single Upload</h2></li>
     <li title="Bulk" style="margin-left: 13px;"><h2>Bulk Upload</h2></li>
   </ul>
 
-	<div id="Single" class="morphtabs_panel">
+	<div id="Single" class="mootabs_panel">
 		<form action="<?=site_url("materials/add_material/$cid/single")?>" enctype="multipart/form-data" method="post"  id="add_new_material_single">
 			<input type="hidden" name="category" value="Materials" />
 			<input type="hidden" name="in_ocw" value="1" />
@@ -81,7 +88,7 @@ if (isset($flash) AND $flash!='') {
 	</form>
 </div>
 	
-<div id="Bulk" class="morphtabs_panel"> 
+<div id="Bulk" class="mootabs_panel"> 
 	<form action="<?=site_url("materials/add_material/$cid/bulk")?>" enctype="multipart/form-data" method="post" id="add_new_material_bulk">
 		<input type="hidden" name="category" value="Materials" />
 		<input type="hidden" name="in_ocw" value="1" />
@@ -119,12 +126,17 @@ if (isset($flash) AND $flash!='') {
 	</form>
 </div>
 
+<br style="clear:both"/>
+<input type="button" style="float:right" value="Close" onclick="parent.window.location.reload(); parent.TB_remove();"/>
+</div>
+  
+
 <div id="feedback" style="display:none"></div>
 <input type="hidden" id="cid" name="cid" value="<?=$cid?>" />
 <input type="hidden" id="imgurl" value="<?=property('app_img')?>" />
 <input type="hidden" id="server" value="<?=site_url();?>" />
 <script type="text/javascript">
  	EventSelectors.start(Rules);
-	myCOTabs = new OERcaTabs('myTabs');
+	myCOTabs = new mootabs('myTabs',{height: '450px', width: '340px'});
 	<?php if($view=='bulk') {?>myCOTabs.activate('Bulk');<?php }?>
 </script>

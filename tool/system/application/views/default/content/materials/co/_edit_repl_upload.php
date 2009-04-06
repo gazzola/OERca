@@ -13,7 +13,7 @@
 						<input type="hidden" name="copyholder" value="" />
 						<input type="hidden" name="copystatus" value="" />		       
       </div>
-			<br /><br/>
+			<br class="clear"/>
 		 	<small>NB: any existing replacement image will be overwritten</small>	
 				<br/><br/>	
       <input type="submit" name="submit" id="submit" value="Upload" />

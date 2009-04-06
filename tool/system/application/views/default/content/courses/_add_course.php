@@ -24,7 +24,7 @@ if (isset($flash) AND $flash!='') {
 <!--END FLASH-->
 <?php } ?>
 
-<!-- <h2>Add a new Course</h2> -->
+<h2>Add a new Course</h2>
 
 	<div style="border: 1px solid #888; margin-top: 10px; margin-bottom: 10px; margin-left: -10px; padding: 5px;" class="column span-21 first last">
     <?php echo form_open_multipart("courses/add_new_course/create"); ?>

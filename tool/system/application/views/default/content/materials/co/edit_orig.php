@@ -36,40 +36,33 @@ $tab = $tab[0];
 $data['loc_tip'] = "For textual materials like Powerpoints or PDFs, please enter the slide or page number. For videos, please enter a time stamp.";
 ?>
 
-<div id="Original" class="morphtabs_panel" style="display: block;">
+<div id="Original" class="mootabs_panel">
 
 <form method="post">
-     <div id="accordion_orig">
-		<h4 class="toggler">
-	    	Status
-	 	</h4>
-	
-	 	<div class="element">
-	  	<?php 
-	  		$this->load->view(property('app_views_path').'/materials/co/_edit_orig_info.php', $data); 	
-			$this->load->view(property('app_views_path').'/materials/co/_edit_orig_status.php', $data);
+	<input type="hidden" name="viewing" value="original" />
+	<div class="tabcontainer">
+		<div class="tabs">
+			<input type="submit" <?=($tab=='Status' || $tab=='Upload') ? 'class="activesubmit"':''?> name="tab[]" value="Status" />
+			<input type="submit" <?=($tab=='Information') ? 'class="activesubmit"':''?> name="tab[]" value="Information" />
+			<input type="submit" <?=($tab=='Copyright') ? 'class="activesubmit"':''?> name="tab[]" value="Copyright" />
+			<input type="submit" <?=($tab=='Comments') ? 'class="activesubmit"':''?> name="tab[]" value="Comments" />
+			<input type="submit" <?=($tab=='History') ? 'class="activesubmit"':''?> name="tab[]" value="History" />
+		</div>
+
+		<div class="tabformcontent">
+  	<?php 
+				switch($tab) {
+						case 'Status': $this->load->view(property('app_views_path').'/materials/co/_edit_orig_status.php', $data); break; 
+						case 'Information': $this->load->view(property('app_views_path').'/materials/co/_edit_orig_info.php', $data); break; 
+						case 'Copyright': $this->load->view(property('app_views_path').'/materials/co/_edit_orig_copy.php', $data); break; 
+						case 'Comments': $this->load->view(property('app_views_path').'/materials/co/_edit_orig_comments.php', $data); break; 
+						case 'History': $this->load->view(property('app_views_path').'/materials/co/_edit_orig_log.php', $data); break; 
+						default: $this->load->view(property('app_views_path').'/materials/co/_edit_orig_status.php', $data); break; 
+				}
 		?>
 		</div>
-		
-		<h4 class="toggler">
-	    	Comments
-	 	</h4>
 	
-	 	<div class="element">
-	  	<?php 
-			$this->load->view(property('app_views_path').'/materials/co/_edit_orig_comments.php', $data);
-		?>
-		</div>
-		
-		<h4 class="toggler">
-	    	History
-	 	</h4>
-	
-	 	<div class="element">
-	  	<?php 
-			$this->load->view(property('app_views_path').'/materials/co/_edit_orig_log.php', $data); 	
-		?>
-		</div>
+		<br class="clear" />
 	</div>
 </form>
 

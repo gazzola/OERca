@@ -2,8 +2,8 @@
  	
 		<table width="100%">
 				<tr>
-					<th width="50%" style="vertical-align: top">Copyright Status:</th>
-					<td width="50%">
+					<th style="vertical-align: top">Copyright Status:</th>
+					<td>
 			  		<?php echo form_dropdown('copy_status_'.$obj['id'], 
 				  				$copy_status, $cp_status ,'id="copy_status" class="do_object_cp_update"'); ?>
 					</td>

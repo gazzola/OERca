@@ -36,7 +36,7 @@
     <div id="materials_nav" style="float: right">
 		  <ul>
 			    <li class="normal">
-						<a href="<?=site_url("materials/add_material/$cid/single/view")?>?height=515&width=350" class="smoothbox" title="Add Materials">Add Materials</a>
+						<a href="<?=site_url("materials/add_material/$cid/single/view")?>?TB_iframe=true&height=515&width=350" class="smoothbox" title="Add Materials">Add Materials</a>
 					</li>
       </ul>
     </div>
