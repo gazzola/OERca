@@ -38,7 +38,6 @@ class Postoffice extends Model
 		 		 $dscribe2 = $this->ocw_user->get_users_by_relationship($from_id,'dscribe2',$cid); 
 
      		 if ($dscribe2 !== false && is_array($dscribe2)) {
-$this->ocw_utils->dump($dscribe2);
 							foreach ($dscribe2 as $to_id) {
 									if ($this->course->has_access($to_id, $cid) != null) {
 											 $this->add($from_id, $to_id, 'dscribe1_to_dscribe2', $cid, $mid, $oid, $type);
