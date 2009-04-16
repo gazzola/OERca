@@ -77,7 +77,7 @@
 				<td>
 					<?php echo anchor(site_url("admin/courses/remove_course/".$c['id']),	
 						'<img src="'.property('app_img').'/cross.png" title="Remove course and all its materials" />',
-							array('customprompt'=>"You are about to COMPLETELY delete course ". $c['number']. " " . $c['title'] . " and ALL its related materials.  ARE YOU REALLY SURE ABOUT THAT???", 'title'=>"Remove", 'class'=>'confirm')) ?>
+							array('customprompt'=>"You are about to COMPLETELY and PERMANENTLY delete course ". $c['number']. " " . $c['title'] . " and ALL its related materials.  ARE YOU ABSOLUTELY SURE YOU WANT TO DO THAT???", 'title'=>"Remove", 'doublecheck' => "yes", 'class'=>'confirm')) ?>
 				</td>
 		<?php } ?>
 	</tr>	
