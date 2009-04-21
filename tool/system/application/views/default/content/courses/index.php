@@ -27,7 +27,7 @@
         <th class="sortable-sortEnglishLonghandDateFormat">Start Date</th>
         <th class="sortable-sortEnglishLonghandDateFormat">End Date</th>
         <th class="sortable">Curriculum</th>
-        <th class="sortable">Primary Instructor</th>
+        <th class="sortable">dScribe(s)</th>
         <th class="sortable">Instructor(s)</th>
 	<!-- bdr OERDEV140 - add Content Object status to CourseListing   -->
         <th>    Content Object Status    &nbsp;</th>
@@ -56,7 +56,11 @@
     <td><?=mdate('%d %M, %Y',mysql_to_unix($c['start_date']))?></td>
     <td><?=mdate('%d %M, %Y',mysql_to_unix($c['end_date']))?></td>
     <td width="40px"><?=ucfirst($c['cname'])?></td>
-    <td><?=ucfirst($c['director'])?></td>
+    <td>
+		  <b>dScribe1(s):<br></b><?=ucfirst($c['dscribe1s'])?>
+			<? if ($c['dscribe1s'] != '') { ?> <br> <? } ?>
+		  <b>dScribe2(s):<br></b><?=ucfirst($c['dscribe2s'])?>
+		</td>
     <td><?=ucfirst($c['instructors'])?></td>
     
     <td>
