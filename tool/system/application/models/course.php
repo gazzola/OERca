@@ -270,23 +270,28 @@ class Course extends Model
      * @param   string number
      * @return  string
      */
-	public function get_course_instructor_by_id($id)
+	public function get_course_users_by_cid($cid, $type)
 	{
+		if (!$cid || $type == '') {
+			$this->ocw_utils->log_to_apache('error', __FUNCTION__.": called with bad parameters!");
+			return '';
+		}
+
 		$sql = "SELECT ocw_users.name AS iname
 				FROM ocw_courses, ocw_acl, ocw_users
 				WHERE ocw_courses.id = ocw_acl.course_id
 				AND ocw_acl.user_id = ocw_users.id
-				AND ocw_acl.role = 'instructor'
-				AND ocw_courses.id = $id
+				AND ocw_acl.role = '$type'
+				AND ocw_courses.id = $cid
 				ORDER BY ocw_users.name ASC";
 		$q = $this->db->query($sql);
         if ($q->num_rows() > 0) {
-        	$course_instructors = array();
+        	$course_users = array();
             foreach($q->result_array() as $row) { 
-        		$course_instructors[] = $row['iname'];    	
+        		$course_users[] = $row['iname'];    	
             }
         }
-		return ($q->num_rows() > 0) ? implode("<br>", $course_instructors) : '';
+		return ($q->num_rows() > 0) ? implode("<br>", $course_users) : '';
 	}
 	
     /**
@@ -330,7 +335,9 @@ class Course extends Model
 
         if ($q->num_rows() > 0) {
             foreach($q->result_array() as $row) { 
-                 $row['instructors'] = $this->get_course_instructor_by_id($row['cid']);
+                 $row['instructors'] = $this->get_course_users_by_cid($row['cid'], 'instructor');
+                 $row['dscribe1s'] = $this->get_course_users_by_cid($row['cid'], 'dscribe1');
+                 $row['dscribe2s'] = $this->get_course_users_by_cid($row['cid'], 'dscribe2');
                  if (($urole != 'dscribe1')) { 
 		    // bdr OERDEV-173 - count everything like materials list counts
                      $materials =  $this->material->materials($row['cid'],'',true,true);
@@ -382,7 +389,9 @@ class Course extends Model
 
       if ($q_no_curr_id->num_rows() > 0) {
         foreach ($q_no_curr_id->result_array() as $row) {
-                 $row['instructors'] = $this->get_course_instructor_by_id($row['cid']);
+                 $row['instructors'] = $this->get_course_users_by_cid($row['cid'], 'instructor');
+                 $row['dscribe1s'] = $this->get_course_users_by_cid($row['cid'], 'dscribe1');
+                 $row['dscribe2s'] = $this->get_course_users_by_cid($row['cid'], 'dscribe2');
                  // bdr OERDEV-140 (which looks similiar to OERDEV-118
                  $uprop = getUserProperty('role');
                  // if (($uprop != 'dscribe1')) { // && ($row['cid'] == 35)) 

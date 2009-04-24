@@ -18,7 +18,7 @@
 		<tr>
 			<th class="sortable">Name</th>
 			<th class="sortable">Description</th>
-			<th></th>
+			<th>Delete</th>
 		</tr>
 		</thead>
 		<?php foreach($currlist as $curr) { ?>
@@ -59,7 +59,7 @@
 		<tr>
 			<th class="sortable">Code</th>
 			<th class="sortable">Description</th>
-			<th></th>
+			<th>Delete</th>
 		</tr>
 		</thead>
 		<?php foreach($subjlist as $subj) { ?>

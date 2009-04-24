@@ -27,11 +27,13 @@
         <th class="sortable-sortEnglishLonghandDateFormat">Start Date</th>
         <th class="sortable-sortEnglishLonghandDateFormat">End Date</th>
         <th class="sortable">Curriculum</th>
-        <th class="sortable">Primary Instructor</th>
+        <th class="sortable">dScribe(s)</th>
         <th class="sortable">Instructor(s)</th>
 	<!-- bdr OERDEV140 - add Content Object status to CourseListing   -->
         <th>    Content Object Status    &nbsp;</th>
-        <?php if ((getUserProperty('role') == 'admin')) { ?> <th></th> <?php }?>
+        <?php if ((getUserProperty('role') == 'admin')) { ?>
+          <th>Delete</th>
+        <?php }?>
     </tr>
     </thead>
     <tbody>
@@ -54,7 +56,11 @@
     <td><?=mdate('%d %M, %Y',mysql_to_unix($c['start_date']))?></td>
     <td><?=mdate('%d %M, %Y',mysql_to_unix($c['end_date']))?></td>
     <td width="40px"><?=ucfirst($c['cname'])?></td>
-    <td><?=ucfirst($c['director'])?></td>
+    <td>
+		  <b>dScribe1(s):<br></b><?=ucfirst($c['dscribe1s'])?>
+			<? if ($c['dscribe1s'] != '') { ?> <br> <? } ?>
+		  <b>dScribe2(s):<br></b><?=ucfirst($c['dscribe2s'])?>
+		</td>
     <td><?=ucfirst($c['instructors'])?></td>
     
     <td>
@@ -75,7 +81,7 @@
 				<td>
 					<?php echo anchor(site_url("admin/courses/remove_course/".$c['id']),	
 						'<img src="'.property('app_img').'/cross.png" title="Remove course and all its materials" />',
-							array('customprompt'=>"You are about to COMPLETELY delete course ". $c['number']. " " . $c['title'] . " and ALL its related materials.  ARE YOU REALLY SURE ABOUT THAT???", 'title'=>"Remove", 'class'=>'confirm')) ?>
+							array('customprompt'=>"You are about to COMPLETELY and PERMANENTLY delete course ". $c['number']. " " . $c['title'] . " and ALL its related materials.  ARE YOU ABSOLUTELY SURE YOU WANT TO DO THAT???", 'title'=>"Remove", 'doublecheck' => "yes", 'class'=>'confirm')) ?>
 				</td>
 		<?php } ?>
 	</tr>	

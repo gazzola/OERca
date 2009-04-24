@@ -12,7 +12,7 @@
 		<tr>
 			<th class="sortable">Name</th>
 			<th class="sortable">Description</th>
-			<th></th>
+			<th>Delete</th>
 		</tr>
 		</thead>
 		<?php foreach($schools as $s) { ?>

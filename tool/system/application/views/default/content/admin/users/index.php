@@ -26,7 +26,7 @@
         <th class="sortable">Name</th>
         <th class="sortable">User Name</th>
         <th class="sortable">Email</th>
-        <th>&nbsp;</th>
+        <th>Delete</th>
 		</tr>
 		</thead>
 

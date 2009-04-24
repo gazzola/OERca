@@ -13,12 +13,17 @@ var Rules = {
 		element.onclick = function() {
 			var conf_prompt;
 			var cp_attr_node = this.getAttributeNode("customprompt");
+			var cp_attr_dbl = this.getAttributeNode("doublecheck");
 			if (cp_attr_node && cp_attr_node.specified) {
 				conf_prompt = cp_attr_node.value;
 			} else {
 				conf_prompt = "Are you sure?";
 			}
 			var con = confirm(conf_prompt);
+			if (con && cp_attr_dbl && cp_attr_dbl.specified && cp_attr_dbl.value != "no") {
+				conf_prompt = "This is important, so I'm going to ask again ...   " + conf_prompt;
+				con = confirm(conf_prompt);
+			}
 			return con;
 		}
 	},
