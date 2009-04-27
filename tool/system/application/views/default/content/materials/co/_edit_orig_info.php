@@ -15,7 +15,7 @@
 						</td>
 				</tr>
 				<tr>
-					<th><span style="vertical-align:top; color:red">*</span> Citation:</th>
+					<th><span style="vertical-align:top; color:red">*</span> Source Information:</th>
 					<td>
 		    		<textarea name="citation" id="citation" cols="6" rows="1" class="do_object_update"><?=$obj['citation']?></textarea>
 					</td>

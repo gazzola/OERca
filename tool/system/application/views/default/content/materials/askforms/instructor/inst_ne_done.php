@@ -14,12 +14,12 @@ if ($prov_objects != null) {
 	<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],'done','orig',true,true,true);?>
   </p>
 
-	<!-- citation -->
+	<!-- citation (source information) -->
 	<br/><br/>
-	<p style="clear:both"><h3>Citation:</h3> 
+	<p style="clear:both"><h3>Source Information:</h3> 
 		<div id="holder_citation_<?=$obj['id']?>">
 			<span id="txt_citation_<?=$obj['id']?>" class="ine_tip" title="Click to edit text">
-				<?php echo ($obj['citation']<>'') ? $obj['citation']:' No citation'?>
+				<?php echo ($obj['citation']<>'') ? $obj['citation']:' No source information'?>
 			</span>
 		</div>
 	</p>
@@ -54,11 +54,11 @@ if ($repl_objects != null) {
 <td style="vertical-align:top">
 	<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['object_id'],$obj['location'],'done','orig',true,true,true);?>
 
-	<!-- citation -->
+	<!-- citation (source information) -->
 	<br/><br/>
-	<p style="clear:both"><h3>Citation:</h3> 
+	<p style="clear:both"><h3>Source Information:</h3> 
 		<div>
-			<span><?php echo ($obj['citation']<>'') ? $obj['citation']:' No citation'?></span>
+			<span><?php echo ($obj['citation']<>'') ? $obj['citation']:' No source information'?></span>
 		</div>
 	</p>
 

@@ -26,10 +26,10 @@ foreach($repl_objects as  $obj) {
 
 	<div id="suit_yes_other_<?=$obj['id']?>" style="display: <?= ($obj['suitable']=='yes') ? 'block':'none'?>"> 
 
-	<!-- citation -->
-	<p style="clear:both"><h3>Replacement Citation:</small></h3> 
+	<!-- citation (source information) -->
+	<p style="clear:both"><h3>Replacement Source Information:</small></h3> 
     <p style="margin-bottom:15px;border:1px solid #ccc; padding:5px; background-color:#eee">
-			<?php echo ($obj['citation']<>'') ? $obj['citation']:'No citation'?>
+			<?php echo ($obj['citation']<>'') ? $obj['citation']:'No source information'?>
 		</p>
 	</p>
 
