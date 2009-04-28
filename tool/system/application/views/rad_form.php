@@ -235,7 +235,7 @@ publish this CO?
 <div id="step23from20" class="action"> 
 <p><b>23. </b>
 Recommend an
-action: Permission
+action: Obtain the necessary permissions and then select [Retain: Permission]
 </p><p>
 (UM faculty, staff, or student-created CO)
 </p>
@@ -424,11 +424,11 @@ action: Retain
 
 Recommend an 
 action: 
-Permission, 
+Retain: Permission, 
 Search, or Create</p>
 
 <p>
-* From 20->21->31: [Permission]
+* From 20->21->31: Obtain the necessary permissions and then select [Retain: Permission]
 (UM faculty, staff, or student-created CO)<br>
 * From 26->21->31: [Search or Create]
 (3rd party-created CO)
