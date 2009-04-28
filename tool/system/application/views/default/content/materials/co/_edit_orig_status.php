@@ -47,10 +47,11 @@
 	<tr>
 		<th>Recommended Action:</th>
 		<td>
-			 <?php echo anchor_popup("helpfaq/rad_form", "help me recommend an action"); ?>
+			 <?php echo anchor_popup("helpfaq/rad_form", "Help me recommend an action"); ?>
 			 <br /><br />
-			 <?php echo form_dropdown('action_type', $action_types, $obj['action_type'] ,'id="action_type" class="do_object_update"'); ?>
+			 <?php echo form_dropdown('action_type', $action_types, $obj['action_type'] ,'id="action_type" class="do_object_update" style="width:85%"'); ?>
 				<input type="hidden" value="<?=$obj['action_type']?>" id="raction" name="raction" />
+				&nbsp;<img src="<?=property('app_img')?>/info.gif" style="margin:0; padding:0" class="tooltip" title="<?=$action_tips?>"/>
 		</td>
   </tr>
 
@@ -184,7 +185,8 @@
   <tr>
 		<th>Final Action Taken:</th>
 		<td>
-				<?php echo form_dropdown('action_taken', $action_types, $obj['action_taken'] ,'id="action_taken" class="do_object_update"'); ?>
+				<?php echo form_dropdown('action_taken', $action_types, $obj['action_taken'] ,'id="action_taken" class="do_object_update" style="width:85%"'); ?>
+				&nbsp;<img src="<?=property('app_img')?>/info.gif" style="margin:0; padding:0" class="tooltip" title="<?=$action_tips?>"/>
 		</td>
   </tr>
 

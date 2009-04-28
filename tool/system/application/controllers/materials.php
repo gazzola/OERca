@@ -823,6 +823,13 @@ class Materials extends Controller {
     if ($tab=='upload') { $_REQUEST['viewing'] = 'replacement'; }
 		$this->db_session->set_userdata('tab_name', $tab);
 
+		$action_tips = "<b>Search</b><br/>I will replace this through a search.<br/>
+										<b>Retain: Permission</b><br/>I will keep this because it has a copyright license or other permission to publish.<br/>
+										<b>Retain: Public Domain</b><br/>I will keep this because it clearly indicates it is in the public domain.<br/>
+										<b>Retain: Copyright Analysis</b><br/>I will keep this but understand it needs further copyright review (including fair use).<br/>
+										<b>Create</b><br/>I will create a replacement for this.<br/>
+										<b>Remove and Annotate</b><br/>I will remove this and add an annotation in its place.<br/>";
+
 		$data = array(
 								'cid'=>$cid,
 								'mid'=>$mid,
@@ -837,6 +844,7 @@ class Materials extends Controller {
 								'filter'=>$filter,
 								'subtypes'=>$subtypes,
 								'action_types' => $this->coobject->enum2array('objects','action_type'), 
+								'action_tips' => $action_tips,
 								'alert_wrong_mimetype' => $alert_wrong_mimetype
 			      );
 		$data = array_merge($data, $permission);
