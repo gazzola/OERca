@@ -823,12 +823,13 @@ class Materials extends Controller {
     if ($tab=='upload') { $_REQUEST['viewing'] = 'replacement'; }
 		$this->db_session->set_userdata('tab_name', $tab);
 
-		$action_tips = "<b>Search</b><br/>I will replace this through a search.<br/>
-										<b>Retain: Permission</b><br/>I will keep this because it has a copyright license or other permission to publish.<br/>
-										<b>Retain: Public Domain</b><br/>I will keep this because it clearly indicates it is in the public domain.<br/>
-										<b>Retain: Copyright Analysis</b><br/>I will keep this but understand it needs further copyright review (including fair use).<br/>
-										<b>Create</b><br/>I will create a replacement for this.<br/>
-										<b>Remove and Annotate</b><br/>I will remove this and add an annotation in its place.<br/>";
+		$action_tips =
+						"<b>[ Search ]</b><br/>Replace this through a search.<br/><br/>
+						 <b>[ Retain: Permission ]</b><br/>  Keep this because it has a copyright license or other permission to publish.<br/><br/>
+						 <b>[ Retain: Public Domain ]</b><br/>  Keep this because it clearly indicates it is in the public domain.<br/><br/>
+						 <b>[ Retain: Copyright Analysis ]</b><br/>  Keep this but understand it needs further copyright review (including fair use).<br/><br/>
+						 <b>[ Create ]</b><br/>  Create a replacement for this.<br/><br/>
+						 <b>[ Remove and Annotate ]</b><br/>  Remove this and add an annotation in its place.";
 
 		$data = array(
 								'cid'=>$cid,
