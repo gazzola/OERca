@@ -32,22 +32,27 @@ import java.security.interfaces.*;
 import javax.crypto.*;
 import javax.crypto.spec.*;
 import javax.crypto.interfaces.*;
+import javax.servlet.http.Cookie;
 
 import java.math.BigInteger;
 
 import java.net.URL;
 import java.net.URLEncoder;
 import java.text.DateFormat;
+import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Properties;
 import java.util.regex.Pattern;
+import java.util.Vector;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -295,7 +300,31 @@ public class OCWTool extends HttpServlet
 		    if (placement != null)
 	   	      config = placement.getConfig();
 		    PrintWriter out = res.getWriter();
-			 res.setContentType("text/html");
+			res.setContentType("text/html");
+			 
+			List<String> validCookies = new Vector<String>();
+			if (ServerConfigurationService.getStrings("ocw.cookies") != null)
+			{
+				validCookies = new ArrayList(Arrays.asList(ServerConfigurationService.getStrings("ocw.cookies")));
+			}
+			else
+			{
+				validCookies.add("JSESSIONID");
+			}
+			
+			
+			String credentials = "";
+			Cookie[] cookies = req.getCookies();
+			for(int nIndex=0;nIndex < cookies.length;nIndex++){
+				if (validCookies.contains(cookies[nIndex].getName()))
+				{
+					credentials += cookies[nIndex].getName() + "=" + cookies[nIndex].getValue() + "&";
+				}
+			}
+			if (credentials.length() != 0)
+			{
+				credentials = credentials.substring(0, credentials.length() - 1);
+			}
 			 
 		    String userid = null;
 		    String euid = null;
@@ -437,25 +466,30 @@ public class OCWTool extends HttpServlet
 	
 		    if (url != null && userid != null && siteid != null && rolename != null && sessionid != null) {
 			// command is the thing that will be signed
-		    command = "user=" + URLEncoder.encode(euid) + 
-			    "&internaluser=" + URLEncoder.encode(userid) + 
-			    "&username=" + URLEncoder.encode(userName) +
-			    "&useremail=" +URLEncoder.encode(userEmail) +
-			    "&site=" + URLEncoder.encode(siteid) + 
-			    "&role=" + URLEncoder.encode(rolename) +
-			    "&session=" + URLEncoder.encode(sessionid) +
-			    "&serverurl=" + URLEncoder.encode(getServerUrl()) +
-			    "&time=" + System.currentTimeMillis() + 
-			    "&courseTitle=" + courseTitle +
-			    "&courseDescription=" + courseDescription + 
-				"&courseNumber=" + siteid + 
-				"&courseStartDate=" + courseStartDate +
-				"&courseEndDate=" + courseEndDate +
-				"&courseDirector=" + courseDirector;
+		    command = "time=" + System.currentTimeMillis() + 
+		    			"&serverurl=" + URLEncoder.encode(getServerUrl(), "UTF-8") + 
+		    			"&user=" + URLEncoder.encode(euid, "UTF-8") + 
+					    "&internaluser=" + URLEncoder.encode(userid, "UTF-8") + 
+					    "&username=" + URLEncoder.encode(userName, "UTF-8") +
+					    "&useremail=" +URLEncoder.encode(userEmail, "UTF-8") +
+					    "&site=" + URLEncoder.encode(siteid, "UTF-8") + 
+					    "&role=" + URLEncoder.encode(rolename, "UTF-8") +
+					    "&session=" + URLEncoder.encode(sessionid, "UTF-8") +
+					    "&courseTitle=" + URLEncoder.encode(courseTitle, "UTF-8") +
+					    "&courseDescription=" + URLEncoder.encode(courseDescription, "UTF-8") +
+						"&courseNumber=" + URLEncoder.encode(siteid, "UTF-8") + 
+						"&courseStartDate=" + URLEncoder.encode(courseStartDate, "UTF-8") +
+						"&courseEndDate=" + URLEncoder.encode(courseEndDate, "UTF-8") +
+						"&courseDirector=" + URLEncoder.encode(courseDirector, "UTF-8");
 			// pass on any other arguments from the user.
 			// but sanitize them to prevent people from trying to
 			// fake out the parameters we pass, or using odd syntax
 			// whose effect I can't predict
+		 // pass on any other arguments from the user.
+			// but sanitize them to prevent people from trying to
+			// fake out the parameters we pass, or using odd syntax
+			// whose effect I can't predict
+			
 			Map params = req.getParameterMap();
 			Set entries = params.entrySet();
 			Iterator pIter = entries.iterator();
@@ -464,20 +498,21 @@ public class OCWTool extends HttpServlet
 			    String key = "";
 			    String value = "";
 			    try {
-				key = (String)entry.getKey();
-				value = ((String [])entry.getValue())[0];
-			    } catch (Exception ignore) {}
-			    if (!illegalParams.contains(key.toLowerCase()) &&
-				legalKeys.matcher(key).matches())
-				command = command + "&" + key + "=" +
-				new String(dcipher.doFinal(value.getBytes()));
+					key = (String)entry.getKey();
+					value = ((String [])entry.getValue())[0];
+			    } catch (Exception e) { 
+			    	M_log.debug("Exception getting key/value", e);
+			    }
+			    if (!illegalParams.contains(key.toLowerCase()) && legalKeys.matcher(key).matches())
+			    	command = command + "&" + key + "=" + URLEncoder.encode(value, "UTF-8");
 			}
 	
 			try {
+				//command = URLEncoder.encode(command, "UTF-8");
 			    // System.out.println("sign >" + command + "<");
 			    signature = sign(command);
-			    url = url + "?" + command + "&sign=" + signature + "';";
-			    bodyonload.append("window.location = '" + url);
+			    url = url + "?" + command + "&sign=" + signature + "&credentials=" + URLEncoder.encode(credentials, "UTF-8");
+			    bodyonload.append("window.location = '" + url + "';");
 			} catch (Exception e) {};
 		    }
 
@@ -518,6 +553,8 @@ public class OCWTool extends HttpServlet
 	    // default output - show the requested application
 	    out.println(headHtml + headHtml1 + height + "px" + headHtml2 + bodyonload + headHtml3);
 	    out.println(tailHtml);
+	    System.out.println(out.toString());
+	    out.flush();
 	    }
 		catch (Exception e)
 		{
@@ -980,7 +1017,7 @@ public class OCWTool extends HttpServlet
 
 		// Encode the string into bytes using utf-8
 		byte[] utf8 = str.getBytes("UTF8");
-
+System.out.println("the original str =" + str);
 		// Encrypt
 		byte[] enc = ecipher.doFinal(utf8);
     
