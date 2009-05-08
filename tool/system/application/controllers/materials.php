@@ -321,10 +321,27 @@ class Materials extends Controller {
 																																	  'commission'=>'Commission Questions',
 																																	  'retain'=>'Copyright Analysis Questions',
 																																	 ); }
-		if ($view == 'fairuse') { $data['select_actions'] = $this->coobject->enum2array('claims_fairuse','action'); }
-		if ($view == 'permission') { $data['select_actions'] = $this->coobject->enum2array('claims_permission','action'); }
-		if ($view == 'commission') { $data['select_actions'] = $this->coobject->enum2array('claims_commission','action'); }
-		if ($view == 'retain') { $data['select_actions'] = $this->coobject->enum2array('claims_retain','action'); }
+		$tmp_actions = array();
+		if ($view == 'fairuse') { $tmp_actions = $this->coobject->enum2array('claims_fairuse','action'); }
+		if ($view == 'permission') { $tmp_actions = $this->coobject->enum2array('claims_permission','action'); }
+		if ($view == 'commission') { $tmp_actions = $this->coobject->enum2array('claims_commission','action'); }
+		if ($view == 'retain') { $tmp_actions = $this->coobject->enum2array('claims_retain','action'); }
+		/*
+		 * Trim out the actions that we don't want to be used any longer.
+		 * These actions cannot be removed from the database because there
+		 * are existing objects that may already have these actions chosen.
+		 */
+		function make_some_actions_unselectable($var) {
+		  switch ($var) {
+		  case "Permission":
+		  case "Fair Use":
+		  case "Commission":
+		    return FALSE;
+		  default:
+		    return TRUE;
+		  }
+		}
+		$data['select_actions'] = array_filter($tmp_actions, "make_some_actions_unselectable");
 
 		/* info for queries sent to instructor */
 		if ($questions_to=='instructor' || ($role == 'instructor' && $questions_to=='') || $role=='') {
