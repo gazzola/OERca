@@ -436,6 +436,8 @@ class Coobject extends Model
 												 $obj['fairuse'] = $c;
 												 if ($cl['status']=='done'||$cl['status']=='ip review') { 
 														 if(!$added){array_push($done['fairuse'],$obj); $num_done++; $added=true;} 
+												 } else if ($cl['status']=='new') {
+														continue; // Ignore new claims (those that have not been sent)
 												 } else { 
 														 $notalldone = true; 
 												 		 $cl['yes_data'] = array('name'=>$obj['id'].'_fairuse_'.$cl['id'].'_warrant_review',
@@ -483,6 +485,8 @@ class Coobject extends Model
 												 $obj['permission'] = $c;
 												 if ($cl['status']=='done') { 
 														 if(!$added) { array_push($done['permission'],$obj); $num_done++; $added=true;} 
+												 } else if ($cl['status']=='new') {
+														continue; // Ignore new claims (those that have not been sent)
 												 } else { 
 														 $notalldone = true; 
 												 		 $cl['yes_info_data'] = array('name'=>$obj['id'].'_permission_'.$cl['id'].'_info_sufficient',
@@ -553,6 +557,8 @@ class Coobject extends Model
 												 $obj['commission'] = $c;
 												 if ($cl['status']=='done'|| $cl['status']=='commission review') { 
 														 if(!$added) { array_push($done['commission'], $obj); $num_done++; $added=true;} 
+												 } else if ($cl['status']=='new') {
+														continue; // Ignore new claims (those that have not been sent)
 												 } else { 
 														 $notalldone = true; 
 
@@ -606,8 +612,9 @@ class Coobject extends Model
 												 $obj['retain'] = $c;
 												 if ($cl['status']=='done'|| $cl['status']=='ip review') { 
 														if(!$added) { array_push($done['retain'], $obj); $num_done++; $added=true;} 
-	
-												} else { 
+												 } else if ($cl['status']=='new') {
+														continue; // Ignore new claims (those that have not been sent)
+												 } else { 
 														$notalldone = true; 
 
 												 		 $cl['yes_rationale_data'] = array('name'=>$obj['id'].'_retain_'.$cl['id'].'_accept_rationale',
@@ -750,6 +757,27 @@ class Coobject extends Model
 				$this->add_log($oid, getUserProperty('id'), array('log'=>'dScribe2 has responded to this claim and sent it to the dscribe'));
 		}
 	}
+
+	/** 
+	 * Update an object claims status to passed_value
+	 *
+	 * @access  public
+	 * @param   int                      oid              object id 
+	 * @param   int                      claim_id claim id 
+	 * @param   string   type             claim type (fairuse|commission|permission|retain) 
+	 * @param   string   status     status to update
+	 * @return  array || boolean FALSE if no claims
+	 */
+	public function update_object_claim_status($oid, $claim_id, $type, $status)
+	{
+		$table = 'claims_'.$type; 
+
+		$data['modified_by'] = getUserProperty('id');
+		$data['status'] = $status;
+		$this->db->update($table, $data, "id=$claim_id AND object_id=$oid");
+		//echo $this->db->last_query();
+	}
+
 
 	/** 
 	 * return the current status of an object (which "bins" is it in)
@@ -1770,10 +1798,10 @@ class Coobject extends Model
 			
 			//	* ensure that the object is not currently being processed in another bin  
 			$anotherbin = false;	
-			if ($fu!==false && $fu[0]['status']<>'done') { $anotherbin = 'Fair Use'; }
-			if ($pm!==false && $pm[0]['status']<>'done') { $anotherbin = 'Permission'; }
-			if ($cm!==false && $cm[0]['status']<>'done') { $anotherbin = 'Commission'; }
-			if ($rt!==false && $rt[0]['status']<>'done') { $anotherbin = 'Retainment'; }
+			if ($fu!==false && $fu[0]['status']<>'done' && $fu[0]['status']<>'new') { $anotherbin = $fu[0]['action']; }
+			if ($pm!==false && $pm[0]['status']<>'done' && $pm[0]['status']<>'new') { $anotherbin = $pm[0]['action']; }
+			if ($cm!==false && $cm[0]['status']<>'done' && $cm[0]['status']<>'new') { $anotherbin = $cm[0]['action']; }
+			if ($rt!==false && $rt[0]['status']<>'done' && $rt[0]['status']<>'new') { $anotherbin = $rt[0]['action']; }
 
 			// check to see if the recommended action is the same as we already have 
 			if ($anotherbin==false && $recommendation=='Fair Use') { if ($fu!==false && $fu[0]['status']=='done') { return true; } } 
@@ -1782,8 +1810,8 @@ class Coobject extends Model
 			if ($anotherbin==false && substr($recommendation,0,6)=='Retain') { if ($rt!==false && $rt[0]['status']=='done') { return true;}} 
 
 			return ($anotherbin==false or (substr($recommendation,0,6)==substr($anotherbin,0,6))) 
-						? true : "Cannot accept recommended action: this object is currently under ".
-										 "consideration for $anotherbin."; 
+						? true : "This object is currently under consideration for \"$anotherbin\".  ".
+										 "The new recommended action, \"{$recommendation}\", is in conflict.";
 	}
 
 	/**

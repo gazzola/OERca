@@ -627,7 +627,7 @@ class Materials extends Controller {
 																			 'Retain: Permission'=>'retain');
 										$cl = $this->coobject->claim_exists($oid,$claimtype[$val]);
 										if ($cl!== false) {
-											  $ndata = array('action'=>$val);
+											  $ndata = array('action'=>$val,'status'=>"request sent"); // also update claim status to indicate that email has been queued
 												$this->coobject->update_object_claim($oid, $cl[0]['id'], $claimtype[$val], $ndata);
 										}
 
@@ -690,6 +690,29 @@ class Materials extends Controller {
 		}
 
     $this->ocw_utils->send_response('success');
+	}
+
+	//mbleed oerdev-162
+	public function update_claim_status($oid, $status, $claimtype='retain') {
+		//$this->ocw_utils->log_to_apache('error', __FUNCTION__.": updating claim_{$claimtype} status for {$oid} to '{$status}'");
+		$cl = $this->coobject->claim_exists($oid, $claimtype);
+		if ($cl!==false) {
+			//$this->ocw_utils->log_to_apache('error', __FUNCTION__.": changing existing claim_{$claimtype} status for ${oid} from '{$cl[0]['status']}' to '{$status}'");
+			$claimid = $cl[0]['id'];
+			$this->coobject->update_object_claim_status($oid, $claimid, $claimtype, $status);
+		} else {
+			//$this->ocw_utils->log_to_apache('error', __FUNCTION__.": did not find an existing claim_{$claimtype} for {$oid}!?!?");
+		}
+		//echo $this->db->last_query();
+	}
+
+	public function override_action_type($oid, $action_type) {
+		//$this->ocw_utils->log_to_apache('error', __FUNCTION__.": overriding action_type for {$oid} to '{$action_type}'");
+		$data = array('action_type' => $action_type);
+		$this->db->update('objects', $data, "id=$oid");
+		$lgcm = "Overrode action type to {$action_type}";
+		$this->coobject->add_log($oid, getUserProperty('id'), array('log'=>$lgcm));
+		//echo $this->db->last_query();
 	}
 
 	public function update_contact($cid, $mid, $oid) 
