@@ -237,9 +237,17 @@ class Materials extends Controller {
 	  $course = $this->course->get_course($cid); 
 		$material =  $this->material->materials($cid,$mid,true);
 		$stats = $this->coobject->object_stats($cid, $mid);
-
-		if(($stats['data']['num_new'] > 0) && $view == '') {
+		
+		// load view of "New" objects by default if there are any
+		if(($stats['data']['num_new'] > 0) && $view == '' && $oid == 0) {
 		  $view = 'new';
+		redirect("materials/edit/$cid/$mid/$oid/$view");
+		}
+		
+		// if all "New" objects have been processed go to "All" view
+		if($stats['data']['num_new'] == 0 && $view == 'new') {
+		  $view = '';
+		redirect("materials/edit/$cid/$mid");
 		}
 		
 		$view = (!in_array($view, array('all','new','ask:orig','fairuse','search','retain:pd',
