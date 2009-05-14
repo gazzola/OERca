@@ -298,32 +298,16 @@ var Rules = {
 						result = valid_recommendation(object_id, val);
 
 						if (result!='success') {
-							if (confirm(result+' \n\n Change this to '+ val +'?')) {
-								// user confirmed change, send update request, mbleed oerdev-162
-								var url = $('server').value+'materials/update_action_type/'+object_id+'/'+val;  
-								new Ajax(url, { method: 'post', 
-										//onComplete:function(responseText) { alert(responseText); },
-										postBody: 'action_type='+val, 
-										update: fb 
-								}).request();
-								//also update claim back to new status
-								var claimstatus = 'new';
-								var url = $('server').value+'materials/update_claim_status/'+object_id+'/'+claimstatus;  
-								new Ajax(url, { method: 'post', 
-											postBody: 'status=new', 
-											//onComplete:function(responseText) { alert(responseText); },
-											update: fb 
-								}).request();
-							} else {
-								// go back to previous recommended action
-								var options = $('action_type').options;
-  								for(var i=0; i < options.length; i++) {
+							alert(result);
+							// go back to previous recommended action
+							var options = $('action_type').options;
+  						for(var i=0; i < options.length; i++) {
 									if (options[i].value == $('raction').value) {
 											$('action_type').selectedIndex = options[i].index;
 									}
-  								}
-								return false;
-							}
+  						}
+							
+							return false;
 						} else {
 								if (val == 'Search' || val == 'Create' || val=='Remove and Annotate') {
 										new Ajax(url, { method: 'post', postBody: 'field='+field+'&val='+val, update: fb }).request();
@@ -390,7 +374,8 @@ var Rules = {
 				var field = 'action_type'; 
 				var url = $('server').value+'materials/update_object/'+course_id+'/'+material_id+'/'+object_id;
 				var val = $('action_type').value;
-	     		var fb = $('feedback');
+	     	var fb = $('feedback');
+
 				var check = this.validate(val);
 				if (check != 'success') { alert(check); return false; }
 
@@ -415,25 +400,11 @@ var Rules = {
 																					}
 																			}
 																			// reset url
-      																		//var fb1 = $('feedback');
-      																		/*
+      																var fb1 = $('feedback');
 																			new Ajax(url, { method: 'post', 
-																				postBody: 'field=ask_dscribe2&val=yes', 
-																				onRequest: function(responseText) { alert('Request: '+responseText); },
-																				onFailure: function(responseText) { alert('Error: '+responseText); },
-																				onComplete: function(responseText) { alert('Complete: '+responseText); },
-																				update: fb 
-																			}).request();*/
+																											postBody: 'field=ask_dscribe2&val=yes', 
+																											update: fb1 }).request();
 																	}
-															//mark claim in progress if appropriate mbleed OER 162
-															var claimstatus = 'in progress';
-															var url = $('server').value+'materials/update_claim_status/'+object_id+'/'+claimstatus;  
-															new Ajax(url, { method: 'post', 
-																postBody: 'status=in+progress', 
-																//onComplete:function(responseText) { alert(responseText); },
-																update: fb 
-															}).request();
-
 														} else {
 																alert(response); return false;
 														}

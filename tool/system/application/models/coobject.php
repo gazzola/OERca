@@ -207,7 +207,7 @@ class Coobject extends Model
      * @param   string	details 
      * @return  array
        	*
-    * mbleed, written 4/2009 
+    * mbleed, written 4/2009 for OER162
      */
  	public function coobjects_by_type($cotype = '')
 	{
@@ -749,27 +749,6 @@ class Coobject extends Model
 	  		$this->update($oid, $d);
 				$this->add_log($oid, getUserProperty('id'), array('log'=>'dScribe2 has responded to this claim and sent it to the dscribe'));
 		}
-	}
-	
-		/** 
-	 * Update an object claims status to passed_value
-   *
-   * @access  public
-   * @param   int			oid 		 object id 
-   * @param   int			claim_id claim id 
-   * @param   string	type 		 claim type (fairuse|commission|permission|retain) 
-   * @param   string	status 	   status to update
-   * @return  array || boolean FALSE if no claims
-	 */
-	 //mbleed oerdev-162
-	public function update_object_claim_status($oid, $claim_id, $type, $status)
-	{
-		$table = 'claims_'.$type; 
-		
-		$data['modified_by'] = getUserProperty('id');
-		$data['status'] = $status;
-	  	$this->db->update($table, $data, "id=$claim_id AND object_id=$oid");
-	  	//echo $this->db->last_query();
 	}
 
 	/** 
@@ -1794,7 +1773,7 @@ class Coobject extends Model
 			if ($fu!==false && $fu[0]['status']<>'done') { $anotherbin = 'Fair Use'; }
 			if ($pm!==false && $pm[0]['status']<>'done') { $anotherbin = 'Permission'; }
 			if ($cm!==false && $cm[0]['status']<>'done') { $anotherbin = 'Commission'; }
-			if ($rt!==false && $rt[0]['status']=='in progress') { $anotherbin = $rt[0]['action']; }
+			if ($rt!==false && $rt[0]['status']<>'done') { $anotherbin = 'Retainment'; }
 
 			// check to see if the recommended action is the same as we already have 
 			if ($anotherbin==false && $recommendation=='Fair Use') { if ($fu!==false && $fu[0]['status']=='done') { return true; } } 
@@ -1803,7 +1782,8 @@ class Coobject extends Model
 			if ($anotherbin==false && substr($recommendation,0,6)=='Retain') { if ($rt!==false && $rt[0]['status']=='done') { return true;}} 
 
 			return ($anotherbin==false or (substr($recommendation,0,6)==substr($anotherbin,0,6))) 
-						? true : "This object is currently under review for recommended action: $anotherbin";
+						? true : "Cannot accept recommended action: this object is currently under ".
+										 "consideration for $anotherbin."; 
 	}
 
 	/**

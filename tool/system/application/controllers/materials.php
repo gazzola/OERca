@@ -692,28 +692,6 @@ class Materials extends Controller {
     $this->ocw_utils->send_response('success');
 	}
 
-	//mbleed oerdev-162
-	public function update_claim_status($oid, $status) {
-		
-		$type = 'retain';
-		$cl = $this->coobject->claim_exists($oid, $type);
-		if ($cl!==false) {
-			$claimid = $cl[0]['id'];
-			$this->coobject->update_object_claim_status($oid, $claimid, $type, $status);
-		}
-		//echo $this->db->last_query();
-	}
-	
-	public function update_action_type($oid, $action_type) {
-		
-		$data = array('action_type' => $action_type);
-		//$this->coobject->update($oid, $data);
-		$this->db->update('objects',$data,"id=$oid");
-		//echo $this->db->last_query();
-	}
-	
-
-
 	public function update_contact($cid, $mid, $oid) 
  	{
  		if (isset($_REQUEST['field']) && $_REQUEST['field']<>'' && isset($_REQUEST['val']) && $_REQUEST['val']<>'') {
