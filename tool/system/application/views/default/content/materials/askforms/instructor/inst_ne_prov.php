@@ -79,12 +79,12 @@ foreach($prov_objects as  $obj) {
 <?php }} ?>
 	</p>
 
-	<!-- citation -->
+	<!-- citation (source information) -->
 	<br/>
 
-	<p style="clear:both"><h3>Citation:</small></h3> 
+	<p style="clear:both"><h3>Source Information:</small></h3> 
    <p style="margin-bottom:15px;border:1px solid #ccc; padding:5px; background-color:#eee">
-			<?php echo ($obj['citation']<>'') ? $obj['citation']:'No citation'?>
+			<?php echo ($obj['citation']<>'') ? $obj['citation']:'No source information'?>
 	 </p>
 	</p>
 

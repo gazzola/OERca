@@ -62,9 +62,9 @@ foreach($cos as $type => $co) {
 		<span><?php echo ($obj['contributor']<>'') ? $obj['contributor']:' No contributor'?></span>
 	</p>
 
-	<!-- citation -->
-	<p style="clear:both"><b>Citation:</b> 
-		<span><?php echo ($obj['citation']<>'') ? $obj['citation']:' No citation'?></span>
+	<!-- citation (source information) -->
+	<p style="clear:both"><b>Source Information:</b> 
+		<span><?php echo ($obj['citation']<>'') ? $obj['citation']:' No source information'?></span>
 	</p>
 
 	<!-- keywords -->

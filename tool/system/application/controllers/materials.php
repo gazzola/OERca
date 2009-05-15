@@ -237,9 +237,17 @@ class Materials extends Controller {
 	  $course = $this->course->get_course($cid); 
 		$material =  $this->material->materials($cid,$mid,true);
 		$stats = $this->coobject->object_stats($cid, $mid);
-
-		if(($stats['data']['num_new'] > 0) && $view == '') {
+		
+		// load view of "New" objects by default if there are any
+		if(($stats['data']['num_new'] > 0) && $view == '' && $oid == 0) {
 		  $view = 'new';
+		redirect("materials/edit/$cid/$mid/$oid/$view");
+		}
+		
+		// if all "New" objects have been processed go to "All" view
+		if($stats['data']['num_new'] == 0 && $view == 'new') {
+		  $view = '';
+		redirect("materials/edit/$cid/$mid");
 		}
 		
 		$view = (!in_array($view, array('all','new','ask:orig','fairuse','search','retain:pd',
@@ -321,10 +329,27 @@ class Materials extends Controller {
 																																	  'commission'=>'Commission Questions',
 																																	  'retain'=>'Copyright Analysis Questions',
 																																	 ); }
-		if ($view == 'fairuse') { $data['select_actions'] = $this->coobject->enum2array('claims_fairuse','action'); }
-		if ($view == 'permission') { $data['select_actions'] = $this->coobject->enum2array('claims_permission','action'); }
-		if ($view == 'commission') { $data['select_actions'] = $this->coobject->enum2array('claims_commission','action'); }
-		if ($view == 'retain') { $data['select_actions'] = $this->coobject->enum2array('claims_retain','action'); }
+		$tmp_actions = array();
+		if ($view == 'fairuse') { $tmp_actions = $this->coobject->enum2array('claims_fairuse','action'); }
+		if ($view == 'permission') { $tmp_actions = $this->coobject->enum2array('claims_permission','action'); }
+		if ($view == 'commission') { $tmp_actions = $this->coobject->enum2array('claims_commission','action'); }
+		if ($view == 'retain') { $tmp_actions = $this->coobject->enum2array('claims_retain','action'); }
+		/*
+		 * Trim out the actions that we don't want to be used any longer.
+		 * These actions cannot be removed from the database because there
+		 * are existing objects that may already have these actions chosen.
+		 */
+		function make_some_actions_unselectable($var) {
+		  switch ($var) {
+		  case "Permission":
+		  case "Fair Use":
+		  case "Commission":
+		    return FALSE;
+		  default:
+		    return TRUE;
+		  }
+		}
+		$data['select_actions'] = array_filter($tmp_actions, "make_some_actions_unselectable");
 
 		/* info for queries sent to instructor */
 		if ($questions_to=='instructor' || ($role == 'instructor' && $questions_to=='') || $role=='') {
@@ -610,7 +635,7 @@ class Materials extends Controller {
 																			 'Retain: Permission'=>'retain');
 										$cl = $this->coobject->claim_exists($oid,$claimtype[$val]);
 										if ($cl!== false) {
-											  $ndata = array('action'=>$val);
+											  $ndata = array('action'=>$val,'status'=>"request sent"); // also update claim status to indicate that email has been queued
 												$this->coobject->update_object_claim($oid, $cl[0]['id'], $claimtype[$val], $ndata);
 										}
 
@@ -673,6 +698,29 @@ class Materials extends Controller {
 		}
 
     $this->ocw_utils->send_response('success');
+	}
+
+	//mbleed oerdev-162
+	public function update_claim_status($oid, $status, $claimtype='retain') {
+		//$this->ocw_utils->log_to_apache('error', __FUNCTION__.": updating claim_{$claimtype} status for {$oid} to '{$status}'");
+		$cl = $this->coobject->claim_exists($oid, $claimtype);
+		if ($cl!==false) {
+			//$this->ocw_utils->log_to_apache('error', __FUNCTION__.": changing existing claim_{$claimtype} status for ${oid} from '{$cl[0]['status']}' to '{$status}'");
+			$claimid = $cl[0]['id'];
+			$this->coobject->update_object_claim_status($oid, $claimid, $claimtype, $status);
+		} else {
+			//$this->ocw_utils->log_to_apache('error', __FUNCTION__.": did not find an existing claim_{$claimtype} for {$oid}!?!?");
+		}
+		//echo $this->db->last_query();
+	}
+
+	public function override_action_type($oid, $action_type) {
+		//$this->ocw_utils->log_to_apache('error', __FUNCTION__.": overriding action_type for {$oid} to '{$action_type}'");
+		$data = array('action_type' => $action_type);
+		$this->db->update('objects', $data, "id=$oid");
+		$lgcm = "Overrode action type to {$action_type}";
+		$this->coobject->add_log($oid, getUserProperty('id'), array('log'=>$lgcm));
+		//echo $this->db->last_query();
 	}
 
 	public function update_contact($cid, $mid, $oid) 
@@ -823,6 +871,14 @@ class Materials extends Controller {
     if ($tab=='upload') { $_REQUEST['viewing'] = 'replacement'; }
 		$this->db_session->set_userdata('tab_name', $tab);
 
+		$action_tips =
+						"<b>[ Search ]</b><br/>Replace this through a search.<br/><br/>
+						 <b>[ Retain: Permission ]</b><br/>  Keep this because it has a copyright license or other permission to publish.<br/><br/>
+						 <b>[ Retain: Public Domain ]</b><br/>  Keep this because it clearly indicates it is in the public domain.<br/><br/>
+						 <b>[ Retain: Copyright Analysis ]</b><br/>  Keep this but understand it needs further copyright review (including fair use).<br/><br/>
+						 <b>[ Create ]</b><br/>  Create a replacement for this.<br/><br/>
+						 <b>[ Remove and Annotate ]</b><br/>  Remove this and add an annotation in its place.";
+
 		$data = array(
 								'cid'=>$cid,
 								'mid'=>$mid,
@@ -837,6 +893,7 @@ class Materials extends Controller {
 								'filter'=>$filter,
 								'subtypes'=>$subtypes,
 								'action_types' => $this->coobject->enum2array('objects','action_type'), 
+								'action_tips' => $action_tips,
 								'alert_wrong_mimetype' => $alert_wrong_mimetype
 			      );
 		$data = array_merge($data, $permission);

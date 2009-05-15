@@ -1,4 +1,21 @@
 <?php	
+/*
+ * Trim out the actions that we don't want to be used any longer.
+ * These actions cannot be removed from the database because there
+ * are existing objects that may already have these actions chosen.
+ */
+function make_some_actions_unselectable($var) {
+	switch ($var) {
+	case "Permission":
+	case "Fair Use":
+	case "Commission":
+		return FALSE;
+	default:
+		return TRUE;
+	}
+}
+$action_types = array_filter($action_types, "make_some_actions_unselectable");
+
 $data['action_types']= array_merge(array(''=>'Choose one...'), $action_types);
 
 $data['ask_status'] = array('new'=>'Instructor has not looked at this object yet.',

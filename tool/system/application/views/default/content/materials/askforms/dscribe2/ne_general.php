@@ -57,8 +57,8 @@ foreach($cos as $obj) {
 				<?php if ($obj['contributor']=='') { ?><span style="color:red">No contributor</span>
 				<?php } else { echo $obj['contributor']; }?><br/><br/>
 
-				<b>Citation:</b> 
-				<?php if ($obj['citation']=='') { ?><span style="color:red">No citation</span>
+				<b>Source Information:</b> 
+				<?php if ($obj['citation']=='') { ?><span style="color:red">No source information</span>
 				<?php } else { echo $obj['citation']; }?><br/><br/>
 
 				<?php if (is_array($obj['copyright'])) { $c = $obj['copyright'];?>

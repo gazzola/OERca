@@ -18,6 +18,7 @@
  * @version 	1.1
  *
  */
+ 
 
 class Auth extends Controller
 {	
@@ -33,103 +34,145 @@ class Auth extends Controller
 		$this->load->model('ocw_user');
 		$this->load->model('course');
 		$this->CI = $this->freakauth_light;
-
+		
 		if ($_SERVER['QUERY_STRING'] <> '') { // coming from Sakai??
-			// get user role, user name and site id
-			if ($_REQUEST['role']=='maintain' || $_REQUEST['role']=='Instructor')
-			{ 
-				$role = 'instructor';
-			}
-			else
-			{
-				// defaults to dscribe1 for now.
-				$role = 'dscribe1';
-			}
-			
-			/* Zhen's CTools integration code */
-			$userId = $_REQUEST['user'];
-			$username = $_REQUEST['username'];
-			$useremail = $_REQUEST['useremail'];
-			$site = $_REQUEST['site'];
-			$serverurl = $_REQUEST['serverurl'];
-			$sakaisession = $_REQUEST['session'];
-			$internaluser = $_REQUEST['internaluser'];
-			$courseTitle = $_REQUEST['courseTitle'];
-			$courseDescription = $_REQUEST['courseDescription'];
-			$courseNumber = $_REQUEST['courseNumber'];
-			$courseStartDate = $_REQUEST['courseStartDate'];
-			$courseEndDate = $_REQUEST['courseEndDate'];
-			$courseDirector = $_REQUEST['courseDirector'];
-			
-			// construct new data to store in session
-			$newsessiondata = array (
-					'role' => $role,
-					'userId' => $userId,
-					'username' => $username,
-					'useremail' => $useremail,
-					'site' => $site,
-					'serverurl' => $serverurl,
-					'sakaisession' => $sakaisession,
-					'internaluser' => $internaluser,
-					'courseTitle' => $courseTitle,
-					'courseDescription' => $courseDescription,
-					'courseNumber' => $courseNumber,
-					'courseStartDate' => $courseStartDate,
-					'courseEndDate' => $courseEndDate,
-					'courseDirector' => $courseDirector
-			);
-			$this->db_session->set_userdata($newsessiondata);
-			
-			if (($userdata=$this->ocw_user->get_user($userId)) == false) {
-				$newUserDetails['name'] = $username;
-				$newUserDetails['user_name'] = $userId;
-				$newUserDetails['email'] = $useremail;
-				$newUserDetails['role']=$role;
-				$this->ocw_user->add_user($newUserDetails);
-			}
-
-			if (($userdata=$this->ocw_user->get_user($userId)) !== false) {
-				 $userdata['sessionid'] = $sakaisession;
-				 $userdata['internaluser'] = $internaluser;
-				 $userdata['site'] = $site;
-				 
-				$this->CI->_set_logindata($userdata);
-				$course = $this->course->get_course_by_title($courseTitle);
-				if ( $course == null)
-				{
-					// if there is no course, add the current one as the first course
-					// if there is no course, add the current one as the first course
-					$courseDetails['number']='';
-					$courseDetails['title'] = $courseTitle;
-					$courseDetails['start_date'] = $courseStartDate;
-					$courseDetails['end_date'] = $courseEndDate;
-					$courseDetails['curriculum_id'] = '1';
-					$courseDetails['director'] = $courseDirector;
-					$courseDetails['collaborators']='';
-
-					// add course
-					$c=$this->course->new_course($courseDetails);
-					// add user role for the course
-					if(($u = $this->ocw_user->existsByUserName($userId)) != false)
-					{
-						$userDetails['user_id'] = $u['id'];
-						$userDetails['course_id'] = $c['id'];
-						$userDetails['role'] = $role; 
-						$this->course->add_user($userDetails);
-					}
-					$courseId= $u['id'];
+	 		
+	 		parse_str($_SERVER['QUERY_STRING'], $GET_ARRAY);
+	        $sign = preg_replace('/&credentials=.*/', '', $_SERVER['QUERY_STRING']);
+	        $url = $GET_ARRAY['serverurl'];
+	        
+	      // 	print("<pre>");print_r($GET_ARRAY);print("</pre>");
+	        $time=$GET_ARRAY['time'];
+	        parse_str($GET_ARRAY['credentials'], $credentials);
+	        
+            $proxy = new SoapClient($url . '/sakai-axis/SakaiSigning.jws?wsdl', array('trace' => 1));
+            $result = $proxy->testsign($sign);
+            if ($result == 'true') {
+                $this->db_session->set_userdata('role', $GET_ARRAY['role']);
+                $this->db_session->set_userdata('sakaidata', $GET_ARRAY);
+                $this->db_session->set_userdata('credentials', $credentials);
+                $jsession = $credentials['JSESSIONID'];
+                $pieces = explode('.', $jsession);
+                if (count($pieces) == 2) {
+                    $this->db_session->set_userdata('session', $pieces[0]);
+                    $this->db_session->set_userdata('server', $pieces[1]);
+                }
+                
+                // get user role, user name and site id
+				if ($_REQUEST['role']=='maintain' || $_REQUEST['role']=='Instructor')
+				{ 
+					$role = 'instructor';
 				}
 				else
 				{
-					$courseId = $course['id'];
+					// defaults to dscribe1 for now.
+					$role = 'dscribe1';
 				}
-				redirect($role.'/materials/'.$courseId,'location');
-			}
-			else
-			{
-				exit;
-			}
-		}
+				/* Zhen's CTools integration code */
+				$userId = $_REQUEST['user'];
+				$username = $_REQUEST['username'];
+				$useremail = $_REQUEST['useremail'];
+				$site = $_REQUEST['site'];
+				$serverurl = $_REQUEST['serverurl'];
+				$sakaisession = $_REQUEST['session'];
+				$internaluser = $_REQUEST['internaluser'];
+				$courseTitle = $_REQUEST['courseTitle'];
+				$courseDescription = $_REQUEST['courseDescription'];
+				$courseNumber = $_REQUEST['courseNumber'];
+				$courseStartDate = $_REQUEST['courseStartDate'];
+				$courseEndDate = $_REQUEST['courseEndDate'];
+				$courseDirector = $_REQUEST['courseDirector'];
+				
+				// construct new data to store in session
+				$newsessiondata = array (
+						'role' => $role,
+						'userId' => $userId,
+						'username' => $username,
+						'useremail' => $useremail,
+						'site' => $site,
+						'serverurl' => $serverurl,
+						'sakaisession' => $sakaisession,
+						'internaluser' => $internaluser,
+						'courseTitle' => $courseTitle,
+						'courseDescription' => $courseDescription,
+						'courseNumber' => $courseNumber,
+						'courseStartDate' => $courseStartDate,
+						'courseEndDate' => $courseEndDate,
+						'courseDirector' => $courseDirector
+				);
+				$this->db_session->set_userdata($newsessiondata);
+				if (($userdata=$this->ocw_user->get_user($userId)) == false) {
+					log_message('error', "no such user ".$userId);
+					$newUserDetails['name'] = $username;
+					$newUserDetails['user_name'] = $userId;
+					$newUserDetails['email'] = $useremail;
+					$newUserDetails['role']=$role;
+					$this->ocw_user->add_user($newUserDetails);
+					log_message('error', "added user ".$userId);
+				}
+				log_message('error', "user exist ".$userId);
+				if (($userdata=$this->ocw_user->get_user($userId)) !== false) {
+					 $userdata['sessionid'] = $sakaisession;
+					 $userdata['internaluser'] = $internaluser;
+					 $userdata['site'] = $site;
+					 
+					$this->CI->_set_logindata($userdata);
+					
+					$course = $this->course->get_course_by_title($courseTitle);
+					if ( $course == null)
+					{
+						log_message('error', "no such course ".$courseTitle);
+						// if there is no course, add the current one as the first course
+						// if there is no course, add the current one as the first course
+						$courseDetails['number']='';
+						$courseDetails['title'] = $courseTitle;
+						$courseDetails['start_date'] = $courseStartDate;
+						$courseDetails['end_date'] = $courseEndDate;
+						//$courseDetails['curriculum_id'] = '1';
+						$courseDetails['director'] = $courseDirector;
+						$courseDetails['collaborators']='';
+	
+						// add course
+						$course=$this->course->new_course($courseDetails);
+						log_message('error', "added course ".$courseTitle);
+						
+						if ($role == 'instructor')
+						{
+							// if this is an instructor, add this instructor to course
+							$this->instructors->add_inst_to_course($username, $course['id']);
+						}
+					}
+					log_message('error', "course exist".$courseTitle);
+					
+					// add user role for the course
+					if(($u = $this->ocw_user->existsByUserName($userId)) != false)
+					{
+						log_message('error', " exist user ".$userId);
+						// whether this user has given role in the course
+						if (!$this->ocw_user->has_role($u['id'], $course['id'], $role))
+						{
+							log_message('error', "user not in class".$u['id'].$course['id'].$role);
+							// add user with role into given course
+							$userDetails['user_id'] = $u['id'];
+							$userDetails['course_id'] = $course['id'];
+							$userDetails['role'] = $role; 
+							$this->course->add_user($userDetails);
+						}
+						log_message('error', "user in class ".$u['id'].$course['id'].$role);
+					}
+					
+					$courseId= $course['id'];
+					log_message('error', "redirect to "."$role/materials/$courseId");
+					redirect("$role/materials/$courseId",'location');
+				}
+				else
+				{
+					exit;
+				}
+            }
+        }
+ 
+ 
         $this->load->library('FAL_front', 'fal_front');
         $this->_container = 'auth/login/content';
     }

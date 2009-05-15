@@ -298,66 +298,82 @@ var Rules = {
 						result = valid_recommendation(object_id, val);
 
 						if (result!='success') {
-							alert(result);
-							// go back to previous recommended action
-							var options = $('action_type').options;
-  						for(var i=0; i < options.length; i++) {
+							if (confirm(result+'\n\nOverride the recommended action to "'+ val +'"?')) {
+								// they chose to override previous recommendation, update the recommended action
+								var url = $('server').value+'materials/override_action_type/'+object_id+'/'+val;
+								new Ajax(url, { method: 'post', 
+																postBody: 'action_type='+val, 
+																//onComplete: function(responseText) { alert(responseText); },
+																update: fb 
+								}).request();
+								// also update claim status to 'new'
+								var claimstatus = 'new';
+								var url = $('server').value+'materials/update_claim_status/'+object_id+'/'+claimstatus;
+								new Ajax(url, { method: 'post', 
+																postBody: 'status=new', 
+																//onComplete: function(responseText) { alert(responseText); },
+																update: fb 
+								}).request();
+							} else {
+								// go back to previous recommended action
+								var options = $('action_type').options;
+								for(var i=0; i < options.length; i++) {
 									if (options[i].value == $('raction').value) {
 											$('action_type').selectedIndex = options[i].index;
 									}
-  						}
+								}
 							
-							return false;
+								return false;
+							}
+						}
+						// If we make it this far, update the panels
+						if (val == 'Search' || val == 'Create' || val=='Remove and Annotate') {
+								new Ajax(url, { method: 'post', postBody: 'field='+field+'&val='+val, update: fb }).request();
+								var ask_dscrib2 = document.getElementsByName('ask_dscribe2');
+								for ( var i = 0 ; i < ask_dscrib2.length ; i++ ) {
+										 ask_dscrib2[i].checked = (ask_dscrib2[i].value == 'no') ? 'checked' : '';
+								}
+    							var fb1 = $('feedback');
+								new Ajax(url, { method: 'post', postBody: 'field=ask_dscribe2&val=no', update: fb1 }).request();
+
+								if ($('Fair Use')) { $('Fair Use').style.display = 'none';	}
+								if ($('Permission')) { $('Permission').style.display = 'none';}
+								if ($('Commission')) { $('Commission').style.display = 'none';}
+								if ($('Retain')) { $('Retain').style.display = 'none';}
+								// don't scroll
+
+						} else if (val == 'Fair Use') {
+							if ($('Fair Use')) { $('Fair Use').style.display = 'block';}
+							if ($('Permission')) { $('Permission').style.display = 'none';}
+							if ($('Commission')) { $('Commission').style.display = 'none';}
+							if ($('Retain')) { $('Retain').style.display = 'none';}
+							this.scrollIntoView();
+						} else if (val == 'Permission') {
+							if ($('Fair Use')) { $('Fair Use').style.display = 'none';	}
+							if ($('Permission')) { $('Permission').style.display = 'block';}
+							if ($('Commission')) { $('Commission').style.display = 'none';}
+							if ($('Retain')) { $('Retain').style.display = 'none';}
+							this.scrollIntoView();
+						} else if (val == 'Commission') {
+							if ($('Fair Use')) { $('Fair Use').style.display = 'none';	}
+							if ($('Permission')) { $('Permission').style.display = 'none';}
+							if ($('Commission')) { $('Commission').style.display = 'block';}
+							if ($('Retain')) { $('Retain').style.display = 'none';}
+							this.scrollIntoView();
+						} else if (val.substring(0, 6) == 'Retain' && val != 'Retain: Instructor Created') {
+							if ($('Fair Use')) { $('Fair Use').style.display = 'none';	}
+							if ($('Permission')) { $('Permission').style.display = 'none';}
+							if ($('Commission')) { $('Commission').style.display = 'none';}
+							if ($('Retain')) { $('Retain').style.display = 'block';}
+							this.scrollIntoView();
 						} else {
-								if (val == 'Search' || val == 'Create' || val=='Remove and Annotate') {
-										new Ajax(url, { method: 'post', postBody: 'field='+field+'&val='+val, update: fb }).request();
-										var ask_dscrib2 = document.getElementsByName('ask_dscribe2');
-										for ( var i = 0 ; i < ask_dscrib2.length ; i++ ) {
-												 ask_dscrib2[i].checked = (ask_dscrib2[i].value == 'no') ? 'checked' : '';
-										}
-      							var fb1 = $('feedback');
-										new Ajax(url, { method: 'post', postBody: 'field=ask_dscribe2&val=no', update: fb1 }).request();
-
-										if ($('Fair Use')) { $('Fair Use').style.display = 'none';	}
-										if ($('Permission')) { $('Permission').style.display = 'none';}
-										if ($('Commission')) { $('Commission').style.display = 'none';}
-										if ($('Retain')) { $('Retain').style.display = 'none';}
-										// don't scroll
-
-								} else if (val == 'Fair Use') {
-									if ($('Fair Use')) { $('Fair Use').style.display = 'block';}
-									if ($('Permission')) { $('Permission').style.display = 'none';}
-									if ($('Commission')) { $('Commission').style.display = 'none';}
-									if ($('Retain')) { $('Retain').style.display = 'none';}
-									this.scrollIntoView();
-								} else if (val == 'Permission') {
-									if ($('Fair Use')) { $('Fair Use').style.display = 'none';	}
-									if ($('Permission')) { $('Permission').style.display = 'block';}
-									if ($('Commission')) { $('Commission').style.display = 'none';}
-									if ($('Retain')) { $('Retain').style.display = 'none';}
-									this.scrollIntoView();
-								} else if (val == 'Commission') {
-									if ($('Fair Use')) { $('Fair Use').style.display = 'none';	}
-									if ($('Permission')) { $('Permission').style.display = 'none';}
-									if ($('Commission')) { $('Commission').style.display = 'block';}
-									if ($('Retain')) { $('Retain').style.display = 'none';}
-									this.scrollIntoView();
-								} else if (val.substring(0, 6) == 'Retain' && val != 'Retain: Instructor Created') {
-									if ($('Fair Use')) { $('Fair Use').style.display = 'none';	}
-									if ($('Permission')) { $('Permission').style.display = 'none';}
-									if ($('Commission')) { $('Commission').style.display = 'none';}
-									if ($('Retain')) { $('Retain').style.display = 'block';}
-									this.scrollIntoView();
-								} else {
-									if ($('Fair Use')) { $('Fair Use').style.display = 'none';	}
-									if ($('Permission')) { $('Permission').style.display = 'none';}
-									if ($('Commission')) { $('Commission').style.display = 'none';}
-									if ($('Retain')) { $('Retain').style.display = 'none';}
-									this.scrollIntoView();
-								} 
-								$('raction').value=val;
-						}	
-
+							if ($('Fair Use')) { $('Fair Use').style.display = 'none';	}
+							if ($('Permission')) { $('Permission').style.display = 'none';}
+							if ($('Commission')) { $('Commission').style.display = 'none';}
+							if ($('Retain')) { $('Retain').style.display = 'none';}
+							this.scrollIntoView();
+						} 
+						$('raction').value=val;
 				} else {	
 					new Ajax(url, { method: 'post', postBody: 'field='+field+'&val='+val, update: fb }).request();
 				}	
@@ -378,6 +394,10 @@ var Rules = {
 
 				var check = this.validate(val);
 				if (check != 'success') { alert(check); return false; }
+
+				// They clicked the send button, so update the claim status to indicate that fact (do this in controller instead?)
+				//var url2 = $('server').value+'materials/update_claim_status/'+object_id+'/request+sent';
+				//new Ajax(url2, { method: 'post', postBody: 'status=request sent', update: fb } ).request();
 
 				new Ajax(url, { method: 'post', postBody: 'field='+field+'&val='+val, update: fb, 
                      		onComplete:function() {

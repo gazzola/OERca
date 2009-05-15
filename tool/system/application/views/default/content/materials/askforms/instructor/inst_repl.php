@@ -31,10 +31,10 @@ foreach($repl_objects as  $obj) {
 
 
 	<div id="suit_yes_other_<?=$obj['id']?>" style="display: <?= ($obj['suitable']=='yes') ? 'block':'none'?>"> 
-	<!-- citation -->
-	<p style="clear:both"><h3>Replacement Citation: <small>(click below to edit)</small></h3> 
+	<!-- citation (source information) -->
+	<p style="clear:both"><h3>Replacement Source Information: <small>(click below to edit)</small></h3> 
 		<div id="holder_citation_<?=$obj['id']?>">
-			<span id="txt_citation_<?=$obj['id']?>" class="ine_tip" title="Click to edit text"><?php echo ($obj['citation']<>'') ? $obj['citation']:'No citation'?></span>
+			<span id="txt_citation_<?=$obj['id']?>" class="ine_tip" title="Click to edit text"><?php echo ($obj['citation']<>'') ? $obj['citation']:'No source information'?></span>
 		</div>
 <?php 
 	$n = count($inplaceeditors) + 1; 
@@ -42,7 +42,7 @@ foreach($repl_objects as  $obj) {
 	$ine_holder = 'holder_citation_'.$obj['id'];
     $ine_url = "materials/update_replacement/$cid/$mid/{$obj['object_id']}/{$obj['id']}/citation/";
 	$inplaceeditors[]="var editor$n = new InPlaceEditor('$ine_id','$ine_holder',".
-					  "'$ine_url','No citation'); ".
+					  "'$ine_url','No source information'); ".
 					  "editor$n.hover('$ine_id','$ine_holder','#ffffcc','#fff');";
 ?>
 	</p>
