@@ -30,6 +30,21 @@
           <div class="column span-15 first">
 	    <span style="font-size:16px; font-weight:bold; clear:both; margin-top:10px;">
             <?=$value['number'] ?> <?=$value['title'] ?>
+            <?php
+            if ($value['director']) {
+              print " - Instructor:  ${value['director']}";
+            }
+
+            if ($value['start_date'] &&
+              $value['start_date'] != '0000-00-00') {
+                print " - From: ${value['start_date']}";
+            }
+
+            if ($value['end_date'] &&
+              $value['end_date'] != '0000-00-00') {
+              print " - To: ${value['end_date']}";
+            }
+            ?>
             </span>
             <span style="font-size:8px; clear:both; margin-top:10px;">
             <?=   anchor(site_url("courses/edit_course_info/{$value['id']}").'?TB_iframe=true&height=675&width=875','Edit Info &raquo;',array('style'=>'font-size:10px','class'=>'smoothbox','title'=>'Edit Course')) ?>

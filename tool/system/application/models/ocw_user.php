@@ -567,15 +567,24 @@ class OCW_user extends Model
       join('acl', 'acl.course_id = courses.id', 'inner')->
       join('users', 'users.id = acl.user_id', 'inner');
     $this->db->where('users.id', $uid);
-    $this->db->select('courses.id, courses.number, 
-      courses.title');
+    $this->db->select(
+      'courses.id,
+      courses.number,
+      courses.title,
+      courses.director,
+      courses.start_date,
+      courses.end_date'
+      );
     $q = $this->db->get();
     if ($q->num_rows() > 0) {
       foreach ($q->result() as $row) {
         $courses[] = array(
           'id' => $row->id,
           'number' => $row->number, 
-          'title' => $row->title
+          'title' => $row->title,
+          'director' =>$row->director,
+          'start_date' => $row->start_date,
+          'end_date' => $row->end_date
           );
       }
     }
