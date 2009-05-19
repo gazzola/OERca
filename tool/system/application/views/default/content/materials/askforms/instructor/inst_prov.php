@@ -104,7 +104,7 @@ foreach($prov_objects as  $obj) {
 	$ine_holder = 'holder_citation_'.$obj['id'];
     $ine_url = "materials/update_object/$cid/$mid/{$obj['id']}/citation/";
 	$inplaceeditors[]="var editor$n = new InPlaceEditor('$ine_id','$ine_holder',".
-					  "'$ine_url','No source information'); ".
+					  "'$ine_url','No source information','get'); ".
 					  "editor$n.hover('$ine_id','$ine_holder','#ffffcc','#fff');";
 ?>
 	</p>
@@ -121,7 +121,7 @@ foreach($prov_objects as  $obj) {
 	$ine_holder = 'holder_tags_'.$obj['id'];
     $ine_url = "materials/update_object/$cid/$mid/{$obj['id']}/tags/";
 	$inplaceeditors[]="var editor$n = new InPlaceEditor('$ine_id','$ine_holder',".
-					  "'$ine_url','No keywords'); ".
+					  "'$ine_url','No keywords','get'); ".
 					  "editor$n.hover('$ine_id','$ine_holder','#ffffcc','#fff');";
 ?>
 	</p>

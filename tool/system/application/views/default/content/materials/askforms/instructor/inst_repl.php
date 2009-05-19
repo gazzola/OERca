@@ -42,7 +42,7 @@ foreach($repl_objects as  $obj) {
 	$ine_holder = 'holder_citation_'.$obj['id'];
     $ine_url = "materials/update_replacement/$cid/$mid/{$obj['object_id']}/{$obj['id']}/citation/";
 	$inplaceeditors[]="var editor$n = new InPlaceEditor('$ine_id','$ine_holder',".
-					  "'$ine_url','No source information'); ".
+					  "'$ine_url','No source information','get'); ".
 					  "editor$n.hover('$ine_id','$ine_holder','#ffffcc','#fff');";
 ?>
 	</p>
@@ -59,7 +59,7 @@ foreach($repl_objects as  $obj) {
 	$ine_holder = 'holder_tags_'.$obj['id'];
     $ine_url = "materials/update_replacement/$cid/$mid/{$obj['object_id']}/{$obj['id']}/tags/";
 	$inplaceeditors[]="var editor$n = new InPlaceEditor('$ine_id','$ine_holder',".
-					  "'$ine_url','No keywords'); ".
+					  "'$ine_url','No keywords','get'); ".
 					  "editor$n.hover('$ine_id','$ine_holder','#ffffcc','#fff');";
 ?>
 	</p>
