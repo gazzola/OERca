@@ -119,7 +119,7 @@ if (isset($flash) AND $flash!='') {
 			<div class="formLabel">Creator:</div>
 			<div class="formField">
 				<input type="text" name="creator" id="creator" 
-					value="<?=$instdetails['name'] ?>" class="input" />
+					value="<?=$coursedetails['creator'] ?>" class="input" />
 			</div>
 			<br/>
       
