@@ -1994,7 +1994,7 @@ class Coobject extends Model
 				foreach($claims as $cl) {	$q_results = array_merge($q_results, $s['askinfo']['aitems'][$cl]); }
 
 		} elseif (preg_match("/(fairuse|general|permission|commission|retain):\w+/",$filter,$m)) {
-				$q_results = $s['objects'][$m[1]];
+				$q_results = $s['objects'][$m[0]];
 		} else {
 				if ($filter=='retain') { $filter = 'retain:ca'; }
 				$q_results = $s['objects'][$filter]; 
@@ -2047,7 +2047,7 @@ class Coobject extends Model
 				default: $prev_next = $prev_nav.'&nbsp;&nbsp;-&nbsp;'.$curr_nav.
 															'&nbsp;-&nbsp;&nbsp;'.$next_nav;	
 		}
-		
+
 		return $prev_next; 
 	}
 

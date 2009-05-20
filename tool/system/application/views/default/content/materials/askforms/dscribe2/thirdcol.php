@@ -3,7 +3,8 @@
 			<!-- Subtype -->
 			<?php 
 					if ($obj['otype'] == 'original') { 
-							$types = '<select id="subtype_id" name="subtype_id" class="do_object_update">';
+							$oid = $obj['id'];
+							$types = '<select id="subtype_id_'.$oid.'" name="subtype_id_'.$oid.'" class="do_ask_object_update">';
 							foreach($select_subtypes as $type => $subtype) {
 											$types .= '<optgroup label="'.$type.'">';
 											foreach($subtype as $st) {
@@ -27,7 +28,7 @@
 						$ine_holder = 'holder_desc_'.$obj['id'];
     				$ine_url = "materials/update_object/$cid/$mid/{$obj['id']}/description/";
 						$inplaceeditors[]= "var editor_$n = new InPlaceEditor('$ine_id','$ine_holder',".
-					  									 "'$ine_url','No description'); ".
+					  									 "'$ine_url','No description','get'); ".
 					  									 "editor_$n.hover('$ine_id','$ine_holder','#ffffcc','#fff');";
 				?>
 				</p>
@@ -42,7 +43,7 @@
 						$ine_holder = 'holder_author_'.$obj['id'];
     				$ine_url = "materials/update_object/$cid/$mid/{$obj['id']}/author/";
 						$inplaceeditors[]= "var editor_$n = new InPlaceEditor('$ine_id','$ine_holder',".
-					  									 "'$ine_url','No author'); ".
+					  									 "'$ine_url','No author','get'); ".
 					  									 "editor_$n.hover('$ine_id','$ine_holder','#ffffcc','#fff');";
 				?>
 				</p>
@@ -57,7 +58,7 @@
 						$ine_holder = 'holder_contrib_'.$obj['id'];
     				$ine_url = "materials/update_object/$cid/$mid/{$obj['id']}/contributor/";
 						$inplaceeditors[]= "var editor_$n = new InPlaceEditor('$ine_id','$ine_holder',".
-					  									 "'$ine_url','No contributor'); ".
+					  									 "'$ine_url','No contributor','get'); ".
 					  									 "editor_$n.hover('$ine_id','$ine_holder','#ffffcc','#fff');";
 				?>
 				</p>
@@ -72,7 +73,7 @@
 						$ine_holder = 'holder_citation_'.$obj['id'];
     				$ine_url = "materials/update_object/$cid/$mid/{$obj['id']}/citation/";
 						$inplaceeditors[]= "var editor_$n = new InPlaceEditor('$ine_id','$ine_holder',".
-					  									 "'$ine_url','No source information'); ".
+					  									 "'$ine_url','No source information','get'); ".
 					  									 "editor_$n.hover('$ine_id','$ine_holder','#ffffcc','#fff');";
 				?>
 				</p>
@@ -98,9 +99,9 @@
 						$n = $obj['otype'].'_copyholder_'.$obj['id']; 
 						$ine_id = 'txt_copyholder_'.$obj['id'];
 						$ine_holder = 'holder_copyholder_'.$obj['id'];
-    				$ine_url = "materials/update_object_copyright/{$obj['id']}/holder/";
+    				$ine_url = "materials/update_object_copyright/{$obj['id']}";
 						$inplaceeditors[]= "var editor_$n = new InPlaceEditor('$ine_id','$ine_holder',".
-					  									 "'$ine_url','No copyright status','{$obj['otype']}'); ".
+					  									 "'$ine_url','No copyright holder','post','{$obj['otype']}','holder');".
 					  									 "editor_$n.hover('$ine_id','$ine_holder','#ffffcc','#fff');";
 				?>
 				</p>
@@ -113,9 +114,9 @@
 						$n = $obj['otype'].'_copyurl_'.$obj['id']; 
 						$ine_id = 'txt_copyurl_'.$obj['id'];
 						$ine_holder = 'holder_copyurl_'.$obj['id'];
-    				$ine_url = "materials/update_object_copyright/{$obj['id']}/url/";
+    				$ine_url = "materials/update_object_copyright/{$obj['id']}";
 						$inplaceeditors[]= "var editor_$n = new InPlaceEditor('$ine_id','$ine_holder',".
-					  									 "'$ine_url','No copyright status','{$obj['otype']}'); ".
+					  									 "'$ine_url','No copyright url','post','{$obj['otype']}','url');".
 					  									 "editor_$n.hover('$ine_id','$ine_holder','#ffffcc','#fff');";
 				?>
 				</p>
@@ -128,9 +129,9 @@
 						$n = $obj['otype'].'_copynotice_'.$obj['id']; 
 						$ine_id = 'txt_copynotice_'.$obj['id'];
 						$ine_holder = 'holder_copynotice_'.$obj['id'];
-    				$ine_url = "materials/update_object_copyright/{$obj['id']}/notice/";
+    				$ine_url = "materials/update_object_copyright/{$obj['id']}";
 						$inplaceeditors[]= "var editor_$n = new InPlaceEditor('$ine_id','$ine_holder',".
-					  									 "'$ine_url','No copyright status','{$obj['otype']}'); ".
+					  									 "'$ine_url','No copyright notice','post','{$obj['otype']}','notice'); ".
 					  									 "editor_$n.hover('$ine_id','$ine_holder','#ffffcc','#fff');";
 				?>
 				</p>
