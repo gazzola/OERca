@@ -25,6 +25,7 @@ foreach($subtypes as $type => $subtype) {
 $types .= '</select>';
 $snapper_tip = "Copy any image to the clipboard using a screen capture application or copy command. Once the image is on the clipboard, click Capture in the Snapper uploader to see the image.";
 $loc_tip = "For textual materials like Powerpoints or PDFs, please enter the slide or page number. For videos, please enter a time stamp.";
+$maxstring = "(Max size: ". $this->ocw_utils->max_upload_size() .")";
 
 $flash=$this->db_session->flashdata('flashMessage');
 if (isset($flash) AND $flash!='') {
@@ -121,7 +122,7 @@ if (isset($flash) AND $flash!='') {
 		
 			<br/>		
 
- 			<div class="formField">Upload Content Object: (required)</div>
+ 			<div class="formField">Upload Content Object: (required) <?=$maxstring?></div>
 			<div class="formField">
 	     	<input type="file" name="userfile_0" id="userfile_0" size="30" />
 			</div>
@@ -134,7 +135,7 @@ if (isset($flash) AND $flash!='') {
 
 		<div class="formField">
 			<form action="<?=site_url("materials/add_object/$cid/$mid/bulk/add")?>" enctype="multipart/form-data" id="add_co_zip" method="post">
-			  Upload Content Objects ZIP file: (required)
+			  Upload Content Objects ZIP file: (required) <?=$maxstring?>
 	     	<input type="file" name="userfile" id="userfile" size="30" />
 	       <br/><br/>
 	     	<input type="submit" name="submit" id="submit" value="Add" />

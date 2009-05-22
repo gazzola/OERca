@@ -177,7 +177,7 @@ class Materials extends Controller {
 			
 					// Catch issues of filesize early (since $FILES and $_POST are empty in that case)
 					if ($this->ocw_utils->is_invalid_upload_size()) {
-							flashMsg("The file you attempted to upload is larger than the maximum allowed!");
+							flashMsg("The file you attempted to upload is larger than the maximum of ". $this->ocw_utils->max_upload_size() . "!");
 							redirect("materials/add_material/$cid/$type/view", 'location');
 					}
 
@@ -528,7 +528,7 @@ class Materials extends Controller {
 			
 					// Catch issues of filesize early (since $FILES and $_POST are empty in that case)
 					if ($this->ocw_utils->is_invalid_upload_size()) {
-							flashMsg("The file you attempted to upload is larger than the maximum allowed!");
+							flashMsg("The file you attempted to upload is larger than the maximum of ". $this->ocw_utils->max_upload_size() . "!");
 							redirect("materials/add_object/$cid/$mid/$type", 'location');
 					}
 
