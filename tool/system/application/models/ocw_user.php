@@ -572,8 +572,8 @@ class OCW_user extends Model
       courses.number,
       courses.title,
       courses.director,
-      courses.start_date,
-      courses.end_date'
+      courses.term,
+      courses.year'
       );
     $q = $this->db->get();
     if ($q->num_rows() > 0) {
@@ -583,8 +583,8 @@ class OCW_user extends Model
           'number' => $row->number, 
           'title' => $row->title,
           'director' =>$row->director,
-          'start_date' => $row->start_date,
-          'end_date' => $row->end_date
+          'term' => $row->term,
+          'year' => $row->year
           );
       }
     }

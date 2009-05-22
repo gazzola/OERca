@@ -34,15 +34,10 @@
             if ($value['director']) {
               print " - Instructor:  ${value['director']}";
             }
-
-            if ($value['start_date'] &&
-              $value['start_date'] != '0000-00-00') {
-                print " - From: ${value['start_date']}";
-            }
-
-            if ($value['end_date'] &&
-              $value['end_date'] != '0000-00-00') {
-              print " - To: ${value['end_date']}";
+            
+            if ($value['term'] && $value['year'] &&
+              ($value['year'] != '0000')) {
+              print " - Term: ${value['term']} ${value['year']}";  
             }
             ?>
             </span>
