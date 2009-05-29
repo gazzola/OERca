@@ -1,3 +1,7 @@
+<?php 
+	$this->load->view(property('app_views_path').'/materials/_faceted_search.php', $data); 	
+?>
+
 <?php $this->load->view(property('app_views_path').'/materials/materials_header.php', $data); ?>
 
 <?php $tags[0] = '-- select --'; ?>

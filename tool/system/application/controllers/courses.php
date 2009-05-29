@@ -26,9 +26,20 @@ class Courses extends Controller {
 	
 	public function index()
 	{
-		$courses =  $this->course->get_courses();
+		//$courses =  $this->course->get_courses();
+		$courses =  $this->course->faceted_search_get_courses($uid, $school, $year, $dscribe2, $dscribe);
 		$data = array('title'=>'Courses','courses'=>$courses);
-   	$this->layout->buildPage('courses/index', $data);
+   		$this->layout->buildPage('courses', $data);
+	}
+	
+	/**
+	*	mbleed faceted search, get courses via param set
+	**/
+	public function faceted_search_courses($uid, $school=0, $year=0, $dscribe2=0, $dscribe=0)
+	{		
+		$courses =  $this->course->faceted_search_get_courses(getUserProperty('id'), $school, $year, $dscribe2, $dscribe);
+		$data = array('title'=>'Courses2	','courses'=>$courses);
+   		$this->layout->buildPage('courses', $data);
 	}
 	
 	/**

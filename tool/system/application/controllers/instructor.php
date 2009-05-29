@@ -380,7 +380,9 @@ class Instructor extends Controller {
 		  $data = array();
       $data['title'] = 'Instructor &raquo; Manage Courses';
       // $data['courses'] = $this->ocw_user->get_courses(getUserProperty('id'));
-      $data['courses'] = $this->course->get_courses(getUserProperty('id'));
+      //$data['courses'] = $this->course->get_courses(getUserProperty('id'));
+      $this->data['courses'] =  $this->course->faceted_search_get_courses(getUserProperty('id'), $this->uri->segment(sizeof($this->uri->segment_array()) - 3), $this->uri->segment(sizeof($this->uri->segment_array()) - 2), $this->uri->segment(sizeof($this->uri->segment_array()) - 1), $this->uri->segment(sizeof($this->uri->segment_array()) ));
+
       $this->layout->buildPage('instructor/courses', $data);
 	}
 }

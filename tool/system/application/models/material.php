@@ -144,7 +144,7 @@ class Material extends Model
     * @param   boolean	as_listing 
     * @return  array
     */
-  public function materials($cid, $mid='', $in_ocw=false, $as_listing=false)
+  public function materials($cid, $mid='', $in_ocw=false, $as_listing=false, $fs_status=0,$fs_action=0,$fs_type=0,$fs_repl=0)
   {
     $materials = array();
     $where1 = (is_numeric($cid)) ? "ocw_materials.course_id = $cid" : "ocw_materials.course_id = 0";
@@ -160,6 +160,74 @@ class Material extends Model
       ORDER BY ocw_materials.order";
     $q = $this->db->query($sql);
 
+    if ($q->num_rows() > 0) {
+      foreach($q->result_array() as $row) {
+        $row['display_date'] = $this->ocw_utils->calc_later_date(
+                      $row['created_on'], $row['modified_on'],'d M, Y H:i:s'); // define the display date
+        $row['comments'] = $this->comments($row['id'],'user_id,comments,modified_on');
+        $row['files'] = $this->material_files($cid, $row['id']);
+        if ($in_ocw) {
+          if ($row['in_ocw']) { $materials[]= $row; }
+        } else {
+          $materials[]= $row; 
+        }
+      }
+    }
+		
+    return (sizeof($materials)) ? (($as_listing) ? $this->as_listing($materials):$materials) : null; 
+  }
+  
+    /**
+    * Get materials for a given course 
+    *
+    * @access  public
+    * @param   int	cid course id		
+    * @param   int mid material id	
+    * @param   boolean	in_ocw if true only get materials in ocw 
+    * @param   boolean	as_listing 
+    * @return  array
+    */
+  public function faceted_search_materials($cid, $mid='', $in_ocw=false, $as_listing=false, $author=0, $material_type=0, $file_type=0)
+  {
+    $materials = array();
+    $where1 = (is_numeric($cid)) ? "ocw_materials.course_id = $cid" : "ocw_materials.course_id = 0";
+    $where2 = ($mid=='') ? '' : "AND ocw_materials.id='$mid'";
+    if ($author > 0) {
+   		$authorslist = $this->material->authors_list();
+    	$where3 = " AND (";
+    	$authors = explode("+", $author);
+    	foreach ($authors as $a) $authorwheres[] = "ocw_materials.author = '".$authorslist[$a]."' ";
+    	$where3 .= implode(" OR ", $authorwheres);
+    	$where3 .= ")";
+    } else $where3 = "";
+   	if ($material_type > 0) {
+   		$material_typeslist = $this->material->material_types_list();
+    	$where4 = " AND (";
+    	$material_types = explode("+", $material_type);
+    	foreach ($material_types as $m) $material_typewheres[] = "ocw_tags.name = '".$material_typeslist[$m]."' ";
+    	$where4 .= implode(" OR ", $material_typewheres);
+    	$where4 .= ")";
+    } else $where4 = "";
+    $where5 = ""; //placeholder for cc license param
+   	if ($file_type > 0) {
+   		$file_typeslist = $this->material->mimetypes_list();
+    	$where6 = " AND (";
+    	$file_types = explode("+", $file_type);
+    	foreach ($file_types as $fkey=>$f) $file_typewheres[] = "ocw_materials.mimetype_id = ".$f." ";
+    	$where6 .= implode(" OR ", $file_typewheres);
+    	$where6 .= ")";
+    } else $where6 = "";
+
+    $sql = "SELECT ocw_materials.*, ocw_mimetypes.mimetype, ocw_mimetypes.name AS mimename, ocw_tags.name AS tagname
+      FROM ocw_materials
+      LEFT JOIN ocw_mimetypes 
+      ON ocw_mimetypes.id = ocw_materials.mimetype_id
+      LEFT JOIN ocw_tags
+      ON ocw_tags.id = ocw_materials.tag_id
+      WHERE $where1 $where2 $where3 $where4 $where5 $where6
+      ORDER BY ocw_materials.order";
+//echo $sql;
+    $q = $this->db->query($sql);
     if ($q->num_rows() > 0) {
       foreach($q->result_array() as $row) {
         $row['display_date'] = $this->ocw_utils->calc_later_date(
@@ -854,6 +922,86 @@ class Material extends Model
       $mat_cos_info[$mid] = $co_info;
     }
     return $mat_cos_info;
+	}
+	
+	
+		/**
+   * Return distinct material authors list 
+   *
+   * @access  public
+   * @return array authors
+   * mbleed - faceted search 5/2009
+   */
+	public function authors_list()
+	{
+		//get test curriculum
+		$sql = "SELECT id FROM ocw_curriculums WHERE name = 'TEST'";
+	    $q = $this->db->query($sql);
+		$res = $q->result();
+		$test_curriculum_id = $res[0]->id;
+		
+	    $sql = "SELECT m.id, m.author, c.curriculum_id FROM ocw_materials m INNER JOIN ocw_courses c ON m.course_id = c.id GROUP BY m.author ORDER BY m.author ASC";
+	    $q = $this->db->query($sql);
+	  	if ($q->num_rows() > 0) {
+	  		foreach ($q->result() as $row) {
+	  			if ($row->curriculum_id != $test_curriculum_id) $author_array[$row->id] = $row->author; //only allow author name if not part of test curriculum
+	  		}
+	  	}
+	  	return array_unique($author_array);
+	}
+	
+		/**
+   * Return distinct material license list 
+   *
+   * @access  public
+   * @return array licenses
+   * mbleed - faceted search 5/2009
+   */
+	public function licenses_list()
+	{
+		$license_array = array(1=>'Permission',2=>'Search',3=>'Create');
+		
+	  	return $license_array;
+	}	
+
+			/**
+   * Return distinct mimetypes list that have associated materials
+   *
+   * @access  public
+   * @return array mimetypes
+   * mbleed - faceted search 5/2009
+   */
+	public function mimetypes_list()
+	{
+		$sql = "SELECT ocw_mimetypes.name, ocw_mimetypes.id AS mtid
+	      FROM ocw_materials
+	      LEFT JOIN ocw_mimetypes 
+	      ON ocw_mimetypes.id = ocw_materials.mimetype_id
+	      ORDER BY ocw_mimetypes.mimetype ASC";
+	    $q = $this->db->query($sql);
+	  	foreach ($q->result() as $row) {
+	    	$mimetype_array[$row->mtid] = $row->name;
+	  	}
+		
+	  	return array_unique($mimetype_array);
+	}
+
+			/**
+   * Return distinct material types list 
+   *
+   * @access  public
+   * @return array mimetypes
+   * mbleed - faceted search 5/2009
+   */
+	public function material_types_list()
+	{
+		$sql = "SELECT name, id FROM ocw_tags";
+	    $q = $this->db->query($sql);
+	  	foreach ($q->result() as $row) {
+	    	$mt_array[$row->id] = $row->name;
+	  	}
+		
+	  	return array_unique($mt_array);
 	}
 }
 ?>

@@ -38,11 +38,11 @@ class Materials extends Controller {
 
 
   // TODO: highlight the currently selected field
-  public function home($cid)
+  public function home($cid, $author=0,$material_type=0,$file_type=0)
   {
     $tags =  $this->tag->tags();
     $mimetypes =  $this->mimetype->mimetypes();
-    $materials =  $this->material->materials($cid,'',true,true);
+    $materials =  $this->material->faceted_search_materials($cid,'',true,true, $author, $material_type, $file_type); //faceted search mbleed
     
     $data = array('title'=>'Materials',
       'cid'=>$cid,
@@ -232,11 +232,11 @@ class Materials extends Controller {
 
 
 	// edit content objects	
-	public function edit($cid, $mid, $oid=0, $view='', $subtab='')
+	public function edit($cid, $mid, $oid=0, $view='', $subtab='', $fs_status=0,$fs_action=0,$fs_type=0,$fs_repl=0)
 	{
 	  $course = $this->course->get_course($cid); 
 		$material =  $this->material->materials($cid,$mid,true);
-		$stats = $this->coobject->object_stats($cid, $mid);
+		$stats = $this->coobject->object_stats($cid, $mid,$fs_status,$fs_action,$fs_type,$fs_repl);
 		
 		// load view of "New" objects by default if there are any
 		if(($stats['data']['num_new'] > 0) && $view == '' && $oid == 0) {
@@ -267,11 +267,11 @@ class Materials extends Controller {
 						'oid'=>$oid,
 	 					'cname' => $course['number'].' '.$course['title'],
 						'director' => $course['director'],
-	  				'material' =>  $material[0], 
+	  					'material' =>  $material[0], 
 						'objects' => $stats['objects'][$view],	
 						'num_objects' => sizeof($stats['objects'][$view]),
-		        'view' => $view, 
-		        'subtab' => $subtab, 
+		        		'view' => $view, 
+		        		'subtab' => $subtab, 
 						'title'=>'Edit Material &raquo; '.$material[0]['name'],
 		);
 
