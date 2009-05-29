@@ -25,6 +25,8 @@ if (isset($flash) AND $flash!='') {
 <!--END FLASH-->
 <?php } ?>
 
+<?php $maxstring = "(Max size: ". $this->ocw_utils->max_upload_size() .")"; ?>
+
 <div id="myTabs" class="column span-8 first last">
 
   <ul class="mootabs_title">
@@ -79,7 +81,7 @@ if (isset($flash) AND $flash!='') {
 
 			<br/>
 
-			<div class="formLabel">Material: (required)</div>
+			<div class="formLabel">Material: (required) <?=$maxstring;?></div>
 			<div class="formField">
 		      	<input type="file" name="single_userfile" id="single_userfile" size="30" />
 		  </div>
@@ -117,7 +119,7 @@ if (isset($flash) AND $flash!='') {
 		</div>
 		<br/>
 
-		<div class="formField">Zip file of Materials: (required)</div>
+		<div class="formField">Zip file of Materials: (required)<br><?=$maxstring;?></div>
 		<div class="formField">
 	      	<input type="file" name="zip_userfile" id="zip_userfile" size="30" />
 	  </div>

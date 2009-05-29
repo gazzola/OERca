@@ -37,7 +37,7 @@ echo script('ocw_tool.js');
 
 <body>
 
-<div id="mainPage" class="container" style="margin:0; padding:0;">
+<div id="mainPage" style="margin:0; padding:0; width:810;">
 
 <input type="hidden" id="cid" name="cid" value="<?=$cid?>" />
 <input type="hidden" id="mid" name="mid" value="<?=$mid?>" />
@@ -46,11 +46,11 @@ echo script('ocw_tool.js');
 	
 <button id="donetop" onclick="parent.window.location.replace(purl); parent.TB_remove()">Close</button>
 
-<div class="column span-24 first last" style="text-align:left; margin-bottom:10px;">
+<div class="column span-20 first last" style="text-align:left; margin-bottom:10px;">
   <h3 style="font-size: 1.5em; color:#666;">OER Content Object: <?=$obj['name']?></h3>
 </div>
 
-<div id="myTabs" class="column span-24 first last">
+<div id="myTabs" class="column span-20 first last">
 
 	<div id="leftarrow" class="column span-1 first">
 			<?= $this->coobject->prev_next($cid, $mid, $obj['id'], $filter,'prev','image');?>

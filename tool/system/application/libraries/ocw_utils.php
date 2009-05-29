@@ -759,6 +759,66 @@ htmleoq;
 	}
 
 	/**
+	 * Return human readable sizes
+	 *
+	 * @author      Aidan Lister <aidan@php.net>
+	 * @version     1.2.0
+	 * @link        http://aidanlister.com/repos/v/function.size_readable.php
+	 * @param       int     $size        size in bytes
+	 * @param       string  $max         maximum unit
+	 * @param       bool    $si          use SI (1000) prefixes
+	 * @param       string  $retstring   return string format
+	 */
+	public function size_readable($size, $max = null, $si = true, $retstring = '%01.2f %s')
+	{
+			// Pick units
+			if ($si === true) {
+					$sizes = array('B', 'K', 'MB', 'GB', 'TB', 'PB');
+					$mod   = 1000;
+			} else {
+					$sizes = array('B', 'KB', 'MB', 'GB', 'TB', 'PB');
+					$mod   = 1024;
+			}
+	 
+			// Max unit to display
+			if ($max && false !== $d = array_search($max, $sizes)) {
+					$depth = $d;
+			} else {
+					$depth = count($sizes) - 1;
+			}
+	 
+			// Loop
+			$i = 0;
+			while ($size >= 1024 && $i < $depth) {
+					$size /= $mod;
+					$i++;
+			}
+	 
+			return sprintf($retstring, $size, $sizes[$i]);
+	}
+
+	/**
+	 * Examine maximum values from php.ini and determine
+	 * the maximum upload size allowed.  Returns value
+	 * in string, or numeric mode.
+	 *
+	 * @access  public
+	 * @param  string 'num' to get numeric value, else returns string representation
+	 * @return  int or string
+	 */
+	public function max_upload_size($type='string')
+	{
+		$upload_max = $this->_string_to_int(trim(ini_get("upload_max_filesize")));
+		$post_max = $this->_string_to_int(trim(ini_get("post_max_size")));
+		$max_allowed = min($upload_max, $post_max);
+		if ($type == 'num') {
+			return $max_allowed;
+		} else {
+			return $this->size_readable($max_allowed, null, false);
+		}
+	}
+
+	/**
 	 * Examine maximum values from php.ini and determine
 	 * whether the maximum allowed has been exceeded.
 	 *
@@ -767,9 +827,7 @@ htmleoq;
 	 */
 	public function is_invalid_upload_size()
 	{
-		$upload_max = $this->_string_to_int(trim(ini_get("upload_max_filesize")));
-		$post_max = $this->_string_to_int(trim(ini_get("post_max_size")));
-		$max_allowed = min($upload_max, $post_max);
+		$max_allowed = $this->max_upload_size('num');
 
 		if ($_SERVER['CONTENT_LENGTH'] > $max_allowed) {
 			return TRUE;

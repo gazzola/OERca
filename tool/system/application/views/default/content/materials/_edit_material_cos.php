@@ -34,7 +34,7 @@
           		<img src="<?= site_url("/home/make_stat_key/done") ?>" class="prog-key"> Cleared
       		</div>
 		<br /><br />
-		<div class="dwrap span-24 first last">       		
+		<div class="dwrap">
 			<?= $this->ocw_utils->create_co_list($cid,$mid,$objects,$view,$inclrep,$numcols); ?>
 		</div>
 		

@@ -413,6 +413,7 @@ div.dcell img, .co_tile img {
 /* Edit CO page */
 div.dwrap {
   margin-top: 10px;
+  width: 955px;
   max-height: 433px;
   float:left;
   overflow:auto;
@@ -450,3 +451,5 @@ div#rightarrow a, div#leftarrow a { border:none; color:#fff}
 	background-color: #FFF;
 	height: 2em;
 }
+
+

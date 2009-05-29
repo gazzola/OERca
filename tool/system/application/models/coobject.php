@@ -2398,7 +2398,12 @@ class Coobject extends Model
 	            } elseif($item['status']=='ip review' && $item['approved']=='pending') {
 	                $html .= '<br><br>Legal & Policy Review team is reviewing this claim.';
 	            }
-
+							// Include full history for the object (admittedly a hack)
+							$loginfo = $this->logs($item['object_id'],'user_id,log,modified_on');
+							$html .= '<br><br><h3>Object History:</h3><br>';
+							foreach($loginfo as $li) {
+									$html .= 'On '.mdate('%d %M, %Y %H:%i',mysql_to_unix($li['modified_on'])).', '.$this->ocw_user->username($li['user_id']).', '.$li['log'].'<br>';
+							}
 				 } elseif ($type=='permission') {
 	            if ($item['info_sufficient']=='yes') {
 	                $html .= $uname.' decided that a permission form can be sent for this content object.';
