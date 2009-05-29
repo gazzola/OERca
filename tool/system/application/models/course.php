@@ -294,6 +294,38 @@ class Course extends Model
 		return ($q->num_rows() > 0) ? implode("<br>", $course_users) : '';
 	}
 	
+			/**
+     * Get array of course user ids by type and course id
+     *  mbleed faceted search
+     * @access  public
+     * @param   string number
+     * @return  array
+     */
+	public function get_course_user_array_by_cid($cid, $type)
+	{
+		if (!$cid || $type == '') {
+			$this->ocw_utils->log_to_apache('error', __FUNCTION__.": called with bad parameters!");
+			return '';
+		}
+
+		$sql = "SELECT ocw_users.id AS uid
+				FROM ocw_courses, ocw_acl, ocw_users
+				WHERE ocw_courses.id = ocw_acl.course_id
+				AND ocw_acl.user_id = ocw_users.id
+				AND ocw_acl.role = '$type'
+				AND ocw_courses.id = $cid
+				ORDER BY ocw_users.name ASC";
+		$q = $this->db->query($sql);
+		$course_users = array();
+        if ($q->num_rows() > 0) {
+        	
+            foreach($q->result_array() as $row) { 
+        		$course_users[] = $row['uid'];    	
+            }
+        }
+		return $course_users;
+	}
+	
     /**
      * Get all courses 
      *
@@ -330,7 +362,7 @@ class Course extends Model
       		AND ocw_acl.user_id = '$uid'
       		ORDER BY start_date DESC";
 	}
-	
+	echo $sql;
     	$q = $this->db->query($sql);
 
         if ($q->num_rows() > 0) {
@@ -421,6 +453,143 @@ class Course extends Model
       
       return (sizeof($courses) > 0) ? $courses : null;
     }
+    
+     /**
+     * Get  courses for faceted search - mbleed 
+     *
+     * @access  public
+     * @return  array
+     */
+    public function faceted_search_get_courses($uid, $school=0, $year=0, $dscribe2=0, $dscribe=0)
+    {
+    $courses = array();
+    //$uid = getUserProperty('id');
+    $urole = getUserPropertyFromId($uid, 'role');
+    
+    //turn filters into where clauses 
+    $where = "";
+    $where2 = "";
+    if ($school > 0) {
+    	$where .= " AND (";
+    	$schools = explode("+", $school);
+    	foreach ($schools as $s) $schoolwheres[] = "ocw_schools.id = $s";
+    	$where .= implode(" OR ", $schoolwheres);
+    	$where .= ")";
+    }
+    if ($year > 0) {
+    	$where .= " AND (";
+    	$where2 .= " AND (";
+    	$years = explode("+", $year);
+    	foreach ($years as $y) $yearwheres[] = "ocw_courses.year = $y";
+    	$where .= implode(" OR ", $yearwheres);
+    	$where2 .= implode(" OR ", $yearwheres);
+    	$where .= ")";
+    	$where2 .= ")";
+    }   
+    
+    $sql = "SELECT ocw_courses.*, 
+      		ocw_curriculums.name AS cname, 
+      		ocw_schools.name AS sname,
+      		ocw_courses.id AS cid
+      		FROM ocw_courses, ocw_curriculums, ocw_schools, ocw_acl
+      		WHERE ocw_curriculums.id = ocw_courses.curriculum_id
+      		AND ocw_schools.id = ocw_curriculums.school_id
+      		AND ocw_acl.course_id = ocw_courses.id
+      		$where
+      		GROUP BY ocw_courses.id
+      		ORDER BY start_date DESC";
+    	$q = $this->db->query($sql);
+        if ($q->num_rows() > 0) {
+            foreach($q->result_array() as $row) { 
+            	$showrowdscribe2 = true;
+            	$showrowdscribe = true;
+                 $row['instructors'] = $this->get_course_users_by_cid($row['cid'], 'instructor');
+                 if ($dscribe2 > 0) {
+					if (in_array($dscribe2, $this->get_course_user_array_by_cid($row['cid'], 'dscribe2'))) $showrowdscribe2 = true;
+    				else $showrowdscribe2 = false;
+            	 }
+          		 if ($dscribe > 0) {
+					if (in_array($dscribe, $this->get_course_user_array_by_cid($row['cid'], 'dscribe1'))) $showrowdscribe = true;
+					else $showrowdscribe = false;
+            	 }
+                 $row['dscribe1s'] = $this->get_course_users_by_cid($row['cid'], 'dscribe1');
+                 $row['dscribe2s'] = $this->get_course_users_by_cid($row['cid'], 'dscribe2');
+                 if (($urole != 'dscribe1')) { 
+		    // bdr OERDEV-173 - count everything like materials list counts
+                     $materials =  $this->material->materials($row['cid'],'',true,true);
+                     $row['total'] = 0;
+                     $row['done']  = 0;
+                     $row['ask']   = 0;
+                     $row['rem']   = 0;
+         	     if ($materials != NULL) {
+                       foreach($materials as $category => $cmaterial) {
+                          foreach($cmaterial as $material) {
+                             $row['rem'] += $material['mrem'];
+                             $row['ask'] += $material['mask'];
+                             $row['done'] += $material['mdone'];
+                             //if ($material['mtotal'] != 1000000)				//OERDEV-181 mbleed: removed hardcoded total=1000000 logic
+                             $row['total'] += $material['mtotal'];	
+                          }
+                       }
+		     }
+		     $row['statcount'] = $row['total'].'/'.$row['done'].'/'.$row['ask'].'/'.$row['rem'];
+		     $row['notdone'] = $row['rem'];
+		     // $this->ocw_utils->dump($row);
+		 }
+	         if ($showrowdscribe2 && $showrowdscribe) $courses[$row['sname']][$row['cname']][] = $row; 
+            }
+        }
+      
+      // get the courses that have NULL curriculum ids
+     	$sql_no_curr_id = "SELECT ocw_courses.*, 
+                	ocw_courses.curriculum_id AS cname, 
+                	ocw_courses.curriculum_id AS sname,
+                	ocw_courses.id AS cid
+                	FROM ocw_courses, ocw_acl
+                	WHERE ocw_courses.curriculum_id = NULL 
+                	AND ocw_acl.course_id = ocw_courses.id
+                	$where2
+                	GROUP BY ocw_courses.id
+                	ORDER BY start_date DESC";
+    
+
+      $q_no_curr_id = $this->db->query($sql_no_curr_id);
+
+      if ($q_no_curr_id->num_rows() > 0) {
+        foreach ($q_no_curr_id->result_array() as $row) {
+                 $row['instructors'] = $this->get_course_users_by_cid($row['cid'], 'instructor');
+                 $row['dscribe1s'] = $this->get_course_users_by_cid($row['cid'], 'dscribe1');
+                 $row['dscribe2s'] = $this->get_course_users_by_cid($row['cid'], 'dscribe2');
+                 // bdr OERDEV-140 (which looks similiar to OERDEV-118
+                 $uprop = getUserProperty('role');
+                 // if (($uprop != 'dscribe1')) { // && ($row['cid'] == 35)) 
+		 if (($role != 'dscribe1')) {
+                    // bdr OERDEV-173 - count everything like materials list counts
+                     $materials =  $this->material->materials($row['cid'],'',true,true);
+                     $row['total'] = 0;
+                     $row['done']  = 0;
+                     $row['ask']   = 0;
+                     $row['rem']   = 0;
+                     foreach($materials as $category => $cmaterial) {
+                          foreach($cmaterial as $material) {
+                             $row['rem'] += $material['mrem'];
+                             $row['ask'] += $material['mask'];
+                             $row['done'] += $material['mdone'];
+                             if ($material['mtotal'] != 1000000)
+                                   $row['total'] += $material['mtotal'];
+                          }                
+                      }                 
+                     $row['statcount'] = $row['total'].'/'.$row['done'].'/'.$row['ask'].'/'.$row['rem'];
+		     $row['notdone'] = $row['rem'];
+                     // $this->ocw_utils->dump($row);
+                 }
+          $courses['No School Specified']['No Curriculum Specified'][] = $row;
+        }
+      }
+      
+      return (sizeof($courses) > 0) ? $courses : null;
+    }
+    
 
 	/**
      * Get course title
@@ -502,6 +671,27 @@ class Course extends Model
 		$path .= 'cdir_'.$r->filename;
 		return $path;
 	}
+	
+	/**
+   * Return years listed in courses
+   *
+   * @access  public
+   * @return array years
+   * mbleed - faceted search 5/2009
+   */
+	public function get_years_for_all_courses()
+	{
+		$this->db->select('year')->from('courses')->order_by('year desc');
+		$q = $this->db->get();
+	  	foreach ($q->result() as $row) {
+	  		if ($row->year > 0)
+	    		$year_array[$row->year] = $row->year;
+	  	}
+		
+	  	//return array_values(array_unique($year_array));
+	  	return array_unique($year_array);
+	}
+
 
 }
 ?>

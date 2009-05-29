@@ -1,4 +1,8 @@
-<div class="column span-24 first last">
+<?php 
+	$this->load->view(property('app_views_path').'/courses/_faceted_search.php', $data); 	
+?>
+
+<div class="column span-18 first last">
 
 <?php if (!isset($courses) || $courses == null) { ?>
 
@@ -11,9 +15,10 @@
 
 
 <h2><?= $school ?></h2>
+<!--
 <p><em>Note: Hold down the shift key to select multiple columns to sort</em></p>
-
-<table class="sortable-onload-1 rowstyle-alt no-arrow">
+-->
+<table class="sortable-onload-1 rowstyle-alt no-arrow" style="width: 100%;">
       <caption class="caption_progbar_key">
           <img src="<?= site_url("/home/make_stat_key/rem") ?>" class="prog-key"> No Action Assigned
           &nbsp;
@@ -24,8 +29,10 @@
     <thead>
     <tr>
         <th class="sortable">Title</th>
+        <!--
         <th class="sortable-sortEnglishLonghandDateFormat">Start Date</th>
         <th class="sortable-sortEnglishLonghandDateFormat">End Date</th>
+        -->
         <th class="sortable">Curriculum</th>
         <th class="sortable">dScribe(s)</th>
         <th class="sortable">Instructor(s)</th>
@@ -44,6 +51,10 @@
 		<td>
 			<?=anchor(site_url('materials/home/'.$c['id']),$c['number'].' '.$c['title'],array('title'=>'Edit course materials'))?>
 			<br/>
+			<?=mdate('%d %M %Y',mysql_to_unix($c['start_date']))?>
+			<br/>through<br/>
+			<?=mdate('%d %M %Y',mysql_to_unix($c['end_date']))?>
+			<br/>
 			<span style="font-size:9px; clear:both; margin-top:20px;">
 			<?=
 				anchor(site_url("courses/edit_course_info/{$c['id']}").'?TB_iframe=true&height=600&width=850','Edit Info &raquo;',array('class'=>'smoothbox','title'=>'Edit course information'))
@@ -53,8 +64,10 @@
 			<?php } ?>
 			</span>
 		</td>
+		<!-- comment out start and end date cols and move under title
     <td><?=mdate('%d %M, %Y',mysql_to_unix($c['start_date']))?></td>
     <td><?=mdate('%d %M, %Y',mysql_to_unix($c['end_date']))?></td>
+    -->
     <td width="40px"><?=ucfirst($c['cname'])?></td>
     <td>
 		  <b>dScribe1(s):<br></b><?=ucfirst($c['dscribe1s'])?>
