@@ -10,49 +10,7 @@
 				&nbsp;<img src="<?=property('app_img')?>/info.gif" style="margin:0; padding:0" class="tooltip" title="<?=$action_tips?>"/>
 		</td>
   </tr>
-	<!-- ASK INSTRUCTOR -->
-  <tr>
-		<th>Ask instructor about origin of Content Object?</th>
-		<td>
-			  <?php 
-							  $yes = ($obj['ask']=='yes') ? true : false;
-							  $no = ($obj['ask']=='yes') ? false : true;
-			          echo form_radio('ask_inst', 'yes', $yes, 'class="do_object_update" id="ask_inst_yes"').'&nbsp;Yes&nbsp;';
-			          echo form_radio('ask_inst', 'no', $no, 'class="do_object_update" id="ask_inst_no"').'&nbsp;No&nbsp;';
-				?>
-
-				<div id="ask_yes" style="display: <?= ($obj['ask']=='yes') ? 'inline':'none'?>"> 
-							<br/><br/>
-							<a target="_new" href="<?=site_url("materials/askforms/$cid/$mid/general/instructor")?>">View ASK form</a> to see the default questions.
-							<br/><br/>
-							<a href="#orig_q_addpanel" onclick="orig_q_ap.setrole('instructor'); orig_q_ap.show();">Ask instructor additional questions</a>&nbsp;&raquo;
-							<br/><br/>
-							<a href="#origquestions">View answers</a>&nbsp;&raquo;
-							<br/><br/>
-				</div>
- 	  </td>
-	</tr>
-	<!-- ASK dSCRIBE2 -->
-	<tr>
-		<th>Ask dScribe2 a general question about the Content Object?</th>
-		<td>
-			  <?php 
-							  $yes = ($obj['ask_dscribe2']=='yes') ? true : false;
-							  $no = ($obj['ask_dscribe2']=='yes') ? false : true;
-							  echo form_radio('ask_dscribe2', 'yes', $yes, 'class="do_object_update do_object_ask_dscribe2_yesno" id="ask_dscribe2r_yes"').'&nbsp;Yes&nbsp;'; 
-							  echo form_radio('ask_dscribe2', 'no', $no, 'class="do_object_update do_object_ask_dscribe2_yesno" id="ask_dscribe2r_no"').'&nbsp;No&nbsp;&nbsp;';
-				?>
-
-				<div id="ask_dscribe2_yes" style="display: <?= ($obj['ask_dscribe2']=='yes') ? 'inline':'none'?>"> 
-							<br/><br/>
-							<a target="_new" href="<?=site_url("materials/askforms/$cid/$mid/general/dscribe2")?>">View dScribe2 ASK form</a>
-							<br/><br/>
-							<a href="#orig_q_addpanel" onclick="orig_q_ap.setrole('dscribe2'); orig_q_ap.show();">Ask dScribe2 additional questions</a>&nbsp;&raquo;
-							<br/><br/>
-							<a href="#origquestions">View answers</a>&nbsp;&raquo;
-				</div>
-	  </td>
-	</tr>
+	
 	<tr>
   		<td colspan="2">
 				<p style="padding:5px; background-color:yellow; border:2px solid gray; color:black;display:none" id="update_msg">Sent to dScribe2!</p>
@@ -178,7 +136,44 @@
   		</div>
 		</td>
   </tr>
+	
+	<!-- ASK INSTRUCTOR -->
+  <tr>
+		<th>Ask instructor about origin of Content Object?</th>
+		<td>
+			  <?php 
+							  $yes = ($obj['ask']=='yes') ? true : false;
+							  $no = ($obj['ask']=='yes') ? false : true;
+			          echo form_radio('ask_inst', 'yes', $yes, 'class="do_object_update" id="ask_inst_yes"').'&nbsp;Yes&nbsp;';
+			          echo form_radio('ask_inst', 'no', $no, 'class="do_object_update" id="ask_inst_no"').'&nbsp;No&nbsp;';
+				?>
 
+				<div id="ask_yes" style="display: <?= ($obj['ask']=='yes') ? 'inline':'none'?>"> 
+							<br/><br/>
+							<a target="_new" href="<?=site_url("materials/askforms/$cid/$mid/general/instructor")?>">View ASK form</a> to see the default questions.
+							<br/><br/>
+				</div>
+ 	  </td>
+	</tr>
+	<!-- ASK dSCRIBE2 -->
+	<tr>
+		<th>Ask dScribe2 a general question about the Content Object?</th>
+		<td>
+			  <?php 
+							  $yes = ($obj['ask_dscribe2']=='yes') ? true : false;
+							  $no = ($obj['ask_dscribe2']=='yes') ? false : true;
+							  echo form_radio('ask_dscribe2', 'yes', $yes, 'class="do_object_update do_object_ask_dscribe2_yesno" id="ask_dscribe2r_yes"').'&nbsp;Yes&nbsp;'; 
+							  echo form_radio('ask_dscribe2', 'no', $no, 'class="do_object_update do_object_ask_dscribe2_yesno" id="ask_dscribe2r_no"').'&nbsp;No&nbsp;&nbsp;';
+				?>
+
+				<div id="ask_dscribe2_yes" style="display: <?= ($obj['ask_dscribe2']=='yes') ? 'inline':'none'?>"> 
+							<br/><br/>
+							<a target="_new" href="<?=site_url("materials/askforms/$cid/$mid/general/dscribe2")?>">View dScribe2 ASK form</a>
+							<br/><br/>
+				</div>
+	  </td>
+	</tr>
+	
   <tr>
   	<th></th>
   	<td>
