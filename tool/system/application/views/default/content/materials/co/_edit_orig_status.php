@@ -1,5 +1,15 @@
 <!-- STATUS -->
 <table width="558px">
+	<tr>
+		<th>Recommended Action:</th>
+		<td>
+			 <?php echo anchor_popup("helpfaq/rad_form", "Help me recommend an action"); ?>
+			 <br /><br />
+			 <?php echo form_dropdown('action_type', $action_types, $obj['action_type'] ,'id="action_type" class="do_object_update" style="width:85%"'); ?>
+				<input type="hidden" value="<?=$obj['action_type']?>" id="raction" name="raction" />
+				&nbsp;<img src="<?=property('app_img')?>/info.gif" style="margin:0; padding:0" class="tooltip" title="<?=$action_tips?>"/>
+		</td>
+  </tr>
 	<!-- ASK INSTRUCTOR -->
   <tr>
 		<th>Ask instructor about origin of Content Object?</th>
@@ -22,7 +32,6 @@
 				</div>
  	  </td>
 	</tr>
-
 	<!-- ASK dSCRIBE2 -->
 	<tr>
 		<th>Ask dScribe2 a general question about the Content Object?</th>
@@ -45,17 +54,6 @@
 	  </td>
 	</tr>
 	<tr>
-		<th>Recommended Action:</th>
-		<td>
-			 <?php echo anchor_popup("helpfaq/rad_form", "Help me recommend an action"); ?>
-			 <br /><br />
-			 <?php echo form_dropdown('action_type', $action_types, $obj['action_type'] ,'id="action_type" class="do_object_update" style="width:85%"'); ?>
-				<input type="hidden" value="<?=$obj['action_type']?>" id="raction" name="raction" />
-				&nbsp;<img src="<?=property('app_img')?>/info.gif" style="margin:0; padding:0" class="tooltip" title="<?=$action_tips?>"/>
-		</td>
-  </tr>
-
-  <tr>
   		<td colspan="2">
 				<p style="padding:5px; background-color:yellow; border:2px solid gray; color:black;display:none" id="update_msg">Sent to dScribe2!</p>
 
@@ -181,6 +179,35 @@
 		</td>
   </tr>
 
+  <tr>
+  	<th></th>
+  	<td>
+  			<a id="orig_q_addpanel_i_toggle" href="#">I want to ask someone a question</a>&nbsp;&raquo;
+
+  			<!-- QUESTIONS -->
+  			<div id="orig_q_addpanel_i" >
+  				<label for="origrole">Ask:</label>
+  				<select name="origrole" id="origrole">
+  					<option SELECTED value="instructor">Instructor</option>
+  					<option value="dscribe2">dScribe2</option>
+  				</select><br/>
+  	 			<textarea name="question" id="question" style="width: 100%; height: 50px;"></textarea>
+  	 			<p>
+  	     						<input type="button" value="Save" class="do_add_object_question" />
+  			     				<input type="button" value="Cancel" onclick="orig_q_addpanel_i_slide.hide()" />
+  	 			</p>
+  			</div>
+  			<script>
+  				var orig_q_addpanel_i_slide = new Fx.Slide('orig_q_addpanel_i');
+  				orig_q_addpanel_i_slide.hide();
+  				$('orig_q_addpanel_i_toggle').addEvent('click', function(e){
+  					new Event(e).stop();
+  					orig_q_addpanel_i_slide.toggle();
+  				});
+  			</script>
+  			<!-- end QUESTIONS -->
+  		</td>
+  </tr>
 
   <tr>
 		<th>Final Action Taken:</th>
@@ -205,25 +232,6 @@
 	</tr>
 </table>
 
-<!-- QUESTIONS -->
-<br/>
-<h2 style="display:inline">Questions&nbsp;(<small><a href="javascript:void(0);" onclick="orig_q_ap.toggle()">Ask Question</a></small>)</h2>
-<br/><br/>
-<div id="orig_q_addpanel" style="color:black">
-			<label for="origrole">Ask:</label>
-			<select name="origrole" id="origrole">
-				<option value="instructor">Instructor</option>
-				<option value="dscribe2">dScribe2</option>
-			</select><br/>
- 			<textarea name="question" id="question" cols="50"></textarea>
- 			<p>
-     						<input type="button" value="Save" class="do_add_object_question" />
-		     				<input type="button" value="Cancel" onclick="orig_q_ap.hide()" />
-		     				<br/><hr style="border: 1px dotted #555"/><br/>
- 			</p>
-</div>
-
-<em style="color:black;">Note: Hold down the shift key to select multiple columns to sort</em>
 <table id="origquestions" class="sortable-onload-7-reverse rowstyle-alt no-arrow" width="100%" bgcolor="white">
 <thead>
 	<tr>
