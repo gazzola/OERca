@@ -1,12 +1,11 @@
 <!-- COMMENTS -->
 
-	<a href="javascript:void(0);" onclick="repl_com_ap.toggle();">Add Comment</a> <br/>
+	<h2>Add Comment</h2>
 
-	<div id="repl_com_addpanel">
+	<div id="repl_comm">
    	<textarea name="repl_comments" id="repl_comments" cols="50"></textarea>
    	<p>
      <input type="button" value="Save" class="do_add_replacement_comment" />
-     <input type="button" value="Cancel" onclick="repl_com_ap.hide()" />
      <br/><hr style="border: 1px dotted #555"/><br/>
    	</p>
   </div>

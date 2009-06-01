@@ -21,31 +21,63 @@ $data['loc_tip'] = "For textual materials like Powerpoints or PDFs, please enter
 	<input type="hidden" id="rid" name="rid" value="<?=$repl_obj['id']?>" />
 	<input type="hidden" name="viewing" value="replacement" />
 
-
-  <div class="tabcontainer">
-    <div class="tabs">
-      <input type="submit" <?=($tab=='Status') ? 'class="activesubmit"':''?> name="tab[]" value="Status" />
-      <input type="submit" <?=($tab=='Information') ? 'class="activesubmit"':''?> name="tab[]" value="Information" />
-      <input type="submit" <?=($tab=='Copyright') ? 'class="activesubmit"':''?> name="tab[]" value="Copyright" />
-      <input type="submit" <?=($tab=='Comments') ? 'class="activesubmit"':''?> name="tab[]" value="Comments" />
-      <input type="submit" <?=($tab=='History') ? 'class="activesubmit"':''?> name="tab[]" value="History" />
+  <div class="repdetails">
+    <h4 id="rep_status_sect_toggler" class="faceted_search_toggler"  onclick="rep_status_sect.toggle()">Status</h4>
+    <div id="rep_status_sect" class="element">
+    <?php 
+	  	$this->load->view(property('app_views_path').'/materials/co/_edit_repl_info.php', $data); 	
+			$this->load->view(property('app_views_path').'/materials/co/_edit_repl_status.php', $data);
+		?>
     </div>
-	
-    <div class="tabformcontent">
-    <?php
-        switch($tab) {
-            case 'Status': $this->load->view(property('app_views_path').'/materials/co/_edit_repl_status.php', $data); break;
-            case 'Information': $this->load->view(property('app_views_path').'/materials/co/_edit_repl_info.php', $data); break;
-            case 'Copyright': $this->load->view(property('app_views_path').'/materials/co/_edit_repl_copy.php', $data); break;
-            case 'Comments': $this->load->view(property('app_views_path').'/materials/co/_edit_repl_comments.php', $data); break;
-            case 'History': $this->load->view(property('app_views_path').'/materials/co/_edit_repl_log.php', $data); break;
-            default: $this->load->view(property('app_views_path').'/materials/co/_edit_repl_status.php', $data); break;
-        }
-    ?>
+    <script>
+    var rep_status_sect = new Fx.Slide($('rep_status_sect'), {
+    duration: 200,
+    onComplete: function(el) {
+      var toggler = $(el.id+'_toggler');
+      if (toggler.getStyle('background-image') == "url(<?php echo property('app_img'); ?>/expand.gif)") toggler.setStyle('background-image', "url(<?php echo property('app_img'); ?>/collapse.gif)");
+      else toggler.setStyle('background-image', "url(<?php echo property('app_img'); ?>/expand.gif)");
+      },
+        transition: Fx.Transitions.linear
+    }).toggle();
+    </script>
+    
+    <h4 id="rep_comment_sect_toggler" class="faceted_search_toggler" onclick="rep_comment_sect.toggle()">Comments</h4>
+    <div id="rep_comment_sect" class="element">
+    <?php 
+	  	$this->load->view(property('app_views_path').'/materials/co/_edit_repl_comments.php', $data);
+		?>
     </div>
-
-    <br class="clear" />
+    <script>
+    var rep_comment_sect = new Fx.Slide($('rep_comment_sect'), {
+    duration: 200,
+    onComplete: function(el) {
+      var toggler = $(el.id+'_toggler');
+      if (toggler.getStyle('background-image') == "url(<?php echo property('app_img'); ?>/expand.gif)") toggler.setStyle('background-image', "url(<?php echo property('app_img'); ?>/collapse.gif)");
+      else toggler.setStyle('background-image', "url(<?php echo property('app_img'); ?>/expand.gif)");
+      },
+        transition: Fx.Transitions.linear
+    }).toggle();
+    </script>
+    
+    <h4 id="rep_history_sect_toggler" class="faceted_search_toggler" onclick="rep_history_sect.toggle()">History</h4>
+    <div id="rep_history_sect" class="element">
+    <?php 
+	  	$this->load->view(property('app_views_path').'/materials/co/_edit_repl_log.php', $data);
+		?>
+    </div>
+    <script>
+    var rep_history_sect = new Fx.Slide($('rep_history_sect'), {
+    duration: 200,
+    onComplete: function(el) {
+      var toggler = $(el.id+'_toggler');
+      if (toggler.getStyle('background-image') == "url(<?php echo property('app_img'); ?>/expand.gif)") toggler.setStyle('background-image', "url(<?php echo property('app_img'); ?>/collapse.gif)");
+      else toggler.setStyle('background-image', "url(<?php echo property('app_img'); ?>/expand.gif)");
+      },
+        transition: Fx.Transitions.linear
+    }).toggle();
+    </script>
   </div>
+
 </form>
 
 <?php } ?>

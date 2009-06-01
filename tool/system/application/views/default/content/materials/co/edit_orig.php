@@ -59,7 +59,7 @@ $data['loc_tip'] = "For textual materials like Powerpoints or PDFs, please enter
 	<input type="hidden" name="viewing" value="original" />
 	<div class="origdetails">
 	  <h4 id="status_sect_toggler" class="faceted_search_toggler" onclick="status_sect.toggle()"> Status </h4>
-	  <div id="status_sect">
+	  <div id="status_sect" class="element">
 	  <?php
 		  $this->load->view(property('app_views_path').'/materials/co/_edit_orig_info.php', $data); 	
 	    $this->load->view(property('app_views_path').'/materials/co/_edit_orig_status.php', $data);

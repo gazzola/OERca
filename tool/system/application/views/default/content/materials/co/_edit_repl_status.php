@@ -26,51 +26,41 @@
 				<div id="repl_ask_yes" style="display: <?= ($repl_obj['ask']=='yes') ? 'block':'none'?>"> 
 							<br/><br/>
 							<a target="_new" href="<?=site_url("materials/askforms/$cid/$mid/replacement/instructor")?>">View ASK form</a> to see the default questions.
-							<br/><br/>
-							<a href="#repl_q_addpanel" onclick="repl_q_ap.setrole('instructor'); repl_q_ap.show();">Ask instructor additional questions</a>&nbsp;&raquo;
-							<br/><br/>
-							<a href="#replquestions">View answers</a>&nbsp;&raquo;
 				</div>
  	    </td>
 	</tr>
+ 
+  <tr>
+  <th></th>
+  <td>
+			<a id="repl_q_addpanel_i_toggle" href="#">I want to ask someone a question</a>&nbsp;&raquo;
 
-	<tr>
-	   	<th style="vertical-align: top">Instructor approves of image?</th>
-			<td>
-					  <?php 
-						  if ($repl_obj['suitable']=='yes') { 
-		              echo 'Yes, instructor approves of this image as a substitute.'; 
-		          } elseif ($repl_obj['suitable']=='no') {
-				        echo 'No<br/><br/>Reason:<br/><p>'.$repl_obj['unsuitable_reason'].'.</p>';
-		          } else {
-		           	echo 'Waiting on response.';
-		          }
-		         ?>
-		   </td>
+			<!-- QUESTIONS -->
+			<div id="repl_q_addpanel_i" >
+				<label for="replrole">Ask:</label>
+				<select name="replrole" id="replrole">
+					<option SELECTED value="instructor">Instructor</option>
+					<option value="dscribe2">dScribe2</option>
+				</select><br/>
+	 			<textarea name="repl_question" id="repl_question" style="width: 100%; height: 50px;"></textarea>
+	 			<p>
+	     						<input type="button" value="Save" class="do_add_replacement_question" />
+			     				<input type="button" value="Cancel" onclick="repl_q_addpanel_i_slide.hide()" />
+	 			</p>
+			</div>
+			<script>
+				var repl_q_addpanel_i_slide = new Fx.Slide('repl_q_addpanel_i');
+				repl_q_addpanel_i_slide.hide();
+				$('repl_q_addpanel_i_toggle').addEvent('click', function(e){
+					new Event(e).stop();
+					repl_q_addpanel_i_slide.toggle();
+				});
+			</script>
+			<!-- end QUESTIONS -->
+		</td>
 		</tr>
 </table>
 
-
-<!-- QUESTIONS -->
-<br/>
-<h2 style="display:inline">Questions&nbsp;(<small><a href="javascript:void(0);" onclick="repl_q_ap.toggle()">Ask Question</a></small>)</h2>
-<br/><br/>
-<div id="repl_q_addpanel" style="color:black">
-    <label for="replrole">Ask:</label>
-    <select name="replrole" id="replrole">
-        <option value="instructor">Instructor</option>
-        <option value="dscribe2">dScribe2</option>
-    </select><br/>
-
- 		<textarea name="repl_question" id="repl_question" cols="50"></textarea>
-		<p>
- 				<input type="button" value="Save" class="do_add_replacement_question" />
- 				<input type="button" value="Cancel" onclick="repl_q_ap.hide()" />
- 				<br/><hr style="border: 1px dotted #555"/><br/>
-		</p>
-</div>
-
-<em style="color:black;">Note: Hold down the shift key to select multiple columns to sort</em>
 <table id="replquestions" class="sortable-onload-7-reverse rowstyle-alt no-arrow" width="100%">
 <thead>
 	<tr>
