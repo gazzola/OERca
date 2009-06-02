@@ -10,20 +10,20 @@ if (sizeof($materials) > 0) {
 
 $search_sections[] = array(
 	'label' => 'Author',
-	'data' => $this->material->authors_list(),
+	'data' => $this->material->authors_list($materials),
 	//'uri_segment' => sizeof($this->uri->segment_array()) - 3
 	'uri_segment' => 4
 );
 
 $search_sections[] = array(
 	'label' => 'Material Type',
-	'data' => $this->material->material_types_list(),
+	'data' => $this->material->material_types_list($materials),
 	'uri_segment' => 5
 );
 
 $search_sections[] = array(
 	'label' => 'File Type',
-	'data' => $this->material->mimetypes_list(),
+	'data' => $this->material->mimetypes_list($materials),
 	'uri_segment' => 6
 );
 

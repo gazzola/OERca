@@ -932,15 +932,17 @@ class Material extends Model
    * @return array authors
    * mbleed - faceted search 5/2009
    */
-	public function authors_list()
+	public function authors_list($materials)
 	{
 		//get test curriculum
 		$sql = "SELECT id FROM ocw_curriculums WHERE name = 'TEST'";
 	    $q = $this->db->query($sql);
 		$res = $q->result();
 		$test_curriculum_id = $res[0]->id;
-		
-	    $sql = "SELECT m.id, m.author, c.curriculum_id FROM ocw_materials m INNER JOIN ocw_courses c ON m.course_id = c.id GROUP BY m.author ORDER BY m.author ASC";
+		$idlist = array();
+		foreach ($materials['Materials'] as $m) $idlist[] = $m['id'];
+		$materials_csv = implode(",", $idlist);
+	    $sql = "SELECT m.id, m.author, c.curriculum_id FROM ocw_materials m INNER JOIN ocw_courses c ON m.course_id = c.id WHERE m.id IN ($materials_csv) GROUP BY m.author ORDER BY m.author ASC";
 	    $q = $this->db->query($sql);
 	  	if ($q->num_rows() > 0) {
 	  		foreach ($q->result() as $row) {
@@ -971,12 +973,17 @@ class Material extends Model
    * @return array mimetypes
    * mbleed - faceted search 5/2009
    */
-	public function mimetypes_list()
+	public function mimetypes_list($materials)
 	{
+		$idlist = array();
+		foreach ($materials['Materials'] as $m) $idlist[] = $m['id'];
+		$materials_csv = implode(",", $idlist);
+
 		$sql = "SELECT ocw_mimetypes.name, ocw_mimetypes.id AS mtid
 	      FROM ocw_materials
 	      LEFT JOIN ocw_mimetypes 
 	      ON ocw_mimetypes.id = ocw_materials.mimetype_id
+	      WHERE ocw_materials.id IN ($materials_csv)
 	      ORDER BY ocw_mimetypes.mimetype ASC";
 	    $q = $this->db->query($sql);
 	  	foreach ($q->result() as $row) {
@@ -993,9 +1000,13 @@ class Material extends Model
    * @return array mimetypes
    * mbleed - faceted search 5/2009
    */
-	public function material_types_list()
+	public function material_types_list($materials)
 	{
-		$sql = "SELECT name, id FROM ocw_tags";
+		$idlist = array();
+		foreach ($materials['Materials'] as $m) $idlist[] = $m['id'];
+		$materials_csv = implode(",", $idlist);
+		
+		$sql = "SELECT t.name, t.id FROM ocw_tags t INNER JOIN ocw_materials m ON m.tag_id = t.id WHERE m.id IN ($materials_csv) ORDER BY t.name ASC";
 	    $q = $this->db->query($sql);
 	  	foreach ($q->result() as $row) {
 	    	$mt_array[$row->id] = $row->name;
