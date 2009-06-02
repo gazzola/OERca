@@ -1,7 +1,7 @@
 <!-- STATUS -->
 <table width="100%">
 	<tr>
-			<th style="vertical-align: top">Ask Instructor if replacement is suitable:</th>
+			<th style="vertical-align: top">Ask Instructor if replacement is suitable?</th>
 			<td>
 			  <?php 
 				  $yes = ($repl_obj['ask']=='yes') ? TRUE : FALSE;
@@ -36,7 +36,7 @@
 			<a id="repl_q_addpanel_i_toggle" href="#">I want to ask someone a question</a>&nbsp;&raquo;
 
 			<!-- QUESTIONS -->
-			<div id="repl_q_addpanel_i" >
+			<div id="repl_q_addpanel" >
 				<label for="replrole">Ask:</label>
 				<select name="replrole" id="replrole">
 					<option SELECTED value="instructor">Instructor</option>
@@ -49,7 +49,7 @@
 	 			</p>
 			</div>
 			<script>
-				var repl_q_addpanel_i_slide = new Fx.Slide('repl_q_addpanel_i');
+				var repl_q_addpanel_i_slide = new Fx.Slide('repl_q_addpanel');
 				repl_q_addpanel_i_slide.hide();
 				$('repl_q_addpanel_i_toggle').addEvent('click', function(e){
 					new Event(e).stop();

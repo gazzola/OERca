@@ -180,7 +180,7 @@
   			<a id="orig_q_addpanel_i_toggle" href="#">I want to ask someone a question</a>&nbsp;&raquo;
 
   			<!-- QUESTIONS -->
-  			<div id="orig_q_addpanel_i" >
+  			<div id="orig_q_addpanel" >
   				<label for="origrole">Ask:</label>
   				<select name="origrole" id="origrole">
   					<option SELECTED value="instructor">Instructor</option>
@@ -193,7 +193,7 @@
   	 			</p>
   			</div>
   			<script>
-  				var orig_q_addpanel_i_slide = new Fx.Slide('orig_q_addpanel_i');
+  				var orig_q_addpanel_i_slide = new Fx.Slide('orig_q_addpanel');
   				orig_q_addpanel_i_slide.hide();
   				$('orig_q_addpanel_i_toggle').addEvent('click', function(e){
   					new Event(e).stop();

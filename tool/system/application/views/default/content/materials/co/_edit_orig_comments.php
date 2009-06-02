@@ -1,13 +1,12 @@
   <!-- COMMENTS -->
  	
 			<h2>Add Comment</h2>
-			<div id="element">
 		   	<textarea name="comments" id="comments" style="width: 90%; height: 50px;"></textarea>
 		   	<p>
 		     <input type="button" value="Save" class="do_add_object_comment" />
 		   	</p>
-		  </div>
 
+<em style="color:black;">Note: Hold down the shift key to select multiple columns to sort</em>
 <table id="objectctable" class="sortable-onload-3-reverse rowstyle-alt no-arrow" width="100%">
 <thead>
 	<tr>

@@ -58,59 +58,28 @@ $data['loc_tip'] = "For textual materials like Powerpoints or PDFs, please enter
 <form method="post">
 	<input type="hidden" name="viewing" value="original" />
 	<div class="origdetails">
-	  <h4 id="status_sect_toggler" class="faceted_search_toggler" onclick="status_sect.toggle()"> Status </h4>
-	  <div id="status_sect" class="element">
-	  <?php
-		  $this->load->view(property('app_views_path').'/materials/co/_edit_orig_info.php', $data); 	
-	    $this->load->view(property('app_views_path').'/materials/co/_edit_orig_status.php', $data);
-	  ?>
-	  </div>
-    <script>
-    var status_sect = new Fx.Slide($('status_sect'), {
-    duration: 200,
-    onComplete: function(el) {
-      var toggler = $(el.id+'_toggler');
-      if (toggler.getStyle('background-image') == "url(<?php echo property('app_img'); ?>/expand.gif)") toggler.setStyle('background-image', "url(<?php echo property('app_img'); ?>/collapse.gif)");
-      else toggler.setStyle('background-image', "url(<?php echo property('app_img'); ?>/expand.gif)");
-      },
-        transition: Fx.Transitions.linear
-    }).toggle();
-    </script>
-    
-	  <h4 id="comment_sect_toggler" class="faceted_search_toggler" onclick="comment_sect.toggle()"> Comments </h4>
-	  <div id="comment_sect" class="element">
-	  <?php
-	    $this->load->view(property('app_views_path').'/materials/co/_edit_orig_comments.php', $data);
-	  ?>
-	  </div>
-	  <script>
-    var comment_sect = new Fx.Slide($('comment_sect'), {
-    duration: 200,
-    onComplete: function(el) {
-      var toggler = $(el.id+'_toggler');
-      if (toggler.getStyle('background-image') == "url(<?php echo property('app_img'); ?>/expand.gif)") toggler.setStyle('background-image', "url(<?php echo property('app_img'); ?>/collapse.gif)");
-      else toggler.setStyle('background-image', "url(<?php echo property('app_img'); ?>/expand.gif)");
-      },
-        transition: Fx.Transitions.linear
-    }).toggle();
-    </script>
-	  <h4 id="history_sect_toggler" class="faceted_search_toggler" onclick="history_sect.toggle()"> History </h4>
-	  <div id="history_sect" class="element">
-	  <?php
-	    $this->load->view(property('app_views_path').'/materials/co/_edit_orig_log.php', $data);
-	  ?>
-	  </div>
-	  <script>
-    var history_sect = new Fx.Slide($('history_sect'), {
-    duration: 200,
-    onComplete: function(el) {
-      var toggler = $(el.id+'_toggler');
-      if (toggler.getStyle('background-image') == "url(<?php echo property('app_img'); ?>/expand.gif)") toggler.setStyle('background-image', "url(<?php echo property('app_img'); ?>/collapse.gif)");
-      else toggler.setStyle('background-image', "url(<?php echo property('app_img'); ?>/expand.gif)");
-      },
-        transition: Fx.Transitions.linear
-    }).toggle();
-    </script>
+		<dl class="accordion">
+			<dt class="accordion_toggler_1">Status</dt>
+			<dd class="accordion_content_1">
+	  		<?php
+		  		$this->load->view(property('app_views_path').'/materials/co/_edit_orig_info.php', $data); 	
+	    		$this->load->view(property('app_views_path').'/materials/co/_edit_orig_status.php', $data);
+	  			?>
+			</dd>
+
+    	<dt class="accordion_toggler_1">Comments</dt>
+			<dd class="accordion_content_1">
+	  		<?php
+	    		$this->load->view(property('app_views_path').'/materials/co/_edit_orig_comments.php', $data);
+	  		?>
+	  	</dd>
+			<dt class="accordion_toggler_1">History</dt>
+			<dd class="accordion_content_1">
+	  		<?php
+	    		$this->load->view(property('app_views_path').'/materials/co/_edit_orig_log.php', $data);
+	  		?>
+	  	</dd>
+		</dl>		
 	</div>
 </form>
 

@@ -2,15 +2,11 @@
 
 	<h2>Add Comment</h2>
 
-	<div id="repl_comm">
    	<textarea name="repl_comments" id="repl_comments" cols="50"></textarea>
    	<p>
      <input type="button" value="Save" class="do_add_replacement_comment" />
      <br/><hr style="border: 1px dotted #555"/><br/>
    	</p>
-  </div>
-
-	<div class="clear"><br/></div>
 
 <em style="color:black;">Note: Hold down the shift key to select multiple columns to sort</em>
 <br/>

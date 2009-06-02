@@ -16,16 +16,17 @@
             <textarea name="citation_<?=$repl_obj['id']?>" id="citation" cols="6" rows="1" class="do_replacement_update"><?=$repl_obj['citation']?></textarea>
           </td>
         </tr>
+        <tr>
+          <th style="vertical-align: top">Keywords:</th>
+          <td>
+            <input type="text"  name="tags_<?=$repl_obj['id']?>" id="tags" size="50"  class="do_replacement_update" value="<?=$repl_obj['tags']?>" />
+          </td>
+        </tr>
 			</table>	
 
-			<div style="text-align:left" id="replinfo-show">	
-					<a href="javascript:void(0);" onclick="$('replinfo-other').style.display='block';$('replinfo-show').style.display='none';$('replinfo-hide').style.display='block'">More information (author, keywords, etc...) &raquo</a>
-			</div>
-			<div style="text-align:left; display:none" id="replinfo-hide">	
-					<a href="javascript:void(0);" onclick="$('replinfo-other').style.display='none';$('replinfo-hide').style.display='none';$('replinfo-show').style.display='block'">Hide &raquo;</a>
-			</div>
-
-<div id="replinfo-other" style="display: none">
+			<dl>
+			<dt class="accordion_toggler_2">Add more information (author, copyright, etc.)</dt>
+			<dd class="accordion_content_2">
 			<table style="border:none" width="558px;">
         <tr>
           <th>Author:</th>
@@ -45,11 +46,7 @@
             <input type="text" name="description_<?=$repl_obj['id']?>" id="description" size="50" class="do_replacement_update" value="<?=$repl_obj['description']?>" />
           </td>
         </tr>
-        <tr>
-          <th style="vertical-align: top">Keywords:</th>
-          <td>
-            <input type="text"  name="tags_<?=$repl_obj['id']?>" id="tags" size="50"  class="do_replacement_update" value="<?=$repl_obj['tags']?>" />
-          </td>
-        </tr>
       </table>
-</div>
+			<?php $this->load->view(property('app_views_path').'/materials/co/_edit_repl_copy.php', $data); ?>
+			</dd>
+			</dl>

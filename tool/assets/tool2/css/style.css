@@ -625,3 +625,95 @@ h4.co_md_toggler {
 	background-position:  0% 50%;
 	background-image: url(../images/expand.gif);
 }
+
+
+/* @group Accordion */
+
+dl.accordion
+{
+    width: 100%;
+
+    border-left: 1px solid #e6e2af;
+    border-right: 1px solid #e6e2af;
+    border-bottom: 1px solid #e6e2af;
+}
+
+/* @group Ebene 1 */
+
+dl.accordion dt
+{
+    position: relative;
+    height: 20px;
+    padding: 5px 0 2px 25px;
+
+    font-weight: bolder;
+    font-size: 18px;
+
+    color: black;
+    background: lightgreen url(../images/expand.gif) no-repeat;
+
+    cursor: pointer;
+    border-top: 1px solid #e6e2af;
+}
+
+* html dl.accordion dt
+{
+    cursor: hand;
+    filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/expand.gif', sizingMethod='crop');
+    background-image: none;
+}
+
+dl.accordion dt.open
+{
+    background-image: url(../images/collapse.gif);
+}
+
+* html dl.accordion dt.open
+{
+    filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='../images/collapse.gif', sizingMethod='crop');
+    background-image: none;
+}
+
+dl.accordion dd
+{
+    position: relative;
+    overflow: hidden;
+    background: #efecca;
+}
+
+/* @group Inhalt */
+
+dl.accordion dd.sub_accordion
+{
+
+}
+
+dl.accordion dd.accordion_content
+{
+    padding: 0 10px 0 25px;
+}
+
+dl.accordion dd.accordion_content p
+{
+    padding: 5px 0 7px 0;
+}
+
+/* @end */
+
+/* @end */
+
+/* @group Ebene 2 */
+
+dl.accordion dd dl dt
+{
+    padding-left: 45px;
+    background-color: lightgreen;
+    background-position: 20px 0;
+}
+
+dl.accordion dd dl dd.accordion_content
+{
+    padding-left: 45px;
+}
+
+/* @end */
