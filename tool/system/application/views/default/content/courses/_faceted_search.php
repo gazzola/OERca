@@ -49,13 +49,13 @@ if (sizeof($this->uri->segment_array()) >= sizeof($search_sections)) {	 //less t
 	foreach ($search_sections as $ss) {
 		if ($this->uri->segment($ss['uri_segment'])) {
 			$filterid = $this->uri->segment($ss['uri_segment']);
-	 		$segment_array = explode("+", $filterid);
+	 		$segment_array = explode("z", $filterid);
 	 		if (sizeof($segment_array) > 1) {			
 	 			foreach ($segment_array as $key=>$filter) {
 					$remove_uri_array = $this->uri->segment_array();
 					$remove_segment_array = $segment_array;
 					unset($remove_segment_array[$key]);
-					$remove_segment_str = implode("+", $remove_segment_array);
+					$remove_segment_str = implode("z", $remove_segment_array);
 					$remove_uri_array[$ss['uri_segment']] = $remove_segment_str;
 					$remove_uri_string = site_url().implode("/",$remove_uri_array);
 					$fscrumbs[] = array('id'=>$filter, 'val'=>$ss['data'][$filter], 'removeurl'=>$remove_uri_string, 'label'=>$ss['label']);
@@ -108,11 +108,11 @@ foreach ($search_sections as $fs_id=>$s) {
 	 		<?php 
 	 		foreach($s['data'] as $dkey=>$d) {
 	 			$custom_view_uri_array = $view_uri_array;
-	 			$segment_array = explode("+", $custom_view_uri_array[$s['uri_segment']]);
+	 			$segment_array = explode("z", $custom_view_uri_array[$s['uri_segment']]);
 	 			$selectedclass = (in_array($dkey,$segment_array)) ? 'class=selected' : 'class=unselected';
 	 			if ($segment_array[0] > 0) {
 	 				array_push($segment_array, $dkey);
-	 				$custom_view_uri_array[$s['uri_segment']] = implode("+",$segment_array);
+	 				$custom_view_uri_array[$s['uri_segment']] = implode("z",$segment_array);
 	 			} else {	
 	 				$custom_view_uri_array[$s['uri_segment']] = $dkey;
 	 			}
@@ -123,7 +123,7 @@ foreach ($search_sections as $fs_id=>$s) {
 					$remove_segment_array = $segment_array;
 					$foundkey = array_search($dkey, $segment_array);
 					unset($remove_segment_array[$foundkey]);
-					$remove_segment_str = implode("+", $remove_segment_array);
+					$remove_segment_str = implode("z", $remove_segment_array);
 					$remove_uri_array[$s['uri_segment']] = $remove_segment_str;
 					$remove_uri_string = site_url().implode("/",$remove_uri_array);
 		 		} else {

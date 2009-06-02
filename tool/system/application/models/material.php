@@ -195,7 +195,7 @@ class Material extends Model
     if ($author > 0) {
    		$authorslist = $this->material->authors_list();
     	$where3 = " AND (";
-    	$authors = explode("+", $author);
+    	$authors = explode("z", $author);
     	foreach ($authors as $a) $authorwheres[] = "ocw_materials.author = '".$authorslist[$a]."' ";
     	$where3 .= implode(" OR ", $authorwheres);
     	$where3 .= ")";
@@ -203,7 +203,7 @@ class Material extends Model
    	if ($material_type > 0) {
    		$material_typeslist = $this->material->material_types_list();
     	$where4 = " AND (";
-    	$material_types = explode("+", $material_type);
+    	$material_types = explode("z", $material_type);
     	foreach ($material_types as $m) $material_typewheres[] = "ocw_tags.name = '".$material_typeslist[$m]."' ";
     	$where4 .= implode(" OR ", $material_typewheres);
     	$where4 .= ")";
@@ -212,7 +212,7 @@ class Material extends Model
    	if ($file_type > 0) {
    		$file_typeslist = $this->material->mimetypes_list();
     	$where6 = " AND (";
-    	$file_types = explode("+", $file_type);
+    	$file_types = explode("z", $file_type);
     	foreach ($file_types as $fkey=>$f) $file_typewheres[] = "ocw_materials.mimetype_id = ".$f." ";
     	$where6 .= implode(" OR ", $file_typewheres);
     	$where6 .= ")";

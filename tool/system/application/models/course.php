@@ -471,7 +471,7 @@ class Course extends Model
     $where2 = "";
     if ($school > 0) {
     	$where .= " AND (";
-    	$schools = explode("+", $school);
+    	$schools = explode("z", $school);
     	foreach ($schools as $s) $schoolwheres[] = "ocw_schools.id = $s";
     	$where .= implode(" OR ", $schoolwheres);
     	$where .= ")";
@@ -479,7 +479,7 @@ class Course extends Model
     if ($year > 0) {
     	$where .= " AND (";
     	$where2 .= " AND (";
-    	$years = explode("+", $year);
+    	$years = explode("z", $year);
     	foreach ($years as $y) $yearwheres[] = "ocw_courses.year = $y";
     	$where .= implode(" OR ", $yearwheres);
     	$where2 .= implode(" OR ", $yearwheres);

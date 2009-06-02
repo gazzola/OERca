@@ -29,10 +29,6 @@
     <thead>
     <tr>
         <th class="sortable">Title</th>
-        <!--
-        <th class="sortable-sortEnglishLonghandDateFormat">Start Date</th>
-        <th class="sortable-sortEnglishLonghandDateFormat">End Date</th>
-        -->
         <th class="sortable">Curriculum</th>
         <th class="sortable">dScribe(s)</th>
         <th class="sortable">Instructor(s)</th>
