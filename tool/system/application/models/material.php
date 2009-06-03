@@ -193,7 +193,7 @@ class Material extends Model
     $where1 = (is_numeric($cid)) ? "ocw_materials.course_id = $cid" : "ocw_materials.course_id = 0";
     $where2 = ($mid=='') ? '' : "AND ocw_materials.id='$mid'";
     if ($author > 0) {
-   		$authorslist = $this->material->authors_list();
+   		$authorslist = $this->material->authors_list($cid);
     	$where3 = " AND (";
     	$authors = explode("z", $author);
     	foreach ($authors as $a) $authorwheres[] = "ocw_materials.author = '".$authorslist[$a]."' ";
@@ -201,7 +201,7 @@ class Material extends Model
     	$where3 .= ")";
     } else $where3 = "";
    	if ($material_type > 0) {
-   		$material_typeslist = $this->material->material_types_list();
+   		$material_typeslist = $this->material->material_types_list($cid);
     	$where4 = " AND (";
     	$material_types = explode("z", $material_type);
     	foreach ($material_types as $m) $material_typewheres[] = "ocw_tags.name = '".$material_typeslist[$m]."' ";
@@ -210,7 +210,7 @@ class Material extends Model
     } else $where4 = "";
     $where5 = ""; //placeholder for cc license param
    	if ($file_type > 0) {
-   		$file_typeslist = $this->material->mimetypes_list();
+   		$file_typeslist = $this->material->mimetypes_list($cid);
     	$where6 = " AND (";
     	$file_types = explode("z", $file_type);
     	foreach ($file_types as $fkey=>$f) $file_typewheres[] = "ocw_materials.mimetype_id = ".$f." ";
@@ -932,27 +932,37 @@ class Material extends Model
    * @return array authors
    * mbleed - faceted search 5/2009
    */
-	public function authors_list()
+	public function authors_list($cid)
 	{
 		//get test curriculum
+		/*
 		$sql = "SELECT id FROM ocw_curriculums WHERE name = 'TEST'";
 	    $q = $this->db->query($sql);
 		$res = $q->result();
 		$test_curriculum_id = $res[0]->id;
-		/*
-		$idlist = array();
-		foreach ($materials['Materials'] as $m) $idlist[] = $m['id'];
-		$materials_csv = implode(",", $idlist);
-	    $sql = "SELECT m.id, m.author, c.curriculum_id FROM ocw_materials m INNER JOIN ocw_courses c ON m.course_id = c.id WHERE m.id IN ($materials_csv) GROUP BY m.author ORDER BY m.author ASC";
-	    */
-	    	    $sql = "SELECT m.id, m.author, c.curriculum_id FROM ocw_materials m INNER JOIN ocw_courses c ON m.course_id = c.id GROUP BY m.author ORDER BY m.author ASC";
+		
+		$author_array = array();
+		if (sizeof($materials) > 0) {
+			$idlist = array();
+			foreach ($materials['Materials'] as $m) $idlist[] = $m['id'];
+			//$materials_csv = implode(",", $idlist);
+	    	//$sql = "SELECT m.id, m.author, c.curriculum_id FROM ocw_materials m INNER JOIN ocw_courses c ON m.course_id = c.id WHERE m.id IN ($materials_csv) GROUP BY m.author ORDER BY m.author ASC";
+	    	$sql = "SELECT m.id, m.author, c.curriculum_id FROM ocw_materials m INNER JOIN ocw_courses c ON m.course_id = c.id GROUP BY m.author ORDER BY m.author ASC";
+	    	$q = $this->db->query($sql);
+	  		if ($q->num_rows() > 0) {
+	  			foreach ($q->result() as $row) {
+	  				if (in_array($row->id, $idlist)) $author_array[$row->id] = $row->author;
+	  			}
+	  		}
+		} */
+	   	$sql = "SELECT m.id, m.author FROM ocw_materials m WHERE m.course_id = $cid GROUP BY m.author ORDER BY m.author ASC";
 	    $q = $this->db->query($sql);
 	  	if ($q->num_rows() > 0) {
 	  		foreach ($q->result() as $row) {
-	  			if ($row->curriculum_id != $test_curriculum_id) $author_array[$row->id] = $row->author; //only allow author name if not part of test curriculum
+	  			$author_array[$row->id] = $row->author;
 	  		}
 	  	}
-	  	return array_unique($author_array);
+	  	return $author_array;
 	}
 	
 		/**
@@ -962,7 +972,7 @@ class Material extends Model
    * @return array licenses
    * mbleed - faceted search 5/2009
    */
-	public function licenses_list()
+	public function licenses_list($cid)
 	{
 		$license_array = array(1=>'Permission',2=>'Search',3=>'Create');
 		
@@ -976,25 +986,16 @@ class Material extends Model
    * @return array mimetypes
    * mbleed - faceted search 5/2009
    */
-	public function mimetypes_list($materials)
+	public function mimetypes_list($cid)
 	{
-		/*
-		$idlist = array();
-		foreach ($materials['Materials'] as $m) $idlist[] = $m['id'];
-		$materials_csv = implode(",", $idlist);
-
-		$sql = "SELECT ocw_mimetypes.name, ocw_mimetypes.id AS mtid
+		$mimetype_array = array();
+	     $sql = "SELECT ocw_mimetypes.name, ocw_mimetypes.id AS mtid
 	      FROM ocw_materials
 	      LEFT JOIN ocw_mimetypes 
 	      ON ocw_mimetypes.id = ocw_materials.mimetype_id
-	      WHERE ocw_materials.id IN ($materials_csv)
+	      WHERE ocw_materials.course_id = $cid
 	      ORDER BY ocw_mimetypes.mimetype ASC";
-	     */
-	     		$sql = "SELECT ocw_mimetypes.name, ocw_mimetypes.id AS mtid
-	      FROM ocw_materials
-	      LEFT JOIN ocw_mimetypes 
-	      ON ocw_mimetypes.id = ocw_materials.mimetype_id
-	      ORDER BY ocw_mimetypes.mimetype ASC";
+		
 	    $q = $this->db->query($sql);
 	  	foreach ($q->result() as $row) {
 	    	$mimetype_array[$row->mtid] = $row->name;
@@ -1010,16 +1011,10 @@ class Material extends Model
    * @return array mimetypes
    * mbleed - faceted search 5/2009
    */
-	public function material_types_list()
+	public function material_types_list($cid)
 	{
-		/*
-		$idlist = array();
-		foreach ($materials['Materials'] as $m) $idlist[] = $m['id'];
-		$materials_csv = implode(",", $idlist);
-		
-		$sql = "SELECT t.name, t.id FROM ocw_tags t INNER JOIN ocw_materials m ON m.tag_id = t.id WHERE m.id IN ($materials_csv) ORDER BY t.name ASC";
-		*/
-		$sql = "SELECT t.name, t.id FROM ocw_tags t INNER JOIN ocw_materials m ON m.tag_id = t.id ORDER BY t.name ASC";
+		$sql = "SELECT t.name, t.id FROM ocw_tags t INNER JOIN ocw_materials m ON m.tag_id = t.id WHERE m.course_id = $cid ORDER BY t.name ASC";
+
 	    $q = $this->db->query($sql);
 	  	foreach ($q->result() as $row) {
 	    	$mt_array[$row->id] = $row->name;
