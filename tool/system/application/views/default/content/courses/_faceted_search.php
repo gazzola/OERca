@@ -2,7 +2,7 @@
 $search_sections = array();
 
 $course_count = 0;
-if (sizeof($courses) > 0) {
+if (sizeof(@$courses) > 0) {
 	foreach ($courses as $sub) {
 		foreach ($sub as $s) {
 			//echo "<pre>"; print_r($s); echo "</pre>";
@@ -13,7 +13,7 @@ if (sizeof($courses) > 0) {
 
 $search_sections[] = array(
 	'label' => 'School/College',
-	'data' => $this->school->get_school_list(),
+	'data' => $this->course->get_school_list(),
 	//'uri_segment' => sizeof($this->uri->segment_array()) - 3
 	'uri_segment' => 4
 );

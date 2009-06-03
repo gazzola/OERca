@@ -691,7 +691,19 @@ class Course extends Model
 	  	//return array_values(array_unique($year_array));
 	  	return array_unique($year_array);
 	}
-
+	
+		public function get_school_list()
+	{
+	  $school_list = NULL;
+	  $this->db->select('id, name')->order_by('name');
+	  $query = $this->db->get('schools');
+	  
+	  foreach ($query->result() as $row) {
+	    $school_list[$row->id] = $row->name;
+	  }
+	  
+	  return $school_list;
+	}
 
 }
 ?>
