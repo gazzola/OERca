@@ -66,7 +66,6 @@ $data['loc_tip'] = "For textual materials like Powerpoints or PDFs, please enter
 	    		$this->load->view(property('app_views_path').'/materials/co/_edit_orig_status.php', $data);
 	  			?>
 			</dd>
-
     	<dt class="accordion_toggler_1">Comments</dt>
 			<dd class="accordion_content_1">
 	  		<?php

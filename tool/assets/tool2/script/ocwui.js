@@ -71,6 +71,7 @@ window.addEvent('domready', Site.start);
 // von / by Bogdan Gunther
 // http://www.medianotions.de
 //
+// (Accordion documentation available at http://mootools.net/docs/more/Fx/Fx.Accordion)
 
 window.addEvent('domready', function() {
 
@@ -92,11 +93,17 @@ window.addEvent('domready', function() {
 	{
 		toggler=$$(togglerName+counter);
 		content=$$(contentName+counter);
-			
+		// Display the first section of level-1 leaves by default, all others are closed by default
+		var which;
+		if (counter == 1) {
+			which = 0;
+		} else {
+			which = -1;
+		}
 		// Apply accordion
 		new Accordion(toggler, content, {
 			opacity: false,
-			display: -1,
+			display: which,
 			alwaysHide: true,
 			onComplete: function() {
 				var element=$(this.elements[this.previous]);
