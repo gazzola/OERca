@@ -222,7 +222,7 @@ var Rules = {
 														tr.adopt(td5); tr.adopt(td6); tr.adopt(td7);
 														tr.injectTop( $('objectqs') );
 														$('question').value = '';
-														if (role=='dscribe2') {
+														/* if (role=='dscribe2') {
 																		$('ask_dscribe2r_yes').checked=true;
 																		$('ask_dscribe2r_no').checked=false;
 																		$('ask_dscribe2_yes').style.display='block';	
@@ -231,15 +231,19 @@ var Rules = {
 																		$('ask_inst_yes').checked=true;
 																		$('ask_inst_no').checked=false;
 																		$('ask_yes').style.display='block';	
-														}
+														} */
 														if ($('noquestions')) { $('noquestions').remove(); }
 														// display a confirmation on submit
 														if($('update_msg')){ 
 																var div = $('question_conf').setStyles({ display:'block', opacity: 1 });
 																var fx = new Fx.Style(div, 'opacity', {duration: 5000 } ).addEvent("onComplete", function() {
-																												var hidediv = $('update_msg').setStyles({display:'none'}); });
+																												var hidediv = $('update_msg').setStyles({display:'none'}); 
+																												$('ask_dscribe2_yes').style.display = 'none';
+                            														$('ask_dscribe2r_yes').checked=false;
+                            														$('ask_dscribe2r_no').checked=true; });
 																fx.start(0);
 														}
+													  
                         } else {
                             alert(response);
                        	}
