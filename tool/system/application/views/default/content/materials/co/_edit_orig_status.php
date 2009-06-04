@@ -137,24 +137,6 @@
 		</td>
   </tr>
 	
-	<!-- ASK INSTRUCTOR -->
-  <tr>
-		<th>Ask instructor about origin of Content Object?</th>
-		<td>
-			  <?php 
-							  $yes = ($obj['ask']=='yes') ? true : false;
-							  $no = ($obj['ask']=='yes') ? false : true;
-			          echo form_radio('ask_inst', 'yes', $yes, 'class="do_object_update" id="ask_inst_yes"').'&nbsp;Yes&nbsp;';
-			          echo form_radio('ask_inst', 'no', $no, 'class="do_object_update" id="ask_inst_no"').'&nbsp;No&nbsp;';
-				?>
-
-				<div id="ask_yes" style="display: <?= ($obj['ask']=='yes') ? 'inline':'none'?>"> 
-							<br/><br/>
-							<a target="_new" href="<?=site_url("materials/askforms/$cid/$mid/general/instructor")?>">View ASK form</a> to see the default questions.
-							<br/><br/>
-				</div>
- 	  </td>
-	</tr>
 	<!-- ASK dSCRIBE2 -->
 	<tr>
 		<th>Ask dScribe2 a general question about the Content Object?</th>
@@ -165,45 +147,24 @@
 							  echo form_radio('ask_dscribe2', 'yes', $yes, 'class="do_object_update do_object_ask_dscribe2_yesno" id="ask_dscribe2r_yes"').'&nbsp;Yes&nbsp;'; 
 							  echo form_radio('ask_dscribe2', 'no', $no, 'class="do_object_update do_object_ask_dscribe2_yesno" id="ask_dscribe2r_no"').'&nbsp;No&nbsp;&nbsp;';
 				?>
-
+        
 				<div id="ask_dscribe2_yes" style="display: <?= ($obj['ask_dscribe2']=='yes') ? 'inline':'none'?>"> 
+				  <p style="padding:5px; background-color:yellow; border:2px solid gray; color:black;display:none" id="question_conf">Sent to dScribe2!</p>
 							<br/><br/>
 							<a target="_new" href="<?=site_url("materials/askforms/$cid/$mid/general/dscribe2")?>">View dScribe2 ASK form</a>
+							<div>
+        				<input type="hidden" name="origrole" id="origrole" value="dscribe2">
+        				<br/>
+        	 			<textarea name="question" id="question" style="width: 100%; height: 50px;"></textarea>
+        	 			<p>
+	     						<input type="button" value="Send to dScribe2" class="do_add_object_question" />
+        	 			</p>
+        			</div>
 							<br/><br/>
 				</div>
 	  </td>
 	</tr>
 	
-  <tr>
-  	<th></th>
-  	<td>
-  			<a id="orig_q_addpanel_i_toggle" href="#">I want to ask someone a question</a>&nbsp;&raquo;
-
-  			<!-- QUESTIONS -->
-  			<div id="orig_q_addpanel" >
-  				<label for="origrole">Ask:</label>
-  				<select name="origrole" id="origrole">
-  					<option SELECTED value="instructor">Instructor</option>
-  					<option value="dscribe2">dScribe2</option>
-  				</select><br/>
-  	 			<textarea name="question" id="question" style="width: 100%; height: 50px;"></textarea>
-  	 			<p>
-  	     						<input type="button" value="Save" class="do_add_object_question" />
-  			     				<input type="button" value="Cancel" onclick="orig_q_addpanel_i_slide.hide()" />
-  	 			</p>
-  			</div>
-  			<script>
-  				var orig_q_addpanel_i_slide = new Fx.Slide('orig_q_addpanel');
-  				orig_q_addpanel_i_slide.hide();
-  				$('orig_q_addpanel_i_toggle').addEvent('click', function(e){
-  					new Event(e).stop();
-  					orig_q_addpanel_i_slide.toggle();
-  				});
-  			</script>
-  			<!-- end QUESTIONS -->
-  		</td>
-  </tr>
-
   <tr>
 		<th>Final Action Taken:</th>
 		<td>

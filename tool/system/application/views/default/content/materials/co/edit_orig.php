@@ -59,7 +59,7 @@ $data['loc_tip'] = "For textual materials like Powerpoints or PDFs, please enter
 	<input type="hidden" name="viewing" value="original" />
 	<div class="origdetails">
 		<dl class="accordion">
-			<dt class="accordion_toggler_1">Status</dt>
+			<dt class="accordion_toggler_1" id="def_open_accordion">Status</dt>
 			<dd class="accordion_content_1">
 	  		<?php
 		  		$this->load->view(property('app_views_path').'/materials/co/_edit_orig_info.php', $data); 	

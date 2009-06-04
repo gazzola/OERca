@@ -209,7 +209,7 @@ var Rules = {
                        response = fb.innerHTML;
 											if (once) {						
                        	if (response=='success') {
-														orig_q_ap.toggle();
+														//orig_q_ap.toggle();
 														var tr = new Element('tr');
 														var td1 = new Element('td').setText(role); 
 														var td2 = new Element('td').setText(unescape(qs)); 
@@ -233,6 +233,13 @@ var Rules = {
 																		$('ask_yes').style.display='block';	
 														}
 														if ($('noquestions')) { $('noquestions').remove(); }
+														// display a confirmation on submit
+														if($('update_msg')){ 
+																var div = $('question_conf').setStyles({ display:'block', opacity: 1 });
+																var fx = new Fx.Style(div, 'opacity', {duration: 5000 } ).addEvent("onComplete", function() {
+																												var hidediv = $('update_msg').setStyles({display:'none'}); });
+																fx.start(0);
+														}
                         } else {
                             alert(response);
                        	}
@@ -468,13 +475,12 @@ var Rules = {
 			if (this.value == 'yes') {
 				if ($('ask_dscribe2_yes')) {
 					$('ask_dscribe2_yes').style.display = 'inline';	
-				 	orig_q_ap.setrole('dscribe2');
-				 	orig_q_ap.show();
-					$('orig_q_addpanel').scrollIntoView();
+				 	//orig_q_ap.setrole('dscribe2');
+				 	//orig_q_ap.show();
+					//$('orig_q_addpanel').scrollIntoView();
 				}
 			} else {
 			   if ($('ask_dscribe2_yes')) { 
-				 			orig_q_ap.hide();
 						$('ask_dscribe2_yes').style.display = 'none';	}
 			}
 		}
