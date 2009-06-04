@@ -460,6 +460,10 @@ div#rightarrow a, div#leftarrow a { border:none; color:#fff}
 	padding: 0;
 	margin: 3px;
 }
+.faceted_search_element {
+	overflow: auto;
+	max-height: 250px;	
+}
 h4.faceted_search_toggler {
 	cursor: pointer;
 	border: 1px solid #f5f5f5;
