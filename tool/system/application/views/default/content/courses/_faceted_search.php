@@ -71,7 +71,16 @@ if (sizeof($this->uri->segment_array()) >= sizeof($search_sections)) {	 //less t
 	}
 }
 
-$fscrumbs_html = "";
+$ua = $this->uri->segment_array();
+$ua[4] = 0; $ua[5] = 0; $ua[6] = 0; $ua[7] = 0;
+$removeallurl = site_url().implode("/",$ua);
+$fscrumbs_html = <<<htmleoq
+	<li class="token-input-token">
+		<p>Clear All</p>
+		<a href="$removeallurl" title="Remove all filters">x</a>
+	</li>
+htmleoq;
+
 foreach ($fscrumbs as $filterarray) {
 	$filterid = $filterarray['id'];
 	$filtervalue = $filterarray['val'];
@@ -133,9 +142,11 @@ foreach ($search_sections as $fs_id=>$s) {
 					$remove_uri_string = site_url().implode("/",$remove_uri_array);
 		 		}
 	 			$link = (in_array($dkey,$segment_array)) ? $remove_uri_string : $custom_view_uri_string;
+	 			$selectedx = (in_array($dkey,$segment_array)) ? '<a href="$remove_uri_string" class="selectedx">x</a>' : '';
 	 		?>
 	 			<li <?= $selectedclass ?>>
 	 				<a href="<?= $link ?>"><?= $d; ?></a>
+	 				<?= $selectedx ?>
 	 			</li>
 	 		<?php
 	 		}

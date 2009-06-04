@@ -47,10 +47,8 @@
 		<td>
 			<?=anchor(site_url('materials/home/'.$c['id']),$c['number'].' '.$c['title'],array('title'=>'Edit course materials'))?>
 			<br/>
-			<?=mdate('%d %M %Y',mysql_to_unix($c['start_date']))?>
-			<br/>through<br/>
-			<?=mdate('%d %M %Y',mysql_to_unix($c['end_date']))?>
-			<br/>
+			<?=$c['term']." ".$c['year']; ?>
+			<br />
 			<span style="font-size:9px; clear:both; margin-top:20px;">
 			<?=
 				anchor(site_url("courses/edit_course_info/{$c['id']}").'?TB_iframe=true&height=600&width=850','Edit Info &raquo;',array('class'=>'smoothbox','title'=>'Edit course information'))
