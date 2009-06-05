@@ -273,6 +273,7 @@ var Rules = {
 				var proceed = true;
 
 				if (field=='done') {
+					/* Do this unconditionally for now
 					if (val == 1)
 					{
 						var ask = document.getElementsByName('ask_inst');
@@ -282,6 +283,7 @@ var Rules = {
 							 return false;
 						}
 					}
+					*/
 					new Ajax(url, { method: 'post', postBody: 'field='+field+'&val='+val, update: fb }).request();
 
 				} else if (field=='ask_inst') {
@@ -809,7 +811,7 @@ var Rules = {
 																var div = $('repl_question_conf').setStyles({ display:'block', opacity: 1 });
 																var fx = new Fx.Style(div, 'opacity', {duration: 5000 } ).addEvent("onComplete", function() {
 																												var hidediv = $('repl_question_conf').setStyles({display:'none'}); 
-																												$('repl_ask_yes').style.display = 'none';
+																												if ($('repl_ask_yes')) {$('repl_ask_yes').style.display = 'none';}
                                                   			$('ask_yes').checked=false;
                                                   			$('ask_no').checked=true; });
 																fx.start(0);
