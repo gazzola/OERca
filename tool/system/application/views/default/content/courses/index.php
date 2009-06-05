@@ -70,19 +70,20 @@
 		</td>
     <td><?=ucfirst($c['instructors'])?></td>
     
-    <td>
+    <td>   
     <? $params_url = $c['total'].'/'.$c['done'].'/'.$c['ask'].'/'.$c['rem'];
       if ($c['total'] > 0) { ?>
 	  <a href="<?php echo site_url().'materials/home/'.$c['id']?>">
-          <img src="<?= site_url("/home/course_bar/$params_url") ?>" 
+<img src="<?= site_url("/home/course_bar/$params_url") ?>" 
               alt="Progress Bar: 
               Total Objects=<?=$c['total'] ?>
               Cleared Objects=<?=$c['done'] ?> 
               Objects in progress=<?=$c['ask'] ?> 
               Remaining Objects=<?=$c['rem'] ?>"
               class="prog-bar">
-	<? }?>
+              
 	   </a>
+	   <? }?>
    </td>
     <?php if ((getUserProperty('role') == 'admin')) { ?>
 				<td>

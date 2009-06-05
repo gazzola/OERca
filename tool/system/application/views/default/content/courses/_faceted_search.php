@@ -26,13 +26,13 @@ $search_sections[] = array(
 
 $search_sections[] = array(
 	'label' => 'dScribe2',
-	'data' => $this->ocw_user->get_users_for_all_courses_by_role('dscribe2'),
+	'data' => $this->course-> get_users_for_all_courses('dscribe2'),
 	'uri_segment' => 6
 );
 
 $search_sections[] = array(
 	'label' => 'dScribe',
-	'data' => $this->ocw_user->get_users_for_all_courses_by_role('dscribe1'),
+	'data' => $this->course-> get_users_for_all_courses('dscribe1'),
 	'uri_segment' => 7
 );
 

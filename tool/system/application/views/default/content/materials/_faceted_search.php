@@ -87,7 +87,7 @@ htmleoq;
 }
 ?>
 
-<div class="column span-24 first last">
+<div class="column span-24 first last" style="margin-bottom: 10px;">
 	<h4 class="faceted_search_title">Materials filtered by:</h4>
 	<ul class="token-input-list">
 		<?= $fscrumbs_html ?>

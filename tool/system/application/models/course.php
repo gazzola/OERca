@@ -460,7 +460,7 @@ class Course extends Model
      * @access  public
      * @return  array
      */
-    public function faceted_search_get_courses($uid, $school=0, $year=0, $dscribe2=0, $dscribe=0)
+    public function faceted_search_get_courses($uid, $school=0, $year=0, $dscribe2=0, $dscribe1=0)
     {
     $courses = array();
     //$uid = getUserProperty('id');
@@ -486,6 +486,29 @@ class Course extends Model
     	$where .= ")";
     	$where2 .= ")";
     }   
+    if ($dscribe1 > 0) {
+     	$where .= " AND (";
+    	$where2 .= " AND (";
+    	$dscribe1s = explode("z", $dscribe1);
+    	foreach ($dscribe1s as $d1) $dscribe1wheres[] = "ocw_acl.role = 'dscribe1' AND  ocw_acl.user_id =  $d1";
+    	$where .= implode(" OR ", $dscribe1wheres);
+    	$where2 .= implode(" OR ", $dscribe1wheres);
+    	$where .= ")";
+    	$where2 .= ")";   		
+    }
+   	if ($dscribe2 > 0) {
+     	$where .= " AND (";
+    	$where2 .= " AND (";
+    	$dscribe2s = explode("z", $dscribe2);
+    	foreach ($dscribe2s as $d2) $dscribe2wheres[] = "ocw_acl.role = 'dscribe2' AND  ocw_acl.user_id =  $d2";
+    	$where .= implode(" OR ", $dscribe2wheres);
+    	$where2 .= implode(" OR ", $dscribe2wheres);
+    	$where .= ")";
+    	$where2 .= ")";   		
+    }
+    
+    //course, user, role ref table
+    $course_users = $this->get_course_user_roles();
     
     $sql = "SELECT ocw_courses.*, 
       		ocw_curriculums.name AS cname, 
@@ -503,17 +526,25 @@ class Course extends Model
             foreach($q->result_array() as $row) { 
             	$showrowdscribe2 = true;
             	$showrowdscribe = true;
-                 $row['instructors'] = $this->get_course_users_by_cid($row['cid'], 'instructor');
+            	$instructors_html = '';
+            	foreach ($course_users[$row['cid']] as $cu) if ($cu['role'] == 'instructor') $instructors_html .= $cu['name']."<br>";
+                 $row['instructors'] = $instructors_html;
+                 /*
                  if ($dscribe2 > 0) {
-					if (in_array($dscribe2, $this->get_course_user_array_by_cid($row['cid'], 'dscribe2'))) $showrowdscribe2 = true;
+					if (in_array($dscribe2, $course_users[$row['cid']], 'dscribe2'))) $showrowdscribe2 = true;
     				else $showrowdscribe2 = false;
             	 }
           		 if ($dscribe > 0) {
 					if (in_array($dscribe, $this->get_course_user_array_by_cid($row['cid'], 'dscribe1'))) $showrowdscribe = true;
 					else $showrowdscribe = false;
             	 }
-                 $row['dscribe1s'] = $this->get_course_users_by_cid($row['cid'], 'dscribe1');
-                 $row['dscribe2s'] = $this->get_course_users_by_cid($row['cid'], 'dscribe2');
+            	 */
+           		$dscribe1s_html = '';
+            	foreach ($course_users[$row['cid']] as $cu) if ($cu['role'] == 'dscribe1') $dscribe1s_html .= $cu['name']."<br>";
+                 $row['dscribe1s'] = $dscribe1s_html;
+           		$dscribe2s_html = '';
+            	foreach ($course_users[$row['cid']] as $cu) if ($cu['role'] == 'dscribe2') $dscribe2s_html .= $cu['name']."<br>";
+                 $row['dscribe2s'] = $dscribe2s_html;                 
                  if (($urole != 'dscribe1')) { 
 		    // bdr OERDEV-173 - count everything like materials list counts
                      $materials =  $this->material->materials($row['cid'],'',true,true);
@@ -532,6 +563,7 @@ class Course extends Model
                           }
                        }
 		     }
+		     
 		     $row['statcount'] = $row['total'].'/'.$row['done'].'/'.$row['ask'].'/'.$row['rem'];
 		     $row['notdone'] = $row['rem'];
 		     // $this->ocw_utils->dump($row);
@@ -565,6 +597,7 @@ class Course extends Model
                  // if (($uprop != 'dscribe1')) { // && ($row['cid'] == 35)) 
 		 if (($role != 'dscribe1')) {
                     // bdr OERDEV-173 - count everything like materials list counts
+                    
                      $materials =  $this->material->materials($row['cid'],'',true,true);
                      $row['total'] = 0;
                      $row['done']  = 0;
@@ -579,6 +612,7 @@ class Course extends Model
                                    $row['total'] += $material['mtotal'];
                           }                
                       }                 
+                      
                      $row['statcount'] = $row['total'].'/'.$row['done'].'/'.$row['ask'].'/'.$row['rem'];
 		     $row['notdone'] = $row['rem'];
                      // $this->ocw_utils->dump($row);
@@ -703,6 +737,48 @@ class Course extends Model
 	  }
 	  
 	  return $school_list;
+	}
+	
+		/**
+   * Return users listed in all courses by role
+   *
+   * @access  public
+   * @return array users
+   * mbleed - faceted search 5/2009
+   */
+	public function get_users_for_all_courses($role) {
+		$users = array();
+		$this->db->select('users.id, users.name, acl.user_id')->from('acl')->join('users', 'users.id = acl.user_id', 'left')->where("acl.role = '$role'")->group_by('acl.user_id');
+		$q = $this->db->get();
+		if ($q->num_rows() > 0) {
+			foreach($q->result_array() as $row) {
+				$users[$row['id']] = $row['name'];
+    	}
+		}
+		return ($q->num_rows() > 0) ? $users : null;
+	}
+	
+	/*
+	   * Return users listed in all courses all roles - this is a data ref table to be used in replace of some queries for optimization
+   *
+   * @access  public
+   * @return array users
+   * mbleed - faceted search 5/2009
+   */
+	public function get_course_user_roles() {
+		$course_users = array();
+		$this->db->select('users.id, users.name, users.role, acl.course_id')->from('acl')->join('users', 'users.id = acl.user_id', 'inner');
+		$q = $this->db->get();
+		if ($q->num_rows() > 0) {
+			foreach($q->result_array() as $row) {
+				$course_users[$row['course_id']][] = array(
+					'user_id'=>$row['id'],
+					'name'=>$row['name'],
+					'role'=>$row['role']
+				);
+    		}
+		}
+		return ($q->num_rows() > 0) ? $course_users : null;
 	}
 
 }
