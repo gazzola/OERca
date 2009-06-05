@@ -362,7 +362,6 @@ class Course extends Model
       		AND ocw_acl.user_id = '$uid'
       		ORDER BY start_date DESC";
 	}
-	echo $sql;
     	$q = $this->db->query($sql);
 
         if ($q->num_rows() > 0) {
@@ -516,6 +515,7 @@ class Course extends Model
       		ocw_courses.id AS cid
       		FROM ocw_courses, ocw_curriculums, ocw_schools, ocw_acl
       		WHERE ocw_curriculums.id = ocw_courses.curriculum_id
+      		AND ocw_acl.user_id = $uid
       		AND ocw_schools.id = ocw_curriculums.school_id
       		AND ocw_acl.course_id = ocw_courses.id
       		$where
@@ -524,8 +524,6 @@ class Course extends Model
     	$q = $this->db->query($sql);
         if ($q->num_rows() > 0) {
             foreach($q->result_array() as $row) { 
-            	$showrowdscribe2 = true;
-            	$showrowdscribe = true;
             	$instructors_html = '';
             	foreach ($course_users[$row['cid']] as $cu) if ($cu['role'] == 'instructor') $instructors_html .= $cu['name']."<br>";
                  $row['instructors'] = $instructors_html;
@@ -544,8 +542,8 @@ class Course extends Model
                  $row['dscribe1s'] = $dscribe1s_html;
            		$dscribe2s_html = '';
             	foreach ($course_users[$row['cid']] as $cu) if ($cu['role'] == 'dscribe2') $dscribe2s_html .= $cu['name']."<br>";
-                 $row['dscribe2s'] = $dscribe2s_html;                 
-                 if (($urole != 'dscribe1')) { 
+                 $row['dscribe2s'] = $dscribe2s_html;     
+            
 		    // bdr OERDEV-173 - count everything like materials list counts
                      $materials =  $this->material->materials($row['cid'],'',true,true);
                      $row['total'] = 0;
@@ -562,13 +560,12 @@ class Course extends Model
                              $row['total'] += $material['mtotal'];	
                           }
                        }
-		     }
 		     
 		     $row['statcount'] = $row['total'].'/'.$row['done'].'/'.$row['ask'].'/'.$row['rem'];
 		     $row['notdone'] = $row['rem'];
 		     // $this->ocw_utils->dump($row);
 		 }
-	         if ($showrowdscribe2 && $showrowdscribe) $courses[$row['sname']][$row['cname']][] = $row; 
+	        $courses[$row['sname']][$row['cname']][] = $row; 
             }
         }
       
@@ -595,7 +592,6 @@ class Course extends Model
                  // bdr OERDEV-140 (which looks similiar to OERDEV-118
                  $uprop = getUserProperty('role');
                  // if (($uprop != 'dscribe1')) { // && ($row['cid'] == 35)) 
-		 if (($role != 'dscribe1')) {
                     // bdr OERDEV-173 - count everything like materials list counts
                     
                      $materials =  $this->material->materials($row['cid'],'',true,true);
@@ -616,7 +612,7 @@ class Course extends Model
                      $row['statcount'] = $row['total'].'/'.$row['done'].'/'.$row['ask'].'/'.$row['rem'];
 		     $row['notdone'] = $row['rem'];
                      // $this->ocw_utils->dump($row);
-                 }
+                
           $courses['No School Specified']['No Curriculum Specified'][] = $row;
         }
       }

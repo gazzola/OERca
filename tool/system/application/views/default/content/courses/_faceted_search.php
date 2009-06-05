@@ -38,8 +38,9 @@ $search_sections[] = array(
 
 $fscrumbs = array();
 $view_uri_array = $this->uri->segment_array();
-if (!isset($view_uri_array[3])) $view_uri_array[3] = 0; //prime the faceted search
-	
+//if (!isset($view_uri_array[3])) $view_uri_array[3] = $this->db_session->userdata('id'); //prime the faceted search
+$view_uri_array[3] = $this->db_session->userdata('id'); //prime the faceted search
+
 foreach ($search_sections as $ss) {
 	$view_uri_array[$ss['uri_segment']] = array_key_exists($ss['uri_segment'], $view_uri_array) ? $view_uri_array[$ss['uri_segment']] : 0;	
 }

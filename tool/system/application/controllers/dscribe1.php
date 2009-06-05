@@ -71,12 +71,12 @@ class Dscribe1 extends Controller
      * @param int  course id 
      * @return  void
      */
-  public function courses()
+  public function courses($school=0, $year=0, $dscribe2=0, $dscribe=0)
   {
       $this->data['title'] = 'dScribe1 &raquo; Manage Courses';
-      //$this->data['courses'] = $this->course->get_courses(getUserProperty('id'));
-      $this->data['courses'] =  $this->course->faceted_search_get_courses(getUserProperty('id'), $this->uri->segment(sizeof($this->uri->segment_array()) - 3), $this->uri->segment(sizeof($this->uri->segment_array()) - 2), $this->uri->segment(sizeof($this->uri->segment_array()) - 1), $this->uri->segment(sizeof($this->uri->segment_array()) ));
-
+      $uid = getUserProperty('id');
+      //$this->data['courses'] = $this->course->get_courses();
+      $this->data['courses'] = $this->course->faceted_search_get_courses($uid, $school, $year, $dscribe2, $dscribe);
       $this->layout->buildPage('dscribe1/courses', $this->data);
 	}
 }

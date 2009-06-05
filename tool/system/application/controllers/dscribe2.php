@@ -93,9 +93,8 @@ class Dscribe2 extends Controller {
 
 		} else {
 			$this->data['title'] = 'dScribe2 &raquo; Manage Courses'; 
-			// $this->data['courses'] = $this->ocw_user->get_courses(getUserProperty('id'));
-			//$this->data['courses'] = $this->course->get_courses(getUserProperty('id'));
-			$this->data['courses'] =  $this->course->faceted_search_get_courses(getUserProperty('id'), $this->uri->segment(sizeof($this->uri->segment_array()) - 3), $this->uri->segment(sizeof($this->uri->segment_array()) - 2), $this->uri->segment(sizeof($this->uri->segment_array()) - 1), $this->uri->segment(sizeof($this->uri->segment_array()) ));
+			$uid = getUserProperty('id');
+      		$this->data['courses'] = $this->course->faceted_search_get_courses($uid, $school, $year, $dscribe2, $dscribe);
     		$this->layout->buildPage('dscribe2/courses', $this->data);
 		}
 	}
