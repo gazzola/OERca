@@ -57,29 +57,28 @@ $data['loc_tip'] = "For textual materials like Powerpoints or PDFs, please enter
 
 <form method="post">
 	<input type="hidden" name="viewing" value="original" />
-	<div class="tabcontainer">
-		<div class="tabs">
-			<input type="submit" <?=($tab=='Status' || $tab=='Upload') ? 'class="activesubmit"':''?> name="tab[]" value="Status" />
-			<input type="submit" <?=($tab=='Information') ? 'class="activesubmit"':''?> name="tab[]" value="Information" />
-			<input type="submit" <?=($tab=='Copyright') ? 'class="activesubmit"':''?> name="tab[]" value="Copyright" />
-			<input type="submit" <?=($tab=='Comments') ? 'class="activesubmit"':''?> name="tab[]" value="Comments" />
-			<input type="submit" <?=($tab=='History') ? 'class="activesubmit"':''?> name="tab[]" value="History" />
-		</div>
-
-		<div class="tabformcontent">
-  	<?php 
-				switch($tab) {
-						case 'Status': $this->load->view(property('app_views_path').'/materials/co/_edit_orig_status.php', $data); break; 
-						case 'Information': $this->load->view(property('app_views_path').'/materials/co/_edit_orig_info.php', $data); break; 
-						case 'Copyright': $this->load->view(property('app_views_path').'/materials/co/_edit_orig_copy.php', $data); break; 
-						case 'Comments': $this->load->view(property('app_views_path').'/materials/co/_edit_orig_comments.php', $data); break; 
-						case 'History': $this->load->view(property('app_views_path').'/materials/co/_edit_orig_log.php', $data); break; 
-						default: $this->load->view(property('app_views_path').'/materials/co/_edit_orig_status.php', $data); break; 
-				}
-		?>
-		</div>
-	
-		<br class="clear" />
+	<div class="origdetails">
+		<dl class="accordion">
+			<dt class="accordion_toggler_1" id="def_open_accordion">Status</dt>
+			<dd class="accordion_content_1">
+	  		<?php
+		  		$this->load->view(property('app_views_path').'/materials/co/_edit_orig_info.php', $data); 	
+	    		$this->load->view(property('app_views_path').'/materials/co/_edit_orig_status.php', $data);
+	  			?>
+			</dd>
+    	<dt class="accordion_toggler_1">Comments/Notes</dt>
+			<dd class="accordion_content_1">
+	  		<?php
+	    		$this->load->view(property('app_views_path').'/materials/co/_edit_orig_comments.php', $data);
+	  		?>
+	  	</dd>
+			<dt class="accordion_toggler_1">History</dt>
+			<dd class="accordion_content_1">
+	  		<?php
+	    		$this->load->view(property('app_views_path').'/materials/co/_edit_orig_log.php', $data);
+	  		?>
+	  	</dd>
+		</dl>		
 	</div>
 </form>
 

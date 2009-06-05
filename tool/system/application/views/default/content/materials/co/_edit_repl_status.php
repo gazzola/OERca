@@ -1,76 +1,45 @@
 <!-- STATUS -->
 <table width="100%">
-	<tr>
-			<th style="vertical-align: top">Ask Instructor if replacement is suitable:</th>
-			<td>
-			  <?php 
-				  $yes = ($repl_obj['ask']=='yes') ? TRUE : FALSE;
-				  $no = ($repl_obj['ask']=='yes') ? FALSE : TRUE;
-				  $data = array(
-            			  	'name'        => 'ask',
-              				'id'          => 'ask_yes',
-              				'value'       => 'yes',
-              				'checked'     => $yes,
-              				'class'       => 'do_replacement_update do_replacement_ask_yesno',
-            		);
-				  echo form_radio($data).'&nbsp;Yes&nbsp;';
-				  $data = array(
-            			  	'name'        => 'ask',
-              				'id'          => 'ask_no',
-              				'value'       => 'no',
-              				'checked'     => $no,
-              				'class'       => 'do_replacement_update do_replacement_ask_yesno',
-            		);
-				  echo form_radio($data).'&nbsp;No&nbsp;&nbsp;';
-				?>
-				<div id="repl_ask_yes" style="display: <?= ($repl_obj['ask']=='yes') ? 'block':'none'?>"> 
-							<br/><br/>
-							<a target="_new" href="<?=site_url("materials/askforms/$cid/$mid/replacement/instructor")?>">View ASK form</a> to see the default questions.
-							<br/><br/>
-							<a href="#repl_q_addpanel" onclick="repl_q_ap.setrole('instructor'); repl_q_ap.show();">Ask instructor additional questions</a>&nbsp;&raquo;
-							<br/><br/>
-							<a href="#replquestions">View answers</a>&nbsp;&raquo;
-				</div>
- 	    </td>
-	</tr>
-
-	<tr>
-	   	<th style="vertical-align: top">Instructor approves of image?</th>
-			<td>
-					  <?php 
-						  if ($repl_obj['suitable']=='yes') { 
-		              echo 'Yes, instructor approves of this image as a substitute.'; 
-		          } elseif ($repl_obj['suitable']=='no') {
-				        echo 'No<br/><br/>Reason:<br/><p>'.$repl_obj['unsuitable_reason'].'.</p>';
-		          } else {
-		           	echo 'Waiting on response.';
-		          }
-		         ?>
-		   </td>
-		</tr>
+  <tr>
+  <th>Ask dScribe2 a general question about the Replacement Content Object?</th>
+  <td>
+	  <?php 
+		  $yes = ($repl_obj['ask']=='yes') ? TRUE : FALSE;
+		  $no = ($repl_obj['ask']=='yes') ? FALSE : TRUE;
+		  $data = array(
+        			  	'name'        => 'ask',
+          				'id'          => 'ask_yes',
+          				'value'       => 'yes',
+          				'checked'     => $yes,
+          				'class'       => 'do_replacement_update do_replacement_ask_yesno',
+        		);
+		  echo form_radio($data).'&nbsp;Yes&nbsp;';
+		  $data = array(
+        			  	'name'        => 'ask',
+          				'id'          => 'ask_no',
+          				'value'       => 'no',
+          				'checked'     => $no,
+          				'class'       => 'do_replacement_update do_replacement_ask_yesno',
+        		);
+		  echo form_radio($data).'&nbsp;No&nbsp;&nbsp;';
+		?>
+		<div id="repl_ask_yes" style="display: <?= ($repl_obj['ask']=='yes') ? 'block':'none'?>"> 
+		  <p style="padding:5px; background-color:yellow; border:2px solid gray; color:black;display:none" id="repl_question_conf">Sent to dScribe2!</p>
+					<br/><br/>
+					<a target="_new" href="<?=site_url("materials/askforms/$cid/$mid/general/dscribe2")?>">View dScribe2 ASK form</a>
+					<br/><br/>
+					<div>
+              <input type="hidden" name="replrole" id="replrole" value="dscribe2">
+              <textarea name="repl_question" id="repl_question" style="width: 100%; height: 50px;"></textarea>
+          		<p>
+           				<input type="button" value="Send to dScribe2" class="do_add_replacement_question" />
+          		</p>
+          </div>
+		</div>
+  </td>
+</tr>
 </table>
 
-
-<!-- QUESTIONS -->
-<br/>
-<h2 style="display:inline">Questions&nbsp;(<small><a href="javascript:void(0);" onclick="repl_q_ap.toggle()">Ask Question</a></small>)</h2>
-<br/><br/>
-<div id="repl_q_addpanel" style="color:black">
-    <label for="replrole">Ask:</label>
-    <select name="replrole" id="replrole">
-        <option value="instructor">Instructor</option>
-        <option value="dscribe2">dScribe2</option>
-    </select><br/>
-
- 		<textarea name="repl_question" id="repl_question" cols="50"></textarea>
-		<p>
- 				<input type="button" value="Save" class="do_add_replacement_question" />
- 				<input type="button" value="Cancel" onclick="repl_q_ap.hide()" />
- 				<br/><hr style="border: 1px dotted #555"/><br/>
-		</p>
-</div>
-
-<em style="color:black;">Note: Hold down the shift key to select multiple columns to sort</em>
 <table id="replquestions" class="sortable-onload-7-reverse rowstyle-alt no-arrow" width="100%">
 <thead>
 	<tr>

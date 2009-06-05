@@ -116,7 +116,17 @@ echo script('ocw_tool.js');
 	<?php if($viewing=='replacement') {?>showreptab = true;<?php }?>
 	window.addEvent('domready', function() { 
 			var myTips = new MooTips($$('.ine_tip'), { maxTitleChars: 50 }); 
-			var myTips2 = new MooTips($$('.tooltips'), { maxTitleChars: 50 }); 
+			var myTips2 = new MooTips($$('.tooltips'), { maxTitleChars: 50 });
+			// force the ask dscribe2 to no by default
+			$('ask_dscribe2_yes').style.display = 'none';
+			$('ask_dscribe2r_yes').checked=false;
+			$('ask_dscribe2r_no').checked=true;
+			// force the ask dscribe2 on replacement to no by default
+			if ($('repl_ask_yes')) {
+				$('repl_ask_yes').style.display = 'none';
+				$('ask_yes').checked=false;
+				$('ask_no').checked=true;
+			}
 	});
 </script>
 <div id="feedback" style="display:none"></div>
