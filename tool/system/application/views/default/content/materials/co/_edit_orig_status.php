@@ -13,7 +13,7 @@
 	
 	<tr>
   		<td colspan="2">
-				<p style="padding:5px; background-color:yellow; border:2px solid gray; color:black;display:none" id="question_add_msg">Sent to dScribe2!</p>
+				<p style="padding:5px; background-color:yellow; border:2px solid gray; color:black;display:none" id="update_msg">Sent to dScribe2!</p>
 
   			<div id="Fair Use" style="display: <?= ($obj['action_type']=='Fair Use') ? 'block':'none'?>">
   				<p>
@@ -149,12 +149,11 @@
 				?>
         
 				<div id="ask_dscribe2_yes" style="display: <?= ($obj['ask_dscribe2']=='yes') ? 'inline':'none'?>"> 
-				  <p style="padding:5px; background-color:yellow; border:2px solid gray; color:black;display:none" id="question_conf">Sent to dScribe2!</p>
+				  <p style="padding:5px; background-color:yellow; border:2px solid gray; color:black;display:none" id="question_add_msg">Sent to dScribe2!</p>
 							<br/><br/>
 							<a target="_new" href="<?=site_url("materials/askforms/$cid/$mid/general/dscribe2")?>">View dScribe2 ASK form</a>
 							<div>
         				<input type="hidden" name="origrole" id="origrole" value="dscribe2">
-        				<br/>
         	 			<textarea name="question" id="question" style="width: 100%; height: 50px;"></textarea>
         	 			<p>
 	     						<input type="button" value="Send to dScribe2" class="do_add_object_question" />

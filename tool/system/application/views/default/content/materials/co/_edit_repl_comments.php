@@ -1,8 +1,7 @@
 <!-- COMMENTS -->
-
+  <p style="padding:5px; background-color:yellow; border:2px solid gray; color:black;display:none" id="repl_comment_added">Added comment!</p>  
 	<h2>Add Comment</h2>
-
-   	<textarea name="repl_comments" id="repl_comments" cols="50"></textarea>
+   	<textarea name="repl_comments" id="repl_comments" style="width: 90%; height: 50px;"></textarea>
    	<p>
      <input type="button" value="Save" class="do_add_replacement_comment" />
      <br/><hr style="border: 1px dotted #555"/><br/>

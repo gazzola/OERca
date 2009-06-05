@@ -121,6 +121,10 @@ echo script('ocw_tool.js');
 			$('ask_dscribe2_yes').style.display = 'none';
 			$('ask_dscribe2r_yes').checked=false;
 			$('ask_dscribe2r_no').checked=true;
+			// force the ask dscribe2 on replacement to no by default
+			$('repl_ask_yes').style.display = 'none';
+			$('ask_yes').checked=false;
+			$('ask_no').checked=true;
 	});
 </script>
 <div id="feedback" style="display:none"></div>
