@@ -1,5 +1,5 @@
   <!-- COMMENTS -->
- 	
+ 	    <p style="padding:5px; background-color:yellow; border:2px solid gray; color:black;display:none" id="comment_added">Added comment!</p>
 			<h2>Add Comment</h2>
 		   	<textarea name="comments" id="comments" style="width: 90%; height: 50px;"></textarea>
 		   	<p>

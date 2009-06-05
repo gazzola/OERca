@@ -163,7 +163,6 @@ var Rules = {
                        response = fb.innerHTML;
 											if (once) {						
                        	if (response=='success') {
-														orig_com_ap.toggle();
 														var tr = new Element('tr');
 														var td1 = new Element('td').setText(unescape(comments)); 
 														var td2 = new Element('td').setText($('user').value); 
@@ -172,6 +171,14 @@ var Rules = {
 														tr.injectTop( $('objectcomments') );
 														$('comments').value = '';
 														if ($('nocomments')) { $('nocomments').remove(); }
+														// display a confirmation on submit
+														if($('comment_added')){ 
+																var div = $('comment_added').setStyles({ display:'block', opacity: 1 });
+																var fx = new Fx.Style(div, 'opacity', {duration: 5000 } ).addEvent("onComplete", function() {
+																												var hidediv = $('comment_added').setStyles({display:'none'}); });
+																fx.start(0);
+														}
+														
                         } else {
                             alert(response);
                        	}
@@ -234,18 +241,17 @@ var Rules = {
 														} */
 														if ($('noquestions')) { $('noquestions').remove(); }
 														// display a confirmation on submit
-														if($('update_msg')){ 
-																var div = $('question_conf').setStyles({ display:'block', opacity: 1 });
+														if($('question_add_msg')){ 
+																var div = $('question_add_msg').setStyles({ display:'block', opacity: 1 });
 																var fx = new Fx.Style(div, 'opacity', {duration: 5000 } ).addEvent("onComplete", function() {
-																												var hidediv = $('update_msg').setStyles({display:'none'}); 
+																												var hidediv = $('question_add_msg').setStyles({display:'none'}); 
 																												$('ask_dscribe2_yes').style.display = 'none';
                             														$('ask_dscribe2r_yes').checked=false;
                             														$('ask_dscribe2r_no').checked=true; });
 																fx.start(0);
-														}
-													  
-                        } else {
-                            alert(response);
+														}	  
+                            } else {
+                              alert(response);
                        	}
 												once = false;
 					  					}

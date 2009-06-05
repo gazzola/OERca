@@ -13,7 +13,7 @@
 	
 	<tr>
   		<td colspan="2">
-				<p style="padding:5px; background-color:yellow; border:2px solid gray; color:black;display:none" id="update_msg">Sent to dScribe2!</p>
+				<p style="padding:5px; background-color:yellow; border:2px solid gray; color:black;display:none" id="question_add_msg">Sent to dScribe2!</p>
 
   			<div id="Fair Use" style="display: <?= ($obj['action_type']=='Fair Use') ? 'block':'none'?>">
   				<p>
