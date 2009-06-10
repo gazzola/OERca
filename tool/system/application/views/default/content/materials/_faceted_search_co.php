@@ -92,9 +92,9 @@ htmleoq;
 	</ul>
 </div>
 
-<div class="column span-5 first last">
+<div class="column span-4 first last">
      <div class="accordion">
-  		<h4 class="faceted_search_title"><span id="material_count"><?= $num_objects; ?></span> content objects.</h4>
+  		<h4 class="faceted_search_title"><span id="material_count"><?= $num_objects; ?></span> out of <?=$num_unfiltered_objects ?> content objects.</h4>
      	<h4 class="faceted_search_title">Filter objects below:</h4>
 
 <?php

@@ -1062,7 +1062,7 @@ class Material extends Model
 	}
 	
 					/**
-   * Return replacement true list 
+   * Return replacement exists list 
    *
    * @access  public
    * @return array replacement
@@ -1070,7 +1070,7 @@ class Material extends Model
    */
 	public function replacement_list($mid)
 	{
-		$list_array = array(1=>'No', 2=>'Yes');
+		$list_array = array(1=>'With Replacement', 2=>'Without Replacement');
 		return $list_array;
 	}
 	

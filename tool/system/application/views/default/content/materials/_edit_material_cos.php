@@ -1,7 +1,7 @@
 <?php 
-		$this->load->view(property('app_views_path').'/materials/materials_header.php', $data); 
+		$this->load->view(property('app_views_path').'/materials/materials_header_faceted_search.php', $data); 
 		$fevt = 'onchange="parent.window.location.replace($(\'server\').value+\'materials/edit/'.$cid.'/'.$mid.'/0/\'+this.value);"';
-		$numcols = (in_array($view,array('replace','ask:rco'))) ? 2 : 3;
+		$numcols = (in_array($view,array('replace','ask:rco'))) ? 2 : 4;
 		$inclrep = (in_array($view,array('replace','ask:rco'))) ? true : false;
 
 	$this->load->view(property('app_views_path').'/materials/_faceted_search_co.php', $data); 	
@@ -17,7 +17,7 @@
 
 <?php if ($num_objects == 0) { ?>
 
-		<div class="column span-16 first last"> 
+		<div class="column span-19 first last"> 
       <p class="error">Presently, none of the content objects in this material fall in this category.</p>
   	</div>
 
@@ -31,13 +31,13 @@
           		<img src="<?= site_url("/home/make_stat_key/done") ?>" class="prog-key"> Cleared
       		</div>
 		<br /><br />-->
-		<div class="column span-18 first last dwrap">
+		<div class="column span-19 first last dwrap" style="width: 770px;">
 			<?= $this->ocw_utils->create_co_list($cid,$mid,$objects,$view,$inclrep,$numcols); ?>
 		</div>
 		
 <?php }} else { ?>
 
-  <div class="column span-18 first last">
+  <div class="column span-19 first last">
 		<p class="error">No content objects recorded for this material.
 					<a href="<?=site_url("materials/add_object/$cid/$mid/snapper")?>?TB_iframe=true&height=500&width=450" class="smoothbox" style="color:blue" title="Add Content Objects">Use Snapper tool to capture Content Objects</a>
 		</p>

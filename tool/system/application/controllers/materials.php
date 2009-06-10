@@ -240,15 +240,6 @@ class Materials extends Controller {
 		$stats = $this->coobject->object_stats($cid, $mid);
 		//echo "<pre>"; print_r($stats); echo "</pre>";
 
-		//choices for objects array keys:
-/*			    all new search
-			    ask:orig ask:rco done aitems 
-			    generalinst general fairuse
-			    permission commission
-			    retain:perm retain:ca retain:pd
-			    replace create uncleared
-			    remove cleared
-*/
 		//faceted search filter 1 - recommended action type
 		if ($fs_action > 0) {
 			$fs_actions = $this->material->rec_action_list($mid);
@@ -273,24 +264,41 @@ class Materials extends Controller {
 		if ($fs_repl > 0) {
 			$fs_repls = $this->material->replacement_list($mid);
 			$segment_array = explode("z", $fs_repl);
-			//foreach ($segment_array as $sa) $tsa[$sa] = $fs_types[$sa];
-			foreach ($object_bin as $key=>$o) {
-				//if(!in_array($o['repl'], $segment_array)) unset($object_bin[$key]);
+			$replacement_oids = array();
+			foreach ($stats['objects']['replace'] as $key=>$o)  $replacement_oids[] = $o['id'];
+			foreach ($segment_array as $sa) {
+				foreach ($object_bin as $key=>$o) {
+					if ($sa == 1) { //with replacement
+						//echo $o['id'];
+						if(!in_array($o['id'], $replacement_oids)) unset($object_bin[$key]);
+					} else { //without replacement
+						if(in_array($o['id'], $replacement_oids)) unset($object_bin[$key]);
+					}
+				}
 			}
 		}
-				//echo "<pre>"; print_r($object_bin); echo "</pre>";
 
 		//faceted search filter 4 - status
+		$tmp_object_bin = array();
 		if ($fs_status > 0) {
 			$fs_statuss = $this->material->status_list($mid);
 			$segment_array = explode("z", $fs_status);
-			foreach ($segment_array as $sa) $tsa[$sa] = strtolower($fs_statuss[$sa]);
 			foreach ($object_bin as $key=>$o) {
-				//echo "<pre>"; print_r($o); echo "</pre>";
-				if(!in_array($o['status'], $tsa)) unset($object_bin[$key]);
+					if (in_array(1, $segment_array)) { //no action assigned, means action_type = null
+						if(is_null($o['action_type'])) $tmp_object_bin[] = $o;
+					}
+					if (in_array(2, $segment_array)) { //in progress, means action_type = something and done = 0
+						if(!is_null($o['action_type']) && $o['done'] == 0) $tmp_object_bin[] = $o;
+					}
+					if (in_array(3, $segment_array)) { //cleared, means done = 1
+						if($o['done'] == 1) $tmp_object_bin[] = $o;
+					}
 			}
-		}  
-		$object_bin = array_values($object_bin); //rekey array numerically 0-n
+		}  else $tmp_object_bin = $object_bin;
+		
+		$object_bin = array_values($tmp_object_bin); //rekey array numerically 0-n
+						//echo "<pre>"; print_r($object_bin); echo "</pre>";
+
 		// get values for display
 		$data = array(
 						'cid'=>$cid,
@@ -300,6 +308,7 @@ class Materials extends Controller {
 	  					'material' =>  $material[0], 
 						'objects' => $object_bin,	
 						'num_objects' => sizeof($object_bin),
+						'num_unfiltered_objects' => $stats['data']['num_all'],
 		        		'view' => $view, 
 						'title'=>'Edit Material &raquo; '.$material[0]['name'],
 		);

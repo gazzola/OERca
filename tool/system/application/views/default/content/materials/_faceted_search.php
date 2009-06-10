@@ -94,7 +94,7 @@ htmleoq;
 	</ul>
 </div>
 
-<div class="column span-5 first last">
+<div class="column span-4 first last">
      <div class="accordion">
   		<h4 class="faceted_search_title"><span id="material_count"><?php echo $material_count; ?></span> materials listed.</h4>
      	<h4 class="faceted_search_title">Filter materials below:</h4>
