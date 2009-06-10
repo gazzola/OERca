@@ -232,46 +232,75 @@ class Materials extends Controller {
 
 
 	// edit content objects	
-	public function edit($cid, $mid, $oid=0, $view='', $subtab='', $fs_status=0,$fs_action=0,$fs_type=0,$fs_repl=0)
+	public function edit($cid, $mid, $fs_action=0,$fs_type=0,$fs_repl=0,$fs_status=0)
 	{
-	  $course = $this->course->get_course($cid); 
+		$object_bin = array();
+	  	$course = $this->course->get_course($cid); 
 		$material =  $this->material->materials($cid,$mid,true);
-		$stats = $this->coobject->object_stats($cid, $mid,$fs_status,$fs_action,$fs_type,$fs_repl);
-		
-		// load view of "New" objects by default if there are any
-		if(($stats['data']['num_new'] > 0) && $view == '' && $oid == 0) {
-		  $view = 'new';
-		redirect("materials/edit/$cid/$mid/$oid/$view");
-		}
-		
-		// if all "New" objects have been processed go to "All" view
-		if($stats['data']['num_new'] == 0 && $view == 'new') {
-		  $view = '';
-		redirect("materials/edit/$cid/$mid");
-		}
-		
-		$view = (!in_array($view, array('all','new','ask:orig','fairuse','search','retain:pd',
-											'retain:perm','ask:rco','uncleared', 'permission','commission', 'retain:ca','replace',
-											'create','remove','cleared'))) ? 'all' : $view;
+		$stats = $this->coobject->object_stats($cid, $mid);
+		//echo "<pre>"; print_r($stats); echo "</pre>";
 
-		// get correct view if an object id is provided
-		if ($oid != 0)  {
-				$view = $this->coobject->object_status($cid,$mid,$oid); 
-				$oid = ($view=='new') ? 0 : $oid;
+		//choices for objects array keys:
+/*			    all new search
+			    ask:orig ask:rco done aitems 
+			    generalinst general fairuse
+			    permission commission
+			    retain:perm retain:ca retain:pd
+			    replace create uncleared
+			    remove cleared
+*/
+		//faceted search filter 1 - recommended action type
+		if ($fs_action > 0) {
+			$fs_actions = $this->material->rec_action_list($mid);
+			$segment_array = explode("z", $fs_action);
+			foreach ($segment_array as $sa) {
+				$view = strtolower($fs_actions[$sa]);
+				$object_bin = array_merge($object_bin, $stats['objects'][$view]);
+			}
+		} else {
+			$view = 'all';
+			$object_bin = array_merge($object_bin, $stats['objects'][$view]);
 		}
+		//faceted search filter 2 - co type
+		if ($fs_type > 0) {
+			$fs_types = $this->material->co_type_list($mid);
+			$segment_array = explode("z", $fs_type);
+			foreach ($object_bin as $key=>$o) {
+				if(!in_array($o['subtype_id'], $segment_array)) unset($object_bin[$key]);
+			}
+		} 
+		//faceted search filter 3 - replacement?
+		if ($fs_repl > 0) {
+			$fs_repls = $this->material->replacement_list($mid);
+			$segment_array = explode("z", $fs_repl);
+			//foreach ($segment_array as $sa) $tsa[$sa] = $fs_types[$sa];
+			foreach ($object_bin as $key=>$o) {
+				//if(!in_array($o['repl'], $segment_array)) unset($object_bin[$key]);
+			}
+		}
+				//echo "<pre>"; print_r($object_bin); echo "</pre>";
 
+		//faceted search filter 4 - status
+		if ($fs_status > 0) {
+			$fs_statuss = $this->material->status_list($mid);
+			$segment_array = explode("z", $fs_status);
+			foreach ($segment_array as $sa) $tsa[$sa] = strtolower($fs_statuss[$sa]);
+			foreach ($object_bin as $key=>$o) {
+				//echo "<pre>"; print_r($o); echo "</pre>";
+				if(!in_array($o['status'], $tsa)) unset($object_bin[$key]);
+			}
+		}  
+		$object_bin = array_values($object_bin); //rekey array numerically 0-n
 		// get values for display
 		$data = array(
 						'cid'=>$cid,
 						'mid'=>$mid,
-						'oid'=>$oid,
 	 					'cname' => $course['number'].' '.$course['title'],
 						'director' => $course['director'],
 	  					'material' =>  $material[0], 
-						'objects' => $stats['objects'][$view],	
-						'num_objects' => sizeof($stats['objects'][$view]),
+						'objects' => $object_bin,	
+						'num_objects' => sizeof($object_bin),
 		        		'view' => $view, 
-		        		'subtab' => $subtab, 
 						'title'=>'Edit Material &raquo; '.$material[0]['name'],
 		);
 

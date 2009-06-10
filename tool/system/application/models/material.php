@@ -241,7 +241,6 @@ class Material extends Model
         }
       }
     }
-		
     return (sizeof($materials)) ? (($as_listing) ? $this->as_listing($materials):$materials) : null; 
   }
 
@@ -1021,6 +1020,71 @@ class Material extends Model
 	  	}
 		
 	  	return array_unique($mt_array);
+	}
+	
+				/**
+   * Return recommended actions list 
+   *
+   * @access  public
+   * @return array rec actions
+   * mbleed - faceted search 5/2009
+   */
+	public function rec_action_list($mid)
+	{
+		$sql = "SELECT id, action_type, action_taken FROM ocw_objects WHERE material_id=$mid ORDER BY action_type ASC";
+
+	    $q = $this->db->query($sql);
+	  	foreach ($q->result() as $row) {
+	  		if (is_null($row->action_type)) $row->action_type = 'None';
+	    	$list_array[$row->id] = $row->action_type;
+	  	}
+		
+	  	return array_unique($list_array);
+	}
+	
+					/**
+   * Return co types list 
+   *
+   * @access  public
+   * @return array co types
+   * mbleed - faceted search 5/2009
+   */
+	public function co_type_list($mid)
+	{
+		$sql = "SELECT o.id, o.subtype_id, s.name FROM ocw_objects o INNER JOIN ocw_object_subtypes s ON s.id = o.subtype_id WHERE material_id=$mid ORDER BY s.name ASC";
+
+	    $q = $this->db->query($sql);
+	  	foreach ($q->result() as $row) {
+	    	$list_array[$row->subtype_id] = $row->name;
+	  	}
+		
+	  	return array_unique($list_array);
+	}
+	
+					/**
+   * Return replacement true list 
+   *
+   * @access  public
+   * @return array replacement
+   * mbleed - faceted search 5/2009
+   */
+	public function replacement_list($mid)
+	{
+		$list_array = array(1=>'No', 2=>'Yes');
+		return $list_array;
+	}
+	
+					/**
+   * Return co status list 
+   *
+   * @access  public
+   * @return array co status
+   * mbleed - faceted search 5/2009
+   */
+	public function status_list($mid)
+	{
+		$list_array = array(1=>'No Action Assigned', 2=>'In Progress', 3=>'Cleared');
+	  	return $list_array;
 	}
 }
 ?>
