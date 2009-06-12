@@ -1,7 +1,7 @@
 <!-- STATUS -->
 <table width="100%">
   <tr>
-			<th style="vertical-align: top">Ask Instructor if replacement is suitable:</th>
+			<th style="vertical-align: top">Ask Instructor/dScribe2 if replacement is suitable?</th>
 			<td>
 			  <?php 
 				  $yes = ($repl_obj['ask']=='yes') ? TRUE : FALSE;

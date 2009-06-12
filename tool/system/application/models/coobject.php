@@ -304,7 +304,6 @@ class Coobject extends Model
 		}
 		$this->db->select($details)->from('object_replacements')->where($where);
 		$q = $this->db->get();
-
 		if ($q->num_rows() > 0) {
 			foreach($q->result_array() as $row) {
 				$row['comments'] = $this->comments($row['id'],'user_id,comments,modified_on','replacement');
@@ -357,13 +356,13 @@ class Coobject extends Model
 	 */
 	public function ask_form_info($cid, $mid)
 	{
-		$info = $general = $fairuse = $permission = $commission = $retain = $done = array();
-		$done['general'] = $done['fairuse'] = $done['permission'] = $done['commission'] = $done['retain'] = array();	
-		$num_general = $num_fairuse = $num_permission = $num_commission = $num_retain = $num_done = 0;
+		$info = $general = $fairuse = $permission = $commission = $retain = $done = $replacement = array();
+		$done['general'] = $done['fairuse'] = $done['permission'] = $done['commission'] = $done['retain'] = $done['replacement'] = array();	
+		$num_general = $num_fairuse = $num_permission = $num_commission = $num_retain = $num_done = $num_repl = 0;
 
 		/* get the original and replacement objects for this material */		
 		$orig_objs = $this->coobjects($mid);
-		$repl_objs = $this->replacements($mid);
+		$repl_objects =  $this->coobject->replacements($mid);
 
 		if (!is_null($orig_objs)) {
 		foreach ($orig_objs as $obj) { 
@@ -396,37 +395,6 @@ class Coobject extends Model
 								}
 						} 
 
-						/* get general question info for replacements as well */
-            if ($this->replacement_exists($cid,$mid,$obj['id'])) {
-                $robj = $this->replacements($mid, $obj['id']);
-								$robj = $robj[0];
-
-								if (!is_null($robj['questions'])) { 
-										$questions = (isset($robj['questions']['dscribe2']) && sizeof($robj['questions']['dscribe2'])>0)	
-															 ? $robj['questions']['dscribe2'] : null;
-				
-										if (!is_null($questions)) {
-												$robj['otype'] = 'replacement';
-												$notalldone = false;
-												foreach ($questions as $k => $q) { 
-														 		if($q['status']<>'done') { $notalldone = true; } 
-												 		 		$q['ta_data'] = array('name'=>$robj['otype'].'_'.$robj['id'].'_'.$q['id'],
-																													   	'value'=>$q['answer'],
-																													   	'class'=>'do_d2_question_update',
-																													   	'rows'=>'10', 'cols'=>'60');
-												 		 		$q['save_data'] = array('name'=>$robj['otype'].'_status_'.$robj['id'],
-																											   	  	  'id'=>'close_'.$robj['id'],
-																												        'value'=>'Save for later',
-																												        'class'=>'do_d2_question_update');
-												 		 		$q['send_data'] = array('name'=>$robj['otype'].'_status_'.$robj['id'],
-																															  'value'=>'Send to dScribe', 'class'=>'do_d2_question_update');
-												 		 		$obj['questions']['dscribe2'][$k] = $q;
-												}
-												if ($notalldone) { array_push($general, $robj); $num_general++; } 
-												else { array_push($done['general'],$obj); $num_done++; }
-										}
-								} 
-						} 
 
 						/* get objects with fair use claims */
 						if (($c = $this->claim_exists($obj['id'],'fairuse')) !== FALSE) {
@@ -655,21 +623,56 @@ class Coobject extends Model
 								 if ($notalldone) { array_push($retain, $obj); $num_retain++;}
 						}
 		}}} 
-	
+
+		// Limit this to replacments with questions for the dscribe2
+		if ($repl_objects != null) {
+				foreach($repl_objects as $obj) {
+						$obj['otype'] = 'replacement';
+						if ($obj['ask_status']<>'done' && $obj['suitable']=='pending') {
+							array_push($replacement, $obj); $num_repl++;
+							continue;
+						}
+						if (!is_null($obj['questions'])) { 
+								$questions = (isset($obj['questions']['dscribe2']) && sizeof($obj['questions']['dscribe2'])>0)	
+													 ? $obj['questions']['dscribe2'] : null;
+								if (!is_null($questions)) {
+										$alldone = true;
+										foreach ($questions as $k => $q) { 
+														 		if ($q['status']<>'done') { $alldone = false; }
+												 		 		$q['ta_data'] = array('name'=>$obj['otype'].'_'.$obj['id'].'_'.$q['id'],
+																									   	'value'=>$q['answer'],
+																									   	'class'=>'do_d2_question_update',
+																									   	'rows'=>'10', 'cols'=>'60');
+												 		 		$q['save_data'] = array('name'=>$obj['otype'].'_status_'.$obj['id'],
+																							   	  	  'id'=>'close_'.$obj['id'],
+																								        'value'=>'Save for later',
+																								        'class'=>'do_d2_question_update');
+												 		 		$q['send_data'] = array('name'=>$obj['otype'].'_status_'.$obj['id'],
+																											  'value'=>'Send to dScribe', 'class'=>'do_d2_question_update');
+											 		 			$obj['questions']['dscribe2'][$k] = $q;
+										}
+										if (!$alldone) { array_push($replacement, $obj); $num_repl++; } 
+										else { array_push($done['replacement'], $obj); $num_done++; }
+								}
+						}
+				}
+		}
+
 		/* add information to return array */	
 		if ($num_done>0) { $done['all']=$num_done; }
 		$info['general'] = ($num_general) ?  $general : null;
+		$info['replacement'] = ($num_repl) ?  $replacement : null;
 		$info['fairuse'] = ($num_fairuse) ?  $fairuse : null;
 		$info['permission'] = ($num_permission) ?  $permission : null;
 		$info['commission'] = ($num_commission) ?  $commission : null;
 		$info['retain'] = ($num_retain) ?  $retain : null;
 		$info['aitems'] = ($num_done) ?  $done : null;
 
-    $info['num_avail'] = array('general'=>$num_general, 'fairuse'=>$num_fairuse,
+    $info['num_avail'] = array('general'=>$num_general, 'replacement'=>$num_repl, 'fairuse'=>$num_fairuse,
                                'permission'=>$num_permission,'commission'=>$num_commission,
                                'retain'=>$num_retain, 'aitems'=>$num_done);
 
- 		$info['need_input'] = ($num_general+$num_fairuse+$num_permission+$num_commission+$num_retain);
+ 		$info['need_input'] = ($num_general+$num_repl+$num_fairuse+$num_permission+$num_commission+$num_retain);
 
 		//$this->ocw_utils->dump($info); exit;
 		return $info;
@@ -2539,10 +2542,14 @@ class Coobject extends Model
 
 		} elseif ($type=='replacement') {
 
-				if ($obj['suitable']=='yes') { 
+				$html .= '<br \>';
+				if ($obj['suitable']=='yes') {
     				$html .= '<h3>'.$uname.' approved this replacement:</h3>'.
 						$this->ocw_utils->create_co_img($cid,$mid,$obj['object_id'],$obj['location'],$filter,'rep');
-  			} else {
+  			} else if ($obj['suitable']=='pending') {
+  				$html .= '<h3>'.$uname.' has not yet responded whether this replacement is suitable:</h3>'.
+					$this->ocw_utils->create_co_img($cid,$mid,$obj['object_id'],$obj['location'],$filter,'rep');
+				} else {
     				$html .= '<h3>'.$uname.' rejected replacement:</h3>'.
     				$this->ocw_utils->create_co_img($cid,$mid,$obj['object_id'],$obj['location'],$filter,'rep');
     				$html .= '<br style="clear:both"/><br/><h3>Reason:</h3>'.

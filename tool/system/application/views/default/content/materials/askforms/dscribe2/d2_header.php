@@ -14,7 +14,8 @@
 <div class="column span-24 first last" style="margin-bottom: 10px;">
 	<?php 
 		$att=' id="active"'; 
-		$general = 'General Questions ('.$num_general.')'; 
+		$general = 'General Questions ('.$num_general.')';
+		$replacement = 'Replacements ('.$num_repl.')';
 		$fairuse = 'Fair Use ('.$num_fairuse.')'; 
 		$permission = 'Permission ('.$num_permission.')';
 		$commission = 'Commission ('.$num_commission.')';
@@ -24,6 +25,7 @@
    <div id="navlist">
 			<ul id="navlist">
 			<li<?=($view=='general')?$att:''?>><?=anchor("/materials/askforms/$cid/$mid/general/dscribe2",$general)?></li>
+			<li<?=($view=='replacement')?$att:''?>><?=anchor("/materials/askforms/$cid/$mid/replacement/dscribe2",$replacement)?></li>
 			<li<?=($view=='fairuse')?$att:''?>><?=anchor("/materials/askforms/$cid/$mid/fairuse/dscribe2",$fairuse)?></li>
 			<li<?=($view=='permission')?$att:''?>><?=anchor("/materials/askforms/$cid/$mid/permission/dscribe2",$permission)?></li>
 			<li<?=($view=='commission')?$att:''?>><?=anchor("/materials/askforms/$cid/$mid/commission/dscribe2",$commission)?></li>

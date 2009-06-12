@@ -4,12 +4,11 @@ $inplaceeditors = array();
 $sliders = array();
 
 foreach($repl_objects as  $obj) {
-
   $questions = $obj['questions'];
 	$questions = (!is_null($questions) && 
-								 isset($questions['instructor']) && sizeof($questions['instructor'])>0) ? $questions['instructor'] : null;
+								 isset($questions['dscribe2']) && sizeof($questions['dscribe2'])>0) ? $questions['dscribe2'] : null;
 
-  if ($obj['ask_status'] != 'done' || $obj['suitable'] == 'pending') {  // KWC OERDEV-250
+  /* if ($obj['ask_status'] <> 'done') {   KWC OERDEV-250 */
 ?>
 <input type="hidden" id="oid-<?=$obj['id']?>" name="oid-<?=$obj['id']?>" value="<?=$obj['object_id']?>" />
 <tr>
@@ -93,7 +92,7 @@ foreach($repl_objects as  $obj) {
        	</p>
        	<p><hr style="border: 1px solid #eee"/></p>
 
-<?php } } ?>
+<?php }} ?>
 	</p>
 
 	<!-- save options  -->	
@@ -165,7 +164,7 @@ foreach($repl_objects as  $obj) {
 						e.stop();
 				  });";
 ?>
-<?php $count++; } } ?>
+<?php $count++; } /* } KWC OERDEV-250 */ ?>
 
 <script type="text/javascript">
 window.addEvent('domready', function() {

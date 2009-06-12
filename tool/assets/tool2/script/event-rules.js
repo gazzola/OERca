@@ -842,14 +842,20 @@ var Rules = {
 	
 	'.do_replacement_question_update' : function(element) {
 		element.onchange = function () {
+			var newstatus;
 			var val = this.value;
+			if (val == '') {
+				newstatus = '/new';
+			} else {
+				newstatus = '/done';
+			}
 			var course_id = $('cid').value;
 			var material_id = $('mid').value; 
 			var object_id = this.name.replace(/q_/g,'');
 			var question_id = object_id;
 			object_id = object_id.replace(/_\d+$/g,'');
 			question_id = question_id.replace(/^\d+_/g,'');
-			var url = $('server').value+'materials/update_object_question/'+object_id+'/'+question_id+'/replacement';
+			var url = $('server').value+'materials/update_object_question/'+object_id+'/'+question_id+'/replacement'+newstatus;
       var fb = $('feedback');
 			new Ajax(url, { method: 'post', postBody: 'answer='+val, update: fb }).request();
 		}

@@ -19,7 +19,12 @@
        	<th>&nbsp;</th>
 				<?php if ($view == 'aitems') { ?><th class="sortable">Response Type</th><?php }  ?>
 				<th>Questions</th>
+				<?php if ($view == 'replacement') { ?>
+				<th>Original Object</th>
+				<th>Replacement Object</th>
+				<?php } else { ?>
         <th>Content Object Information</th>
+				<?php } ?>
     </tr>
     </thead>
 
@@ -27,6 +32,9 @@
 		<?php 
 			if ($view == 'general') {
 				$this->load->view(property('app_views_path').'/materials/askforms/dscribe2/ne_general.php', $data); 
+
+			} elseif ($view == 'replacement') {
+				$this->load->view(property('app_views_path').'/materials/askforms/dscribe2/ne_replacement.php', $data); 
 
 			} elseif ($view == 'fairuse') {
 				$this->load->view(property('app_views_path').'/materials/askforms/dscribe2/ne_fairuse.php', $data); 
