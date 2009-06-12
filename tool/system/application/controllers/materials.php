@@ -395,7 +395,7 @@ class Materials extends Controller {
 				//$view = (!in_array($view, array('general', 'provenance','replacement','done'))) ? 'general' : $view; //commented out mbleed oerdev-168
 
 				$prov_objects =  $this->coobject->coobjects($mid,'','Ask'); // objects with provenace questions
-				$repl_objects =  $this->coobject->replacements($mid); // objects with replacement questions
+				$repl_objects =  $this->coobject->replacements($mid, '', '', 'Ask'); // objects with replacement questions
 				$num_obj = $num_general = $num_repl = $num_prov = $num_done = 0;
 				$general = $done = array();
 
@@ -439,10 +439,9 @@ class Materials extends Controller {
 						}
 				}
 				
-				// KWC OERDEV-250 Show instructor if they've asked if replacement is suitable
 				if ($repl_objects != null) {	
 						foreach($repl_objects as $obj) {
-								if ($obj['ask_status'] == 'done' && $obj['suitable'] != 'pending') {
+								if ($obj['ask_status'] == 'done' && ($obj['ask'] == 'no' || ($obj['ask'] == 'yes' && $obj['suitable'] != 'pending'))) {
 										$num_done++;
 								} else {
 										$num_repl++;
@@ -790,23 +789,29 @@ class Materials extends Controller {
  	{
 		$field = (isset($_REQUEST['field']) && $_REQUEST['field']<>'') ? $_REQUEST['field'] : '';
 		$val = (isset($_REQUEST['val'])) ? $_REQUEST['val'] : '';
+		$role = getUserProperty('role');
+		$role = ($role == 'dscribe2') ? $role : 'instructor';
 
  		if ($field=='replacement_question')
 		{
-			$this->coobject->add_replacement_question($rid, $oid, getUserProperty('id'), array('question'=>$val,'role'=>'instructor'));
+			$this->coobject->add_replacement_question($rid, $oid, getUserProperty('id'), array('question'=>$val,'role'=>$role));
 		}
 		else
 		{
 	   		$data = array($field=>$val);
 	   		$this->coobject->update_replacement($rid, $data);
 		}
-		 /* send email to dscribe from instructor */	
-		 if ($field=='ask_status' and $val=='done') {
-		     $this->postoffice->instructor_dscribe1_email($cid, $mid, $oid,'replacement');
-		 }
+		/* send email to dscribe */	
+		if ($field=='ask_status' and $val=='done') {
+			if ($role == 'instructor') {
+				$this->postoffice->instructor_dscribe1_email($cid, $mid, $oid,'replacement');
+			} else {
+				$this->postoffice->dscribe2_dscribe1_email($cid, $mid, $oid,'replacement');
+			}
+		}
 
-     $this->ocw_utils->send_response('success');
-     exit;
+		$this->ocw_utils->send_response('success');
+ 		exit;
 	}
 
 	public function add_object_comment($oid,$type='original')

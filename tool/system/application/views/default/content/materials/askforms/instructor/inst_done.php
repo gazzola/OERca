@@ -66,7 +66,7 @@ if ($repl_objects != null) {
  foreach($repl_objects as  $obj) {
  	$questions = $obj['questions'];
 	$questions = (!is_null($questions) && isset($questions['instructor']) && sizeof($questions['instructor'])>0) ? $questions['instructor'] : null;
-	if ($obj['ask_status'] == 'done') {
+		if ($obj['ask_status'] == 'done' && ( $obj['ask'] == 'no'|| ($obj['ask'] == 'yes' && $obj['suitable'] != 'pending') ) ) {
 ?>
 
 <tr>

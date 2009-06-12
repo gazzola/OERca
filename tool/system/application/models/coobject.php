@@ -624,21 +624,17 @@ class Coobject extends Model
 						}
 		}}} 
 
-		// Limit this to replacments with questions for the dscribe2
+		// Limit this to replacements with questions for the dscribe2
 		if ($repl_objects != null) {
 				foreach($repl_objects as $obj) {
 						$obj['otype'] = 'replacement';
-						if ($obj['ask_status']<>'done' && $obj['suitable']=='pending') {
-							array_push($replacement, $obj); $num_repl++;
-							continue;
-						}
 						if (!is_null($obj['questions'])) { 
 								$questions = (isset($obj['questions']['dscribe2']) && sizeof($obj['questions']['dscribe2'])>0)	
 													 ? $obj['questions']['dscribe2'] : null;
 								if (!is_null($questions)) {
 										$alldone = true;
 										foreach ($questions as $k => $q) { 
-														 		if ($q['status']<>'done') { $alldone = false; }
+														 		if ($q['status'] != 'done') { $alldone = false; }
 												 		 		$q['ta_data'] = array('name'=>$obj['otype'].'_'.$obj['id'].'_'.$q['id'],
 																									   	'value'=>$q['answer'],
 																									   	'class'=>'do_d2_question_update',

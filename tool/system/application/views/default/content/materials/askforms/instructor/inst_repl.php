@@ -9,7 +9,7 @@ foreach($repl_objects as  $obj) {
 	$questions = (!is_null($questions) && 
 								 isset($questions['instructor']) && sizeof($questions['instructor'])>0) ? $questions['instructor'] : null;
 
-  if ($obj['ask_status'] != 'done' || $obj['suitable'] == 'pending') {  // KWC OERDEV-250
+  if ($obj['ask_status'] != 'done' || ($obj['ask'] == 'yes' && $obj['suitable'] == 'pending')) {
 ?>
 <input type="hidden" id="oid-<?=$obj['id']?>" name="oid-<?=$obj['id']?>" value="<?=$obj['object_id']?>" />
 <tr>

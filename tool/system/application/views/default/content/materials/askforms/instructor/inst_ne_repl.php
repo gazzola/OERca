@@ -7,7 +7,7 @@ foreach($repl_objects as  $obj) {
 	$questions = (!is_null($questions) && 
 								 isset($questions['instructor']) && sizeof($questions['instructor'])>0) ? $questions['instructor'] : null;
 
-  if ($obj['ask_status'] <> 'done') {
+  if ($obj['ask_status'] != 'done' || ($obj['ask'] == 'yes' && $obj['suitable'] == 'pending')) {
 ?>
 <tr>
 <td style="vertical-align:top"><?=$count?></td>
