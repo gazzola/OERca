@@ -885,7 +885,7 @@ class Coobject extends Model
 			    $orig_objects =  $this->coobjects($mid);
 					$askinfo = $this->ask_form_info($cid, $mid);
 
-			    // get counts for different status 
+			    // initialize object counts (by status)
 			    $data['num_all'] = $data['num_new'] = $data['num_search'] =
 			    $data['num_ask_orig'] = $data['num_ask_rco'] = $data['num_ask_generalinst'] = 
 				  $data['num_ask_general'] = $data['num_ask_done'] = $data['num_ask_aitems'] = $data['num_fairuse'] =
@@ -915,98 +915,97 @@ class Coobject extends Model
 			        foreach ($orig_objects as $obj) {
 											 $obj['otype']='original';
 
-			                if ($obj['done'] != 1) {
+	                	if (!is_null($obj['questions']) && $obj['ask_status']<>'done') {
+													// get general question info for instructors 
+                    			$questions = (isset($obj['questions']['instructor']) && sizeof($obj['questions']['instructor'])>0)
+                               			 ? $obj['questions']['instructor'] : null;
 
-                    			if (!is_null($obj['questions']) && $obj['ask_status']<>'done') {
-															// get general question info for instructors 
-                        			$questions = (isset($obj['questions']['instructor']) && sizeof($obj['questions']['instructor'])>0)
-                                   			 ? $obj['questions']['instructor'] : null;
- 
-                        			if (!is_null($questions)) {
-                            			$notalldone = false;
-                            			foreach ($questions as $k => $q) { if($q['status']<>'done') { $notalldone = true; } }
-                            			if ($notalldone) { array_push($objects['generalinst'], $obj); $data['num_ask_general']++;}
-                        			}
+                    			if (!is_null($questions)) {
+                        			$notalldone = false;
+                        			foreach ($questions as $k => $q) { if($q['status']<>'done') { $notalldone = true; } }
+                        			if ($notalldone) { array_push($objects['generalinst'], $obj); $data['num_ask_general']++;}
                     			}
+                			}
 
-													// uncleared	
-			                    $data['num_uncleared']++;
-			                    array_push($objects['uncleared'], $obj); 
-			
-													// replacements	
-               						if ($this->replacement_exists($cid,$mid,$obj['id'])) { 
-															array_push($objects['replace'], $obj);
-			                				$data['num_replace']++;
+											// uncleared	
+	                    $data['num_uncleared']++;
+	                    array_push($objects['uncleared'], $obj); 
 	
-															// replacement with ask questions
-							 		 						$robj = $this->replacements($mid, $obj['id']);
-			                    		if ($robj[0]['ask']=='yes' && $robj[0]['ask_status']<>'done') {
-																	$robj[0]['otype']='replacement';
+											// replacements	
+           						if ($this->replacement_exists($cid,$mid,$obj['id'])) { 
+													array_push($objects['replace'], $obj);
+	                				$data['num_replace']++;
 
-			                        		array_push($objects['ask:rco'], $obj);
-			                        		$data['num_ask_rco']++;
+													// replacement with ask questions
+					 		 						$robj = $this->replacements($mid, $obj['id']);
+	                    		if ($robj[0]['ask']=='yes' && $robj[0]['ask_status']<>'done') {
+															$robj[0]['otype']='replacement';
 
-                    							if (!is_null($robj[0]['questions']) && $robj[0]['ask_status']<>'done') {
+	                        		array_push($objects['ask:rco'], $obj);
+	                        		$data['num_ask_rco']++;
 
-																			// get general question info for instructors 
-                              				$questions = (isset($robj[0]['questions']['instructor'])&&sizeof($robj[0]['questions']['instructor'])>0)
-                                         		 ? $robj[0]['questions']['instructor'] : null;
-                          
-                              				if (!is_null($questions)) {
-                                  				$notalldone = false;
-                                  				foreach ($questions as $k => $q) { if($q['status']<>'done') { $notalldone = true; } }
-                                  				if ($notalldone) { array_push($objects['generalinst'], $robj[0]); $data['num_ask_general']++;}
-																			}
-                              		}
-															} else { 
-			                     	  		$data['num_ask_done']++;
-			                     	  		array_push($objects['done'], $robj[0]); 
-															}
+                							if (!is_null($robj[0]['questions']) && $robj[0]['ask_status']<>'done') {
+
+																	// get general question info for instructors 
+                          				$questions = (isset($robj[0]['questions']['instructor'])&&sizeof($robj[0]['questions']['instructor'])>0)
+                                     		 ? $robj[0]['questions']['instructor'] : null;
+                      
+                          				if (!is_null($questions)) {
+                              				$notalldone = false;
+                              				foreach ($questions as $k => $q) { if($q['status']<>'done') { $notalldone = true; } }
+                              				if ($notalldone) { array_push($objects['generalinst'], $robj[0]); $data['num_ask_general']++;}
+																	}
+                          		}
+													} else { 
+	                     	  		$data['num_ask_done']++;
+	                     	  		array_push($objects['done'], $robj[0]); 
 													}
-		
-													// instructor ask items	
-			                    if ($obj['ask']=='yes' && ($obj['action_type']=='' || $obj['ask_status']<>'done')) {
-			                     	  $data['num_ask_orig']++;
-			                     	  array_push($objects['ask:orig'], $obj); 
-			                    }
-	
-													if ($obj['ask']=='yes' && $obj['ask_status']=='done') {
-			                     	  $data['num_ask_done']++;
-			                     	  array_push($objects['done'], $obj); 
-													}	
+											}
 
-													// claim items	
-			                    switch($obj['action_type']) {
-			                          case 'Search':
-			                                array_push($objects['search'],$obj);
-			                                $data['num_search']++; break;
-			                          case 'Fair Use': // used data from $askinfo above 
-																			break;
-			                          case 'Permission': // used data from $askinfo above 
-																			break;
-			                          case 'Commission': // used data from $askinfo above 
-																			break;
-			                          case 'Retain: Copyright Analysis': // used data from $askinfo above 
-																			break;
-			                          case 'Retain: Permission':
-			                                array_push($objects['retain:perm'],$obj);
-			                                $data['num_retain_perm']++; break;
-			                          case 'Retain: Public Domain':
-			                                array_push($objects['retain:pd'],$obj);
-			                                $data['num_retain_pd']++; break;
-			                          case 'Create':
-			                                array_push($objects['create'],$obj); 
-			                                $data['num_create']++; break;
-			                          case 'Remove and Annotate':
-			                                array_push($objects['remove'],$obj);
-			                                $data['num_remove']++; break;
-			                          default:
-			                                if ($obj['ask']=='no') {
-			                                    array_push($objects['new'], $obj); 
-			                                    $data['num_new']++;
-			                                }
-			                    	}
-			                } else {
+											// instructor ask items	
+	                    if ($obj['ask']=='yes' && ($obj['action_type']=='' || $obj['ask_status']<>'done')) {
+	                     	  $data['num_ask_orig']++;
+	                     	  array_push($objects['ask:orig'], $obj); 
+	                    }
+
+											if ($obj['ask']=='yes' && $obj['ask_status']=='done') {
+	                     	  $data['num_ask_done']++;
+	                     	  array_push($objects['done'], $obj); 
+											}	
+
+											// claim items	
+	                    switch($obj['action_type']) {
+	                          case 'Search':
+	                                array_push($objects['search'],$obj);
+	                                $data['num_search']++; break;
+	                          case 'Fair Use': // used data from $askinfo above 
+																	break;
+	                          case 'Permission': // used data from $askinfo above 
+																	break;
+	                          case 'Commission': // used data from $askinfo above 
+																	break;
+	                          case 'Retain: Copyright Analysis': // used data from $askinfo above 
+																	break;
+	                          case 'Retain: Permission':
+	                                array_push($objects['retain:perm'],$obj);
+	                                $data['num_retain_perm']++; break;
+	                          case 'Retain: Public Domain':
+	                                array_push($objects['retain:pd'],$obj);
+	                                $data['num_retain_pd']++; break;
+	                          case 'Create':
+	                                array_push($objects['create'],$obj); 
+	                                $data['num_create']++; break;
+	                          case 'Remove and Annotate':
+	                                array_push($objects['remove'],$obj);
+	                                $data['num_remove']++; break;
+	                          default:
+	                                if ($obj['ask']=='no') {
+	                                    array_push($objects['new'], $obj); 
+	                                    $data['num_new']++;
+	                                }
+	                    }
+	                    
+			                if ($obj['done'] == 1) {
 			                     array_push($objects['cleared'], $obj);
 			                     $data['num_cleared']++;
 			                }
@@ -1015,6 +1014,10 @@ class Coobject extends Model
 			        }
 			    }
 			
+					//$this->ocw_utils->dump($data);
+					//$this->ocw_utils->dump($objects);
+					//$this->ocw_utils->dump($askinfo);
+					//exit();
 					return array('data'=>$data, 'objects'=>$objects, 'askinfo'=>$askinfo);
 	}
 
@@ -2555,8 +2558,6 @@ class Coobject extends Model
 
 		return $html;
  }
-
-
 
 }
 ?>

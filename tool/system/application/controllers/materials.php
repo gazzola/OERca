@@ -245,8 +245,10 @@ class Materials extends Controller {
 			$fs_actions = $this->material->rec_action_list($mid);
 			$segment_array = explode("z", $fs_action);
 			foreach ($segment_array as $sa) {
-				$view = strtolower($fs_actions[$sa]);
-				$object_bin = array_merge($object_bin, $stats['objects'][$view]);
+				$view = $this->material->map_recommended_action($fs_actions[$sa]);
+				if (isset($stats['objects'][$view])) {
+  				$object_bin = array_merge($object_bin, $stats['objects'][$view]);
+  			}
 			}
 		} else {
 			$view = 'all';

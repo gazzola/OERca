@@ -1086,5 +1086,33 @@ class Material extends Model
 		$list_array = array(1=>'No Action Assigned', 2=>'In Progress', 3=>'Cleared');
 	  	return $list_array;
 	}
+	
+	
+  /**
+  	* Map recommended actions to array key names. In case of the "Retain"
+  	* actions, the faceted search doesn't display objects because the 
+  	* action and the array key that represents the action are different.
+    *
+    * @access  public
+    * @param   string action name
+    * @return  string array key
+    */
+  public function map_recommended_action($action_name) {
+    $action_key = "";
+    switch($action_name) {
+      case "Retain: Permission":
+        $action_key = "retain:perm";
+        break;
+      case "Retain: Public Domain":
+        $action_key = "retain:pd";
+        break;
+      case "Retain: Copyright Analysis":
+        $action_key = "retain:ca";
+        break;
+      default:
+        $action_key = strtolower($action_name);
+    }
+    return $action_key;
+  }
 }
 ?>
