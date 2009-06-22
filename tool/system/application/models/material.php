@@ -1092,6 +1092,8 @@ class Material extends Model
   	* Map recommended actions to array key names. In case of the "Retain"
   	* actions, the faceted search doesn't display objects because the 
   	* action and the array key that represents the action are different.
+  	* This function provides a mapping between the action types and the
+  	* array key names.
     *
     * @access  public
     * @param   string action name
