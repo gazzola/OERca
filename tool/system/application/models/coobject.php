@@ -647,7 +647,8 @@ class Coobject extends Model
 																											  'value'=>'Send to dScribe', 'class'=>'do_d2_question_update');
 											 		 			$obj['questions']['dscribe2'][$k] = $q;
 										}
-										if (!$alldone) { array_push($replacement, $obj); $num_repl++; } 
+										// If 'Save for later' was selected for the object, ignore the individual question status
+										if ($obj['ask_status'] == 'in progress' || !$alldone) { array_push($replacement, $obj); $num_repl++; } 
 										else { array_push($done['replacement'], $obj); $num_done++; }
 								}
 						}
