@@ -131,7 +131,7 @@ class OER_decompose_apache_poi
 			$SET_DYLD_PATH .= "export DYLD_LIBRARY_PATH=\"\";";
 		}
 
-		exec("$SET_DYLD_PATH $this->java_path -Xmx500m -jar $this->poi_jar_path $materials_file $this->staging_dir &> /dev/null", &$poiout, &$poicode);
+		exec("$SET_DYLD_PATH $this->java_path -Xmx1G -jar $this->poi_jar_path $materials_file $this->staging_dir &> /dev/null", &$poiout, &$poicode);
 		unset($poiout);
 		$this->CI->ocw_utils->log_to_apache('debug', "poi::do_decomp: returning '{$poicode}'");
 
