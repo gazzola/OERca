@@ -1991,12 +1991,12 @@ class Coobject extends Model
 
 		// filter results
 		$q_results = array();
-
-		if (preg_match('/(fairuse|general|permission|commission|retain):all/',$filter,$m)) {
-				$claims = split('\|','fairuse|general|permission|commission|retain');
+		if (preg_match('/(fairuse|general|permission|commission|retain|replacement):all/',$filter,$m)) { // i.e. 'general:all', 'replacement:all'
+				$claims = split('\|','fairuse|general|permission|commission|retain|replacement');
 				foreach($claims as $cl) {	$q_results = array_merge($q_results, $s['askinfo']['aitems'][$cl]); }
-
-		} elseif (preg_match("/(fairuse|general|permission|commission|retain):\w+/",$filter,$m)) {
+		} elseif (preg_match('/(fairuse|general|permission|commission|retain|replacement):\1/', $filter, $m)) { // i.e. 'general:general', 'retain:retain'
+			$q_results = $s['askinfo']['aitems'][$m[1]];
+		} elseif (preg_match('/(fairuse|general|permission|commission|retain|replacement):\w+/',$filter,$m)) {
 				$q_results = $s['objects'][$m[0]];
 		} else {
 				if ($filter=='retain') { $filter = 'retain:ca'; }
@@ -2008,13 +2008,19 @@ class Coobject extends Model
 
 		/* content object ID's for previous and next items if any and get
 		 * the number of the current content object $oid for the current
-		 * material $mid nothing happens if no content objects are found */
+		 * material $mid nothing happens if no content objects are found
+		 *
+		 * Note that the list may be a combination of original and replacement
+		 * objects.  Determine, for each object, whether it is a replacement or
+		 * an original and use the proper field ('id' or 'object_id') */
 		if ($total_num > 0) {
 		   for ($i = 0; $i < $total_num; $i++) {
-		     if ($q_results[$i]['id'] == $oid) {
+				$idx = (isset($q_results[$i]['otype']) && $q_results[$i]['otype'] == 'replacement') ? 'object_id' : 'id';
+				 
+		     if ($q_results[$i][$idx] == $oid) {
 		       	$curr_num = ($i + 1);
-		       	if ($i > 0) { $prev_obj = $q_results[$i - 1]['id']; }
-		       	if ($i < ($total_num - 1)) { $next_obj = $q_results[$i + 1]['id']; }
+		       	if ($i > 0) { $prev_obj = $q_results[$i - 1][(isset($q_results[$i - 1]['otype']) && $q_results[$i - 1]['otype'] == 'replacement') ? 'object_id' : 'id']; }
+		       	if ($i < ($total_num - 1)) { $next_obj = $q_results[$i + 1][(isset($q_results[$i + 1]['otype']) && $q_results[$i + 1]['otype'] == 'replacement') ? 'object_id' : 'id']; }
 		     }
 		   }
 		 } 

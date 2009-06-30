@@ -119,7 +119,7 @@ foreach($repl_objects as  $obj) {
 </div>
 <div id="inprogress-col2-<?=$obj['id']?>" style="display: <?=($obj['ask_status']=='in progress') ? 'block':'none'?>;">
 
-<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['object_id'],$obj['location'],'ask:rco','orig',true);?><br/>
+<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['object_id'],$obj['location'],'ask:rco','orig',true,true,false,true,'','187');?><br/>
 
 </div>
 </td>

@@ -14,6 +14,9 @@ foreach($repl_objects as  $obj) {
 
 <td width="318" style="vertical-align:top">
 
+<div id="inprogress-col1-<?=$obj['id']?>" style="display: <?=($obj['ask_status']=='in progress') ? 'block':'none'?>;">
+	<b>This object is currently being reviewed.</b>
+</div>
 <div id="new-col1-<?=$obj['id']?>" style="display: <?=($obj['ask_status']=='in progress') ? 'none':'block'?>;">
 	<!-- replacement questions -->
 	<p>
@@ -84,7 +87,7 @@ foreach($repl_objects as  $obj) {
 </div>
 <div id="inprogress-col2-<?=$obj['id']?>" style="display: <?=($obj['ask_status']=='in progress') ? 'block':'none'?>;">
 
-<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['object_id'],$obj['location'],'ask:rco','orig',true,true,true);?><br/>
+<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['object_id'],$obj['location'],'ask:rco','orig',true,true,true,true,'','187');?><br/>
 
 </div>
 </td>
