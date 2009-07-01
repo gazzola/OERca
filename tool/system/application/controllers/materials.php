@@ -324,6 +324,7 @@ class Materials extends Controller {
 		if ($role == 'dscribe2') { $data['select_questions_to']['ipreview'] = 'IP Review Team'; }
 		if ($view == 'aitems') { $data['select_response_types'] = array('all'=>'All',
 																																		'general'=>'General Questions',
+																																		'replacement'=>'Replacement Questions',
 																																	  'fairuse'=>'Fair Use Questions',
 																																	  'permission'=>'Permission Questions',
 																																	  'commission'=>'Commission Questions',
@@ -356,7 +357,7 @@ class Materials extends Controller {
 				//$view = (!in_array($view, array('general', 'provenance','replacement','done'))) ? 'general' : $view; //commented out mbleed oerdev-168
 
 				$prov_objects =  $this->coobject->coobjects($mid,'','Ask'); // objects with provenace questions
-				$repl_objects =  $this->coobject->replacements($mid,'','','Ask'); // objects with replacement questions
+				$repl_objects =  $this->coobject->replacements($mid, '', '', 'Ask'); // objects with replacement questions
 				$num_obj = $num_general = $num_repl = $num_prov = $num_done = 0;
 				$general = $done = array();
 
@@ -370,41 +371,44 @@ class Materials extends Controller {
 				
 				$orig_objs = $this->coobject->coobjects($mid);
 				if (!is_null($orig_objs)) {
-					foreach ($orig_objs as $obj) {
-										// get general question info for instructors 
-										if (!is_null($obj['questions'])) {
-												$questions = (isset($obj['questions']['instructor']) && sizeof($obj['questions']['instructor'])>0)	
-																	 ? $obj['questions']['instructor'] : null;
-				
-												if (!is_null($questions)) {
-														$notalldone = false;
-														$obj['otype'] = 'original';
-														foreach ($questions as $k => $q) { 
-																		 		if($q['status']<>'done') { $notalldone = true; }
-																 		 		$q['ta_data'] = array('name'=>$obj['otype'].'_'.$obj['id'].'_'.$q['id'],
-																													   	'value'=>$q['answer'],
-																													   	'class'=>'do_d2_question_update',
-																													   	'rows'=>'10', 'cols'=>'60');
-																 		 		$q['save_data'] = array('name'=>$obj['otype'].'_status_'.$obj['id'],
-																											   	  	  'id'=>'close_'.$obj['id'],
-																												        'value'=>'Save for later',
-																												        'class'=>'do_d2_question_update');
-																 		 		$q['send_data'] = array('name'=>$obj['otype'].'_status_'.$obj['id'],
-																															  'value'=>'Send to dScribe', 'class'=>'do_d2_question_update');
-															 		 			$obj['questions']['instructor'][$k] = $q;
-														}
-														if ($notalldone) { array_push($general, $obj); $num_general++;} 
-														else { array_push($done['general'],$obj); $num_done++; }
+						foreach ($orig_objs as $obj) {
+								// get general question info for instructors 
+								if (!is_null($obj['questions'])) {
+										$questions = (isset($obj['questions']['instructor']) && sizeof($obj['questions']['instructor'])>0)	
+															 ? $obj['questions']['instructor'] : null;
+		
+										if (!is_null($questions)) {
+												$notalldone = false;
+												$obj['otype'] = 'original';
+												foreach ($questions as $k => $q) { 
+																 		if($q['status']<>'done') { $notalldone = true; }
+														 		 		$q['ta_data'] = array('name'=>$obj['otype'].'_'.$obj['id'].'_'.$q['id'],
+																											   	'value'=>$q['answer'],
+																											   	'class'=>'do_d2_question_update',
+																											   	'rows'=>'10', 'cols'=>'60');
+														 		 		$q['save_data'] = array('name'=>$obj['otype'].'_status_'.$obj['id'],
+																									   	  	  'id'=>'close_'.$obj['id'],
+																										        'value'=>'Save for later',
+																										        'class'=>'do_d2_question_update');
+														 		 		$q['send_data'] = array('name'=>$obj['otype'].'_status_'.$obj['id'],
+																													  'value'=>'Send to dScribe', 'class'=>'do_d2_question_update');
+													 		 			$obj['questions']['instructor'][$k] = $q;
 												}
+												if ($notalldone) { array_push($general, $obj); $num_general++;} 
+												else { array_push($done['general'],$obj); $num_done++; }
 										}
-					}
+								}
+						}
 				}
 				
 				if ($repl_objects != null) {	
 						foreach($repl_objects as $obj) {
-										if ($obj['ask_status'] == 'done') { $num_done++; }
-										if ($obj['ask_status'] <> 'done') { $num_repl++; }
-										$num_obj++;
+								if ($obj['ask_status'] == 'done' && ($obj['ask'] == 'no' || ($obj['ask'] == 'yes' && $obj['suitable'] != 'pending'))) {
+										$num_done++;
+								} else {
+										$num_repl++;
+								}
+								$num_obj++;
 						}
 				}
 				
@@ -438,11 +442,13 @@ class Materials extends Controller {
 				$data['num_avail'] = $info['num_avail'];
 				$data['need_input'] = $info['need_input'];
 				$data['num_general'] = $info['num_avail']['general']; 
+				$data['num_repl'] = $info['num_avail']['replacement']; 
 				$data['num_fairuse'] = $info['num_avail']['fairuse']; 
 				$data['num_permission'] = $info['num_avail']['permission']; 
 				$data['num_commission'] = $info['num_avail']['commission']; 
 				$data['num_retain'] = $info['num_avail']['retain']; 
 				$data['num_done'] = $info['num_avail']['aitems']; 
+				$data['repl_objects'] = $info['replacement']; 
 
 		} elseif (($questions_to=='ipreview' && in_array($role,array('dscribe2','ipreviewer'))) || 
               ($role=='ipreviewer' && $questions_to=='')) { // ip review page info
@@ -745,23 +751,29 @@ class Materials extends Controller {
  	{
 		$field = (isset($_REQUEST['field']) && $_REQUEST['field']<>'') ? $_REQUEST['field'] : '';
 		$val = (isset($_REQUEST['val'])) ? $_REQUEST['val'] : '';
+		$role = getUserProperty('role');
+		$role = ($role == 'dscribe2') ? $role : 'instructor';
 
  		if ($field=='replacement_question')
 		{
-			$this->coobject->add_replacement_question($rid, $oid, getUserProperty('id'), array('question'=>$val,'role'=>'instructor'));
+			$this->coobject->add_replacement_question($rid, $oid, getUserProperty('id'), array('question'=>$val,'role'=>$role));
 		}
 		else
 		{
 	   		$data = array($field=>$val);
 	   		$this->coobject->update_replacement($rid, $data);
 		}
-		 /* send email to dscribe from instructor */	
-		 if ($field=='ask_status' and $val=='done') {
-		     $this->postoffice->instructor_dscribe1_email($cid, $mid, $oid,'replacement');
-		 }
+		/* send email to dscribe */	
+		if ($field=='ask_status' and $val=='done') {
+			if ($role == 'instructor') {
+				$this->postoffice->instructor_dscribe1_email($cid, $mid, $oid,'replacement');
+			} else {
+				$this->postoffice->dscribe2_dscribe1_email($cid, $mid, $oid,'replacement');
+			}
+		}
 
-     $this->ocw_utils->send_response('success');
-     exit;
+		$this->ocw_utils->send_response('success');
+ 		exit;
 	}
 
 	public function add_object_comment($oid,$type='original')

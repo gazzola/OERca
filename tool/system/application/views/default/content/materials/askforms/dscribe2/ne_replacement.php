@@ -5,9 +5,9 @@ foreach($repl_objects as  $obj) {
 
   $questions = $obj['questions'];
 	$questions = (!is_null($questions) && 
-								 isset($questions['instructor']) && sizeof($questions['instructor'])>0) ? $questions['instructor'] : null;
+								 isset($questions['dscribe2']) && sizeof($questions['dscribe2'])>0) ? $questions['dscribe2'] : null;
 
-  if ($obj['ask_status'] != 'done' || ($obj['ask'] == 'yes' && $obj['suitable'] == 'pending')) {
+  if ($obj['ask_status'] <> 'done') {
 ?>
 <tr>
 <td style="vertical-align:top"><?=$count?></td>
@@ -66,11 +66,12 @@ foreach($repl_objects as  $obj) {
 
 		<p>No questions at this time.</p>
 
-<?php } else { foreach($questions as $question) { ?>
+<?php } else { foreach($questions as $question) {
+									$answer = $question['answer'] != '' ? $question['answer'] : "No answer provided yet"; ?>
 
       	<p><b><?=$question['question']?></b></p>
     		<p style="margin-bottom:15px;border:1px solid #ccc; padding:5px; background-color:#eee">
-					  <?=$question['answer']?>
+					  <?=$answer?>
        	</p>
        	<p><hr style="border: 1px solid #eee"/></p>
 

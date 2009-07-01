@@ -4,12 +4,11 @@ $inplaceeditors = array();
 $sliders = array();
 
 foreach($repl_objects as  $obj) {
-
   $questions = $obj['questions'];
 	$questions = (!is_null($questions) && 
-								 isset($questions['instructor']) && sizeof($questions['instructor'])>0) ? $questions['instructor'] : null;
+								 isset($questions['dscribe2']) && sizeof($questions['dscribe2'])>0) ? $questions['dscribe2'] : null;
 
-  if ($obj['ask_status'] != 'done' || ($obj['ask'] == 'yes' && $obj['suitable'] == 'pending')) {
+  /* if ($obj['ask_status'] <> 'done') {   KWC OERDEV-250 */
 ?>
 <input type="hidden" id="oid-<?=$obj['id']?>" name="oid-<?=$obj['id']?>" value="<?=$obj['object_id']?>" />
 <tr>
@@ -18,63 +17,6 @@ foreach($repl_objects as  $obj) {
 <td width="318" style="vertical-align:top">
 
 <div id="new-col1-<?=$obj['id']?>" style="display: <?=($obj['ask_status']=='in progress') ? 'none':'block'?>;">
-	<!-- replacement questions -->
-	<p>
-		<b>Is this a suitable replacement?</b><br/>
-		<input type="radio" name="rep_ok_<?=$obj['id']?>" id="repok_yes_<?=$obj['id']?>" 
-			   value="yes" class="do_askform_suityesno do_replacement_update" 
-				<?=($obj['suitable']=='yes')  ? 'checked="checked" ' : ''?>/>&nbsp; Yes&nbsp;
-		<input type="radio" name="rep_ok_<?=$obj['id']?>" id="repok_no_<?=$obj['id']?>" 
-			   value="no" class="do_askform_suityesno do_replacement_update" 
-				<?=($obj['suitable']=='no')  ? 'checked="checked" ' : ''?>/>&nbsp; No&nbsp;
-	</p>
-
-
-	<div id="suit_yes_other_<?=$obj['id']?>" style="display: <?= ($obj['suitable']=='yes') ? 'block':'none'?>"> 
-	<!-- citation (source information) -->
-	<p style="clear:both"><h3>Replacement Source Information: <small>(click below to edit)</small></h3> 
-		<div id="holder_citation_<?=$obj['id']?>">
-			<span id="txt_citation_<?=$obj['id']?>" class="ine_tip" title="Click to edit text"><?php echo ($obj['citation']<>'') ? $obj['citation']:'No source information'?></span>
-		</div>
-<?php 
-	$n = count($inplaceeditors) + 1; 
-	$ine_id = 'txt_citation_'.$obj['id'];
-	$ine_holder = 'holder_citation_'.$obj['id'];
-    $ine_url = "materials/update_replacement/$cid/$mid/{$obj['object_id']}/{$obj['id']}/citation/";
-	$inplaceeditors[]="var editor$n = new InPlaceEditor('$ine_id','$ine_holder',".
-					  "'$ine_url','No source information','get'); ".
-					  "editor$n.hover('$ine_id','$ine_holder','#ffffcc','#fff');";
-?>
-	</p>
-
-	<!-- tags -->
-	<br/><br/>
-	<p style="clear:both"><h3>Replacement Keywords: <small>(click below to edit)</small></h3> 
-		<div id="holder_tags_<?=$obj['id']?>">
-			<span id="txt_tags_<?=$obj['id']?>" class="ine_tip" title="Click to edit text"><?php echo ($obj['tags']<>'') ? $obj['tags']:'No keywords'?></span>
-		</div>
-<?php 
-	$n = count($inplaceeditors) + 1; 
-	$ine_id = 'txt_tags_'.$obj['id'];
-	$ine_holder = 'holder_tags_'.$obj['id'];
-    $ine_url = "materials/update_replacement/$cid/$mid/{$obj['object_id']}/{$obj['id']}/tags/";
-	$inplaceeditors[]="var editor$n = new InPlaceEditor('$ine_id','$ine_holder',".
-					  "'$ine_url','No keywords','get'); ".
-					  "editor$n.hover('$ine_id','$ine_holder','#ffffcc','#fff');";
-?>
-	</p>
-	</div>
-
-
-	<div id="suit_no_other_<?=$obj['id']?>" style="display: <?= ($obj['suitable']=='no') ? 'block':'none'?>"> 
-	<p>
-		<b>Why is this not a suitable replacement?</b><br/>
-       	<textarea name="notsuitable_<?=$obj['id']?>" id="c_<?=$obj['id']?>" rows="10" cols="50" class="do_replacement_update"><?=$obj['unsuitable_reason']?></textarea>
-	</p>
-	</div>
-
-
-
 	<!-- dScribe questions -->
 	<br/><br/>
 	<p style="clear:both"><h3>dScribe Questions:</h3>
@@ -93,7 +35,7 @@ foreach($repl_objects as  $obj) {
        	</p>
        	<p><hr style="border: 1px solid #eee"/></p>
 
-<?php } } ?>
+<?php }} ?>
 	</p>
 
 	<!-- save options  -->	
@@ -115,11 +57,10 @@ foreach($repl_objects as  $obj) {
 <!-- Original -->
 <td width="350" style="vertical-align:top">
 <div id="new-col2-<?=$obj['id']?>" style="display: <?=($obj['ask_status']=='in progress') ? 'none':'block'?>;">
-	<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['object_id'],$obj['location'],'ask:rco','orig',false);?>
+		<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['object_id'],$obj['location'],'ask:rco','orig',false,true,true);?>
 </div>
 <div id="inprogress-col2-<?=$obj['id']?>" style="display: <?=($obj['ask_status']=='in progress') ? 'block':'none'?>;">
-
-<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['object_id'],$obj['location'],'ask:rco','orig',true,true,false,true,'','187');?><br/>
+		<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['object_id'],$obj['location'],'ask:rco','orig',true,true,true,true,'','187');?><br/>
 
 </div>
 </td>
@@ -127,7 +68,7 @@ foreach($repl_objects as  $obj) {
 <!-- Replacement -->
 <td width="320" style="vertical-align:top">
 <div id="new-col3-<?=$obj['id']?>" style="display: <?=($obj['ask_status']=='in progress') ? 'none':'block'?>;">
-   		<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['object_id'],$obj['location'],'ask:rco','rep',false);?>
+		<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['object_id'],$obj['location'],'ask:rco','rep',false);?>
 </div>
 <div id="inprogress-col3-<?=$obj['id']?>" style="display: <?=($obj['ask_status']=='in progress') ? 'block':'none'?>;">
 		<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['object_id'],$obj['location'],'ask:rco','rep');?>
@@ -165,7 +106,7 @@ foreach($repl_objects as  $obj) {
 						e.stop();
 				  });";
 ?>
-<?php $count++; } } ?>
+<?php $count++; } /* } KWC OERDEV-250 */ ?>
 
 <script type="text/javascript">
 window.addEvent('domready', function() {

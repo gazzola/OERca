@@ -45,7 +45,7 @@ if ($prov_objects != null) {
 
 if ($repl_objects != null) {
  foreach($repl_objects as  $obj) {
-	if ($obj['ask_status'] == 'done') {
+	if ($obj['ask_status'] == 'done' && ( $obj['ask'] == 'no'|| ($obj['ask'] == 'yes' && $obj['suitable'] != 'pending') ) ) {
 ?>
 
 <tr>

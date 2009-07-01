@@ -20,7 +20,7 @@ foreach($cos as $type => $co) {
 				 if ($obj['otype']=='original') { 
 						 echo $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],$type.':'.$response_type,'orig',true,true,true,true,'','187');
 				 } else {
-   					 echo $this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],$type.':'.$response_type,'rep',true,true,true,true,'','187');
+   					 echo $this->ocw_utils->create_co_img($cid,$mid,$obj['object_id'],$obj['location'],$type.':'.$response_type,'orig',true,true,true,true,'','187');
 				 }
 			?>
   </p>
@@ -75,7 +75,14 @@ foreach($cos as $type => $co) {
 </td>
 
 <td style="vertical-align: top">
-	<?php if ($type=='general') { ?>
+	<?php if ($type=='general' || $type=='replacement') { ?>
+
+		<?php if ($type=='replacement') {
+			echo "<br/>";
+			echo $this->ocw_utils->create_co_img($cid,$mid,$obj['object_id'],$obj['location'],$type.':'.$response_type,'rep',true,true,true,true,'','187');
+			echo "<br />";
+		} ?>
+
 			<h2>Here are the responses the dScribe2 provided to the dscribe1's questions:</h2>
 			<br/>
 

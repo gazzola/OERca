@@ -31,6 +31,10 @@ if ($questions_to == 'instructor') {
 				<th class="sortable">Response Type</th>
         <th>Content Object</th>
 				<th>Information</th>
+				<?php } else if ($view == 'replacement') {  ?>
+				<th>Questions</th>
+        <th>Original Object</th>
+        <th>Replacement Object</th>
 				<?php } else {  ?>
 				<th>Questions</th>
         <th>Content Object Information</th>
@@ -42,6 +46,9 @@ if ($questions_to == 'instructor') {
 		<?php 
 			if ($view == 'general') {
 				$this->load->view(property('app_views_path').'/materials/askforms/dscribe2/general.php', $data); 
+
+			} elseif ($view == 'replacement') {
+				$this->load->view(property('app_views_path').'/materials/askforms/dscribe2/replacement.php', $data); 
 
 			} elseif ($view == 'fairuse') {
 				$this->load->view(property('app_views_path').'/materials/askforms/dscribe2/fairuse.php', $data); 

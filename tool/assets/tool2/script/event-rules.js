@@ -480,6 +480,20 @@ var Rules = {
 		}
 	},
 	
+	'.do_dscribe2_replacement_ask_q' : function(element) {
+		element.onclick = function() {
+			var id = this.id;
+			id = id.replace(/\w+_/g,'');
+			if (this.value == 'yes') {
+				if ($('dscribe2_repl_ask_q_pane')) {
+					$('dscribe2_repl_ask_q_pane').style.display = 'block';	
+				}
+			} else {
+			   if ($('dscribe2_repl_ask_q_pane')) {$('dscribe2_repl_ask_q_pane').style.display = 'none';	}
+			}
+		}
+	},
+	
 	'.do_object_ask_dscribe2_yesno' : function(element) {
 		element.onclick = function() {
 			var id = this.id;
@@ -811,9 +825,9 @@ var Rules = {
 																var div = $('repl_question_conf').setStyles({ display:'block', opacity: 1 });
 																var fx = new Fx.Style(div, 'opacity', {duration: 5000 } ).addEvent("onComplete", function() {
 																												var hidediv = $('repl_question_conf').setStyles({display:'none'}); 
-																												if ($('repl_ask_yes')) {$('repl_ask_yes').style.display = 'none';}
-                                                  			$('ask_yes').checked=false;
-                                                  			$('ask_no').checked=true; });
+																												if ($('dscribe2_repl_ask_q_pane')) {$('dscribe2_repl_ask_q_pane').style.display = 'none';}
+                                                  			$('dscribe2_repl_ask_q_yes').checked=false;
+                                                  			$('dscribe2_repl_ask_q_no').checked=true; });
 																fx.start(0);
 														}
                         } else {
@@ -828,14 +842,20 @@ var Rules = {
 	
 	'.do_replacement_question_update' : function(element) {
 		element.onchange = function () {
+			var newstatus;
 			var val = this.value;
+			if (val == '') {
+				newstatus = '/new';
+			} else {
+				newstatus = '/done';
+			}
 			var course_id = $('cid').value;
 			var material_id = $('mid').value; 
 			var object_id = this.name.replace(/q_/g,'');
 			var question_id = object_id;
 			object_id = object_id.replace(/_\d+$/g,'');
 			question_id = question_id.replace(/^\d+_/g,'');
-			var url = $('server').value+'materials/update_object_question/'+object_id+'/'+question_id+'/replacement';
+			var url = $('server').value+'materials/update_object_question/'+object_id+'/'+question_id+'/replacement'+newstatus;
       var fb = $('feedback');
 			new Ajax(url, { method: 'post', postBody: 'answer='+val, update: fb }).request();
 		}
