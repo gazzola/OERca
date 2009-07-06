@@ -94,7 +94,7 @@ class Dscribe2 extends Controller {
 		} else {
 			$this->data['title'] = 'dScribe2 &raquo; Manage Courses'; 
 			$uid = getUserProperty('id');
-      		$this->data['courses'] = $this->course->faceted_search_get_courses($uid, $school, $year, $dscribe2, $dscribe);
+      		$this->data['courses'] = $this->course->new_get_courses($uid);
     		$this->layout->buildPage('dscribe2/courses', $this->data);
 		}
 	}

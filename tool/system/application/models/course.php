@@ -10,11 +10,18 @@
 
 class Course extends Model 
 {
+	
+	// Instance variables used when getting course info.
+	private $courses;
+	private $courses_users_roles;
+		
 	public function __construct()
 	{
 		parent::Model();
-                $this->load->model('material');
-	}
+    $this->load->model('material');
+    $this->courses = array();
+    $this->courses_users_roles = array();
+  }
 	
 	/**
    * add course 
@@ -117,7 +124,7 @@ class Course extends Model
 					$this->ocw_user->set_relationship($details['user_id'], $d2['user_id']);
 				}
 			}
-		} else if ($details['role'] == 'dscribe2') {
+		} elseif ($details['role'] == 'dscribe2') {
 			// create a relationship with existing dscribe1s
 			$d1s = $this->get_course_users($details['course_id'], 'dscribe1');
 			if (count($d1s) != 0) {
@@ -450,6 +457,7 @@ class Course extends Model
         }
       }
       
+      //exit($this->ocw_utils->dump($courses));
       return (sizeof($courses) > 0) ? $courses : null;
     }
     
@@ -616,7 +624,7 @@ class Course extends Model
           $courses['No School Specified']['No Curriculum Specified'][] = $row;
         }
       }
-      
+      //exit($this->ocw_utils->dump($courses)); 
       return (sizeof($courses) > 0) ? $courses : null;
     }
     
@@ -776,6 +784,390 @@ class Course extends Model
 		}
 		return ($q->num_rows() > 0) ? $course_users : null;
 	}
+	
+	
+  /**
+    * Get all the information related to all courses for a user.
+    *
+    * This function is very greedy about the information it gathers.
+    * it gets all other users, and their roles for all the courses to which
+    * a particular user is assigned. It is intended to replace many many
+    * embedded model calls that result in massive numbers of DB queries.
+    *
+    * The result set includes the dscribe1s, dscribe2s, instructors
+    * for courses as well as the clearance status counts for the content
+    * objects within each course. Other course metadata present in the
+    * ocw_courses table is also returned. 
+    *
+    * It provides output in similar format to $this->get_courses and adds
+    * values that are used by faceted search.
+    *
+    * @access public
+    * @param int the numeric userid
+    * @return detailed information on all the courses a user may access.
+    *  
+    */
+  public function new_get_courses($uid, $role = NULL)
+  {
+    $course_ids = NULL;
+    
+    if (!$role) {
+      $role = getUserPropertyFromId($uid, 'role');
+    }
+    
+    $sql = "SELECT 
+    ocw_schools.id AS school_id,
+    ocw_schools.name AS school_name,
 
+    ocw_curriculums.id AS curriculum_id,
+    ocw_curriculums.name AS curriculum_name,
+
+    ocw_courses.id AS course_id,
+    ocw_courses.number AS course_number,
+    ocw_courses.title As course_title,
+    ocw_courses.start_date,
+    ocw_courses.end_date,
+    ocw_courses.director,
+    ocw_courses.creator,
+    ocw_courses.level,
+    ocw_courses.length,
+    ocw_courses.term,
+    ocw_courses.year,
+    ocw_courses.language,
+
+    ocw_materials.id AS material_id,
+    ocw_materials.category AS material_category,
+    ocw_materials.name AS material_name,
+
+    ocw_objects.id AS object_id,
+    ocw_objects.ask AS object_ask,
+    ocw_objects.ask_status AS object_ask_status,
+    ocw_objects.ask_dscribe2 AS object_ask_dscribe2,
+    ocw_objects.ask_dscribe2_status AS object_ask_dscribe2_status,
+    ocw_objects.action_type AS object_action_type,
+    ocw_objects.action_taken AS object_action_taken,
+    ocw_objects.done AS object_done
+
+
+    FROM
+    ocw_courses
+
+    INNER JOIN ocw_schools ON
+    (ocw_schools.id = ocw_courses.school_id)
+
+    INNER JOIN ocw_curriculums ON
+    (ocw_curriculums.id = ocw_courses.curriculum_id)
+
+    LEFT OUTER JOIN ocw_materials ON
+    (ocw_courses.id = ocw_materials.course_id)
+
+    LEFT OUTER JOIN ocw_objects ON
+    (ocw_materials.id = ocw_objects.material_id)";
+    
+    if ($role == "admin") {
+      $this->__get_all_courses_users_roles();
+    } else {
+      $this->__get_courses_users_roles($uid);
+      if (count($this->courses_users_roles) > 0) {
+        // get the ids of all the courses the user may access
+        $course_ids = array_keys($this->courses_users_roles);
+        /* construct the 'WHERE' clause of the query
+         * from the list of course_ids grabbed from 
+         * $this->courses_users_roles
+         * the loop adds all but the last course id and
+         * the line after the loop does the rest
+         */
+        $sql .= "
+        WHERE (";
+        for ($i=0; $i < (count($course_ids) - 1); $i++) { 
+          $sql .= "ocw_courses.id = ? OR ";
+        }
+    	  $sql .= "ocw_courses.id = ?)";
+      }
+    }
+    
+    if ($course_ids) {
+    $course_info = $this->db->query($sql, $course_ids);
+    } else {
+      // Admin case. No where clause so no parameter array supplied for query.
+      $course_info = $this->db->query($sql);
+    }
+    
+    if ($course_info->num_rows() > 0) { 
+      $this->__process_courses_qresult($course_info);
+    }
+    
+    // Free memory used by the DB query.
+    $course_info->free_result();
+    //exit($this->ocw_utils->dump($this->courses));
+    return (sizeof($this->courses) > 0) ? $this->courses : NULL;
+  }
+  
+  
+  /**
+    * Get all the courses, the other users that have access to that
+    * course, and those users roles given a particular user id.
+    *
+    * @access public
+    * @param int user id
+    * @return Nothing. The instance variable courses_users_roles is populated
+    *         with the results.
+    */
+  private function __get_courses_users_roles($user_id) 
+  {
+    $sql = "SELECT
+    ocw_acl_2.course_id,
+    ocw_acl.user_id,
+    ocw_users_2.user_name,
+    ocw_users_2.name,
+    ocw_acl.role
+    
+    FROM
+    ocw_acl
+
+    INNER JOIN ocw_acl AS ocw_acl_2 ON
+    (ocw_acl.course_id = ocw_acl_2.course_id)
+
+    INNER JOIN ocw_users ON
+    (ocw_acl_2.user_id = ocw_users.id)
+
+    INNER JOIN ocw_users AS ocw_users_2 ON
+    (ocw_acl.user_id = ocw_users_2.id)
+
+    WHERE
+    ocw_users.id = ?";
+    $query = $this->db->query($sql, array($user_id));
+    if ($query->num_rows() > 0) { 
+      $this->__build_courses_users_roles($query);
+    }
+    
+    // Free memory used by the query.
+    $query->free_result();
+    
+    return;
+  }
+  
+  
+  /**
+    * Get all course ids along with the users assigned to those courses and
+    * those users names, user ids and their roles. This function is intended
+    * for the admin user who needs to have the display of all users and
+    * courses and has no entry in the ocw_acls table and so cannot use
+    * get_courses_users_roles($user_id).
+    *
+    * @access public
+    * @return Nothing. The instance variable courses_users_roles is populated 
+    *         with the results.
+    */
+  private function __get_all_courses_users_roles()
+  {
+    $sql = "SELECT
+    ocw_acl.course_id,
+    ocw_acl.user_id,
+    ocw_users.user_name,
+    ocw_users.name,
+    ocw_acl.role
+
+    FROM
+    ocw_acl
+
+    INNER JOIN ocw_users ON
+    (ocw_acl.user_id = ocw_users.id)";
+    $query = $this->db->query($sql);
+    if ($query->num_rows() > 0) { 
+      $this->__build_courses_users_roles($query);
+    }
+    
+    // Free memory used by the query.
+    $query->free_result();
+    
+    return;
+  }  
+  
+  
+  /**
+    * Process the result set returned by new_get_courses.
+    *
+    * @access private
+    * @param query object from new_get_courses query
+    * @return void
+    */
+  private function __process_courses_qresult($course_info)
+  {
+    foreach ($course_info->result_array() as $row) {
+      if (!array_key_exists($row['school_name'], $this->courses)) {
+        $this->courses[$row['school_name']] = array();
+      }
+      
+      if (!array_key_exists($row['curriculum_name'], 
+        $this->courses[$row['school_name']])) {
+        $this->courses[$row['school_name']][$row['curriculum_name']] = 
+          array();
+      }
+      
+      if (!array_key_exists($row['course_id'],
+        $this->courses[$row['school_name']][$row['curriculum_name']])) {
+        /* Copy values over from the query of the acl table if the course has
+         * defined acl entries. Otherwise put in values with empty placeholder 
+         * arrays for the acl fields. */
+        // TODO: should we put in empty arrays or check in the view? 
+        if (array_key_exists($row['course_id'], $this->courses_users_roles)) {
+          $this->courses[$row['school_name']]
+          [$row['curriculum_name']]
+          [$row['course_id']] = $this->courses_users_roles[$row['course_id']];
+        } else {
+          $this->courses[$row['school_name']]
+          [$row['curriculum_name']]
+          [$row['course_id']] = array( 
+            'id' => $row['course_id'],
+            'cid' => $row['course_id'],
+            'instructors' => array(),
+            'dscribe1s' => array(),
+            'dscribe2s' => array()
+            );
+        }
+        
+        $additional_vals = array(
+          'number' => $row['course_number'],
+          'title' => $row['course_title'],
+          'start_date' => $row['start_date'],
+          'creator' => $row['creator'],
+          'director' => $row['director'],
+          'level' => $row['level'],
+          'year' => $row['year'],
+          'length' => $row['length'],
+          'term' => $row['term'],
+          'end_date' => $row['end_date'],
+          'school_id' => $row['school_id'],
+          'school_name' => $row['school_name'],
+          'curriculum_id' => $row['curriculum_id'],
+          'curriculum_name' => $row['curriculum_name'],
+          'material_id' => $row['material_id'],
+          'material_name' => $row['material_name'],
+          'material_category' => $row['material_category']
+          );
+        
+        // add additional attributes to current array element
+        $this->courses[$row['school_name']]
+          [$row['curriculum_name']]
+          [$row['course_id']] = array_merge(
+            $this->courses[$row['school_name']]
+              [$row['curriculum_name']]
+              [$row['course_id']],
+            $additional_vals);
+      }
+      
+      /* Add counts to each array element if counts aren't already
+       * present.
+       */
+      $co_count_keys = array(
+        "total",
+        "done",
+        "ask",
+        "rem",
+        "notdone"
+        );
+        
+      $initial_counts = array(
+        'total' => 0,
+        'done' => 0,
+        'ask' => 0,
+        'rem' => 0,
+        'notdone' => 0
+        );
+        
+      $curr_array_keys = array_keys($this->courses[$row['school_name']]
+        [$row['curriculum_name']]
+        [$row['course_id']]);
+        
+      if ((count(array_intersect($co_count_keys, $curr_array_keys))) == 0) {
+        $this->courses[$row['school_name']]
+          [$row['curriculum_name']]
+          [$row['course_id']] = array_merge(
+            $this->courses[$row['school_name']]
+              [$row['curriculum_name']]
+              [$row['course_id']],
+            $initial_counts);
+      }
+        
+      // Do the counts for defined content objects.
+      if ($row['object_id']) {
+        if ($row['object_done'] == '1') {
+          $this->courses[$row['school_name']]
+            [$row['curriculum_name']]
+            [$row['course_id']]
+            ['done']++;
+        } elseif (($row['object_action_type'] != NULL) ||
+            ($row['object_action_taken'] != NULL)) {
+          $this->courses[$row['school_name']]
+            [$row['curriculum_name']]
+            [$row['course_id']]
+            ['ask']++;    
+        } else {
+          $this->courses[$row['school_name']]
+            [$row['curriculum_name']]
+            [$row['course_id']]
+            ['notdone']++;
+        }
+        $this->courses[$row['school_name']]
+          [$row['curriculum_name']]
+          [$row['course_id']]
+          ['total']++;
+          
+        $this->courses[$row['school_name']]
+          [$row['curriculum_name']]
+          [$row['course_id']]
+          ['rem'] = 
+          $this->courses[$row['school_name']]
+            [$row['curriculum_name']]
+            [$row['course_id']]
+            ['notdone'];
+      }
+    }      
+    return;
+  }
+  
+  
+  /**
+    * Parse the query results for queries getting courses and users
+    * and build an array that organizes the users and their roles by
+    * course id.
+    *
+    * @access private
+    * @param row of course info data (passed by reference)
+    * @return void
+    */
+  private function __build_courses_users_roles($query_object)
+  {
+    foreach ($query_object->result_array() as $row) {
+      /* If a course isn't already in $this->courses_users_roles, add it to
+       * the array. Initialize the arrays that track the users assigned to
+       * different roles for the course as well. */
+      if (!array_key_exists($row['course_id'], $this->courses_users_roles)) {
+        $this->courses_users_roles[$row['course_id']] = 
+          array( 'id' => $row['course_id'],
+            'cid' => $row['course_id'],
+            'instructors' => array(),
+            'dscribe1s' => array(),
+            'dscribe2s' => array()
+            );
+      }
+      
+      /* Check to see if the entry for the role in the current course
+       * $this->courses_users_roles has the current user id. If not add
+       * the user id as an array key and add the username, and user id as
+       * values of the array as well */
+      if (!array_key_exists ($row['user_id'], 
+          $this->courses_users_roles[$row['course_id']]["${row['role']}s"])) {
+        $this->courses_users_roles
+          [$row['course_id']]["${row['role']}s"][$row['user_id']]['user_id'] = 
+          $row['user_id'];
+        $this->courses_users_roles
+          [$row['course_id']]["${row['role']}s"][$row['user_id']]['name'] = 
+          $row['name'];
+      }
+    }
+    return;
+  }
 }
 ?>

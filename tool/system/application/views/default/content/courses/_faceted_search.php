@@ -2,6 +2,8 @@
 $search_sections = array();
 
 $course_count = 0;
+$term_names = array();
+
 if (sizeof(@$courses) > 0) {
 	foreach ($courses as $sub) {
 		foreach ($sub as $s) {
@@ -34,6 +36,13 @@ $search_sections[] = array(
 	'label' => 'dScribe',
 	'data' => $this->course-> get_users_for_all_courses('dscribe1'),
 	'uri_segment' => 7
+);
+
+// define the Term search elements. Super sleazy hard coding. //aal
+$search_sections[] = array(
+  'label' => 'Term',
+  'data' => array('', 'Fall', 'Winter', 'Spring', 'Summer'),
+  'uri_segment' => 8
 );
 
 $fscrumbs = array();
@@ -73,7 +82,7 @@ if (sizeof($this->uri->segment_array()) >= sizeof($search_sections)) {	 //less t
 }
 
 $ua = $this->uri->segment_array();
-$ua[4] = 0; $ua[5] = 0; $ua[6] = 0; $ua[7] = 0;
+$ua[4] = 0; $ua[5] = 0; $ua[6] = 0; $ua[7] = 0; $ua[8] = 0;
 $removeallurl = site_url().implode("/",$ua);
 $fscrumbs_html = <<<htmleoq
 		<a href="$removeallurl" title="Remove all filters">Clear All</a>

@@ -62,13 +62,16 @@
     <td><?=mdate('%d %M, %Y',mysql_to_unix($c['start_date']))?></td>
     <td><?=mdate('%d %M, %Y',mysql_to_unix($c['end_date']))?></td>
     -->
-    <td width="40px"><?=ucfirst($c['cname'])?></td>
+    <td width="40px"><?=ucfirst($c['curriculum_name'])?></td>
     <td>
-		  <b>dScribe1(s):<br></b><?=ucfirst($c['dscribe1s'])?>
-			<? if ($c['dscribe1s'] != '') { ?> <br> <? } ?>
-		  <b>dScribe2(s):<br></b><?=ucfirst($c['dscribe2s'])?>
+		  <b>dScribe1(s):</b><br>
+		  <?php foreach($c['dscribe1s'] as $d) { echo ucfirst($d['name']); echo"<br />"; } ?>
+		  <b>dScribe2(s):</b><br>
+		  <?php foreach($c['dscribe2s'] as $d) { echo ucfirst($d['name']); echo"<br />"; } ?>
 		</td>
-    <td><?=ucfirst($c['instructors'])?></td>
+    <td>
+      <?php foreach($c['instructors'] as $i) { echo ucfirst($i['name']); echo "<br />"; } ?>
+    </td>
     
     <td>   
     <? $params_url = $c['total'].'/'.$c['done'].'/'.$c['ask'].'/'.$c['rem'];

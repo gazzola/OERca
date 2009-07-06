@@ -606,7 +606,7 @@ class Admin extends Controller {
 		} else {
 			
 			// view all courses
-			$courses = $this->course->get_courses(getUserProperty('id'),'admin');
+			$courses = $this->course->new_get_courses(getUserProperty('id'));
 
 			$data = array('title'=>'Admin: Manage Courses ',
 										'section'=>'courses',
