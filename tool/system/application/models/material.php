@@ -196,7 +196,7 @@ class Material extends Model
    		$authorslist = $this->material->authors_list($cid);
     	$where3 = " AND (";
     	$authors = explode("z", $author);
-    	foreach ($authors as $a) $authorwheres[] = "ocw_materials.author = '".$authorslist[$a]."' ";
+    	foreach ($authors as $a) $authorwheres[] = "ocw_materials.author = ".$this->db->escape($authorslist[$a])." ";
     	$where3 .= implode(" OR ", $authorwheres);
     	$where3 .= ")";
     } else $where3 = "";
