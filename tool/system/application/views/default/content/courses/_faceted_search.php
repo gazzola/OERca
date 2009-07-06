@@ -17,37 +17,49 @@ $search_sections[] = array(
 	'label' => 'School/College',
 	'data' => $facet_options['schools'],
 	//'uri_segment' => sizeof($this->uri->segment_array()) - 3
-	'uri_segment' => 4
+	'uri_segment' => (count($controller_args) + 3)
 );
 
 $search_sections[] = array(
   'label' => 'Term',
   'data' => $facet_options['terms'],
-  'uri_segment' => 5
+  'uri_segment' => (count($controller_args) + 4)
 );
 
 $search_sections[] = array(
 	'label' => 'Year',
 	'data' => $facet_options['years'],
-	'uri_segment' => 6
+	'uri_segment' => (count($controller_args) + 5)
 );
 
 $search_sections[] = array(
 	'label' => 'dScribe2',
 	'data' => $facet_options['dscribe2s'],
-	'uri_segment' => 7
+	'uri_segment' => (count($controller_args) + 6)
 );
 
 $search_sections[] = array(
 	'label' => 'dScribe',
 	'data' => $facet_options['dscribe1s'],
-	'uri_segment' => 8   
+	'uri_segment' => (count($controller_args) + 7)
 );
 
 $fscrumbs = array();
 $view_uri_array = $this->uri->segment_array();
+
+/* uri segment variable, where 3 is the first uri segment that is
+ * an argument
+ */
+$uri_segment = 3;
+
+// tack on the default passed arguments
+foreach ($controller_args as $arg_val) {
+  $view_uri_array[$uri_segment++] = $arg_val;
+}
+
 //if (!isset($view_uri_array[3])) $view_uri_array[3] = $this->db_session->userdata('id'); //prime the faceted search
-$view_uri_array[3] = $this->db_session->userdata('id'); //prime the faceted search
+// $view_uri_array[3] = $this->db_session->userdata('id'); //prime the faceted search
+
 
 foreach ($search_sections as $ss) {
 	$view_uri_array[$ss['uri_segment']] = array_key_exists($ss['uri_segment'], $view_uri_array) ? $view_uri_array[$ss['uri_segment']] : 0;	
@@ -81,7 +93,14 @@ if (sizeof($this->uri->segment_array()) >= sizeof($search_sections)) {	 //less t
 }
 
 $ua = $this->uri->segment_array();
-$ua[4] = 0; $ua[5] = 0; $ua[6] = 0; $ua[7] = 0; $ua[8] = 0;
+
+// set the rest of the uri segments to 0
+$ua[$uri_segment++] = 0;
+$ua[$uri_segment++] = 0; 
+$ua[$uri_segment++] = 0;
+$ua[$uri_segment++] = 0;
+$ua[$uri_segment++] = 0;
+
 $removeallurl = site_url().implode("/",$ua);
 $fscrumbs_html = <<<htmleoq
 		<a href="$removeallurl" title="Remove all filters">Clear All</a>

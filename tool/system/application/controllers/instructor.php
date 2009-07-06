@@ -375,13 +375,30 @@ class Instructor extends Controller {
      * @param int  course id 
      * @return  void
      */
-  public function courses()
+  public function courses($school=0, $term=0, $year=0, $dscribe2=0, $dscribe=0)
   {
+		  $this->load->library('oer_faceted_search');
+		  
 		  $data = array();
       $data['title'] = 'Instructor &raquo; Manage Courses';
       $data['courses'] = $this->course->new_get_courses(getUserProperty('id'));
       $data['facet_options'] = $this->oer_faceted_search->
         get_facet_options($data['courses']);
+        
+      // do filtering based on facet arguments
+      $facet_filters = array(
+        'school_id' => $school,
+        'term' => $term,
+        'year' => $year,
+        'dscribe2s' => $dscribe2,
+        'dscribe1s' => $dscribe
+        );
+
+      $this->oer_faceted_search->do_course_facet_filtering(
+        $data['courses'], $facet_filters);
+
+      $data["controller_args"] = array();
+        
       $this->layout->buildPage('instructor/courses', $data);
 	}
 }

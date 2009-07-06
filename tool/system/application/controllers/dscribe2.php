@@ -52,7 +52,7 @@ class Dscribe2 extends Controller {
 	   * @param int  course id 
      * @return  void
      */
-	public function courses($task='', $cid='', $school=0, $year=0, $dscribe2=0, $dscribe=0)
+	public function courses($task='', $cid='', $school=0, $term=0, $year=0, $dscribe2=0, $dscribe=0)
 	{
 		$this->load->library('oer_faceted_search');
 		
@@ -99,6 +99,20 @@ class Dscribe2 extends Controller {
       $this->data['courses'] = $this->course->new_get_courses($uid);
       $this->data['facet_options'] = $this->oer_faceted_search->
         get_facet_options($this->data['courses']);
+      
+      // do filtering based on facet arguments
+      $facet_filters = array(
+        'school_id' => $school,
+        'term' => $term,
+        'year' => $year,
+        'dscribe2s' => $dscribe2,
+        'dscribe1s' => $dscribe
+        );
+        
+      $this->data["controller_args"] = array('view', '0');
+      
+      $this->oer_faceted_search->do_course_facet_filtering(
+        $this->data['courses'], $facet_filters);
     	$this->layout->buildPage('dscribe2/courses', $this->data);
 		}
 	}
