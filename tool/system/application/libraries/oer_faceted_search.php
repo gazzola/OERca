@@ -118,6 +118,13 @@ class OER_faceted_search
       }
     }
     
+    // sort so the options always appear in the same order
+    asort($instructors);
+    asort($dscribe1s);
+    asort($dscribe2s);
+    arsort($years);
+    asort($schools);
+    
     $facet_options['instructors'] = $instructors;
     $facet_options['dscribe1s'] = $dscribe1s;
     $facet_options['dscribe2s'] = $dscribe2s;
