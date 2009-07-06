@@ -69,7 +69,7 @@
 		  if (count($c['dscribe1s']) > 0) { 
 		    foreach($c['dscribe1s'] as $d) { echo ucfirst($d['name']); echo"<br />"; } 
 	    } else {
-	      echo "None assigned.<br />";
+	      echo "<i>None assigned.</i><br />";
 	    }
 		  ?>
 		  <b>dScribe2(s):</b><br>
@@ -77,12 +77,18 @@
 		  if (count($c['dscribe2s']) > 0) { 
 		    foreach($c['dscribe2s'] as $d) { echo ucfirst($d['name']); echo"<br />"; } 
 	    } else {
-	      echo "None assigned.<br />";
+	      echo "<i>None assigned.</i><br />";
 	    }
 		  ?>
 		</td>
     <td>
-      <?php foreach($c['instructors'] as $i) { echo ucfirst($i['name']); echo "<br />"; } ?>
+      <?php
+		  if (count($c['instructors']) > 0) { 
+		    foreach($c['instructors'] as $i) { echo ucfirst($i['name']); echo"<br />"; } 
+	    } else {
+	      echo "<i>None assigned.</i><br />";
+	    }
+		  ?>
     </td>
     
     <td>   
