@@ -65,9 +65,21 @@
     <td width="40px"><?=ucfirst($c['curriculum_name'])?></td>
     <td>
 		  <b>dScribe1(s):</b><br>
-		  <?php foreach($c['dscribe1s'] as $d) { echo ucfirst($d['name']); echo"<br />"; } ?>
+		  <?php
+		  if (count($c['dscribe1s']) > 0) { 
+		    foreach($c['dscribe1s'] as $d) { echo ucfirst($d['name']); echo"<br />"; } 
+	    } else {
+	      echo "None assigned.<br />";
+	    }
+		  ?>
 		  <b>dScribe2(s):</b><br>
-		  <?php foreach($c['dscribe2s'] as $d) { echo ucfirst($d['name']); echo"<br />"; } ?>
+		  <?php
+		  if (count($c['dscribe2s']) > 0) { 
+		    foreach($c['dscribe2s'] as $d) { echo ucfirst($d['name']); echo"<br />"; } 
+	    } else {
+	      echo "None assigned.<br />";
+	    }
+		  ?>
 		</td>
     <td>
       <?php foreach($c['instructors'] as $i) { echo ucfirst($i['name']); echo "<br />"; } ?>
