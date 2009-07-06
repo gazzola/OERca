@@ -1038,7 +1038,6 @@ class Material extends Model
 	  		if (is_null($row->action_type)) $row->action_type = 'None';
 	    	$list_array[$row->id] = $row->action_type;
 	  	}
-		
 	  	return array_unique($list_array);
 	}
 	
@@ -1052,12 +1051,13 @@ class Material extends Model
 	public function co_type_list($mid)
 	{
 		$sql = "SELECT o.id, o.subtype_id, s.name FROM ocw_objects o INNER JOIN ocw_object_subtypes s ON s.id = o.subtype_id WHERE material_id=$mid ORDER BY s.name ASC";
-
 	    $q = $this->db->query($sql);
-	  	foreach ($q->result() as $row) {
-	    	$list_array[$row->subtype_id] = $row->name;
-	  	}
-		
+	   	$list_array = array();
+	   	if ($q->num_rows() > 0) {
+		  	foreach ($q->result() as $row) {
+		    	$list_array[$row->subtype_id] = $row->name;
+		  	}
+	   	}
 	  	return array_unique($list_array);
 	}
 	
