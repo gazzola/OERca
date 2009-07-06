@@ -380,7 +380,8 @@ class Instructor extends Controller {
 		  $data = array();
       $data['title'] = 'Instructor &raquo; Manage Courses';
       $data['courses'] = $this->course->new_get_courses(getUserProperty('id'));
-
+      $data['facet_options'] = $this->oer_faceted_search->
+        get_facet_options($data['courses']);
       $this->layout->buildPage('instructor/courses', $data);
 	}
 }

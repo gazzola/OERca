@@ -15,34 +15,33 @@ if (sizeof(@$courses) > 0) {
 
 $search_sections[] = array(
 	'label' => 'School/College',
-	'data' => $this->course->get_school_list(),
+	'data' => $facet_options['schools'],
 	//'uri_segment' => sizeof($this->uri->segment_array()) - 3
 	'uri_segment' => 4
 );
 
 $search_sections[] = array(
-	'label' => 'Year',
-	'data' => $this->course->get_years_for_all_courses(),
-	'uri_segment' => 5
+  'label' => 'Term',
+  'data' => $facet_options['terms'],
+  'uri_segment' => 5
 );
 
 $search_sections[] = array(
-	'label' => 'dScribe2',
-	'data' => $this->course-> get_users_for_all_courses('dscribe2'),
+	'label' => 'Year',
+	'data' => $facet_options['years'],
 	'uri_segment' => 6
 );
 
 $search_sections[] = array(
-	'label' => 'dScribe',
-	'data' => $this->course-> get_users_for_all_courses('dscribe1'),
+	'label' => 'dScribe2',
+	'data' => $facet_options['dscribe2s'],
 	'uri_segment' => 7
 );
 
-// define the Term search elements. Super sleazy hard coding. //aal
 $search_sections[] = array(
-  'label' => 'Term',
-  'data' => array('', 'Fall', 'Winter', 'Spring', 'Summer'),
-  'uri_segment' => 8
+	'label' => 'dScribe',
+	'data' => $facet_options['dscribe1s'],
+	'uri_segment' => 8   
 );
 
 $fscrumbs = array();

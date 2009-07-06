@@ -848,7 +848,6 @@ class Course extends Model
     ocw_objects.action_taken AS object_action_taken,
     ocw_objects.done AS object_done
 
-
     FROM
     ocw_courses
 

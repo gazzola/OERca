@@ -510,6 +510,8 @@ class Admin extends Controller {
 		*/
 	public function courses($action='view', $cid='')
 	{
+		$this->load->library('oer_faceted_search');
+		
 		if ($action == 'remove_course') {
 
 			// remove a course
@@ -607,11 +609,15 @@ class Admin extends Controller {
 			
 			// view all courses
 			$courses = $this->course->new_get_courses(getUserProperty('id'));
+			
+			// get faceted search choices
+			$facet_options = $this->oer_faceted_search->get_facet_options($courses);
 
 			$data = array('title'=>'Admin: Manage Courses ',
 										'section'=>'courses',
 										'tab'=>'',
-										'courses' => $courses);	
+										'courses' => $courses,
+										'facet_options' => $facet_options);	
 			$data['defuser'] = '';
 
 			$this->layout->buildPage('admin/courses/index', $data);

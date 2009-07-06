@@ -54,6 +54,8 @@ class Dscribe2 extends Controller {
      */
 	public function courses($task='', $cid='', $school=0, $year=0, $dscribe2=0, $dscribe=0)
 	{
+		$this->load->library('oer_faceted_search');
+		
 		if ($task == 'add') {
 			$this->course->new_course($_POST);
 			$this->ocw_utils->send_response('success');
@@ -94,8 +96,10 @@ class Dscribe2 extends Controller {
 		} else {
 			$this->data['title'] = 'dScribe2 &raquo; Manage Courses'; 
 			$uid = getUserProperty('id');
-      		$this->data['courses'] = $this->course->new_get_courses($uid);
-    		$this->layout->buildPage('dscribe2/courses', $this->data);
+      $this->data['courses'] = $this->course->new_get_courses($uid);
+      $this->data['facet_options'] = $this->oer_faceted_search->
+        get_facet_options($this->data['courses']);
+    	$this->layout->buildPage('dscribe2/courses', $this->data);
 		}
 	}
 
