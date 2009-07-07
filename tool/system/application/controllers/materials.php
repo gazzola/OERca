@@ -1257,24 +1257,46 @@ class Materials extends Controller {
 				// object file path and name
 				$object_filepath = $this->coobject->object_path($cid, $mid, $object_id);
 				$object_filename = $this->coobject->object_filename($object_id);
-				// the replacement file extension
-				$rep_name = $rco['name'];
-				$rep_name_parts=explode(".", $rep_name);
-				$rep_extension = ".".$rep_name_parts[1];
-				// the file path to the replacement data
-				$rep_filepath=$object_filepath."/".$object_filename."_rep".$rep_extension;
-				$this->zip->read_file(getcwd().'/uploads/'.$rep_filepath);
-			}
-			// Download the file to your desktop. Name it "SITENAME_IMSCP.zip"
-			$this->zip->download($name.'_RCOs.zip');
-		
-			$this->zip->clear_data(); // clear cached data
-		} else {
-				$msg = 'There are no Replacement Content Objects for this material';
-				flashMsg($msg);
-				redirect("materials/edit/$cid/$mid", 'location');
-		}
-	}
+				// the replacement file extension                                                                                               
+        $rep_name = $rco['name'];                                                                                                       
+        $rep_extension = "." . pathinfo($rep_name, PATHINFO_EXTENSION);                                                                 
+        // the file path to the replacement data                                                                                        
+        // path to the uploads dir                                                                                                      
+        $uploads_path = getcwd().'/uploads/';                                                                                           
+        
+        // the absolute path to the filename
+        $rep_filepath=$uploads_path.$object_filepath."/".
+          $object_filename."_rep".$rep_extension;                                        
+        
+        /* variants to make sure that we find the file since the file name in
+         * the DB and that on the filesystem may have differences in whether
+         * extension is upper or lower cased.
+         */
+        $rep_filepath_lowerext = $uploads_path.$object_filepath."/".
+          $object_filename."_rep".strtolower($rep_extension);                 
+        
+        $rep_filepath_upperext = $uploads_path.$object_filepath."/".
+          $object_filename."_rep".strtoupper($rep_extension);
+
+        // check as detected, uppercase and lowercase file name extensions
+        if (file_exists($rep_filepath)) {                                                                                         
+          $this->zip->read_file($rep_filepath);                                                                                
+        } elseif (file_exists($rep_filepath_upperext)) {                                                                                
+          $this->zip->read_file($rep_filepath_upperext);                                                                                
+        } elseif (file_exists($rep_filepath_lowerext)) {                                                                                
+          $this->zip->read_file($rep_filepath_lowerext);
+        }                                                                                                                               
+      }                                                                                                                                       
+      // Download the file to your desktop. Name it "SITENAME_IMSCP.zip"
+      $this->zip->download($name.'_RCOs.zip');
+
+      $this->zip->clear_data(); // clear cached data
+    } else {
+      $msg = 'There are no Replacement Content Objects for this material';
+      flashMsg($msg);
+      redirect("materials/edit/$cid/$mid", 'location');
+    }
+  }
 		
 		
 	/**
