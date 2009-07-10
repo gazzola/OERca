@@ -44,7 +44,7 @@ echo script('ocw_tool.js');
 <input type="hidden" id="oid" name="oid" value="<?=$obj['id']?>" />
 <input type="hidden" id="user" name="user" value="<?=$user?>" />
 	
-<button id="donetop" onclick="parent.window.location.replace(purl); parent.TB_remove()">Close</button>
+<button id="donetop" onclick="parent.window.location.replace(cpurl); parent.TB_remove()">Close</button>
 
 <div class="column span-20 first last" style="text-align:left; margin-bottom:10px;">
   <h3 style="font-size: 1.5em; color:#666;">OER Content Object: <?=$obj['name']?></h3>
@@ -106,7 +106,7 @@ echo script('ocw_tool.js');
 </div>
 
 <div class="column span-17 first last" style="text-align: center">
-	<button id="donebot" onclick="parent.window.location.replace(purl); parent.TB_remove()">Close</button>
+	<button id="donebot" onclick="parent.window.location.replace(cpurl); parent.TB_remove()">Close</button>
 </div>
 
 </div>

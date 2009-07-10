@@ -394,6 +394,8 @@ var Rules = {
 						} 
 						$('raction').value=val;
 				} else {	
+				  field = escape(field);
+				  val = escape(val);
 					new Ajax(url, { method: 'post', postBody: 'field='+field+'&val='+val, update: fb }).request();
 				}	
 		}

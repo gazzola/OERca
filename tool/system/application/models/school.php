@@ -132,6 +132,7 @@ class School extends Model
 	  return $school_list;
 	}
 	
+	
 	/**
 	 * Get all the school info (including the description)
 	 *

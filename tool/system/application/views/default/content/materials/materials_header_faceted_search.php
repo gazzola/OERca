@@ -13,7 +13,7 @@
 	}
 ?>
 
-<div class="column span-18 first last">
+<div class="column span-24 first last">
 
 	<div style="border-bottom: 1px solid #eee; margin-top: -10px; margin-left: 5px; padding-bottom: 5px;">
     <div style="float: left">

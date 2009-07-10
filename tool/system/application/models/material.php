@@ -143,7 +143,7 @@ class Material extends Model
     * @param   boolean	as_listing 
     * @return  array
     */
-  public function materials($cid, $mid='', $in_ocw=false, $as_listing=false)
+  public function materials($cid, $mid='', $in_ocw=false, $as_listing=false, $fs_status=0,$fs_action=0,$fs_type=0,$fs_repl=0)
   {
     $materials = array();
     $where1 = (is_numeric($cid)) ? "ocw_materials.course_id = $cid" : "ocw_materials.course_id = 0";
@@ -173,6 +173,73 @@ class Material extends Model
       }
     }
 		
+    return (sizeof($materials)) ? (($as_listing) ? $this->as_listing($materials):$materials) : null; 
+  }
+  
+    /**
+    * Get materials for a given course 
+    *
+    * @access  public
+    * @param   int	cid course id		
+    * @param   int mid material id	
+    * @param   boolean	in_ocw if true only get materials in ocw 
+    * @param   boolean	as_listing 
+    * @return  array
+    */
+  public function faceted_search_materials($cid, $mid='', $in_ocw=false, $as_listing=false, $author=0, $material_type=0, $file_type=0)
+  {
+    $materials = array();
+    $where1 = (is_numeric($cid)) ? "ocw_materials.course_id = $cid" : "ocw_materials.course_id = 0";
+    $where2 = ($mid=='') ? '' : "AND ocw_materials.id='$mid'";
+    if ($author > 0) {
+   		$authorslist = $this->material->authors_list($cid);
+    	$where3 = " AND (";
+    	$authors = explode("z", $author);
+    	foreach ($authors as $a) $authorwheres[] = "ocw_materials.author = ".$this->db->escape($authorslist[$a])." ";
+    	$where3 .= implode(" OR ", $authorwheres);
+    	$where3 .= ")";
+    } else $where3 = "";
+   	if ($material_type > 0) {
+   		$material_typeslist = $this->material->material_types_list($cid);
+    	$where4 = " AND (";
+    	$material_types = explode("z", $material_type);
+    	foreach ($material_types as $m) $material_typewheres[] = "ocw_tags.name = '".$material_typeslist[$m]."' ";
+    	$where4 .= implode(" OR ", $material_typewheres);
+    	$where4 .= ")";
+    } else $where4 = "";
+    $where5 = ""; //placeholder for cc license param
+   	if ($file_type > 0) {
+   		$file_typeslist = $this->material->mimetypes_list($cid);
+    	$where6 = " AND (";
+    	$file_types = explode("z", $file_type);
+    	foreach ($file_types as $fkey=>$f) $file_typewheres[] = "ocw_materials.mimetype_id = ".$f." ";
+    	$where6 .= implode(" OR ", $file_typewheres);
+    	$where6 .= ")";
+    } else $where6 = "";
+
+    $sql = "SELECT ocw_materials.*, ocw_mimetypes.mimetype, ocw_mimetypes.name AS mimename, ocw_tags.name AS tagname
+      FROM ocw_materials
+      LEFT JOIN ocw_mimetypes 
+      ON ocw_mimetypes.id = ocw_materials.mimetype_id
+      LEFT JOIN ocw_tags
+      ON ocw_tags.id = ocw_materials.tag_id
+      WHERE $where1 $where2 $where3 $where4 $where5 $where6
+      ORDER BY ocw_materials.order";
+//echo $sql;
+    $q = $this->db->query($sql);
+    if ($q->num_rows() > 0) {
+      foreach($q->result_array() as $row) {
+        $row['display_date'] = $this->ocw_utils->calc_later_date(
+                      $row['created_on'], $row['modified_on'],'d M, Y H:i:s'); // define the display date
+        $row['comments'] = $this->comments($row['id'],'user_id,comments,modified_on');
+        $row['files'] = $this->material_files($cid, $row['id']);
+        if ($in_ocw) {
+          if ($row['in_ocw']) { $materials[]= $row; }
+        } else {
+          $materials[]= $row; 
+        }
+      }
+    }
     return (sizeof($materials)) ? (($as_listing) ? $this->as_listing($materials):$materials) : null; 
   }
 
@@ -854,5 +921,199 @@ class Material extends Model
     }
     return $mat_cos_info;
 	}
+	
+	
+		/**
+   * Return distinct material authors list 
+   *
+   * @access  public
+   * @return array authors
+   * mbleed - faceted search 5/2009
+   */
+	public function authors_list($cid)
+	{
+		//get test curriculum
+		/*
+		$sql = "SELECT id FROM ocw_curriculums WHERE name = 'TEST'";
+	    $q = $this->db->query($sql);
+		$res = $q->result();
+		$test_curriculum_id = $res[0]->id;
+		
+		$author_array = array();
+		if (sizeof($materials) > 0) {
+			$idlist = array();
+			foreach ($materials['Materials'] as $m) $idlist[] = $m['id'];
+			//$materials_csv = implode(",", $idlist);
+	    	//$sql = "SELECT m.id, m.author, c.curriculum_id FROM ocw_materials m INNER JOIN ocw_courses c ON m.course_id = c.id WHERE m.id IN ($materials_csv) GROUP BY m.author ORDER BY m.author ASC";
+	    	$sql = "SELECT m.id, m.author, c.curriculum_id FROM ocw_materials m INNER JOIN ocw_courses c ON m.course_id = c.id GROUP BY m.author ORDER BY m.author ASC";
+	    	$q = $this->db->query($sql);
+	  		if ($q->num_rows() > 0) {
+	  			foreach ($q->result() as $row) {
+	  				if (in_array($row->id, $idlist)) $author_array[$row->id] = $row->author;
+	  			}
+	  		}
+		} */
+	   	$sql = "SELECT m.id, m.author FROM ocw_materials m WHERE m.course_id = $cid GROUP BY m.author ORDER BY m.author ASC";
+	    $q = $this->db->query($sql);
+	  	if ($q->num_rows() > 0) {
+	  		foreach ($q->result() as $row) {
+	  			$author_array[$row->id] = $row->author;
+	  		}
+	  	}
+	  	return $author_array;
+	}
+	
+		/**
+   * Return distinct material license list 
+   *
+   * @access  public
+   * @return array licenses
+   * mbleed - faceted search 5/2009
+   */
+	public function licenses_list($cid)
+	{
+		$license_array = array(1=>'Permission',2=>'Search',3=>'Create');
+		
+	  	return $license_array;
+	}	
+
+			/**
+   * Return distinct mimetypes list that have associated materials
+   *
+   * @access  public
+   * @return array mimetypes
+   * mbleed - faceted search 5/2009
+   */
+	public function mimetypes_list($cid)
+	{
+		$mimetype_array = array();
+	     $sql = "SELECT ocw_mimetypes.name, ocw_mimetypes.id AS mtid
+	      FROM ocw_materials
+	      LEFT JOIN ocw_mimetypes 
+	      ON ocw_mimetypes.id = ocw_materials.mimetype_id
+	      WHERE ocw_materials.course_id = $cid
+	      ORDER BY ocw_mimetypes.mimetype ASC";
+		
+	    $q = $this->db->query($sql);
+	  	foreach ($q->result() as $row) {
+	    	$mimetype_array[$row->mtid] = $row->name;
+	  	}
+		
+	  	return array_unique($mimetype_array);
+	}
+
+			/**
+   * Return distinct material types list 
+   *
+   * @access  public
+   * @return array mimetypes
+   * mbleed - faceted search 5/2009
+   */
+	public function material_types_list($cid)
+	{
+		$sql = "SELECT t.name, t.id FROM ocw_tags t INNER JOIN ocw_materials m ON m.tag_id = t.id WHERE m.course_id = $cid ORDER BY t.name ASC";
+
+	    $q = $this->db->query($sql);
+	  	foreach ($q->result() as $row) {
+	    	$mt_array[$row->id] = $row->name;
+	  	}
+		
+	  	return array_unique($mt_array);
+	}
+	
+				/**
+   * Return recommended actions list 
+   *
+   * @access  public
+   * @return array rec actions
+   * mbleed - faceted search 5/2009
+   */
+	public function rec_action_list($mid)
+	{
+		$sql = "SELECT id, action_type, action_taken FROM ocw_objects WHERE material_id=$mid ORDER BY action_type ASC";
+
+	    $q = $this->db->query($sql);
+	  	foreach ($q->result() as $row) {
+	  		if (is_null($row->action_type)) $row->action_type = 'None';
+	    	$list_array[$row->id] = $row->action_type;
+	  	}
+	  	return array_unique($list_array);
+	}
+	
+					/**
+   * Return co types list 
+   *
+   * @access  public
+   * @return array co types
+   * mbleed - faceted search 5/2009
+   */
+	public function co_type_list($mid)
+	{
+		$sql = "SELECT o.id, o.subtype_id, s.name FROM ocw_objects o INNER JOIN ocw_object_subtypes s ON s.id = o.subtype_id WHERE material_id=$mid ORDER BY s.name ASC";
+	    $q = $this->db->query($sql);
+	   	$list_array = array();
+	   	if ($q->num_rows() > 0) {
+		  	foreach ($q->result() as $row) {
+		    	$list_array[$row->subtype_id] = $row->name;
+		  	}
+	   	}
+	  	return array_unique($list_array);
+	}
+	
+					/**
+   * Return replacement exists list 
+   *
+   * @access  public
+   * @return array replacement
+   * mbleed - faceted search 5/2009
+   */
+	public function replacement_list($mid)
+	{
+		$list_array = array(1=>'With Replacement', 2=>'Without Replacement');
+		return $list_array;
+	}
+	
+					/**
+   * Return co status list 
+   *
+   * @access  public
+   * @return array co status
+   * mbleed - faceted search 5/2009
+   */
+	public function status_list($mid)
+	{
+		$list_array = array(1=>'No Action Assigned', 2=>'In Progress', 3=>'Cleared');
+	  	return $list_array;
+	}
+	
+	
+  /**
+  	* Map recommended actions to array key names. In case of the "Retain"
+  	* actions, the faceted search doesn't display objects because the 
+  	* action and the array key that represents the action are different.
+  	* This function provides a mapping between the action types and the
+  	* array key names.
+    *
+    * @access  public
+    * @param   string action name
+    * @return  string array key
+    */
+  public function map_recommended_action($action_name) {
+    $action_key = "";
+    switch($action_name) {
+      case "Retain: Permission":
+        $action_key = "retain:perm";
+        break;
+      case "Retain: Public Domain":
+        $action_key = "retain:pd";
+        break;
+      case "Retain: Copyright Analysis":
+        $action_key = "retain:ca";
+        break;
+      default:
+        $action_key = strtolower($action_name);
+    }
+    return $action_key;
+  }
 }
 ?>

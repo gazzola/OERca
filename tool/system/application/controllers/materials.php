@@ -38,11 +38,11 @@ class Materials extends Controller {
 
 
   // TODO: highlight the currently selected field
-  public function home($cid)
+  public function home($cid, $author=0,$material_type=0,$file_type=0)
   {
     $tags =  $this->tag->tags();
     $mimetypes =  $this->mimetype->mimetypes();
-    $materials =  $this->material->materials($cid,'',true,true);
+    $materials =  $this->material->faceted_search_materials($cid,'',true,true, $author, $material_type, $file_type); //faceted search mbleed
     
     $data = array('title'=>'Materials',
       'cid'=>$cid,
@@ -232,46 +232,86 @@ class Materials extends Controller {
 
 
 	// edit content objects	
-	public function edit($cid, $mid, $oid=0, $view='', $subtab='')
+	public function edit($cid, $mid, $fs_action=0,$fs_type=0,$fs_repl=0,$fs_status=0)
 	{
-	  $course = $this->course->get_course($cid); 
+		$object_bin = array();
+	  	$course = $this->course->get_course($cid); 
 		$material =  $this->material->materials($cid,$mid,true);
 		$stats = $this->coobject->object_stats($cid, $mid);
-		
-		// load view of "New" objects by default if there are any
-		if(($stats['data']['num_new'] > 0) && $view == '' && $oid == 0) {
-		  $view = 'new';
-		redirect("materials/edit/$cid/$mid/$oid/$view");
-		}
-		
-		// if all "New" objects have been processed go to "All" view
-		if($stats['data']['num_new'] == 0 && $view == 'new') {
-		  $view = '';
-		redirect("materials/edit/$cid/$mid");
-		}
-		
-		$view = (!in_array($view, array('all','new','ask:orig','fairuse','search','retain:pd',
-											'retain:perm','ask:rco','uncleared', 'permission','commission', 'retain:ca','replace',
-											'create','remove','cleared'))) ? 'all' : $view;
+		//echo "<pre>"; print_r($stats); echo "</pre>";
 
-		// get correct view if an object id is provided
-		if ($oid != 0)  {
-				$view = $this->coobject->object_status($cid,$mid,$oid); 
-				$oid = ($view=='new') ? 0 : $oid;
+		//faceted search filter 1 - recommended action type
+		if ($fs_action > 0) {
+			$fs_actions = $this->material->rec_action_list($mid);
+			$segment_array = explode("z", $fs_action);
+			foreach ($segment_array as $sa) {
+				$view = $this->material->map_recommended_action($fs_actions[$sa]);
+				if (isset($stats['objects'][$view])) {
+  				$object_bin = array_merge($object_bin, $stats['objects'][$view]);
+  			}
+			}
+		} else {
+			$view = 'all';
+			$object_bin = array_merge($object_bin, $stats['objects'][$view]);
 		}
+		//faceted search filter 2 - co type
+		if ($fs_type > 0) {
+			$fs_types = $this->material->co_type_list($mid);
+			$segment_array = explode("z", $fs_type);
+			foreach ($object_bin as $key=>$o) {
+				if(!in_array($o['subtype_id'], $segment_array)) unset($object_bin[$key]);
+			}
+		} 
+		//faceted search filter 3 - replacement?
+		if ($fs_repl > 0) {
+			$fs_repls = $this->material->replacement_list($mid);
+			$segment_array = explode("z", $fs_repl);
+			$replacement_oids = array();
+			foreach ($stats['objects']['replace'] as $key=>$o)  $replacement_oids[] = $o['id'];
+			foreach ($segment_array as $sa) {
+				foreach ($object_bin as $key=>$o) {
+					if ($sa == 1) { //with replacement
+						//echo $o['id'];
+						if(!in_array($o['id'], $replacement_oids)) unset($object_bin[$key]);
+					} else { //without replacement
+						if(in_array($o['id'], $replacement_oids)) unset($object_bin[$key]);
+					}
+				}
+			}
+		}
+
+		//faceted search filter 4 - status
+		$tmp_object_bin = array();
+		if ($fs_status > 0) {
+			$fs_statuss = $this->material->status_list($mid);
+			$segment_array = explode("z", $fs_status);
+			foreach ($object_bin as $key=>$o) {
+					if (in_array(1, $segment_array)) { //no action assigned, means action_type = null
+						if(is_null($o['action_type'])) $tmp_object_bin[] = $o;
+					}
+					if (in_array(2, $segment_array)) { //in progress, means action_type = something and done = 0
+						if(!is_null($o['action_type']) && $o['done'] == 0) $tmp_object_bin[] = $o;
+					}
+					if (in_array(3, $segment_array)) { //cleared, means done = 1
+						if($o['done'] == 1) $tmp_object_bin[] = $o;
+					}
+			}
+		}  else $tmp_object_bin = $object_bin;
+		
+		$object_bin = array_values($tmp_object_bin); //rekey array numerically 0-n
+						//echo "<pre>"; print_r($object_bin); echo "</pre>";
 
 		// get values for display
 		$data = array(
 						'cid'=>$cid,
 						'mid'=>$mid,
-						'oid'=>$oid,
 	 					'cname' => $course['number'].' '.$course['title'],
 						'director' => $course['director'],
-	  				'material' =>  $material[0], 
-						'objects' => $stats['objects'][$view],	
-						'num_objects' => sizeof($stats['objects'][$view]),
-		        'view' => $view, 
-		        'subtab' => $subtab, 
+	  					'material' =>  $material[0], 
+						'objects' => $object_bin,	
+						'num_objects' => sizeof($object_bin),
+						'num_unfiltered_objects' => $stats['data']['num_all'],
+		        		'view' => $view, 
 						'title'=>'Edit Material &raquo; '.$material[0]['name'],
 		);
 
@@ -1217,24 +1257,46 @@ class Materials extends Controller {
 				// object file path and name
 				$object_filepath = $this->coobject->object_path($cid, $mid, $object_id);
 				$object_filename = $this->coobject->object_filename($object_id);
-				// the replacement file extension
-				$rep_name = $rco['name'];
-				$rep_name_parts=explode(".", $rep_name);
-				$rep_extension = ".".$rep_name_parts[1];
-				// the file path to the replacement data
-				$rep_filepath=$object_filepath."/".$object_filename."_rep".$rep_extension;
-				$this->zip->read_file(getcwd().'/uploads/'.$rep_filepath);
-			}
-			// Download the file to your desktop. Name it "SITENAME_IMSCP.zip"
-			$this->zip->download($name.'_RCOs.zip');
-		
-			$this->zip->clear_data(); // clear cached data
-		} else {
-				$msg = 'There are no Replacement Content Objects for this material';
-				flashMsg($msg);
-				redirect("materials/edit/$cid/$mid", 'location');
-		}
-	}
+				// the replacement file extension                                                                                               
+        $rep_name = $rco['name'];                                                                                                       
+        $rep_extension = "." . pathinfo($rep_name, PATHINFO_EXTENSION);                                                                 
+        // the file path to the replacement data                                                                                        
+        // path to the uploads dir                                                                                                      
+        $uploads_path = getcwd().'/uploads/';                                                                                           
+        
+        // the absolute path to the filename
+        $rep_filepath=$uploads_path.$object_filepath."/".
+          $object_filename."_rep".$rep_extension;                                        
+        
+        /* variants to make sure that we find the file since the file name in
+         * the DB and that on the filesystem may have differences in whether
+         * extension is upper or lower cased.
+         */
+        $rep_filepath_lowerext = $uploads_path.$object_filepath."/".
+          $object_filename."_rep".strtolower($rep_extension);                 
+        
+        $rep_filepath_upperext = $uploads_path.$object_filepath."/".
+          $object_filename."_rep".strtoupper($rep_extension);
+
+        // check as detected, uppercase and lowercase file name extensions
+        if (file_exists($rep_filepath)) {                                                                                         
+          $this->zip->read_file($rep_filepath);                                                                                
+        } elseif (file_exists($rep_filepath_upperext)) {                                                                                
+          $this->zip->read_file($rep_filepath_upperext);                                                                                
+        } elseif (file_exists($rep_filepath_lowerext)) {                                                                                
+          $this->zip->read_file($rep_filepath_lowerext);
+        }                                                                                                                               
+      }                                                                                                                                       
+      // Download the file to your desktop. Name it "SITENAME_IMSCP.zip"
+      $this->zip->download($name.'_RCOs.zip');
+
+      $this->zip->clear_data(); // clear cached data
+    } else {
+      $msg = 'There are no Replacement Content Objects for this material';
+      flashMsg($msg);
+      redirect("materials/edit/$cid/$mid", 'location');
+    }
+  }
 		
 		
 	/**

@@ -800,6 +800,24 @@ class OCW_user extends Model
     return($this->get_co_count($cid, 'no'));
   }
 
+	/**
+   * Return users listed in courses, by role
+   *
+   * @access  public
+   * @param string role
+   * @return array users
+   * mbleed - faceted search 5/2009
+   */
+	public function get_users_for_all_courses_by_role($role)
+	{
+		$this->db->select('*')->from('users')->where("role = '$role'")->order_by('name asc');
+		$q = $this->db->get();
+	  	foreach ($q->result() as $row) {
+	    	$user_array[$row->id] = $row->name;
+	  	}
+		
+	  	return array_unique($user_array);
+	}
 
 
 }

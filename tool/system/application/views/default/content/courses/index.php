@@ -1,4 +1,8 @@
-<div class="column span-24 first last">
+<?php 
+	$this->load->view(property('app_views_path').'/courses/_faceted_search.php', $data); 	
+?>
+
+<div class="column span-18 first last">
 
 <?php if (!isset($courses) || $courses == null) { ?>
 
@@ -11,9 +15,10 @@
 
 
 <h2><?= $school ?></h2>
+<!--
 <p><em>Note: Hold down the shift key to select multiple columns to sort</em></p>
-
-<table class="sortable-onload-1 rowstyle-alt no-arrow">
+-->
+<table class="sortable-onload-1 rowstyle-alt no-arrow" style="width: 100%;">
       <caption class="caption_progbar_key">
           <img src="<?= site_url("/home/make_stat_key/rem") ?>" class="prog-key"> No Action Assigned
           &nbsp;
@@ -24,8 +29,6 @@
     <thead>
     <tr>
         <th class="sortable">Title</th>
-        <th class="sortable-sortEnglishLonghandDateFormat">Start Date</th>
-        <th class="sortable-sortEnglishLonghandDateFormat">End Date</th>
         <th class="sortable">Curriculum</th>
         <th class="sortable">dScribe(s)</th>
         <th class="sortable">Instructor(s)</th>
@@ -44,6 +47,8 @@
 		<td>
 			<?=anchor(site_url('materials/home/'.$c['id']),$c['number'].' '.$c['title'],array('title'=>'Edit course materials'))?>
 			<br/>
+			<?=$c['term']." ".$c['year']; ?>
+			<br />
 			<span style="font-size:9px; clear:both; margin-top:20px;">
 			<?=
 				anchor(site_url("courses/edit_course_info/{$c['id']}").'?TB_iframe=true&height=600&width=850','Edit Info &raquo;',array('class'=>'smoothbox','title'=>'Edit course information'))
@@ -53,29 +58,53 @@
 			<?php } ?>
 			</span>
 		</td>
+		<!-- comment out start and end date cols and move under title
     <td><?=mdate('%d %M, %Y',mysql_to_unix($c['start_date']))?></td>
     <td><?=mdate('%d %M, %Y',mysql_to_unix($c['end_date']))?></td>
-    <td width="40px"><?=ucfirst($c['cname'])?></td>
+    -->
+    <td width="40px"><?=ucfirst($c['curriculum_name'])?></td>
     <td>
-		  <b>dScribe1(s):<br></b><?=ucfirst($c['dscribe1s'])?>
-			<? if ($c['dscribe1s'] != '') { ?> <br> <? } ?>
-		  <b>dScribe2(s):<br></b><?=ucfirst($c['dscribe2s'])?>
+		  <b>dScribe1(s):</b><br>
+		  <?php
+		  if (count($c['dscribe1s']) > 0) { 
+		    foreach($c['dscribe1s'] as $d) { echo ucfirst($d['name']); echo"<br />"; } 
+	    } else {
+	      echo "<i>None assigned.</i><br />";
+	    }
+		  ?>
+		  <b>dScribe2(s):</b><br>
+		  <?php
+		  if (count($c['dscribe2s']) > 0) { 
+		    foreach($c['dscribe2s'] as $d) { echo ucfirst($d['name']); echo"<br />"; } 
+	    } else {
+	      echo "<i>None assigned.</i><br />";
+	    }
+		  ?>
 		</td>
-    <td><?=ucfirst($c['instructors'])?></td>
-    
     <td>
+      <?php
+		  if (count($c['instructors']) > 0) { 
+		    foreach($c['instructors'] as $i) { echo ucfirst($i['name']); echo"<br />"; } 
+	    } else {
+	      echo "<i>None assigned.</i><br />";
+	    }
+		  ?>
+    </td>
+    
+    <td>   
     <? $params_url = $c['total'].'/'.$c['done'].'/'.$c['ask'].'/'.$c['rem'];
       if ($c['total'] > 0) { ?>
 	  <a href="<?php echo site_url().'materials/home/'.$c['id']?>">
-          <img src="<?= site_url("/home/course_bar/$params_url") ?>" 
+<img src="<?= site_url("/home/course_bar/$params_url") ?>" 
               alt="Progress Bar: 
               Total Objects=<?=$c['total'] ?>
               Cleared Objects=<?=$c['done'] ?> 
               Objects in progress=<?=$c['ask'] ?> 
               Remaining Objects=<?=$c['rem'] ?>"
               class="prog-bar">
-	<? }?>
+              
 	   </a>
+	   <? }?>
    </td>
     <?php if ((getUserProperty('role') == 'admin')) { ?>
 				<td>

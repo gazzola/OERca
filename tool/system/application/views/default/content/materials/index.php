@@ -1,7 +1,11 @@
+<?php 
+	$this->load->view(property('app_views_path').'/materials/_faceted_search.php', $data); 	
+?>
+
 <?php $this->load->view(property('app_views_path').'/materials/materials_header.php', $data); ?>
 
 <?php $tags[0] = '-- select --'; ?>
-
+<div class="column span-24 first last">
 <input type="hidden" id="cid" name="cid" value="<?=$cid?>" />
 
 <?php if ($materials == null) { 
@@ -139,7 +143,7 @@
   </div>
 </form>
 <?php }  ?>
-
+</div>
 <script type="text/javascript">
 window.addEvent('domready', function() {
     var myTips = new MooTips($$('.tooltip'), { maxTitleChars: 50 });
