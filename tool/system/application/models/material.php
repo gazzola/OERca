@@ -940,7 +940,6 @@ class Material extends Model
 		$res = $q->result();
 		$test_curriculum_id = $res[0]->id;
 		
-		$author_array = array();
 		if (sizeof($materials) > 0) {
 			$idlist = array();
 			foreach ($materials['Materials'] as $m) $idlist[] = $m['id'];
@@ -954,6 +953,7 @@ class Material extends Model
 	  			}
 	  		}
 		} */
+		  $author_array = array();
 	   	$sql = "SELECT m.id, m.author FROM ocw_materials m WHERE m.course_id = $cid GROUP BY m.author ORDER BY m.author ASC";
 	    $q = $this->db->query($sql);
 	  	if ($q->num_rows() > 0) {
@@ -1012,7 +1012,8 @@ class Material extends Model
    */
 	public function material_types_list($cid)
 	{
-		$sql = "SELECT t.name, t.id FROM ocw_tags t INNER JOIN ocw_materials m ON m.tag_id = t.id WHERE m.course_id = $cid ORDER BY t.name ASC";
+	    $mt_array = array();
+		  $sql = "SELECT t.name, t.id FROM ocw_tags t INNER JOIN ocw_materials m ON m.tag_id = t.id WHERE m.course_id = $cid ORDER BY t.name ASC";
 
 	    $q = $this->db->query($sql);
 	  	foreach ($q->result() as $row) {
@@ -1031,7 +1032,8 @@ class Material extends Model
    */
 	public function rec_action_list($mid)
 	{
-		$sql = "SELECT id, action_type, action_taken FROM ocw_objects WHERE material_id=$mid ORDER BY action_type ASC";
+	    $list_array = array();
+		  $sql = "SELECT id, action_type, action_taken FROM ocw_objects WHERE material_id=$mid ORDER BY action_type ASC";
 
 	    $q = $this->db->query($sql);
 	  	foreach ($q->result() as $row) {
