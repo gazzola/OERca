@@ -840,34 +840,50 @@ class Coobject extends Model
 				return $status;
 	}
 	
-		/** 
+	/**
 	 * return the current progress of an object (what is displayed on the colored progress bars)
+	 * Modified per OERDEV-260 to have a consistent definition of the object's progress.
+	 * Here are the rules defined there:
+	 *
+   * "cleared" -- An object is considered "cleared" when a final action (action_taken)
+   * has been selected AND the object is marked as "cleared for publishing" (done).
+   *
+   * "in progress" An object is considered "in progress" when it is not "cleared" AND
+   * any one of four things has been done with the object:
+   *   1) A question has been asked of the instructor (ask == yes)
+   *   2) A question has been asked of the dScribe2 (ask_dscribe2 == yes)
+   *   3) A Recommended Action (action_type) has been selected (is not NULL)
+   *   4) A Final Action (action_taken) has been selected (is not NULL)
+   *
    *
 	 * @param   int oid object id
    * @return  string status [cleared,inprogress,notcleared]
 	 */
+
 	/* TODO: rewrite the query to allow checking of status of multiple 
 	 * objects in a single query instead of a query per object */
+
   public function object_progress($oid)
   {
-	$this->db->select('*')->from('objects')->where('id',$oid)->orderby('modified_on DESC');	
-	$q = $this->db->get();
-	$o = $q->row_array();
+    $this->db->select('*')->from('objects')->where('id',$oid)->orderby('modified_on DESC');
+    $q = $this->db->get();
+    $o = $q->row_array();
 
-	$status = 'notcleared';
-    if ($o['done']=='1') { $status = 'cleared'; }
-    else { 
-    	if ($o['action_type'] != NULL) { 
-          	$status = 'inprogress'; 
-      	}
-     	elseif ($o['action_taken'] != NULL) { 
-          	$status = 'inprogress'; 
-     	}
-     	else { 
-          	$status = 'notcleared'; 
-     	}
+    $status = 'notcleared';
+    if ($o['done'] == '1' && !empty($o['action_taken'])) {
+      $status = 'cleared';
+    } else {
+      if (!empty($o['action_type'])) {
+        $status = 'inprogress';
+      } elseif (!empty($o['action_taken'])) {
+        $status = 'inprogress';
+      } elseif ($o['ask'] == 'yes' && $o['ask_status'] != 'new') {
+        $status = 'inprogress';
+      } elseif ($o['ask_dscribe2'] == 'yes' && $o['ask_dscribe2_status'] != 'new') {
+        $status = 'inprogress';
+      }
     }
-    return $status; 
+    return $status;
   }
 
 
@@ -928,7 +944,7 @@ class Coobject extends Model
                     			}
                 			}
 
-											// uncleared	
+											// uncleared	XXX This marks ALL objects as uncleared ???
 	                    $data['num_uncleared']++;
 	                    array_push($objects['uncleared'], $obj); 
 	
@@ -1000,13 +1016,11 @@ class Coobject extends Model
 	                                array_push($objects['remove'],$obj);
 	                                $data['num_remove']++; break;
 	                          default:
-	                                if ($obj['ask']=='no') {
-	                                    array_push($objects['new'], $obj); 
-	                                    $data['num_new']++;
-	                                }
+	                                array_push($objects['new'], $obj); 
+	                                $data['num_new']++; break;
 	                    }
 	                    
-			                if ($obj['done'] == 1) {
+			                if ($obj['done'] == 1 && !empty($obj['action_taken'])) {
 			                     array_push($objects['cleared'], $obj);
 			                     $data['num_cleared']++;
 			                }
@@ -1175,9 +1189,20 @@ class Coobject extends Model
 		$this->db->insert($table,$data);
 
 		if (isset($data['role'])) {
-				if ($data['role']=='dscribe2' && $type=='original') { $this->update($oid, array('ask_dscribe2'=>'yes')); }
-				if ($data['role']=='instructor') { $r = ($type=='original') ? $this->update($oid, array('ask'=>'yes')) 
-																																		: $this->update_replacement($oid, array('ask'=>'yes')); }
+			if ($data['role']=='dscribe2') {
+				if ($type=='original') {
+				  $this->update($oid, array('ask_dscribe2'=>'yes','ask_dscribe2_status'=>'in progress'));
+				} else {
+				  $this->update_replacement($oid, array('ask'=>'yes', 'ask_status'=>'in progress'));
+				}
+			}
+			if ($data['role']=='instructor') {
+				if ($type=='original') {
+				  $this->update($oid, array('ask'=>'yes', 'ask_status'=>'in progress'));
+				} else {
+					$this->update_replacement($oid, array('ask'=>'yes', 'ask_status'=>'in progress'));
+				}
+			}
 		}
 	}
 	

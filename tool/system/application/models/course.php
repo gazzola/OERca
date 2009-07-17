@@ -1091,13 +1091,15 @@ class Course extends Model
         
       // Do the counts for defined content objects.
       if ($row['object_id']) {
-        if ($row['object_done'] == '1') {
+        if ($row['object_done'] == '1' && !empty($row['object_action_taken'])) {
           $this->courses[$row['school_name']]
             [$row['curriculum_name']]
             [$row['course_id']]
             ['done']++;
-        } elseif (($row['object_action_type'] != NULL) ||
-            ($row['object_action_taken'] != NULL)) {
+        } elseif (!empty($row['object_action_type']) ||
+            !empty($row['object_action_taken']) ||
+            (!empty($row['object_ask']) && $row['object_ask_status'] != 'new') ||
+            (!empty($row['object_ask_dscribe2']) && $row['object_ask_dscribe2_status'] != 'new')) {
           $this->courses[$row['school_name']]
             [$row['curriculum_name']]
             [$row['course_id']]

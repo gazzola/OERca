@@ -22,16 +22,16 @@
   	</div>
 
 <?php } else { ?>
-<!--
-			<div class="div_progbar_key">
-          		<img src="<?= site_url("/home/make_stat_key/rem") ?>" class="prog-key"> No Action Assigned
-          		 &nbsp;
-          		<img src="<?= site_url("/home/make_stat_key/ask") ?>" class="prog-key">  In Progress
-          		&nbsp;
-          		<img src="<?= site_url("/home/make_stat_key/done") ?>" class="prog-key"> Cleared
-      		</div>
-		<br /><br />-->
-		<div class="column span-19 first last dwrap" style="width: 770px;">
+		<div class="column span-19 first last div_progbar_key" style="width: 770px;">
+            		<img src="<?= site_url("/home/make_stat_key/rem") ?>" class="prog-key"> No Action Assigned
+            		 &nbsp;
+            		<img src="<?= site_url("/home/make_stat_key/ask") ?>" class="prog-key">  In Progress
+            		&nbsp;
+            		<img src="<?= site_url("/home/make_stat_key/done") ?>" class="prog-key"> Cleared
+    </div>
+      
+    <div class="column span-19 first last dwrap" style="width: 770px; padding-left: 30px;">
+    
 			<?= $this->ocw_utils->create_co_list($cid,$mid,$objects,$view,$inclrep,$numcols); ?>
 		</div>
 		

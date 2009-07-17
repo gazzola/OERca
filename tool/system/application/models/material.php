@@ -561,21 +561,27 @@ class Material extends Model
 
     $where = array('material_id'=>$mid);
     // bdr OERDEV146:  let's also ask DB for action_type so we can figure out Recommend Action
-    $q = $this->db->query("SELECT done, action_type, 
-                action_taken FROM ocw_objects WHERE material_id=$mid");
+    $q = $this->db->query("SELECT done, action_type, action_taken,
+      ask, ask_status, ask_dscribe2, ask_dscribe2_status FROM ocw_objects WHERE material_id=$mid");
     // $this->ocw_utils->dump($where);
     foreach($q->result_array() as $row) { 
-      if ($row['done']=='1') { $status['done']++; }
+      if ($row['done'] == '1' && !empty($row['action_taken']))  { $status['done']++; }
       else { 
           // bdr OERDEV-146: let's count number of "recommended actions that are not NULL
-          if ($row['action_type'] != NULL) { 
-          	$status['recaction']++; 
+          if (!empty($row['action_type'])) {
+          	$status['recaction']++;
           }
-          elseif ($row['action_taken'] != NULL) { 
-          	$status['actaken']++; 
+          elseif (!empty($row['action_taken'])) {
+          	$status['actaken']++;
           }
-          else { 
-                $status['notdone']++; 
+          elseif ($row['ask'] == 'yes' && $row['ask_status'] != 'new') {
+          	$status['actaken']++;
+          }
+          elseif ($row['ask_dscribe2'] == 'yes' && $row['ask_dscribe2_status'] != 'new') {
+          	$status['actaken']++;
+          }
+          else {
+            $status['notdone']++;
           }
       }
     }
@@ -939,7 +945,6 @@ class Material extends Model
 		$res = $q->result();
 		$test_curriculum_id = $res[0]->id;
 		
-		$author_array = array();
 		if (sizeof($materials) > 0) {
 			$idlist = array();
 			foreach ($materials['Materials'] as $m) $idlist[] = $m['id'];
@@ -953,6 +958,7 @@ class Material extends Model
 	  			}
 	  		}
 		} */
+		  $author_array = array();
 	   	$sql = "SELECT m.id, m.author FROM ocw_materials m WHERE m.course_id = $cid GROUP BY m.author ORDER BY m.author ASC";
 	    $q = $this->db->query($sql);
 	  	if ($q->num_rows() > 0) {
@@ -1011,7 +1017,8 @@ class Material extends Model
    */
 	public function material_types_list($cid)
 	{
-		$sql = "SELECT t.name, t.id FROM ocw_tags t INNER JOIN ocw_materials m ON m.tag_id = t.id WHERE m.course_id = $cid ORDER BY t.name ASC";
+	    $mt_array = array();
+		  $sql = "SELECT t.name, t.id FROM ocw_tags t INNER JOIN ocw_materials m ON m.tag_id = t.id WHERE m.course_id = $cid ORDER BY t.name ASC";
 
 	    $q = $this->db->query($sql);
 	  	foreach ($q->result() as $row) {
@@ -1030,7 +1037,8 @@ class Material extends Model
    */
 	public function rec_action_list($mid)
 	{
-		$sql = "SELECT id, action_type, action_taken FROM ocw_objects WHERE material_id=$mid ORDER BY action_type ASC";
+	    $list_array = array();
+		  $sql = "SELECT id, action_type, action_taken FROM ocw_objects WHERE material_id=$mid ORDER BY action_type ASC";
 
 	    $q = $this->db->query($sql);
 	  	foreach ($q->result() as $row) {
@@ -1109,6 +1117,9 @@ class Material extends Model
         break;
       case "Retain: Copyright Analysis":
         $action_key = "retain:ca";
+        break;
+      case "None":
+        $action_key = "new";
         break;
       default:
         $action_key = strtolower($action_name);

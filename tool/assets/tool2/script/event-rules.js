@@ -273,6 +273,19 @@ var Rules = {
 				var proceed = true;
 
 				if (field=='done') {
+					if (val == 1) {
+						var finalact = document.getElementsByName('action_taken');
+						if (finalact[0].value == '') {
+							alert('You must select a Final Action before the object can be marked as cleared.');
+							// return the display to have 'no' selected
+							var done = document.getElementsByName('done');
+							done[0].checked = false;
+							done[1].checked = true;
+							proceed=false;
+							return false;
+						}
+					}
+
 					/* Do this unconditionally for now
 					if (val == 1)
 					{
@@ -393,6 +406,18 @@ var Rules = {
 							this.scrollIntoView();
 						} 
 						$('raction').value=val;
+				} else if (field=='action_taken') {
+					if (val == '') {
+						// When resetting final action to 'none', assure that object is not cleared ('done')
+						var done = document.getElementsByName('done');
+						if (done[0].value == 1) {
+						var fb1 = $('feedback');
+							new Ajax(url, { method: 'post', postBody: 'field=done&val=0', update: fb1 }).request();
+							done[0].checked = false;
+							done[1].checked = true;
+						}
+					}
+					new Ajax(url, { method: 'post', postBody: 'field='+field+'&val='+val, update: fb }).request();
 				} else {	
 				  field = escape(field);
 				  val = escape(val);
