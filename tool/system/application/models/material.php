@@ -562,21 +562,27 @@ class Material extends Model
 
     $where = array('material_id'=>$mid);
     // bdr OERDEV146:  let's also ask DB for action_type so we can figure out Recommend Action
-    $q = $this->db->query("SELECT done, action_type, 
-                action_taken FROM ocw_objects WHERE material_id=$mid");
+    $q = $this->db->query("SELECT done, action_type, action_taken,
+      ask, ask_status, ask_dscribe2, ask_dscribe2_status FROM ocw_objects WHERE material_id=$mid");
     // $this->ocw_utils->dump($where);
     foreach($q->result_array() as $row) { 
-      if ($row['done']=='1') { $status['done']++; }
+      if ($row['done'] == '1' && !empty($row['action_taken']))  { $status['done']++; }
       else { 
           // bdr OERDEV-146: let's count number of "recommended actions that are not NULL
-          if ($row['action_type'] != NULL) { 
-          	$status['recaction']++; 
+          if (!empty($row['action_type'])) {
+          	$status['recaction']++;
           }
-          elseif ($row['action_taken'] != NULL) { 
-          	$status['actaken']++; 
+          elseif (!empty($row['action_taken'])) {
+          	$status['actaken']++;
           }
-          else { 
-                $status['notdone']++; 
+          elseif ($row['ask'] == 'yes' && $row['ask_status'] != 'new') {
+          	$status['actaken']++;
+          }
+          elseif ($row['ask_dscribe2'] == 'yes' && $row['ask_dscribe2_status'] != 'new') {
+          	$status['actaken']++;
+          }
+          else {
+            $status['notdone']++;
           }
       }
     }
@@ -1112,6 +1118,9 @@ class Material extends Model
         break;
       case "Retain: Copyright Analysis":
         $action_key = "retain:ca";
+        break;
+      case "None":
+        $action_key = "new";
         break;
       default:
         $action_key = strtolower($action_name);

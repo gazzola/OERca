@@ -238,7 +238,8 @@ class Materials extends Controller {
 	  	$course = $this->course->get_course($cid); 
 		$material =  $this->material->materials($cid,$mid,true);
 		$stats = $this->coobject->object_stats($cid, $mid);
-		//echo "<pre>"; print_r($stats); echo "</pre>";
+    //echo "<pre>"; print_r($stats); echo "</pre>";
+    //$this->ocw_utils->dump($stats);
 
 		//faceted search filter 1 - recommended action type
 		if ($fs_action > 0) {
@@ -246,6 +247,7 @@ class Materials extends Controller {
 			$segment_array = explode("z", $fs_action);
 			foreach ($segment_array as $sa) {
 				$view = $this->material->map_recommended_action($fs_actions[$sa]);
+$this->ocw_utils->log_to_apache('error', __FUNCTION__.": after mapping Recommended Action, view is '{$view}' and stats['objects'] is '{$stats['objects'][$view]}'");
 				if (isset($stats['objects'][$view])) {
   				$object_bin = array_merge($object_bin, $stats['objects'][$view]);
   			}
@@ -266,17 +268,19 @@ class Materials extends Controller {
 		if ($fs_repl > 0) {
 			$fs_repls = $this->material->replacement_list($mid);
 			$segment_array = explode("z", $fs_repl);
-			$replacement_oids = array();
-			foreach ($stats['objects']['replace'] as $key=>$o)  $replacement_oids[] = $o['id'];
-			foreach ($segment_array as $sa) {
-				foreach ($object_bin as $key=>$o) {
-					if ($sa == 1) { //with replacement
-						//echo $o['id'];
-						if(!in_array($o['id'], $replacement_oids)) unset($object_bin[$key]);
-					} else { //without replacement
-						if(in_array($o['id'], $replacement_oids)) unset($object_bin[$key]);
-					}
-				}
+			if (count($segment_array) != 2) {
+  			$replacement_oids = array();
+  			foreach ($stats['objects']['replace'] as $key=>$o)  $replacement_oids[] = $o['id'];
+  			foreach ($segment_array as $sa) {
+  				foreach ($object_bin as $key=>$o) {
+  					if ($sa == 1 ) { //with replacement
+  						//echo $o['id'];
+  						if(!in_array($o['id'], $replacement_oids)) unset($object_bin[$key]);
+  					} else { //without replacement
+  						if(in_array($o['id'], $replacement_oids)) unset($object_bin[$key]);
+  					}
+  				}
+  			}
 			}
 		}
 
@@ -285,15 +289,24 @@ class Materials extends Controller {
 		if ($fs_status > 0) {
 			$fs_statuss = $this->material->status_list($mid);
 			$segment_array = explode("z", $fs_status);
+			// Objects may be marked as cleared (done) w/o ever having a recommended action.
+			// Make sure that we only count them once by always checking 'done'.
 			foreach ($object_bin as $key=>$o) {
-					if (in_array(1, $segment_array)) { //no action assigned, means action_type = null
-						if(is_null($o['action_type'])) $tmp_object_bin[] = $o;
+					if (in_array(1, $segment_array)) { //no action assigned
+						if ($o['done'] == 0 && (empty($o['action_type']) && empty($o['action_taken'])
+						    && $o['ask_status'] == 'new' && $o['ask_dscribe2_status'] == 'new')) {
+						  $tmp_object_bin[] = $o;
+						}
 					}
-					if (in_array(2, $segment_array)) { //in progress, means action_type = something and done = 0
-						if(!is_null($o['action_type']) && $o['done'] == 0) $tmp_object_bin[] = $o;
+					if (in_array(2, $segment_array)) { //in progress
+						if ($o['done'] == 0 && (!empty($o['action_type']) || !empty($o['action_taken']) ||
+						  ($o['ask'] == 'yes' && $o['ask_status'] != 'new') ||
+						  ($o['ask_dscribe2'] == 'yes' && $o['ask_dscribe2_status'] != 'new'))) {
+						    $tmp_object_bin[] = $o;
+						}
 					}
-					if (in_array(3, $segment_array)) { //cleared, means done = 1
-						if($o['done'] == 1) $tmp_object_bin[] = $o;
+					if (in_array(3, $segment_array)) { //cleared
+						if ($o['done'] == 1 && !empty($o['action_taken'])) $tmp_object_bin[] = $o;
 					}
 			}
 		}  else $tmp_object_bin = $object_bin;
