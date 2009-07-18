@@ -247,7 +247,6 @@ class Materials extends Controller {
 			$segment_array = explode("z", $fs_action);
 			foreach ($segment_array as $sa) {
 				$view = $this->material->map_recommended_action($fs_actions[$sa]);
-$this->ocw_utils->log_to_apache('error', __FUNCTION__.": after mapping Recommended Action, view is '{$view}' and stats['objects'] is '{$stats['objects'][$view]}'");
 				if (isset($stats['objects'][$view])) {
   				$object_bin = array_merge($object_bin, $stats['objects'][$view]);
   			}
