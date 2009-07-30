@@ -1,5 +1,6 @@
 <?php 
 $count = 1;
+$rawids = array();
 
 foreach($repl_objects as  $obj) {
 
@@ -91,6 +92,7 @@ foreach($repl_objects as  $obj) {
 
 </div>
 </td>
+<?php $rawids[] = $obj['object_id']; ?>
 
 <!-- Replacement -->
 <td width="320" style="vertical-align:top">
@@ -104,4 +106,8 @@ foreach($repl_objects as  $obj) {
 
 
 </tr>	
-<?php $count++; } } ?>
+<?php $count++; } }
+
+$idarray = json_encode($rawids); ?>
+
+<input type="hidden" id="idarray" name="idarray" value='<?=$idarray?>' />

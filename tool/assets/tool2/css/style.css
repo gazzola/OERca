@@ -452,6 +452,11 @@ div#rightarrow a, div#leftarrow a { border:none; color:#fff}
 	height: 2em;
 }
 
+#pno {
+	opacity:0.3;
+	filter:alpha(opacity=30)
+}
+
 /**************** faceted search ***********************/
 .faceted_search_title {
 	font-weight: bolder;

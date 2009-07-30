@@ -656,7 +656,8 @@ class Coobject extends Model
 		}
 
 		/* add information to return array */	
-		if ($num_done>0) { $done['all']=$num_done; }
+		// KWC This doesn't appear to be used and confuses the prev/next counting
+		// if ($num_done>0) { $done['all']=$num_done; }
 		$info['general'] = ($num_general) ?  $general : null;
 		$info['replacement'] = ($num_repl) ?  $replacement : null;
 		$info['fairuse'] = ($num_fairuse) ?  $fairuse : null;
@@ -2025,8 +2026,9 @@ class Coobject extends Model
 				$q_results = $s['objects'][$m[0]];
 		} else {
 				if ($filter=='retain') { $filter = 'retain:ca'; }
-				$q_results = $s['objects'][$filter]; 
-		}
+				if (isset($s['objects'][$filter]))
+				  $q_results = $s['objects'][$filter];
+	  }
 
 		$total_num = sizeof($q_results);
 		$prev_obj = $curr_num = $next_obj = null;
@@ -2083,6 +2085,81 @@ class Coobject extends Model
 		}
 
 		return $prev_next; 
+	}
+
+  /**
+    * Generate the previous, next navigation arrows at the bottom of
+    * the CO display pages. Arrows are only clickable if in fact that
+    * material has previous or next content objects. Otherwise they
+    * are displayed as unclickable text. The relevant results are
+    * returned as generated html.
+    *
+    * This version is called from the materials/prev_next_arrow controller function
+    * which sends a list of the objects ids (only original objects) that should
+    * be used to generate the navigation arrows.
+    *
+    * @param    int the course id
+    * @param    int the material id
+    * @param    int the content object id
+    * @param    string  which [prev|next|both]
+    * @param    array of object ids currently filtered
+    *
+    * @return   string the html source for the navigation links
+    */
+  public function prev_next_lite($cid, $mid, $oid, $which, $objarray)
+	{
+    $this->ocw_utils->log_to_apache('error', __function__.": There were ".sizeof($objarray)." objects passed in via objarray!");
+	  $q_results = $objarray;
+
+		$total_num = sizeof($q_results);
+		$this->ocw_utils->log_to_apache('error', __function__.": There are {$total_num} objects...");
+		$prev_obj = $curr_num = $next_obj = null;
+
+		/* content object ID's for previous and next items if any and get
+		 * the number of the current content object $oid for the current
+		 * material $mid nothing happens if no content objects are found
+		 *
+		 * Note that the list may be a combination of original and replacement
+		 * objects.  Determine, for each object, whether it is a replacement or
+		 * an original and use the proper field ('id' or 'object_id') */
+		if ($total_num > 0) {
+		   for ($i = 0; $i < $total_num; $i++) {
+         if ($q_results[$i] == $oid) {
+           $curr_num = ($i + 1);
+           if ($i > 0) { $prev_obj = $q_results[$i - 1]; }
+           if ($i < ($total_num - 1)) { $next_obj = $q_results[$i + 1]; }
+         }
+       }
+     }
+
+		/* make buttons active if the respective values are defined,
+		 * plain text otherwise */
+		$curr_nav = ($curr_num) ? "$curr_num of $total_num" : "";
+		$prev_txt = 'View '.($curr_num-1).' of '.$total_num;
+		$prev_img = ($prev_obj)
+					? '<img title="'.$prev_txt.'" id="pyes" class="parrow" src="'.property('app_img').'/coedit-1.png" />'
+					: '<img id="pno" class="parrow" src="'.property('app_img').'/coedit-1.png" />';
+
+		$next_txt = 'View '.($curr_num+1).' of '.$total_num;
+		$next_img = ($next_obj)
+					? '<img title="'.$next_txt.'" id="pyes" class="parrow" src="'.property('app_img').'/coedit-2.png" />'
+					: '<img id="pno" class="parrow" src="'.property('app_img').'/coedit-2.png" />';
+
+		$prev_nav = ($prev_obj)
+					? '<a href="'.site_url("materials/object_info/$cid/$mid/$prev_obj/faceted").'">'.$prev_img.'</a>' : $prev_img;
+
+		$next_nav = ($next_obj) ? '<a href="'.site_url("materials/object_info/$cid/$mid/$next_obj/faceted").'">'.$next_img.'</a>' : $next_img;
+
+
+		$prev_next = '';
+		switch($which) {
+				case 'prev': $prev_next = $prev_nav ; break;
+				case 'next': $prev_next = $next_nav ; break;
+				default: $prev_next = $prev_nav.'&nbsp;&nbsp;-&nbsp;'.$curr_nav.
+															'&nbsp;-&nbsp;&nbsp;'.$next_nav;
+		}
+
+		return $prev_next;
 	}
 
 	public function prep_path($name, $slide=false)

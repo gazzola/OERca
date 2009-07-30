@@ -1,5 +1,6 @@
 <?php 
  $count = 1;
+ $rawids = array();
 if ($prov_objects != null) {
  foreach($prov_objects as  $obj) {
  	$questions = $obj['questions'];
@@ -12,6 +13,7 @@ if ($prov_objects != null) {
 <td style="vertical-align:top; width: 300px; padding: 10px;">
   <p>
 	<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['id'],$obj['location'],'done','orig',true,true,true,true,'','187');?>
+	<?php $rawids[] = $obj['id']; ?>
   </p>
 
 	<!-- citation (source information) -->
@@ -74,7 +76,7 @@ if ($repl_objects != null) {
 
 <td style="vertical-align:top">
 	<?=$this->ocw_utils->create_co_img($cid,$mid,$obj['object_id'],$obj['location'],'done','orig',true,true,true,true,'','187');?>
-
+  <?php $rawids[] = $obj['object_id']; ?>
 	<!-- citation (source information) -->
 	<br/><br/>
 	<p style="clear:both"><h3>Source Information:</h3> 
@@ -120,4 +122,8 @@ if ($repl_objects != null) {
 </td>
 </tr>
 
-<?php $count++; }}} ?> 
+<?php $count++; }}}
+
+$idarray = json_encode($rawids); ?> 
+
+<input type="hidden" id="idarray" name="idarray" value='<?=$idarray?>' />

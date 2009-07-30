@@ -313,6 +313,11 @@ class Materials extends Controller {
 		$object_bin = array_values($tmp_object_bin); //rekey array numerically 0-n
 						//echo "<pre>"; print_r($object_bin); echo "</pre>";
 
+    $idarray = array();
+    foreach ($object_bin as $key => $o) {
+      $idarray[] = $o['id'];
+    }
+
 		// get values for display
 		$data = array(
 						'cid'=>$cid,
@@ -321,6 +326,7 @@ class Materials extends Controller {
 						'director' => $course['director'],
 	  					'material' =>  $material[0], 
 						'objects' => $object_bin,	
+						'idarray' => json_encode($idarray),
 						'num_objects' => sizeof($object_bin),
 						'num_unfiltered_objects' => $stats['data']['num_all'],
 		        		'view' => $view, 
@@ -491,6 +497,35 @@ class Materials extends Controller {
 
 				$data['view'] = $view; 
 				$data['cos'] = $info[$view]; 
+				$idarray = array();
+				// This is way uglier than I'd like, but we want
+				// to count only those objects that will be displayed
+				// Note that the questions for the instructor are processed
+				// differently, and require changes to the view to count them
+				if (count($data['cos']) > 0) {
+				  if ($view == 'aitems') {  // aka "Done"
+				    if ($responsetype == 'all') {
+				      // Get all the response types
+				      foreach ($data['cos'] as $rt) {
+				        if (count($rt) > 0) {
+				          foreach($rt as $o) {
+				            $idarray[] = ($o['otype'] == 'original') ? $o['id'] : $o['object_id'];
+				          }
+				        }
+				      }
+				    } else {
+				      // Get only the specified response type
+				      foreach ($data['cos'][$responsetype] as $o) {
+				        $idarray[] = ($o['otype'] == 'original') ? $o['id'] : $o['object_id'];
+				      }
+				    }
+				  } else {
+				    foreach ($data['cos'] as $o) {
+				      $idarray[] = ($view == 'replacement') ? $o['object_id'] : $o['id'];
+				    }
+				  }
+				}
+				$data['idarray'] = json_encode($idarray);
 				$data['num_avail'] = $info['num_avail'];
 				$data['need_input'] = $info['need_input'];
 				$data['num_general'] = $info['num_avail']['general']; 
@@ -1437,5 +1472,44 @@ class Materials extends Controller {
 	  }
 	  return ($selected_cos);
 	}
+
+  /**
+    * Generate a navigation arrow while editing Content Objects
+    *
+    * @access   public
+    * @param    string which arrow (previous or next)
+    * @param    int course ID
+    * @param    int material ID
+    * @param    int object ID
+    * @return   html to display left or right arrow
+    */
+  public function prev_next_arrow($which, $cid, $mid, $oid)
+  {
+    /**
+      *
+      * Convert an object to an array
+      *
+      * @param    object  $object The object to convert
+      * @return   array
+      *
+      */
+    function objectToArray($object)
+    {
+      if (!is_object($object) && !is_array($object)) {
+        return $object;
+      }
+      if (is_object($object)) {
+        $object = get_object_vars( $object );
+      }
+      return array_map( 'objectToArray', $object );
+    }
+
+    $stdClassArray = json_decode($_POST['idarray']);
+    $idarray = objectToArray($stdClassArray);
+
+    $res = $this->coobject->prev_next_lite($cid, $mid, $oid, $which, $idarray);
+    return $this->ocw_utils->send_response($res);
+    exit;
+  }
 }
 ?>

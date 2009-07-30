@@ -2,6 +2,7 @@
 $count = 1;
 $inplaceeditors = array();
 $sliders = array();
+$rawids = array();
 $ttip = "We're asking you to do two things here:<br/><br/>1) Tell us a little about what".
 		" this content object shows in relation to the lesson.<br/><br/>".
 		"2) What are the most distinctive components of this content object?";
@@ -159,6 +160,7 @@ foreach($prov_objects as  $obj) {
 </td>
 </tr>	
 <?php
+  $rawids[] = $obj['id'];
 	$sliders[] = "var mySlide_newcol1_{$obj['id']} = $('new-col1-{$obj['id']}');
 				  var mySlide_newcol2_{$obj['id']} = $('new-col2-{$obj['id']}');
 				  var mySlide_inpcol1_{$obj['id']} = $('inprogress-col1-{$obj['id']}');
@@ -181,7 +183,11 @@ foreach($prov_objects as  $obj) {
 						e.stop();
 				  });";
 ?>
-<?php $count++; } } ?>
+<?php $count++; } }
+
+$idarray = json_encode($rawids); ?>
+
+<input type="hidden" id="idarray" name="idarray" value='<?=$idarray?>' />
 
 <script type="text/javascript">
 window.addEvent('domready', function() {
