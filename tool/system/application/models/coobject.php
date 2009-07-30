@@ -2108,11 +2108,9 @@ class Coobject extends Model
     */
   public function prev_next_lite($cid, $mid, $oid, $which, $objarray)
 	{
-    $this->ocw_utils->log_to_apache('error', __function__.": There were ".sizeof($objarray)." objects passed in via objarray!");
 	  $q_results = $objarray;
 
 		$total_num = sizeof($q_results);
-		$this->ocw_utils->log_to_apache('error', __function__.": There are {$total_num} objects...");
 		$prev_obj = $curr_num = $next_obj = null;
 
 		/* content object ID's for previous and next items if any and get
