@@ -12,6 +12,7 @@
 <input type="hidden" id="mid" name="mid" value="<?=$mid?>" />
 <input type="hidden" id="defcopy" name="defcopy" value="<?=$director?>" />
 <input type="hidden" id="view" name="view" value="<?=$view?>" />
+<input type="hidden" id="idarray" name="idarray" value='<?=$idarray?>' />
 
 <?php if ($num_all > 0) { ?>
 

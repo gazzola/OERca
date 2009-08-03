@@ -53,7 +53,22 @@ echo script('ocw_tool.js');
 <div id="myTabs" class="column span-20 first last">
 
 	<div id="leftarrow" class="column span-1 first">
-			<?= $this->coobject->prev_next($cid, $mid, $obj['id'], $filter,'prev','image');?>
+    <script type="text/javascript">
+      if (parent.$('idarray') != null) {
+        var cid = $('cid').value;
+        var mid = $('mid').value;
+        var oid = $('oid').value;
+        var idarray = parent.$('idarray').value;
+        var leftarrow = $('leftarrow');
+        var url = parent.$('server').value+'materials/prev_next_arrow/prev/'+cid+'/'+mid+'/'+oid;
+        new Ajax(url,
+          {
+            method: 'post',
+            postBody: "idarray="+idarray,
+            update: leftarrow,
+          }).request();
+      }
+    </script>
 	</div>
 
 	<div id="edit-co-content" class="column span-18">
@@ -100,7 +115,22 @@ echo script('ocw_tool.js');
   </div>
 
 	<div id="rightarrow" class="column span-1 last">
-			<?= $this->coobject->prev_next($cid, $mid, $obj['id'], $filter,'next','image');?>
+    <script type="text/javascript">
+      if (parent.$('idarray') != null) {
+        var cid = $('cid').value;
+        var mid = $('mid').value;
+        var oid = $('oid').value;
+        var idarray = parent.$('idarray').value;
+        var rightarrow = $('rightarrow');
+        var url = parent.$('server').value+'materials/prev_next_arrow/next/'+cid+'/'+mid+'/'+oid;
+        new Ajax(url,
+          {
+            method: 'post',
+            postBody: "idarray="+idarray,
+            update: rightarrow,
+          }).request();
+      }
+    </script>
 	</div>
 
 </div>

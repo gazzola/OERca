@@ -5,6 +5,7 @@ $ttip = "We're asking the instructor to do two things here:<br/><br/>1) Tell us 
 		"2) What are the most distinctive components of this content object?";
 
 $ttip2 = "If the instructor  created this object, they most likely hold its copyright. However, sometimes faculty transfer copyrights to their work when they publish that work in books or articles.";
+$rawids = array();
 
 foreach($prov_objects as  $obj) {
 
@@ -117,7 +118,15 @@ foreach($prov_objects as  $obj) {
 </td>
 </tr>	
 
-<?php $count++; } } ?>
+<?php
+  $count++;
+  $rawids[] = $obj['id'];
+  } } 
+  
+  $idarray = json_encode($rawids);
+?>
+
+<input type="hidden" id="idarray" name="idarray" value='<?=$idarray?>' />
 
 <script type="text/javascript">
 window.addEvent('domready', function() {
