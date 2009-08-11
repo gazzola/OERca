@@ -62,48 +62,50 @@ class OER_faceted_search
     $curr_school_id = NULL;
     $curr_school_name = NULL;
     
-    foreach ($courses as $school => $curriculum) {
-      foreach ($curriculum as $course) {
-        foreach ($course as $c) {
-          foreach ($c as $key => $property) {
-            if ($key == 'school_id' && !empty($property)) {
-              $curr_school_id = $property;
-            }
-            if ($key == 'school_name' && !empty($property)) {
-              $curr_school_name = $property;
-            }
-            if ($key == 'term' && !empty($property)) {
-              if (!array_search($property, $found_terms)) {
-                $found_terms[] = $property;
+    if (count($courses) > 0) {
+      foreach ($courses as $school => $curriculum) {
+        foreach ($curriculum as $course) {
+          foreach ($course as $c) {
+            foreach ($c as $key => $property) {
+              if ($key == 'school_id' && !empty($property)) {
+                $curr_school_id = $property;
               }
-            }
-            if ($key == 'year' && !empty($property)) {
-              // We avoid listing years values of '0000'. 
-              if (!array_key_exists($property, $years) && $property > 0) {
-                $years[$property] = $property;
+              if ($key == 'school_name' && !empty($property)) {
+                $curr_school_name = $property;
               }
-            }
-            if ($key == 'instructors' || $key == 'dscribe1s' ||
-              $key == 'dscribe2s') {
-              foreach ($property as $user_id => $user_details) {
-                if (!array_key_exists($user_id, ${$key})) {
-                  /* Use php variable variables here to select the appropriate
-                   * array */
-                  ${$key}[$user_id] = $user_details['name'];
+              if ($key == 'term' && !empty($property)) {
+                if (!array_search($property, $found_terms)) {
+                  $found_terms[] = $property;
+                }
+              }
+              if ($key == 'year' && !empty($property)) {
+                // We avoid listing years values of '0000'. 
+                if (!array_key_exists($property, $years) && $property > 0) {
+                  $years[$property] = $property;
+                }
+              }
+              if ($key == 'instructors' || $key == 'dscribe1s' ||
+                $key == 'dscribe2s') {
+                foreach ($property as $user_id => $user_details) {
+                  if (!array_key_exists($user_id, ${$key})) {
+                    /* Use php variable variables here to select the appropriate
+                     * array */
+                    ${$key}[$user_id] = $user_details['name'];
+                  }
                 }
               }
             }
-          }
-          /* Since we need the values school_id and school_name, we
-           * use curr_school_id and curr_school_name so we can have the
-           * values outside the foreach loop. 
-           */
-          if (!empty($curr_school_id) && !empty($curr_school_name)) {
-            if (!array_key_exists($curr_school_id, $schools)) {
-              $schools[$curr_school_id] = $curr_school_name;
+            /* Since we need the values school_id and school_name, we
+             * use curr_school_id and curr_school_name so we can have the
+             * values outside the foreach loop. 
+             */
+            if (!empty($curr_school_id) && !empty($curr_school_name)) {
+              if (!array_key_exists($curr_school_id, $schools)) {
+                $schools[$curr_school_id] = $curr_school_name;
+              }
+              $curr_school_id = NULL;
+              $curr_school_name = NULL;
             }
-            $curr_school_id = NULL;
-            $curr_school_name = NULL;
           }
         }
       }
@@ -210,25 +212,27 @@ class OER_faceted_search
      * The appropriate filter function is called using the property name value
      * to formulate the function call statement.
      */
-    foreach ($courses as $school => $curriculum) {
-      foreach ($curriculum as $curr_name => $curr_courses) {
-        foreach ($curr_courses as $cid => $cprops) {
-          $props_to_check = array_intersect_key($cprops, $current_filters);
-          foreach ($props_to_check as $prop_name => $prop_vals) {
-            $filter_function = "__do_{$prop_name}_filter";
-            if ($this->$filter_function($prop_vals, 
-              split($param_separator, $current_filters[$prop_name])) == 1) {
-              unset($courses[$school][$curr_name][$cid]);
-              break 1;
+    if (count($courses) > 0) {
+      foreach ($courses as $school => $curriculum) {
+        foreach ($curriculum as $curr_name => $curr_courses) {
+          foreach ($curr_courses as $cid => $cprops) {
+            $props_to_check = array_intersect_key($cprops, $current_filters);
+            foreach ($props_to_check as $prop_name => $prop_vals) {
+              $filter_function = "__do_{$prop_name}_filter";
+              if ($this->$filter_function($prop_vals, 
+                split($param_separator, $current_filters[$prop_name])) == 1) {
+                unset($courses[$school][$curr_name][$cid]);
+                break 1;
+              }
             }
           }
+          if (count($courses[$school][$curr_name]) == 0) {
+            unset($courses[$school][$curr_name]);
+          }
         }
-        if (count($courses[$school][$curr_name]) == 0) {
-          unset($courses[$school][$curr_name]);
+        if (count($courses[$school]) == 0) {
+          unset($courses[$school]);
         }
-      }
-      if (count($courses[$school]) == 0) {
-        unset($courses[$school]);
       }
     }
   }
