@@ -1122,6 +1122,9 @@ class Material extends Model
       case "Remove and Annotate":
         $action_key = "remove";
         break;
+      case "Fair Use":
+        $action_key = "fairuse";
+        break;
       case "None":
         $action_key = "new";
         break;
