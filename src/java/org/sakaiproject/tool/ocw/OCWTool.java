@@ -467,20 +467,20 @@ public class OCWTool extends HttpServlet
 		    if (url != null && userid != null && siteid != null && rolename != null && sessionid != null) {
 			// command is the thing that will be signed
 		    command = "time=" + System.currentTimeMillis() + 
-		    			"&serverurl=" + URLEncoder.encode(getServerUrl(), "UTF-8") + 
-		    			"&user=" + URLEncoder.encode(euid, "UTF-8") + 
-					    "&internaluser=" + URLEncoder.encode(userid, "UTF-8") + 
-					    "&username=" + URLEncoder.encode(userName, "UTF-8") +
-					    "&useremail=" +URLEncoder.encode(userEmail, "UTF-8") +
-					    "&site=" + URLEncoder.encode(siteid, "UTF-8") + 
-					    "&role=" + URLEncoder.encode(rolename, "UTF-8") +
-					    "&session=" + URLEncoder.encode(sessionid, "UTF-8") +
-					    "&courseTitle=" + URLEncoder.encode(courseTitle, "UTF-8") +
-					    "&courseDescription=" + URLEncoder.encode(courseDescription, "UTF-8") +
-						"&courseNumber=" + URLEncoder.encode(siteid, "UTF-8") + 
-						"&courseStartDate=" + URLEncoder.encode(courseStartDate, "UTF-8") +
-						"&courseEndDate=" + URLEncoder.encode(courseEndDate, "UTF-8") +
-						"&courseDirector=" + URLEncoder.encode(courseDirector, "UTF-8");
+		    			"&serverurl=" + urlEncode(getServerUrl()) + 
+		    			"&user=" + urlEncode(euid) + 
+					    "&internaluser=" + urlEncode(userid) + 
+					    "&username=" + urlEncode(userName) +
+					    "&useremail=" +urlEncode(userEmail) +
+					    "&site=" + urlEncode(siteid) + 
+					    "&role=" + urlEncode(rolename) +
+					    "&session=" + urlEncode(sessionid) +
+					    "&courseTitle=" + urlEncode(courseTitle) +
+					    "&courseDescription=" + urlEncode(courseDescription) +
+						"&courseNumber=" + urlEncode(siteid) + 
+						"&courseStartDate=" + urlEncode(courseStartDate) +
+						"&courseEndDate=" + urlEncode(courseEndDate) +
+						"&courseDirector=" + urlEncode(courseDirector);
 			// pass on any other arguments from the user.
 			// but sanitize them to prevent people from trying to
 			// fake out the parameters we pass, or using odd syntax
@@ -1017,7 +1017,6 @@ public class OCWTool extends HttpServlet
 
 		// Encode the string into bytes using utf-8
 		byte[] utf8 = str.getBytes("UTF8");
-System.out.println("the original str =" + str);
 		// Encrypt
 		byte[] enc = ecipher.doFinal(utf8);
     
@@ -1033,14 +1032,27 @@ System.out.println("the original str =" + str);
 		System.out.println("linktool encrypt invalid key");
 	    } catch (javax.crypto.NoSuchPaddingException e) {
 		System.out.println("linktool encrypt no such padding");
-	    } catch (java.io.UnsupportedEncodingException e) {
-		System.out.println("linktool encrypt unsupported encoding");
 	    } catch (java.io.IOException e) {
 		System.out.println("linktool encrypted io exc");
 	    }
 	    return null;
 	}
+        
 
+        public String urlEncode(String source)
+        {
+        	try
+	        {
+	        	if (source == null)
+	        	{
+	        		source = "";
+	        	}
+	        	return URLEncoder.encode(source, "UTF-8");
+	        } catch (java.io.UnsupportedEncodingException e) {
+	    		System.out.println("linktool encrypt unsupported encoding");
+	    		return "";
+	        }
+        }
 }
 
 
