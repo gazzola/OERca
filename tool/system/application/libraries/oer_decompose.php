@@ -285,7 +285,7 @@ class OER_decompose {
 				$convert_pgm = property('app_convert_pgm_path');
 				$convert_out = array();
 				//$this->CI->ocw_utils->log_to_apache('debug', "_get_COs_from_directory: running '{$convert_pgm} {$path} {$newpath}'");
-				exec("$SET_DYLD_PATH $SET_MAMP_PATH $convert_pgm $path $newpath", &$convert_out, &$convert_code);
+				exec("$SET_DYLD_PATH $SET_MAMP_PATH $convert_pgm $path $newpath", $convert_out, $convert_code);
 
 				if ($convert_code == 0 && file_exists($newpath)) {
 					//$this->CI->ocw_utils->log_to_apache('debug', "_get_COs_from_directory: ### Adding file '{$newpath}'");
@@ -349,7 +349,7 @@ class OER_decompose {
 		//$this->CI->ocw_utils->log_to_apache('debug', __FUNCTION__.": ghostscript command '{$ghostscript_cmd}'");
 
 		$this->CI->ocw_utils->log_to_apache('debug', __FUNCTION__.": running ghostscript on '{$material_file}'");
-		exec("$SET_DYLD_PATH $ghostscript_cmd", &$gs_out, &$gs_code);
+		exec("$SET_DYLD_PATH $ghostscript_cmd", $gs_out, $gs_code);
 		$this->CI->ocw_utils->log_to_apache('debug', __FUNCTION__.": ghostscript returned code '{$gs_code}'");
 
 		if ($gs_code != 0) {
