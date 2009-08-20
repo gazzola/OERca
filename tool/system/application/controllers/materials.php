@@ -1079,8 +1079,12 @@ class Materials extends Controller {
         foreach ($all_dir_items as $file_name) {
           $rel_path = "$mat_path/$file_name";
           if (is_file($rel_path)) {
-            if (pathinfo($rel_path, PATHINFO_FILENAME) ==
-              $material_info['material_dir']) {
+            $rpi = pathinfo($rel_path);
+            // PHP < 5.2 doesn't return 'filename'
+            if (!isset($rpi['filename'])) {
+              $rpi['filename'] = substr($rpi['basename'], 0, strrpos($rpi['basename'], '.'));
+            }
+            if ($rpi['filename'] == $material_info['material_dir']) {
               $file_names['material_file'] = $rel_path;
             } else {
               $file_names['ctxt_images'][] = $rel_path;
@@ -1222,6 +1226,12 @@ class Materials extends Controller {
               foreach($archive_cont_info as $archive_entry) {
                 $cont_obj_string = ("[($export_name)]");
                 $existing_file_info = pathinfo($archive_entry['export_name']);
+                // PHP < 5.2 doesn't return 'filename'
+                if (!isset($existing_file_info['filename'])) {
+                  $existing_file_info['filename'] =
+                          substr($existing_file_info['basename'], 0,
+                                 strrpos($existing_file_info['basename'], '.'));
+                }
                 $existing_name = $existing_file_info['dirname'] . '/' .
                   $existing_file_info['filename'];
                 if (preg_match($cont_obj_string, $existing_name) > 0) {

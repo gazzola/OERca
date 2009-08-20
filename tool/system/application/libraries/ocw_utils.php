@@ -924,6 +924,10 @@ htmleoq;
 			return FALSE;
 
 		$pinfo = pathinfo($original);
+		// PHP < 5.2 doesn't return 'filename'
+		if (!isset($pinfo['filename'])) {
+			$pinfo['filename'] = substr($pinfo['basename'], 0, strrpos($pinfo['basename'], '.'));
+		}
 
 		$linkfile = "{$pinfo['dirname']}/{$pinfo['filename']}_thumb.{$pinfo['extension']}";
 		$thumbnail = "{$pinfo['dirname']}/{$pinfo['filename']}_thumb.{$default_thumb_extension}";
