@@ -924,10 +924,6 @@ class Coobject extends Model
 					// use information from ask form status	
 					$objects['general'] = $askinfo['general'];	$data['num_ask_general'] = $askinfo['num_avail']['general'];	
 					$objects['aitems'] = $askinfo['aitems'];	$data['num_ask_aitems'] = $askinfo['num_avail']['aitems'];	
-					$objects['fairuse'] = $askinfo['fairuse'];	$data['num_fairuse'] = $askinfo['num_avail']['fairuse'];	
-					$objects['permission'] = $askinfo['permission'];	$data['num_permission'] = $askinfo['num_avail']['permission'];	
-					$objects['commission'] = $askinfo['commission'];	$data['num_commission'] = $askinfo['num_avail']['commission'];	
-					$objects['retain:ca'] = $askinfo['retain'];	$data['num_retain_ca'] = $askinfo['num_avail']['retain'];	
 
 			    if ($orig_objects != null) {
 			        foreach ($orig_objects as $obj) {
@@ -945,10 +941,6 @@ class Coobject extends Model
                     			}
                 			}
 
-											// uncleared	XXX This marks ALL objects as uncleared ???
-	                    $data['num_uncleared']++;
-	                    array_push($objects['uncleared'], $obj); 
-	
 											// replacements	
            						if ($this->replacement_exists($cid,$mid,$obj['id'])) { 
 													array_push($objects['replace'], $obj);
@@ -996,14 +988,18 @@ class Coobject extends Model
 	                          case 'Search':
 	                                array_push($objects['search'],$obj);
 	                                $data['num_search']++; break;
-	                          case 'Fair Use': // used data from $askinfo above 
-																	break;
-	                          case 'Permission': // used data from $askinfo above 
-																	break;
-	                          case 'Commission': // used data from $askinfo above 
-																	break;
-	                          case 'Retain: Copyright Analysis': // used data from $askinfo above 
-																	break;
+	                          case 'Fair Use':
+	                                array_push($objects['fairuse'],$obj);
+	                                $data['num_fairuse']++; break;
+	                          case 'Permission':
+                                  array_push($objects['permission'],$obj);
+                                  $data['num_permission']++; break;
+	                          case 'Commission':
+                                  array_push($objects['commission'],$obj);
+                                  $data['num_commission']++; break;
+	                          case 'Retain: Copyright Analysis': 
+                                  array_push($objects['retain:ca'],$obj);
+                                  $data['num_retain_ca']++; break;
 	                          case 'Retain: Permission':
 	                                array_push($objects['retain:perm'],$obj);
 	                                $data['num_retain_perm']++; break;
@@ -1024,6 +1020,9 @@ class Coobject extends Model
 			                if ($obj['done'] == 1 && !empty($obj['action_taken'])) {
 			                     array_push($objects['cleared'], $obj);
 			                     $data['num_cleared']++;
+			                } else {
+  	                       array_push($objects['uncleared'], $obj);
+  	                       $data['num_uncleared']++;
 			                }
 			                array_push($objects['all'], $obj);
 			                $data['num_all']++;

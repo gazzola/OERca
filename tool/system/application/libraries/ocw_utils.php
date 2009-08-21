@@ -924,6 +924,10 @@ htmleoq;
 			return FALSE;
 
 		$pinfo = pathinfo($original);
+		// PHP < 5.2 doesn't return 'filename'
+		if (!isset($pinfo['filename'])) {
+			$pinfo['filename'] = substr($pinfo['basename'], 0, strrpos($pinfo['basename'], '.'));
+		}
 
 		$linkfile = "{$pinfo['dirname']}/{$pinfo['filename']}_thumb.{$pinfo['extension']}";
 		$thumbnail = "{$pinfo['dirname']}/{$pinfo['filename']}_thumb.{$default_thumb_extension}";
@@ -982,7 +986,7 @@ htmleoq;
 			$convert_pgm = property('app_convert_pgm_path');
 			$convert_out = array();
 			$convert_cmd = "{$convert_pgm} {$original} -thumbnail {$maxWidth}x{$maxHeight} {$thumbnail}";
-			exec($convert_cmd, &$convert_out, &$convert_code);
+			exec($convert_cmd, $convert_out, $convert_code);
 
 			if ($convert_code != 0 || !file_exists($thumbnail)) {
 				return $this->_local_symlink($original, $linkfile);

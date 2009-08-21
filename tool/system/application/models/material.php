@@ -1118,6 +1118,12 @@ class Material extends Model
       case "Retain: Copyright Analysis":
         $action_key = "retain:ca";
         break;
+      case "Remove and Annotate":
+        $action_key = "remove";
+        break;
+      case "Fair Use":
+        $action_key = "fairuse";
+        break;
       case "None":
         $action_key = "new";
         break;

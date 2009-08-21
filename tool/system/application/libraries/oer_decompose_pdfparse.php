@@ -119,7 +119,7 @@ class OER_decompose_pdfparse
 		$pdfout = array();
 		// Redirect stderr to /dev/null to eliminate "random" messages from the apache log file
 		// See note above about DYLD_LIBRARY_PATH
-		exec("export DYLD_LIBRARY_PATH=\"\"; $this->pdfparse_pgm \"$materials_file\" $this->staging_dir &>/dev/null", &$pdfout, &$pdfcode);
+		exec("export DYLD_LIBRARY_PATH=\"\"; $this->pdfparse_pgm \"$materials_file\" $this->staging_dir &>/dev/null", $pdfout, $pdfcode);
 		unset($pdfout);
 		$this->CI->ocw_utils->log_to_apache('debug', "pdfparse::do_decomp: returning '{$pdfcode}'");
 
