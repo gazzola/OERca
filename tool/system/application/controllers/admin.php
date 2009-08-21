@@ -226,7 +226,6 @@ class Admin extends Controller {
 									$data['select_dscribes'] = $ds_select_box;
 							}
 
-							//$data['courses'] = $this->ocw_user->get_courses($uid);
 							$data['courses'] = $this->course->get_courses($uid,getUserPropertyFromId($uid, 'role'));
 							$this->layout->buildPage('admin/users/_edit_'.$u['role'],$data); 
 					} else {

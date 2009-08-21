@@ -26,8 +26,7 @@ class Courses extends Controller {
 	
 	public function index()
 	{
-		$courses =  $this->course->get_courses();
-		//$courses =  $this->course->faceted_search_get_courses($uid, $school, $year, $dscribe2, $dscribe);
+		$courses =  $this->course->new_get_courses(getUserProperty('id'));
 		$data = array('title'=>'Courses','courses'=>$courses);
    		$this->layout->buildPage('courses', $data);
 	}
