@@ -77,7 +77,6 @@ class Dscribe1 extends Controller
       
       $this->data['title'] = 'dScribe1 &raquo; Manage Courses';
       $uid = getUserProperty('id');
-      //$this->data['courses'] = $this->course->get_courses();
       $this->data['courses'] = $this->course->new_get_courses($uid);
       $this->data['facet_options'] = $this->oer_faceted_search->
         get_facet_options($this->data['courses']);

@@ -837,6 +837,8 @@ class Course extends Model
           $sql .= "ocw_courses.id = ? OR ";
         }
     	  $sql .= "ocw_courses.id = ?)";
+      } else {
+        return NULL;
       }
     }
     
