@@ -17,6 +17,8 @@ $archive_name = "created_replacement_images.zip";
 
 $metadata_filename = "metadata.txt";
 
+$md_sep = ";;";
+
 /* Connect to a MySQL server */
 $mysqli = new mysqli(
             $argv[1],  /* The host to connect to */
@@ -142,7 +144,7 @@ if ($arch_opened !== TRUE) {
     if ($arch_opened === TRUE) {
       $file_added = $zip->addFile($file['path'], 
         $file['file']);
-      $md_string = $file['file'] . ";;" . $file['tags'] . "\n";
+      $md_string = $file['file'] . $md_sep . $file['tags'] . "\n";
       fwrite($md_file, $md_string);
       if ($file_added === FALSE) {
         exit ("File wasn't added! Archive creation aborted!");
