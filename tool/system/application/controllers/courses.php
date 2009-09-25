@@ -176,9 +176,15 @@ class Courses extends Controller {
 			    $subj_id[0] = $missing_menu_val;
 					$curriculum_list[0] = $missing_menu_val;
 
-					$school_id += $this->school->get_school_list();
-	   			$subj_id += $this->subject->get_subj_list();
-					$curriculum_list += $this->curriculum->get_curriculum_id_list();
+          $list = $this->school->get_school_list();
+          if ($list != NULL)
+            $school_id += $list;
+          $list = $this->subject->get_subj_list();
+          if ($list != NULL)
+            $subj_id += $list;
+          $list = $this->curriculum->get_curriculum_id_list();
+          if ($list != NULL)
+            $curriculum_list += $list;
 
 					// only get instructor details if an instructor is defined for the course
 			    $instdetails = array(
