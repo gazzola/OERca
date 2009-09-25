@@ -39,8 +39,13 @@ class Postoffice extends Model
 
      		 if ($dscribe2 !== false && is_array($dscribe2)) {
 							foreach ($dscribe2 as $to_id) {
-									if ($this->course->has_access($to_id, $cid) != null) {
-											 $this->add($from_id, $to_id, 'dscribe1_to_dscribe2', $cid, $mid, $oid, $type);
+                  if ($this->course->has_access($to_id, $cid) != null) {
+                      /* Add a HACK here to avoid sending email to certain users */
+                      if ($to_id == 168) {    // Skip mail to userid NNN
+                          $this->ocw_utils->log_to_apache('debug', __function__.": Skipping email to userid {$to_id}");
+                      } else {
+                          $this->add($from_id, $to_id, 'dscribe1_to_dscribe2', $cid, $mid, $oid, $type);
+                      }
 									}
 							}
      		 } else {
