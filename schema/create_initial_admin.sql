@@ -23,4 +23,4 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 -- NOTE:  Change "NAME", "USER_NAME", and "EMAIL" below to appropriate values
 --        before submitting this command!
 --
-INSERT INTO `ocw_users` VALUES(NULL, 'NAME', 'USER_NAME', '', 'EMAIL', 'admin', 0, NULL, '2009-01-01 00:00:00', '2009-01-01 00:00:00', '2009-01-01 00:00:00');
+INSERT INTO `ocw_users` VALUES(NULL, 'NAME', 'USER_NAME', 'f52af630437d2ac15899cdfdb56b6c6c', 'EMAIL', 'admin', 0, NULL, '2009-01-01 00:00:00', '2009-01-01 00:00:00', '2009-01-01 00:00:00');
