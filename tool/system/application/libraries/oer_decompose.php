@@ -266,6 +266,16 @@ class OER_decompose {
 			$ext = $name_parts[count($name_parts) - 1];				
 			if (! in_array($ext, $allowed_exts)) {
 
+        // There is a bug somewhere with the "convert" program on RHEL 5.4 which causes it to
+        // attempt to mmap a huge length when processing wmf files. This causes high CPU and
+        // memory consumption.
+        // For now, just skip files with the extension "wmf" !!!
+        //$this->CI->ocw_utils->log_to_apache('debug', __FUNCTION__.": The filename is '{$filename}' and the extension is '{$ext}'");
+        if ($ext == "wmf") {
+          //$this->CI->ocw_utils->log_to_apache('debug', __FUNCTION__.": Skipping filename '{$filename}' with extension '{$ext}'");
+          unlink($path);
+          continue;
+        }
 				// Transform the original <name>.<ext> into <name>.png
 				$pattern = '/(.*)\.' . $ext . '$/';
 				$newpath = preg_replace($pattern, '${1}.png', $path);
