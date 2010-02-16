@@ -24,8 +24,6 @@ class OER_decompose {
 		$this->have_poi_lib = 0;
 		$this->pdf_libpath = APPPATH . "libraries/oer_decompose_pdfparse.php";
 		$this->have_pdf_lib = 0;
-		$this->hachoir_libpath = APPPATH . "libraries/oer_decompose_hachoir.php";
-		$this->have_hachoir_lib = 0;
 		$this->oo_libpath = APPPATH . "libraries/oer_decompose_openoffice.php";
 		$this->have_oo_lib = 0;
 		
@@ -42,12 +40,6 @@ class OER_decompose {
 		} else {
 			//$this->CI->ocw_utils->log_to_apache('debug', "decompose_material: library, {$this->pdf_libpath}, doesn't exist");
 		}
-		if (file_exists($this->hachoir_libpath)) {
-			$this->CI->load->library('OER_decompose_hachoir');
-			$this->have_hachoir_lib = 1;
-		} else {
-			//$this->CI->ocw_utils->log_to_apache('debug', "decompose_material: library, {$this->hachoir_libpath}, doesn't exist");
-		}
 		if (file_exists($this->oo_libpath)) {
 			$this->CI->load->library('OER_decompose_openoffice');
 			$this->have_oo_lib = 1;
@@ -55,7 +47,7 @@ class OER_decompose {
 			//$this->CI->ocw_utils->log_to_apache('debug', "decompose_material: library, {$this->oo_libpath}, doesn't exist");
 		}
 		
-		if (! $this->have_hachoir_lib && ! $this->have_oo_lib && ! $this->have_poi_lib) {
+		if (! $this->have_oo_lib && ! $this->have_poi_lib) {
 			$this->CI->ocw_utils->log_to_apache('debug', "decompose_material: no decomposition library found!");
 			return FALSE;
 		}
@@ -88,11 +80,6 @@ class OER_decompose {
 			//$this->CI->ocw_utils->log_to_apache('debug', "decompose_material: instantiating pdfparse instance");
 			$dcomp = new OER_decompose_pdfparse();
 		}
-		// If nothing else fits, try hachoir
-		else if ($this->have_hachoir_lib) {
-			//$this->CI->ocw_utils->log_to_apache('debug', "decompose_material: instantiating hachoir instance");
-			$dcomp = new OER_decompose_hachoir();
-		}
 
 		if ($dcomp) {
 			//$this->CI->ocw_utils->log_to_apache('debug', "decompose_material: new decomp instance created");
@@ -124,6 +111,8 @@ class OER_decompose {
 					$dcomp->rm_staging_dir();
 				}
 			}
+		} else {
+		  $this->CI->ocw_utils->log_to_apache('debug', "decompose_material: no decomp handler for file '{$material_file}'");
 		}
 
 		//$this->CI->ocw_utils->log_to_apache('debug', "decompose_material: returning");
