@@ -74,6 +74,7 @@ $config['app_java_path'] = '/usr/bin/java';
 $config['app_convert_pgm_path'] = '/usr/bin/convert';
 $config['app_ghostscript_pgm_path'] = '/usr/bin/gs';
 $config['app_poi_jar_path'] = $_SERVER['DOCUMENT_ROOT'].'/@OERTOP@/decomposition/apache_poi/ImageExtractor.jar';
+$config['app_oo_jar_path'] = $_SERVER['DOCUMENT_ROOT'].'/@OERTOP@/decomposition/OpenOffice/dist/OpenOfficeUNODecomposition.jar';
 $config['app_pdfparse_path']	= $_SERVER['DOCUMENT_ROOT'].'/@OERTOP@/decomposition/pdfutils/pdfparse';
 $config['app_co_upload_path'] = $_SERVER['DOCUMENT_ROOT'].'/@OERTOP@/tmp/couploads/';
 $config['app_mat_upload_path'] = $_SERVER['DOCUMENT_ROOT'].'/@OERTOP@/tmp/matuploads/';

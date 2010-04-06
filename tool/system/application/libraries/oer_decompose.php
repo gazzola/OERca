@@ -27,6 +27,8 @@ class OER_decompose {
     $this->oo_libpath = APPPATH . "libraries/oer_decompose_openoffice.php";
     $this->have_oo_lib = 0;
 
+    $this->already_have_context_images = false;
+
     // Check which decomp libraries are available
     if (file_exists($this->poi_libpath)) {
       $this->CI->load->library('OER_decompose_apache_poi');
@@ -69,9 +71,16 @@ class OER_decompose {
 
     $dcomp = null;
     $decomp_code = -1;
+    $this->already_have_context_images = false;     // reset this each time through
 
+    // Use the OpenOffice stuff for PowerPoint files
+    if ($this->have_oo_lib && (stristr($material_file, ".ppt") || stristr($material_file, ".pptx") || stristr($material_file, ".odp"))) {
+      //$this->CI->ocw_utils->log_to_apache('debug', "decompose_material: instantiating openoffice instance");
+      $dcomp = new OER_decompose_openoffice();
+      $this->already_have_context_images = true; // The OO decomp code gets context images too
+    }
     // The Apache POI stuff only handles Microsoft documents (Word and Powerpoint)
-    if ($this->have_poi_lib && (stristr($material_file, ".doc") || stristr($material_file, ".ppt"))) {
+    else if ($this->have_poi_lib && (stristr($material_file, ".doc") || stristr($material_file, ".ppt"))) {
       //$this->CI->ocw_utils->log_to_apache('debug', "decompose_material: instantiating apache_poi instance");
       $dcomp = new OER_decompose_apache_poi();
     }
@@ -96,15 +105,15 @@ class OER_decompose {
 
       // If result is good, display COs and request metadata info, and add the COs
       if ($decomp_code == 0 && is_dir($dcomp->get_staging_dir())) {
-	//$this->CI->ocw_utils->log_to_apache('debug', "decompose_material: processing COs in directory: " . $decomp_dir);
-	$this->_process_decomposed_COs($cid, $mid, $dcomp->get_staging_dir());
+        //$this->CI->ocw_utils->log_to_apache('debug', "decompose_material: processing COs in directory: " . $decomp_dir);
+        $this->_process_decomposed_COs($cid, $mid, $dcomp->get_staging_dir());
       }
 
       // Attempt to get context objects
       $this->_add_context_images($cid, $mid, $material_file, $dcomp->get_staging_dir());
 
       if (0) {
-	$this->CI->ocw_utils->log_to_apache('error', "decompose_material: skipping removal of directory: " . $decomp_dir);
+        //$this->CI->ocw_utils->log_to_apache('error', "decompose_material: skipping removal of directory: " . $decomp_dir);
       } else {
         // Clean up any temporary directory regardless of success or failure
         if (is_dir($dcomp->get_staging_dir())) {
@@ -232,6 +241,11 @@ class OER_decompose {
         continue;
       }
 
+      // Ignore context images that may be in the directory
+      if (strstr($path, "Slide")) {
+        continue;
+      }
+
       /*
        * This is currently done within specific decomposition libraries,
        * so it is currently disabled here.
@@ -319,41 +333,50 @@ class OER_decompose {
   {
     //$this->CI->ocw_utils->log_to_apache('debug', __FUNCTION__.": entered with material '{$material_file}' and directory '{$work_dir}'");
 
-    // We only support PDF files at this time
-    $name_parts = explode(".", $material_file);
-    $ext = $name_parts[count($name_parts) - 1];
-    if ($ext != "pdf") {
-      $this->CI->ocw_utils->log_to_apache('debug', __FUNCTION__.": skipping unsupported file type '{$material_file}'");
+    if (! $this->already_have_context_images) {
+      //$this->CI->ocw_utils->log_to_apache('debug', __FUNCTION__.": Doing old-style context image processing for '{$material_file}'");
+      // We only support PDF files at this time
+      $name_parts = explode(".", $material_file);
+      $ext = $name_parts[count($name_parts) - 1];
+      if ($ext != "pdf") {
+        $this->CI->ocw_utils->log_to_apache('debug', __FUNCTION__.": skipping unsupported file type '{$material_file}'");
+        return FALSE;
+      }
+
+      if (!is_dir($work_dir)) {
+        mkdir($work_dir, 0700, TRUE);
+      }
+
+      // Local MAMP server needs some extra parameters
+      $SET_DYLD_PATH = "";
+      if ($this->CI->config->item('is_local_mamp_server')) {
+        //$this->CI->ocw_utils->log_to_apache('debug', __FUNCTION__.": *** Using LOCAL Settings ***");
+        $SET_DYLD_PATH .= "export DYLD_LIBRARY_PATH=\"\";";
+      }
+
+      // ImageMagick (convert) creates the page numbers with a base of zero.
+      // We really want a base of one.  Instead, use Ghostscript directly.
+      $ghostscript_pgm = property('app_ghostscript_pgm_path');
+      $gs_out = array();
+      $out_path = $work_dir . "/Slide%03d.jpg";
+      $ghostscript_cmd = "$ghostscript_pgm -dSAFER -dBATCH -dNOPAUSE -sDEVICE=jpeg -r150 -dTextAlphaBits=4 ";
+      $ghostscript_cmd .= "-dGraphicsAlphaBits=4 -dMaxStripSize=8192 -sOutputFile={$out_path} {$material_file}";
+      //$this->CI->ocw_utils->log_to_apache('debug', __FUNCTION__.": ghostscript command '{$ghostscript_cmd}'");
+
+      $this->CI->ocw_utils->log_to_apache('debug', __FUNCTION__.": running ghostscript on '{$material_file}'");
+      exec("$SET_DYLD_PATH $ghostscript_cmd", $gs_out, $gs_code);
+      $this->CI->ocw_utils->log_to_apache('debug', __FUNCTION__.": ghostscript returned code '{$gs_code}'");
+
+      if ($gs_code != 0) {
+        return FALSE;
+      }
+    } else {
+      //$this->CI->ocw_utils->log_to_apache('debug', __FUNCTION__.": Skipping old-style context image processing for '{$material_file}'");
+    }
+
+    // $work_dir may not be there (i.e., if OpenOffice decomp failed)
+    if (!is_dir($work_dir))
       return FALSE;
-    }
-
-    if (!is_dir($work_dir)) {
-      mkdir($work_dir, 0700, TRUE);
-    }
-
-    // Local MAMP server needs some extra parameters
-    $SET_DYLD_PATH = "";
-    if ($this->CI->config->item('is_local_mamp_server')) {
-      //$this->CI->ocw_utils->log_to_apache('debug', __FUNCTION__.": *** Using LOCAL Settings ***");
-      $SET_DYLD_PATH .= "export DYLD_LIBRARY_PATH=\"\";";
-    }
-
-    // ImageMagick (convert) creates the page numbers with a base of zero.
-    // We really want a base of one.  Insteady, use Ghostscript directly.
-    $ghostscript_pgm = property('app_ghostscript_pgm_path');
-    $gs_out = array();
-    $out_path = $work_dir . "/Slide%03d.jpg";
-    $ghostscript_cmd = "$ghostscript_pgm -dSAFER -dBATCH -dNOPAUSE -sDEVICE=jpeg -r150 -dTextAlphaBits=4 ";
-    $ghostscript_cmd .= "-dGraphicsAlphaBits=4 -dMaxStripSize=8192 -sOutputFile={$out_path} {$material_file}";
-    //$this->CI->ocw_utils->log_to_apache('debug', __FUNCTION__.": ghostscript command '{$ghostscript_cmd}'");
-
-    $this->CI->ocw_utils->log_to_apache('debug', __FUNCTION__.": running ghostscript on '{$material_file}'");
-    exec("$SET_DYLD_PATH $ghostscript_cmd", $gs_out, $gs_code);
-    $this->CI->ocw_utils->log_to_apache('debug', __FUNCTION__.": ghostscript returned code '{$gs_code}'");
-
-    if ($gs_code != 0) {
-      return FALSE;
-    }
 
     $full_list = scandir($work_dir);
 
@@ -362,6 +385,10 @@ class OER_decompose {
 
       // Skip directories and unreadable stuff
       if (!is_file($path) || !is_readable($path)) {
+        continue;
+      }
+      // Ignore any image files that might be in the directory
+      if (!strstr($filename, "Slide")) {
         continue;
       }
 
