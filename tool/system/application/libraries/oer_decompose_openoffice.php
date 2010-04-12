@@ -132,8 +132,15 @@ class OER_decompose_openoffice
 			$this->java_options .= " -d32";
 		}
 
-    //$this->CI->ocw_utils->log_to_apache('debug', "Executing: \"$SET_DYLD_PATH $this->java_path $this->java_options -jar $this->oo_jar_path --extract --input $materials_file --output-dir $this->staging_dir &> /dev/null\"");
-		exec("$SET_DYLD_PATH $this->java_path $this->java_options -jar $this->oo_jar_path --extract --input $materials_file --output-dir $this->staging_dir", $ooout, $oocode);
+		$FIX_ENV = "unset DISPLAY; HOME=/tmp; export HOME;";
+		$execString = "$SET_DYLD_PATH $FIX_ENV $this->java_path $this->java_options -jar $this->oo_jar_path --extract --input $materials_file --output-dir $this->staging_dir";
+		$this->CI->ocw_utils->log_to_apache('debug', "Executing: '${execString}'");
+		exec($execString, $ooout, $oocode);
+		if ($oocode != 0) {
+			foreach($ooout as $errstring) {
+				$this->CI->ocw_utils->log_to_apache('error', $errstring);
+			}
+		}
 		unset($ooout);
 		$this->CI->ocw_utils->log_to_apache('debug', "oo::do_decomp: returning '{$oocode}'");
 
