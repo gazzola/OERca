@@ -333,7 +333,7 @@ class Materials extends Controller {
 
     $data = array_merge($data, $stats['data']);
 
-    $data['select_filter'] = 
+    $data['select_filter'] =
       array(
 	    'all' => 'All ('.$data['num_all'].')',
 	    'new' => 'New ('.$data['num_new'].')',
@@ -379,7 +379,7 @@ class Materials extends Controller {
     $data['select_questions_to'] = array('dscribe2'=>'dScribe2', 'instructor'=>'Instructor');
     $data['select_copystatus'] = $this->coobject->enum2array('object_copyright','status');
     if ($role == 'dscribe2') { $data['select_questions_to']['ipreview'] = 'IP Review Team'; }
-    if ($view == 'aitems') { $data['select_response_types'] = 
+    if ($view == 'aitems') { $data['select_response_types'] =
 	array('all'=>'All',
 	      'general'=>'General Questions',
 	      'replacement'=>'Replacement Questions',
@@ -387,14 +387,14 @@ class Materials extends Controller {
 	      'permission'=>'Permission Questions',
 	      'commission'=>'Commission Questions',
 	      'retain'=>'Copyright Analysis Questions',
-	      ); 
+	      );
     }
     $tmp_actions = array();
     if ($view == 'fairuse') { $tmp_actions = $this->coobject->enum2array('claims_fairuse','action'); }
     if ($view == 'permission') { $tmp_actions = $this->coobject->enum2array('claims_permission','action'); }
     if ($view == 'commission') { $tmp_actions = $this->coobject->enum2array('claims_commission','action'); }
     if ($view == 'retain') { $tmp_actions = $this->coobject->enum2array('claims_retain','action'); }
-    
+
 
     /*
      * Trim out the actions that we don't want to be used any longer.
@@ -1062,10 +1062,17 @@ class Materials extends Controller {
       }
 
       $file_list = $this->_get_material_files($material_list);
+      $recomp_workfile =
+	$this->_write_recomp_workfile($material_list);
+
       if ($mid) {
         $file_list[0]['file_names'] =
           array_slice($file_list[0]['file_names'], 0, 1);
       }
+
+      /* $this->ocw_utils->dump($material_list); */
+      /* $this->ocw_utils->dump($file_list); */
+      exit();
       $this->_download_material($file_list);
     } else {
       echo "We really shouldn't see this at all!";
@@ -1133,7 +1140,7 @@ class Materials extends Controller {
                                   'file_names' => $file_names,
                                   );
       }
-    
+
     return($material_files);
   }
 
@@ -1585,5 +1592,45 @@ class Materials extends Controller {
       return FALSE;
     }
   }
+
+
+  /**
+   * Write the json file that is passed to the openoffice recomp tool
+   * to actually get the recomp work done.
+   */
+  // TODO: Should this function be moved to the material model?
+  private function _write_recomp_workfile($material_list)
+  {
+    $recomp_version = 1;
+    $recomp_id = 321;
+    $recomp_ops = FALSE;
+    $recomp_files = array();
+    $timestamp = date($this->date_format);
+    $user_name = getUserProperty('user_name');
+    $json_file_name = NULL;
+    $workfile_size = FALSE;
+
+    foreach ($material_list as $material) {
+      if ($material['material_manip_ops'] !== FALSE) {
+	$recomp_files[] = clone $material['material_manip_ops'];
+      }
+    }
+    if (count($recomp_files) > 0) {
+      $recomp_ops->version = $recomp_version;
+      $recomp_ops->id = $recomp_id;
+      $recomp_ops->decompFiles = $recomp_files;
+      if (!file_exists($material['rec_work_dir'])) {
+	mkdir($material['rec_work_dir'], 0700);
+      }
+      $json_file_name = $material['rec_work_dir'] . "recomp-" .
+	$user_name . "-" . $timestamp . ".json";
+      $workfile_size = file_put_contents($json_file_name,
+					 json_encode($recomp_ops));
+    }
+    return ($workfile_size !== FALSE) ?
+      $json_file_name :
+      $workfile_size;
+  }
+
 }
 ?>

@@ -831,12 +831,15 @@ class Material extends Model
   // TODO: Make this function shorter if possible
   public function get_material_info($cid, $material_ids)
   {
-
     $uploads_dir = property('app_uploads_path');
     // format for constructing filename timestamps as YYYY-MM-DD-HHMMSS
     $download_date_format = "Y-m-d-His";
     $materials = array();
     $query_params = array($cid);
+    $timestamp = date($download_date_format);
+    $rec_work_dir = property('app_mat_download_path') .
+      "recomp_" . getUserProperty('user_name') . "-" .
+      $timestamp . "/";
 
     // TODO: Change this SQL to active record queries
     $sql = "SELECT
@@ -920,6 +923,7 @@ class Material extends Model
 						    $row->material_mod_date,
 						    $download_date_format),
 		  'material_cos_info' => array(),
+		  'rec_work_dir' => $rec_work_dir,
 		  );
 	  $materials[$row->material_id]['course_path'] = $uploads_dir .
 	    "cdir_" . $row->course_file;
@@ -938,7 +942,7 @@ class Material extends Model
 			   'co_filename' => $row->object_file_name,
 			   'co_rep_id' => $row->object_rep_id
 			   );
-	$co_array['co_replace'] = $this->_replace_object($co_array);
+	$co_array['co_replace'] = $this->_replace_co($co_array);
 	$co_array['co_path'] =
 	  $materials[$row->material_id]['material_path'] . "/odir_" .
 	  $row->object_file_name;
@@ -1218,7 +1222,7 @@ class Material extends Model
    * @return	boolean FALSE if the object is not to be replaced
    *		TRUE if it is to be replaced.
    */
-  private function _replace_object($co_info)
+  private function _replace_co($co_info)
   {
     $rep_obj = FALSE;
 
@@ -1406,6 +1410,10 @@ class Material extends Model
 
 	if (count($material_list[$material['material_id']]['material_manip_ops']->decompFileOps)
 	    > 0) {
+	  $material_list[$material['material_id']]['material_manip_ops']->decompFileOps[] =
+	    clone $this->_def_mat_save_op($mat_loc_det['extension'],
+					  $material['material_name'],
+					  $material['rec_work_dir']);
 	  $material_list[$material['material_id']]['material_manip_ops']->inputFile =
 	    $mat_loc_det['dirname'] . "/" . $mat_loc_det['basename'];
 	} else {
@@ -1556,12 +1564,51 @@ class Material extends Model
 			  );
     if (preg_match($valid_name_patt, $co_orig_name) > 0) {
       $name_parts = preg_split($loc_delimiter, $name_no_ext);
+      /* TODO: check to see if there is an off by one error in either
+	 one of these values. */
       // cast the location strings to get rid of leading zeros.
       $place_info['page_num'] = (int)$name_parts[1];
       $place_info['img_num'] = (int)$name_parts[2] + 1;
     }
 
     return $place_info;
+  }
+
+
+  /**
+   * Define the save recomp operation which also requires the output
+   * file name. We identify that the file has been revised by
+   * indicating it in the name of the generated file. This function
+   * returns an object that can be used to generate the JSON input
+   * file for the openoffice recomp tool.
+   *
+   * @access	private
+   * @param	string file extension of the material
+   * @param	string name of the material. This is the original
+   *		of the uploaded file and not the SHA1 has that is
+   *		used to track file names.
+   * @param	string directory on which the recomposed files will sit
+   * @param	(optional) string which is added after the file name
+   *		and before extension. It is not a good idea for it to
+   *		contain spaces or slashes. Best to stick to
+   *		alphanumeric characters.
+   * @return    object that contains the properties required to
+   *		specify a save operation in the JSON file used by the
+   *		openoffice recomp
+   */
+  private function _def_mat_save_op($mat_file_ext,
+				    $mat_name,
+				    $rec_work_dir,
+				    $recomp_tag = NULL)
+  {
+    if ($recomp_tag == NULL) {
+      $recomp_tag = "AUTOREVISED";
+    }
+
+    $save_op->operation = "SAVE";
+    $save_op->outputFile = $rec_work_dir . $mat_name . "-" .
+      $recomp_tag . "." . $mat_file_ext;
+    return $save_op;
   }
 
 }
