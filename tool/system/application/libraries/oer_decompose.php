@@ -128,6 +128,41 @@ class OER_decompose {
     return ($decomp_code == 0) ? TRUE : FALSE;
   }
 
+  
+  /**
+   * This function is much simpler than decompose_material. The
+   * recomposition code only works for powerpoint files and so we
+   * dispense with a lot of the clever checks of the above function.
+   *
+   * @param	absolute path to the json file used as input for the
+   *		openoffice recomp tool
+   * @return	the exit code from the exec call, or -1 if the exec
+   *		fails completely.
+   */
+  public function recompose_material($json_file_abs_path)
+  {
+    $recomp_code = -1;
+    $recomp = new OER_decompose_openoffice();
+    $recomp_code = $recomp->do_recomp($json_file_abs_path);
+    return $recomp_code;
+  }
+
+  
+  /**
+   * Calls the function that deletes the recomped files and the
+   * working directory in oer_decompose_openoffice.php.
+   *
+   * @access	public
+   * @param	path to recomp dir
+   * @return	bool TRUE on success FALSE on failure.
+   */
+  public function del_recomp_dir($recomp_dir_path)
+  {
+    $recomp = new OER_decompose_openoffice();
+    return $recomp->rm_recomp_dir($recomp_dir_path);
+  }
+
+
   /**
    * Parse the given CO filename and obtain a page number if possible
    * If the page number cannot be determined, return zero

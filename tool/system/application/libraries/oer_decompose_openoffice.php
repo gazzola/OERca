@@ -147,6 +147,66 @@ class OER_decompose_openoffice
     return $oocode;
   }
 
+
+  /**
+   * The driver function for openoffice recomposition. This is hugely
+   * simplistic since all the heavy lifting is done while generating
+   * the JSON file used as input for the openoffice tool.
+   *
+   * @access	public
+   * @param	string absolute path to the json input file
+   * @return	int the exit code of the exec call.
+   */
+  public function do_recomp($json_file_abs_path)
+  {
+    $this->CI->ocw_utils->log_to_apache('debug', "oo::do_recomp: '{$json_file_abs_path}'");
+
+    $oocode = -1;
+    $ooout = array();
+    // Redirect stderr to /dev/null to eliminate "random" messages from the apache log file
+    // Local MAMP server needs some extra parameters
+    $SET_DYLD_PATH = "";
+    $FIX_ENV = "";
+    if ($this->CI->config->item('is_local_mamp_server')) {
+      //$this->CI->ocw_utils->log_to_apache('debug', __FUNCTION__.": *** Using LOCAL Settings ***");
+      $SET_DYLD_PATH .= "export DYLD_LIBRARY_PATH=\"\";";
+      $FIX_ENV .= "export UNO_PATH=\"/Applications/OpenOffice.org.app/Contents/MacOS\"; ";
+      $this->java_options .= " -d32";
+    }
+
+    $FIX_ENV .= "unset DISPLAY; HOME=/tmp; export HOME;";
+    $execString = "$SET_DYLD_PATH $FIX_ENV $this->java_path $this->java_options -jar $this->oo_jar_path -j $json_file_abs_path";
+    $this->CI->ocw_utils->log_to_apache('debug', "Executing: '${execString}'");
+    exec($execString, $ooout, $oocode);
+
+    if ($oocode != 0) {
+      foreach($ooout as $errstring) {
+	$this->CI->ocw_utils->log_to_apache('error', $errstring);
+      }
+    }
+    unset($ooout);
+    
+    $this->CI->ocw_utils->log_to_apache('debug', "oo::do_recomp: returning '{$json_file_abs_path}'");
+    return $oocode;
+  }
+
+  
+  /**
+   * Delete the directory in which the recomp command file and the
+   * recomped files were stored. This function cheats by using the
+   * rm_staging_dir function and changing a class property.
+   *
+   * @access	public
+   * @param	string path to the recomp dir
+   * @return	boolean TRUE on delete, FALSE otherwise.
+   */
+  public function rm_recomp_dir($recomp_dir_path)
+  {
+    $this->staging_dir = $recomp_dir_path;
+    return $this->rm_staging_dir();
+  }
+
+
 }
 
 ?>
