@@ -1,4 +1,5 @@
 <?php
+// TODO: Move object specific function to coobject model.
 /**
  * Provides access to material information
  *
@@ -820,7 +821,8 @@ private function generate_material_name($filename)
 
 
 /**
- * Get the file path to a provided list of materials
+ * Get detailed info on a provided list of material ids and their
+ * respective content objects.
  *
  * @param    int/string course id
  * @param    array of material ids
@@ -829,73 +831,138 @@ private function generate_material_name($filename)
 // TODO: Make this function shorter if possible
 public function get_material_info($cid, $material_ids)
 {
+  
+  $uploads_dir = property('app_uploads_path');
   // format for constructing filename timestamps as YYYY-MM-DD-HHMMSS
   $download_date_format = "Y-m-d-His";
-  // get the content object info for all material ids
-  $mat_cos_info = $this->get_co_info($cid, $material_ids);
   $materials = array();
-  $last_mat_id = $material_ids[(count($material_ids) - 1)];
+  $query_params = array($cid);
+
   // TODO: Change this SQL to active record queries
   $sql = "SELECT
 	    ocw_course_files.course_id,
 	    ocw_schools.name AS school_name,
 	    ocw_courses.number AS course_number,
 	    ocw_courses.title AS course_title,
-	    ocw_course_files.filename AS course_dir,
+	    ocw_course_files.filename AS course_file,
 	    ocw_material_files.material_id,
 	    ocw_materials.name AS material_name,
-	    ocw_material_files.filename AS material_dir,
+	    ocw_material_files.filename AS material_file,
 	    ocw_material_files.created_on AS material_creation_date,
-	    ocw_material_files.modified_on AS material_mod_date
+	    ocw_material_files.modified_on AS material_mod_date,
+	    ocw_objects.id AS object_id,
+	    ocw_objects.name AS object_name,
+	    ocw_objects.location AS object_location,
+	    ocw_objects.author AS object_author,
+	    ocw_objects.contributor AS object_contributor,
+	    ocw_objects.action_type AS object_rec_action,
+	    ocw_objects.action_taken AS object_fin_action,
+	    ocw_objects.citation AS object_citation,
+            ocw_object_files.filename AS object_file_name,
+	    ocw_object_replacements.id AS object_rep_id,
+	    ocw_object_replacements.name AS object_rep_name,
+	    ocw_object_replacements.location AS object_rep_location,
+            ocw_object_replacements.author AS object_rep_author,
+	    ocw_object_replacements.contributor AS object_rep_contributor,
+	    ocw_object_replacements.citation AS object_rep_citation,
+	    ocw_object_copyright.status AS object_copyright_status,
+            ocw_object_copyright.holder AS object_copyright_holder,
+	    ocw_object_copyright.url AS object_copyright_url,
+	    ocw_object_replacement_copyright.status AS object_rep_copyright_status,
+	    ocw_object_replacement_copyright.holder AS object_rep_copyright_holder,
+            ocw_object_replacement_copyright.url AS object_rep_copyright_url
 	    FROM
-	    ocw_course_files,
-	    ocw_material_files,
-	    ocw_courses,
-	    ocw_materials,
-	    ocw_schools
+	    ocw_course_files
+            INNER JOIN ocw_courses ON (ocw_courses.id = ocw_course_files.course_id)
+	    INNER JOIN ocw_schools ON (ocw_schools.id = ocw_courses.school_id)
+	    INNER JOIN ocw_materials ON (ocw_materials.course_id = ocw_courses.id)
+	    INNER JOIN ocw_material_files ON (ocw_material_files.material_id = ocw_materials.id)
+            INNER JOIN ocw_objects ON (ocw_objects.material_id = ocw_materials.id)
+            INNER JOIN ocw_object_files ON (ocw_object_files.object_id = ocw_objects.id)
+            LEFT OUTER JOIN ocw_object_replacements ON (ocw_object_replacements.object_id = ocw_objects.id)
+	    LEFT OUTER JOIN ocw_object_copyright ON (ocw_object_copyright.object_id = ocw_objects.id)
+            LEFT OUTER JOIN ocw_object_replacement_copyright ON (ocw_object_replacement_copyright.object_id = 
+	      ocw_object_replacements.id)
 	    WHERE
-	    ocw_courses.id = ocw_course_files.course_id
-	    AND
-	    ocw_materials.id = ocw_material_files.material_id
-	    AND
-	    ocw_materials.course_id = ocw_courses.id
-	    AND
-	    ocw_schools.id = ocw_courses.school_id
-	    AND
-	    ocw_courses.id = $cid AND ( ";
+	    ocw_courses.id = ? AND ( ";
 
   /* construct the last 'WHERE' clause in the query
    * from the list of passed material_ids
-   * the loop add all but the last material id and
-   * the line after the loop does the rest
+   * the loop adds all but the last material id placeholder
+   * and the line after the loop does the rest
    */
   for ($i=0; $i < (count($material_ids) - 1); $i++) {
-    $sql .= "ocw_materials.id = $material_ids[$i] OR ";
+    $sql .= "ocw_materials.id = ? OR ";
   }
 
-  $sql .= "ocw_materials.id = $last_mat_id )";
-
-  $q = $this->db->query($sql);
+  $sql .= "ocw_materials.id = ? )";
+  
+  $query_params = array_merge ($query_params, $material_ids);
+  
+  $q = $this->db->query($sql, $query_params);
 
   if ($q->num_rows() > 0) {
     foreach ($q->result() as $row) {
-      $materials[] = array(
-			   'course_id' => $row->course_id,
-			   'school_name' => $row->school_name,
-			   'course_number' => $row->course_number,
-			   'course_title' => $row->course_title,
-			   'course_dir' => $row->course_dir,
-			   'material_id' => $row->material_id,
-			   'material_name' => $row->material_name,
-			   'material_dir' => $row->material_dir,
-			   'material_date' => $this->ocw_utils->calc_later_date(
-										$row->material_creation_date,
-										$row->material_mod_date,
-										$download_date_format),
-			   'material_cos_info' => $mat_cos_info[$row->material_id],
-			   );
+      if (!array_key_exists($row->material_id, $materials)) {
+	$materials[$row->material_id] = 
+	  array(
+		'course_id' => $row->course_id,
+		'school_name' => $row->school_name,
+		'course_number' => $row->course_number,
+		'course_title' => trim($row->course_title),
+		'course_file' => $row->course_file,
+		'material_id' => $row->material_id,
+		'material_name' => trim($row->material_name),
+		'material_file' => $row->material_file,
+		'material_date' => 
+		$this->ocw_utils->calc_later_date(
+						  $row->material_creation_date,
+						  $row->material_mod_date,
+						  $download_date_format),	       
+		'material_cos_info' => array(),
+		);
+	$materials[$row->material_id]['course_path'] = $uploads_dir . 
+	  "cdir_" . $row->course_file;
+	$materials[$row->material_id]['material_path'] =
+	  $materials[$row->material_id]['course_path'] .
+	  "/mdir_" . $row->material_file;
+      }
+      
+      // the content object information
+      $co_array =  array(
+			 'co_id' => $row->object_id,
+			 'co_name' => trim($row->object_name),
+			 'co_rec_action' => $row->object_rec_action,
+			 'co_fin_action' => $row->object_fin_action,
+			 'co_location' => $row->object_location,
+			 'co_filename' => $row->object_file_name,
+			 'co_rep_id' => $row->object_rep_id
+			 );
+      $co_array['co_replace'] = $this->_replace_object($co_array);
+      $co_array['co_path'] = 
+	$materials[$row->material_id]['material_path'] . "/odir_" .
+	$row->object_file_name;
+      if ($co_array['co_replace'] === TRUE) {
+	$co_array['co_citation'] = $this->
+	  _format_content_object_citation(trim($row->object_rep_citation),
+					  trim($row->object_rep_author),
+					  trim($row->object_rep_copyright_holder),
+					  trim($row->object_rep_copyright_url));
+      } else {
+	$co_array['co_citation'] = $this->
+	  _format_content_object_citation(trim($row->object_citation),
+					  trim($row->object_author),
+					  trim($row->object_copyright_holder),
+					  trim($row->object_copyright_url));
+      }
+	
+      $materials[$row->material_id]['material_cos_info'][$row->object_id] =
+	$co_array;
+      $materials[$row->material_id]['material_manip_ops']->inputFile =
+	$materials[$row->material_id]['material_path'];
     }
   }
+
   return((count($materials) > 0) ? $materials : NULL);
 }
 
@@ -910,7 +977,8 @@ public function get_material_info($cid, $material_ids)
  * @return   array of mids with info about the cos for each material
  */
 // TODO: See if this function is even needed
-public function get_co_info($cid, $material_ids) {
+public function get_co_info($cid, $material_ids) 
+{
   $mat_cos_info = array();
   foreach($material_ids as $mid) {
     $co_info = $this->coobject->coobjects($mid, '', 'Done');
@@ -1107,7 +1175,8 @@ public function status_list($mid)
  * @param   string action name
  * @return  string array key
  */
-public function map_recommended_action($action_name) {
+public function map_recommended_action($action_name) 
+{
   $action_key = "";
   switch($action_name) {
   case "Retain: Permission":
@@ -1133,5 +1202,155 @@ public function map_recommended_action($action_name) {
   }
   return $action_key;
 }
+
+
+/**
+ * Determine if the content object should be replaced. Unclear if this
+ * function should even be in the material model, but since the query
+ * is already fetching the content object info, it seems silly to load
+ * a class for no reason or to locate this function in the coobject 
+ * model.
+ *
+ * @access	private
+ * @param	array content object info fetched by the 
+ *		get_material_info function.
+ * @return	boolean FALSE if the object is not to be replaced
+ *		TRUE if it is to be replaced.
+ */
+private function _replace_object($co_info) 
+{
+  $rep_obj = FALSE;
+
+  if (!empty($co_info['co_rep_id'])) {
+    if ($co_info['co_fin_action'] == "Search") {
+      $rep_obj = TRUE;
+    } else if ($co_info['co_rec_action'] == "Search" &&
+	       empty($co_info['co_fin_action'])) {
+      $rep_obj = TRUE;
+    } else if ($co_info['co_rec_action'] == "Search" &&
+	       $co_info['co_fin_action'] == "Search") {
+      $rep_obj = TRUE;
+    }
+  }
+  
+  return $rep_obj;
+}
+
+
+/**
+ * Format the content object citation. Check the citation to see if it
+ * also includes the other parameters. If not, add them to the
+ * citation text.
+ *
+ * @access	private
+ * @param	string citation string
+ * @param	string author info
+ * @param	string copyright holder info
+ * @param	string url related to the object
+ * @return	string citation with as much correct information as
+ *		is present in the DB.
+ * 
+ */
+// TODO: Should we also work with the contributor information?
+private function _format_content_object_citation($cit_text,
+						 $author,
+						 $copyright_holder, 
+						 $url) 
+{
+  /* the db has many instances of the strings below in the citation
+     fields of the ocw_objects and ocw_object_replacements tables.
+     Prevent those from being used as legitimate citation text.
+  */
+  $empty_citation_synonyms = array ("None",
+				 "unk",
+				 "unknown",
+				 "undetermined"
+				 );
+  
+  if (!empty($cit_text)) {
+    foreach ($empty_citation_synonyms as $no_cite) {
+      if (strcasecmp(trim($cit_text), $no_cite) == 0) {
+	$cit_text = "";
+	break;
+      }
+    }
+    //remove any newlines in citations
+    $cit_text = str_replace("\n", ", ", $cit_text);
+  }
+  // add any attribution info and URLs
+  $cit_text = $this->_proc_citation_attribution($cit_text, 
+						$author, 
+						$copyright_holder);
+  $cit_text = $this->_proc_citation_url($cit_text, $url);
+  
+  /* replace cases of two instances of comma space ", , " with single
+     comma space ", ". These are caused by misformatted citations. */
+  $cit_text = str_replace(", , ", ", ", $cit_text);
+
+  return $cit_text;
+}
+
+
+/**
+ * Check to see if the attribution information is already in the
+ * citation. If not, add the author and copyright holder information
+ * to the citation text.
+ *
+ * @access	private
+ * @param	string citation text
+ * @param	string author
+ * @param	string copyright holder
+ * @return	string citation text with attribution info if the
+ *		citation info is not empty and if it isn't already
+ *		present in the passed citation text.
+ */
+private function _proc_citation_attribution($cit_text,
+					    $obj_author,
+					    $obj_copyright_holder)
+{
+  if (!empty($obj_copyright_holder) &&
+      strcasecmp($obj_author, $obj_copyright_holder != 0) &&
+      (stripos($cit_text, $obj_copyright_holder) === FALSE)) {
+    $cit_text = $obj_copyright_holder . ", " . $cit_text;
+  }
+  if (!empty($obj_author) && 
+      (stripos($cit_text, $obj_author) !== FALSE)) {
+    $cit_text = $obj_author . ", " . $cit_text;
+  }
+  return $cit_text;
+}
+
+
+/**
+ * Check to see if the specified URLs are already in the citation
+ * text. If not, add them in the appropriate spot. Due to the
+ * absence of any regular delimiters between citation fields, the
+ * placement of the URL may be suboptimal.
+ * 
+ * @access	private
+ * @param	string citation text
+ * @param	string URL
+ * @return	string citation text with any correctly formatted
+ * 		URLs. The format check is very naive at present
+ *		since the entered data is not always correctly
+ *		formatted.
+ */
+private function _proc_citation_url($cit_text, $url)
+{
+  $valid_url_beg_patt = "[https?://]";
+
+  if ((preg_match($valid_url_beg_patt, $url) > 0) &&
+      (strpos($cit_text, $url) === FALSE)) {
+    $cit_text = $cit_text . ", " . $url;
+  }
+  return $cit_text;
+}
+
+
+private function _mat_manip_filename()
+{
+  
+}
+
 }
 ?>
