@@ -10,6 +10,8 @@ class Materials extends Controller {
 
   // format for constructing filename timestamps as YYYY-MM-DD-HHMMSS
   private $date_format = "Y-m-d-His";
+  // absoulute path to directory where materials are recomposed
+  private $recomp_dir_path = NULL;
 
   public function __construct()
   {
@@ -1020,6 +1022,7 @@ class Materials extends Controller {
     $err_msg = "";
     $conf_msg = "";
     $selected_materials = NULL;
+    $rec_file_dets = NULL;
 
     // Make sure course_id is an integer.
     if (!$this->_validate_integer_param($cid)) {
@@ -1064,6 +1067,18 @@ class Materials extends Controller {
       $file_list = $this->_get_material_files($material_list);
       $recomp_workfile =
 	$this->_write_recomp_workfile($material_list);
+      if ($recomp_workfile !== FALSE) {
+      	$recomp_done =
+      	  $this->oer_decompose->recompose_material($recomp_workfile);
+	if ($recomp_done === 0 || $recomp_done === "0") {
+	  $rec_file_dets = 
+	    $this->_get_recomped_files_dets($recomp_workfile);
+	} elseif ($recomp_done !==0 || $recomp_done !== "0") {
+	  /* TODO: should we check the return value to see if 
+	     deletion worked? */
+	  $this->oer_decompose->del_recomp_dir($this->recomp_dir_path);
+	}
+      }
 
       if ($mid) {
         $file_list[0]['file_names'] =
@@ -1072,8 +1087,7 @@ class Materials extends Controller {
 
       /* $this->ocw_utils->dump($material_list); */
       /* $this->ocw_utils->dump($file_list); */
-      exit();
-      $this->_download_material($file_list);
+      $this->_download_material($file_list, $rec_file_dets);
     } else {
       echo "We really shouldn't see this at all!";
     }
@@ -1149,12 +1163,13 @@ class Materials extends Controller {
    * Download the files for a selected set of materials. An archive
    * file is created if there is more than one file.
    *
-   * @access   private
-   * @param    array a list of files
-   * @return   void
+   * @access    private
+   * @param     array a list of files
+   * @param	array list of recomped materials.
+   * @return    void
    */
   // TODO: refactor this function, it is turning into a monster!
-  private function _download_material($file_list)
+  private function _download_material($file_list, $rec_file_dets)
   {
     $this->load->helper('download');
     $this->load->library('oer_create_archive');
@@ -1233,13 +1248,14 @@ class Materials extends Controller {
              * export_name is unique and a number is added if the name
              * isn't unique
              */
+	    
             // define the directory location and initial co name
             $export_name = $archive_name . '/' .
               $mat_files['material_name'] . '/' .
               'content_objects/' . $mat_files['material_name'] . '_slide_';
             // break apart the object location information
             // TODO: possibly predefine the split regexp
-            $locations = preg_split("/\s*,\s*/", $co_info['location']);
+            $locations = preg_split("/\s*,\s*/", $co_info['co_location']);
             for($i = 0; $i < count($locations); $i++) {
               $export_name .= trim($locations[$i]) . '_';
             }
@@ -1274,16 +1290,21 @@ class Materials extends Controller {
             $export_name .= '.' . pathinfo($co_info['co_file'],
                                            PATHINFO_EXTENSION);
             $archive_cont_info[] = array(
-                                         'orig_name' => property('app_uploads_path') . '/' .
-                                         $co_info['co_path'] . '/' . $co_info['co_file'],
+                                         'orig_name' => $co_info['co_path'] . 
+					 '/' . $co_info['co_file'],
                                          'export_name' => $export_name,
                                          );
           }
         }
       }
+      $this->_add_recmpd_files_to_archive($rec_file_dets,
+					  $archive_name,
+					  $archive_cont_info);
       $path_to_archive = $this->oer_create_archive->
         make_archive($archive_name,$archive_cont_info);
       $down_name = pathinfo($path_to_archive, PATHINFO_BASENAME);
+      // delete the recomp files and working directory
+      $this->oer_decompose->del_recomp_dir($this->recomp_dir_path);
       force_file_download($down_name, $path_to_archive, TRUE);
     }
   }
@@ -1620,6 +1641,7 @@ class Materials extends Controller {
       $recomp_ops->id = $recomp_id;
       $recomp_ops->decompFiles = $recomp_files;
       if (!file_exists($material['rec_work_dir'])) {
+	$this->recomp_dir_path = $material['rec_work_dir'];
 	mkdir($material['rec_work_dir'], 0700);
       }
       $json_file_name = $material['rec_work_dir'] . "recomp-" .
@@ -1630,6 +1652,58 @@ class Materials extends Controller {
     return ($workfile_size !== FALSE) ?
       $json_file_name :
       $workfile_size;
+  }
+  
+  
+  /**
+   * Get the location of the recomped files. We are going about this
+   * somewhat inefficiently, but optimization comes later. The single
+   * parameter provided prevents the JSON file from being included in
+   * the archive.
+   *
+   * @access	public
+   * @param	string absoulute path to the recomp JSON file
+   */
+  private function _get_recomped_files_dets($recomp_workfile)
+  {
+    $recomped_files = array();
+    $recomp_dir_conts = scandir($this->recomp_dir_path);
+    foreach ($recomp_dir_conts as $content) {
+      $cont_abs_path = $this->recomp_dir_path . $content;
+      if (is_file($cont_abs_path) &&
+	  (strcmp($recomp_workfile, $cont_abs_path) !== 0)) {
+	$proc_file['abspath'] = $cont_abs_path;
+	$proc_file['basename'] = $content;
+	$recomped_files[] = $proc_file;
+      }
+    }
+
+    return $recomped_files;
+  }
+
+  
+  /**
+   * Add the recomped files to the array used to create the download
+   * archive.
+   *
+   * @access	private
+   * @param	array recomped file location info. Specifically the
+   *		output of the _get_recomped_files_dets function.
+   * @param	string the name of the archive
+   * @param	the array that represents the archive contents.
+   */
+  private function _add_recmpd_files_to_archive($rec_file_dets,
+						$archive_name,
+						&$archive_cont_info)
+  {
+    if ($rec_file_dets !== NULL) {
+      foreach ($rec_file_dets as $rec_file) {
+	$archive_item['orig_name'] = $rec_file['abspath'];
+	$archive_item['export_name'] = $archive_name . "/" .
+	  $rec_file['basename'];
+	$archive_cont_info[] = $archive_item;
+      }
+    }
   }
 
 }
