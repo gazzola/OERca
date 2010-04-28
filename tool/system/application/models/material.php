@@ -728,118 +728,118 @@ class Material extends Model
 
     # store new filename
     $this->db->insert('material_files', array('material_id'=>$mid,
-      'filename'=>$name,
-      'modified_on'=>date('Y-m-d h:i:s'),
-      'created_on'=>date('Y-m-d h:i:s')));
+					      'filename'=>$name,
+					      'modified_on'=>date('Y-m-d h:i:s'),
+					      'created_on'=>date('Y-m-d h:i:s')));
 
-return $path.'/'.$name.$ext;
-}
-
-/* return the path to a material on the file system
- *
- * returns path to latest version of material unless
- * all is true and then it returns paths to all versions
- */
-private function material_path($cid, $mid, $all=false)
-{
-  $path = property('app_uploads_path');
-
-  # get course directory name
-  $this->db->select('filename')->from('course_files')->where("course_id=$cid")->order_by('created_on desc')->limit(1);
-  $q = $this->db->get();
-  $r = $q->row();
-  $path .= 'cdir_'.$r->filename;
-
-  $this->db->select('filename')->from('material_files')->where("material_id=$mid")->order_by('created_on desc');
-  if (!$all) { $this->db->limit(1); }
-
-  $q = $this->db->get();
-
-  if ($q->num_rows() > 0) {
-    if ($all) {
-      $cpath = $path;
-      $path = array();
-      foreach($q->result_array() as $row) {
-	array_push($path, $cpath.'/mdir_'.$row['filename']);
-      }
-    } else {
-      $r = $q->row();
-      $path .= '/mdir_'.$r->filename;
-    }
-  } else {
-    return null;
+    return $path.'/'.$name.$ext;
   }
 
-  return $path;
-}
+  /* return the path to a material on the file system
+   *
+   * returns path to latest version of material unless
+   * all is true and then it returns paths to all versions
+   */
+  private function material_path($cid, $mid, $all=false)
+  {
+    $path = property('app_uploads_path');
 
-/**
- * Insert material info into DB and return resulting material id
- *
- * @param    array detail information for new material
- * @return   integer material id
- */
-public function insert_material($details)
-{
-  $this->db->insert('materials', $details);
-  return $this->db->insert_id();
-}
+    # get course directory name
+    $this->db->select('filename')->from('course_files')->where("course_id=$cid")->order_by('created_on desc')->limit(1);
+    $q = $this->db->get();
+    $r = $q->row();
+    $path .= 'cdir_'.$r->filename;
 
-// TODO: change the SQL query to check for null and return 0? is that a good
-//      idea
-public function get_nextorder_pos($cid)
-{
-  $q = $this->db->query("SELECT MAX(`order`) + 1 AS nextpos FROM ocw_materials WHERE course_id=$cid");
-  $row = $q->result_array();
-  if ($row[0]['nextpos']) {
-    return $row[0]['nextpos'];
-  } else return 0;
-}
+    $this->db->select('filename')->from('material_files')->where("material_id=$mid")->order_by('created_on desc');
+    if (!$all) { $this->db->limit(1); }
 
-private function material_name_exists($name)
-{
-  $this->db->select('filename')->from('material_files')->where("filename='$name'");
-  $q = $this->db->get();
-  return ($q->num_rows() > 0) ? true : false;
-}
-private function generate_material_name($filename)
-{
-  $digest = '';
-  $generate_own = false;
-  do {
-    if ($generate_own) {
-      $this->ocw_utils->log_to_apache('debug', __FUNCTION__.": Using random name for '{$filename}'"); // XXX XXX XXX
-      $digest = $this->oer_filename->random_name($filename);
+    $q = $this->db->get();
+
+    if ($q->num_rows() > 0) {
+      if ($all) {
+	$cpath = $path;
+	$path = array();
+	foreach($q->result_array() as $row) {
+	  array_push($path, $cpath.'/mdir_'.$row['filename']);
+	}
+      } else {
+	$r = $q->row();
+	$path .= '/mdir_'.$r->filename;
+      }
     } else {
-      $digest = $this->oer_filename->file_digest($filename);
+      return null;
     }
-    $generate_own = true;
-  } while ($this->material_name_exists($digest));
 
-  return $digest;
-}
+    return $path;
+  }
+
+  /**
+   * Insert material info into DB and return resulting material id
+   *
+   * @param    array detail information for new material
+   * @return   integer material id
+   */
+  public function insert_material($details)
+  {
+    $this->db->insert('materials', $details);
+    return $this->db->insert_id();
+  }
+
+  // TODO: change the SQL query to check for null and return 0? is that a good
+  //      idea
+  public function get_nextorder_pos($cid)
+  {
+    $q = $this->db->query("SELECT MAX(`order`) + 1 AS nextpos FROM ocw_materials WHERE course_id=$cid");
+    $row = $q->result_array();
+    if ($row[0]['nextpos']) {
+      return $row[0]['nextpos'];
+    } else return 0;
+  }
+
+  private function material_name_exists($name)
+  {
+    $this->db->select('filename')->from('material_files')->where("filename='$name'");
+    $q = $this->db->get();
+    return ($q->num_rows() > 0) ? true : false;
+  }
+  private function generate_material_name($filename)
+  {
+    $digest = '';
+    $generate_own = false;
+    do {
+      if ($generate_own) {
+	$this->ocw_utils->log_to_apache('debug', __FUNCTION__.": Using random name for '{$filename}'"); // XXX XXX XXX
+	$digest = $this->oer_filename->random_name($filename);
+      } else {
+	$digest = $this->oer_filename->file_digest($filename);
+      }
+      $generate_own = true;
+    } while ($this->material_name_exists($digest));
+
+    return $digest;
+  }
 
 
-/**
- * Get detailed info on a provided list of material ids and their
- * respective content objects.
- *
- * @param    int/string course id
- * @param    array of material ids
- * @return   array of paths to materials
- */
-// TODO: Make this function shorter if possible
-public function get_material_info($cid, $material_ids)
-{
-  
-  $uploads_dir = property('app_uploads_path');
-  // format for constructing filename timestamps as YYYY-MM-DD-HHMMSS
-  $download_date_format = "Y-m-d-His";
-  $materials = array();
-  $query_params = array($cid);
+  /**
+   * Get detailed info on a provided list of material ids and their
+   * respective content objects.
+   *
+   * @param    int/string course id
+   * @param    array of material ids
+   * @return   array of paths to materials
+   */
+  // TODO: Make this function shorter if possible
+  public function get_material_info($cid, $material_ids)
+  {
 
-  // TODO: Change this SQL to active record queries
-  $sql = "SELECT
+    $uploads_dir = property('app_uploads_path');
+    // format for constructing filename timestamps as YYYY-MM-DD-HHMMSS
+    $download_date_format = "Y-m-d-His";
+    $materials = array();
+    $query_params = array($cid);
+
+    // TODO: Change this SQL to active record queries
+    $sql = "SELECT
 	    ocw_course_files.course_id,
 	    ocw_schools.name AS school_name,
 	    ocw_courses.number AS course_number,
@@ -881,687 +881,688 @@ public function get_material_info($cid, $material_ids)
             LEFT OUTER JOIN ocw_object_files ON (ocw_object_files.object_id = ocw_objects.id)
             LEFT OUTER JOIN ocw_object_replacements ON (ocw_object_replacements.object_id = ocw_objects.id)
 	    LEFT OUTER JOIN ocw_object_copyright ON (ocw_object_copyright.object_id = ocw_objects.id)
-            LEFT OUTER JOIN ocw_object_replacement_copyright ON (ocw_object_replacement_copyright.object_id = 
+            LEFT OUTER JOIN ocw_object_replacement_copyright ON (ocw_object_replacement_copyright.object_id =
 	      ocw_object_replacements.id)
 	    WHERE
 	    ocw_courses.id = ? AND ( ";
 
-  /* construct the last 'WHERE' clause in the query
-   * from the list of passed material_ids
-   * the loop adds all but the last material id placeholder
-   * and the line after the loop does the rest
+    /* construct the last 'WHERE' clause in the query
+     * from the list of passed material_ids
+     * the loop adds all but the last material id placeholder
+     * and the line after the loop does the rest
+     */
+    for ($i=0; $i < (count($material_ids) - 1); $i++) {
+      $sql .= "ocw_materials.id = ? OR ";
+    }
+
+    $sql .= "ocw_materials.id = ? )";
+
+    $query_params = array_merge ($query_params, $material_ids);
+
+    $q = $this->db->query($sql, $query_params);
+
+    if ($q->num_rows() > 0) {
+      foreach ($q->result() as $row) {
+	if (!array_key_exists($row->material_id, $materials)) {
+	  $materials[$row->material_id] =
+	    array(
+		  'course_id' => $row->course_id,
+		  'school_name' => $row->school_name,
+		  'course_number' => $row->course_number,
+		  'course_title' => trim($row->course_title),
+		  'course_file' => $row->course_file,
+		  'material_id' => $row->material_id,
+		  'material_name' => trim($row->material_name),
+		  'material_file' => $row->material_file,
+		  'material_date' =>
+		  $this->ocw_utils->calc_later_date(
+						    $row->material_creation_date,
+						    $row->material_mod_date,
+						    $download_date_format),
+		  'material_cos_info' => array(),
+		  );
+	  $materials[$row->material_id]['course_path'] = $uploads_dir .
+	    "cdir_" . $row->course_file;
+	  $materials[$row->material_id]['material_path'] =
+	    $materials[$row->material_id]['course_path'] .
+	    "/mdir_" . $row->material_file;
+	}
+
+	// the content object information
+	$co_array =  array(
+			   'co_id' => $row->object_id,
+			   'co_name' => trim($row->object_name),
+			   'co_rec_action' => $row->object_rec_action,
+			   'co_fin_action' => $row->object_fin_action,
+			   'co_location' => $row->object_location,
+			   'co_filename' => $row->object_file_name,
+			   'co_rep_id' => $row->object_rep_id
+			   );
+	$co_array['co_replace'] = $this->_replace_object($co_array);
+	$co_array['co_path'] =
+	  $materials[$row->material_id]['material_path'] . "/odir_" .
+	  $row->object_file_name;
+	if ($co_array['co_replace'] === TRUE) {
+	  $co_array['co_citation'] = $this->
+	    _format_co_citation(trim($row->object_rep_citation),
+				trim($row->object_rep_author),
+				trim($row->object_rep_copyright_holder),
+				trim($row->object_rep_copyright_url));
+	} else {
+	  $co_array['co_citation'] = $this->
+	    _format_co_citation(trim($row->object_citation),
+				trim($row->object_author),
+				trim($row->object_copyright_holder),
+				trim($row->object_copyright_url));
+	}
+
+	$materials[$row->material_id]['material_cos_info'][$row->object_id] =
+	  $co_array;
+      }
+    }
+
+    $this->_set_mat_manip_ops($materials);
+    /* $this->ocw_utils->dump($materials); */
+    /* exit(); */
+    return((count($materials) > 0) ? $materials : NULL);
+  }
+
+
+  /**
+   * Get detailed information for the content objects for a specified
+   * material including the path to the object directory
+   *
+   * @access   public
+   * @param    integer course id
+   * @param    array of material ids
+   * @return   array of mids with info about the cos for each material
    */
-  for ($i=0; $i < (count($material_ids) - 1); $i++) {
-    $sql .= "ocw_materials.id = ? OR ";
-  }
-
-  $sql .= "ocw_materials.id = ? )";
-  
-  $query_params = array_merge ($query_params, $material_ids);
-  
-  $q = $this->db->query($sql, $query_params);
-
-  if ($q->num_rows() > 0) {
-    foreach ($q->result() as $row) {
-      if (!array_key_exists($row->material_id, $materials)) {
-	$materials[$row->material_id] = 
-	  array(
-		'course_id' => $row->course_id,
-		'school_name' => $row->school_name,
-		'course_number' => $row->course_number,
-		'course_title' => trim($row->course_title),
-		'course_file' => $row->course_file,
-		'material_id' => $row->material_id,
-		'material_name' => trim($row->material_name),
-		'material_file' => $row->material_file,
-		'material_date' => 
-		$this->ocw_utils->calc_later_date(
-						  $row->material_creation_date,
-						  $row->material_mod_date,
-						  $download_date_format),	       
-		'material_cos_info' => array(),
-		);
-	$materials[$row->material_id]['course_path'] = $uploads_dir . 
-	  "cdir_" . $row->course_file;
-	$materials[$row->material_id]['material_path'] =
-	  $materials[$row->material_id]['course_path'] .
-	  "/mdir_" . $row->material_file;
-      }
-      
-      // the content object information
-      $co_array =  array(
-			 'co_id' => $row->object_id,
-			 'co_name' => trim($row->object_name),
-			 'co_rec_action' => $row->object_rec_action,
-			 'co_fin_action' => $row->object_fin_action,
-			 'co_location' => $row->object_location,
-			 'co_filename' => $row->object_file_name,
-			 'co_rep_id' => $row->object_rep_id
-			 );
-      $co_array['co_replace'] = $this->_replace_object($co_array);
-      $co_array['co_path'] = 
-	$materials[$row->material_id]['material_path'] . "/odir_" .
-	$row->object_file_name;
-      if ($co_array['co_replace'] === TRUE) {
-	$co_array['co_citation'] = $this->
-	  _format_co_citation(trim($row->object_rep_citation),
-			      trim($row->object_rep_author),
-			      trim($row->object_rep_copyright_holder),
-			      trim($row->object_rep_copyright_url));
+  // TODO: See if this function is even needed
+  public function get_co_info($cid, $material_ids)
+  {
+    $mat_cos_info = array();
+    foreach($material_ids as $mid) {
+      $co_info = $this->coobject->coobjects($mid, '', 'Done');
+      if ($co_info) {
+	foreach ($co_info as $co_index => $co_details) {
+	  /* TODO: see if we can get path info for all content objects
+	   * in one DB query instead of a query per content object */
+	  $co_info[$co_index]['co_path'] = $this->coobject->
+	    object_path($cid, $mid, $co_details['id']);
+	}
       } else {
-	$co_array['co_citation'] = $this->
-	  _format_co_citation(trim($row->object_citation),
-			      trim($row->object_author),
-			      trim($row->object_copyright_holder),
-			      trim($row->object_copyright_url));
+	$co_info = NULL;
       }
-	
-      $materials[$row->material_id]['material_cos_info'][$row->object_id] =
-	$co_array;
+      $mat_cos_info[$mid] = $co_info;
     }
+    return $mat_cos_info;
   }
 
-  $this->_set_mat_manip_ops($materials);
-  /* $this->ocw_utils->dump($materials); */
-  /* exit(); */
-  return((count($materials) > 0) ? $materials : NULL);
-}
 
+  /**
+   * Return distinct material authors list
+   *
+   * @access  public
+   * @return array authors
+   * mbleed - faceted search 5/2009
+   */
+  public function authors_list($cid)
+  {
+    //get test curriculum
+    /*
+      $sql = "SELECT id FROM ocw_curriculums WHERE name = 'TEST'";
+      $q = $this->db->query($sql);
+      $res = $q->result();
+      $test_curriculum_id = $res[0]->id;
 
-/**
- * Get detailed information for the content objects for a specified
- * material including the path to the object directory
- *
- * @access   public
- * @param    integer course id
- * @param    array of material ids
- * @return   array of mids with info about the cos for each material
- */
-// TODO: See if this function is even needed
-public function get_co_info($cid, $material_ids) 
-{
-  $mat_cos_info = array();
-  foreach($material_ids as $mid) {
-    $co_info = $this->coobject->coobjects($mid, '', 'Done');
-    if ($co_info) {
-      foreach ($co_info as $co_index => $co_details) {
-	/* TODO: see if we can get path info for all content objects
-	 * in one DB query instead of a query per content object */
-	$co_info[$co_index]['co_path'] = $this->coobject->
-	  object_path($cid, $mid, $co_details['id']);
+      if (sizeof($materials) > 0) {
+      $idlist = array();
+      foreach ($materials['Materials'] as $m) $idlist[] = $m['id'];
+      //$materials_csv = implode(",", $idlist);
+      //$sql = "SELECT m.id, m.author, c.curriculum_id FROM ocw_materials m INNER JOIN ocw_courses c ON m.course_id = c.id WHERE m.id IN ($materials_csv) GROUP BY m.author ORDER BY m.author ASC";
+      $sql = "SELECT m.id, m.author, c.curriculum_id FROM ocw_materials m INNER JOIN ocw_courses c ON m.course_id = c.id GROUP BY m.author ORDER BY m.author ASC";
+      $q = $this->db->query($sql);
+      if ($q->num_rows() > 0) {
+      foreach ($q->result() as $row) {
+      if (in_array($row->id, $idlist)) $author_array[$row->id] = $row->author;
       }
-    } else {
-      $co_info = NULL;
-    }
-    $mat_cos_info[$mid] = $co_info;
-  }
-  return $mat_cos_info;
-}
-
-
-/**
- * Return distinct material authors list
- *
- * @access  public
- * @return array authors
- * mbleed - faceted search 5/2009
- */
-public function authors_list($cid)
-{
-  //get test curriculum
-  /*
-    $sql = "SELECT id FROM ocw_curriculums WHERE name = 'TEST'";
-    $q = $this->db->query($sql);
-    $res = $q->result();
-    $test_curriculum_id = $res[0]->id;
-
-    if (sizeof($materials) > 0) {
-    $idlist = array();
-    foreach ($materials['Materials'] as $m) $idlist[] = $m['id'];
-    //$materials_csv = implode(",", $idlist);
-    //$sql = "SELECT m.id, m.author, c.curriculum_id FROM ocw_materials m INNER JOIN ocw_courses c ON m.course_id = c.id WHERE m.id IN ($materials_csv) GROUP BY m.author ORDER BY m.author ASC";
-    $sql = "SELECT m.id, m.author, c.curriculum_id FROM ocw_materials m INNER JOIN ocw_courses c ON m.course_id = c.id GROUP BY m.author ORDER BY m.author ASC";
+      }
+      } */
+    $author_array = array();
+    $sql = "SELECT m.id, m.author FROM ocw_materials m WHERE m.course_id = $cid GROUP BY m.author ORDER BY m.author ASC";
     $q = $this->db->query($sql);
     if ($q->num_rows() > 0) {
-    foreach ($q->result() as $row) {
-    if (in_array($row->id, $idlist)) $author_array[$row->id] = $row->author;
+      foreach ($q->result() as $row) {
+	$author_array[$row->id] = $row->author;
+      }
     }
-    }
-    } */
-  $author_array = array();
-  $sql = "SELECT m.id, m.author FROM ocw_materials m WHERE m.course_id = $cid GROUP BY m.author ORDER BY m.author ASC";
-  $q = $this->db->query($sql);
-  if ($q->num_rows() > 0) {
-    foreach ($q->result() as $row) {
-      $author_array[$row->id] = $row->author;
-    }
+    return $author_array;
   }
-  return $author_array;
-}
 
-/**
- * Return distinct material license list
- *
- * @access  public
- * @return array licenses
- * mbleed - faceted search 5/2009
- */
-public function licenses_list($cid)
-{
-  $license_array = array(1=>'Permission',2=>'Search',3=>'Create');
+  /**
+   * Return distinct material license list
+   *
+   * @access  public
+   * @return array licenses
+   * mbleed - faceted search 5/2009
+   */
+  public function licenses_list($cid)
+  {
+    $license_array = array(1=>'Permission',2=>'Search',3=>'Create');
 
-  return $license_array;
-}
+    return $license_array;
+  }
 
-/**
- * Return distinct mimetypes list that have associated materials
- *
- * @access  public
- * @return array mimetypes
- * mbleed - faceted search 5/2009
- */
-public function mimetypes_list($cid)
-{
-  $mimetype_array = array();
-  $sql = "SELECT ocw_mimetypes.name, ocw_mimetypes.id AS mtid
+  /**
+   * Return distinct mimetypes list that have associated materials
+   *
+   * @access  public
+   * @return array mimetypes
+   * mbleed - faceted search 5/2009
+   */
+  public function mimetypes_list($cid)
+  {
+    $mimetype_array = array();
+    $sql = "SELECT ocw_mimetypes.name, ocw_mimetypes.id AS mtid
 	      FROM ocw_materials
 	      LEFT JOIN ocw_mimetypes
 	      ON ocw_mimetypes.id = ocw_materials.mimetype_id
 	      WHERE ocw_materials.course_id = $cid
 	      ORDER BY ocw_mimetypes.mimetype ASC";
 
-  $q = $this->db->query($sql);
-  foreach ($q->result() as $row) {
-    $mimetype_array[$row->mtid] = $row->name;
-  }
-
-  return array_unique($mimetype_array);
-}
-
-/**
- * Return distinct material types list
- *
- * @access  public
- * @return array mimetypes
- * mbleed - faceted search 5/2009
- */
-public function material_types_list($cid)
-{
-  $mt_array = array();
-  $sql = "SELECT t.name, t.id FROM ocw_tags t INNER JOIN ocw_materials m ON m.tag_id = t.id WHERE m.course_id = $cid ORDER BY t.name ASC";
-
-  $q = $this->db->query($sql);
-  foreach ($q->result() as $row) {
-    $mt_array[$row->id] = $row->name;
-  }
-
-  return array_unique($mt_array);
-}
-
-/**
- * Return recommended actions list
- *
- * @access  public
- * @return array rec actions
- * mbleed - faceted search 5/2009
- */
-public function rec_action_list($mid)
-{
-  $list_array = array();
-  $sql = "SELECT id, action_type, action_taken FROM ocw_objects WHERE material_id=$mid ORDER BY action_type ASC";
-
-  $q = $this->db->query($sql);
-  foreach ($q->result() as $row) {
-    if (is_null($row->action_type)) $row->action_type = 'None';
-    $list_array[$row->id] = $row->action_type;
-  }
-  return array_unique($list_array);
-}
-
-/**
- * Return co types list
- *
- * @access  public
- * @return array co types
- * mbleed - faceted search 5/2009
- */
-public function co_type_list($mid)
-{
-  $sql = "SELECT o.id, o.subtype_id, s.name FROM ocw_objects o INNER JOIN ocw_object_subtypes s ON s.id = o.subtype_id WHERE material_id=$mid ORDER BY s.name ASC";
-  $q = $this->db->query($sql);
-  $list_array = array();
-  if ($q->num_rows() > 0) {
+    $q = $this->db->query($sql);
     foreach ($q->result() as $row) {
-      $list_array[$row->subtype_id] = $row->name;
+      $mimetype_array[$row->mtid] = $row->name;
     }
+
+    return array_unique($mimetype_array);
   }
-  return array_unique($list_array);
-}
 
-/**
- * Return replacement exists list
- *
- * @access  public
- * @return array replacement
- * mbleed - faceted search 5/2009
- */
-public function replacement_list($mid)
-{
-  $list_array = array(1=>'With Replacement', 2=>'Without Replacement');
-  return $list_array;
-}
+  /**
+   * Return distinct material types list
+   *
+   * @access  public
+   * @return array mimetypes
+   * mbleed - faceted search 5/2009
+   */
+  public function material_types_list($cid)
+  {
+    $mt_array = array();
+    $sql = "SELECT t.name, t.id FROM ocw_tags t INNER JOIN ocw_materials m ON m.tag_id = t.id WHERE m.course_id = $cid ORDER BY t.name ASC";
 
-/**
- * Return co status list
- *
- * @access  public
- * @return array co status
- * mbleed - faceted search 5/2009
- */
-public function status_list($mid)
-{
-  $list_array = array(1=>'No Action Assigned', 2=>'In Progress', 3=>'Cleared');
-  return $list_array;
-}
-
-
-/**
- * Map recommended actions to array key names. In case of the "Retain"
- * actions, the faceted search doesn't display objects because the
- * action and the array key that represents the action are different.
- * This function provides a mapping between the action types and the
- * array key names.
- *
- * @access  public
- * @param   string action name
- * @return  string array key
- */
-public function map_recommended_action($action_name) 
-{
-  $action_key = "";
-  switch($action_name) {
-  case "Retain: Permission":
-    $action_key = "retain:perm";
-    break;
-  case "Retain: Public Domain":
-    $action_key = "retain:pd";
-    break;
-  case "Retain: Copyright Analysis":
-    $action_key = "retain:ca";
-    break;
-  case "Remove and Annotate":
-    $action_key = "remove";
-    break;
-  case "Fair Use":
-    $action_key = "fairuse";
-    break;
-  case "None":
-    $action_key = "new";
-    break;
-  default:
-    $action_key = strtolower($action_name);
-  }
-  return $action_key;
-}
-
-
-/**
- * Determine if the content object should be replaced. Unclear if this
- * function should even be in the material model, but since the query
- * is already fetching the content object info, it seems silly to load
- * a class for no reason or to locate this function in the coobject 
- * model.
- *
- * @access	private
- * @param	array content object info fetched by the 
- *		get_material_info function.
- * @return	boolean FALSE if the object is not to be replaced
- *		TRUE if it is to be replaced.
- */
-private function _replace_object($co_info) 
-{
-  $rep_obj = FALSE;
-
-  if (!empty($co_info['co_rep_id'])) {
-    if ($co_info['co_fin_action'] == "Search") {
-      $rep_obj = TRUE;
-    } else if ($co_info['co_rec_action'] == "Search" &&
-	       empty($co_info['co_fin_action'])) {
-      $rep_obj = TRUE;
-    } else if ($co_info['co_rec_action'] == "Search" &&
-	       $co_info['co_fin_action'] == "Search") {
-      $rep_obj = TRUE;
+    $q = $this->db->query($sql);
+    foreach ($q->result() as $row) {
+      $mt_array[$row->id] = $row->name;
     }
+
+    return array_unique($mt_array);
   }
-  
-  return $rep_obj;
-}
 
+  /**
+   * Return recommended actions list
+   *
+   * @access  public
+   * @return array rec actions
+   * mbleed - faceted search 5/2009
+   */
+  public function rec_action_list($mid)
+  {
+    $list_array = array();
+    $sql = "SELECT id, action_type, action_taken FROM ocw_objects WHERE material_id=$mid ORDER BY action_type ASC";
 
-/**
- * Format the content object citation. Check the citation to see if it
- * also includes the other parameters. If not, add them to the
- * citation text.
- *
- * @access	private
- * @param	string citation string
- * @param	string author info
- * @param	string copyright holder info
- * @param	string url related to the object
- * @return	string citation with as much correct information as
- *		is present in the DB.
- * 
- */
-// TODO: Should we also work with the contributor information?
-private function _format_co_citation($cit_text,
-				     $author,
-				     $copyright_holder, 
-				     $url)
-{
-  /* the db has many instances of the strings below in the citation
-     fields of the ocw_objects and ocw_object_replacements tables.
-     Prevent those from being used as legitimate citation text.
-  */
-  $empty_citation_synonyms = array ("None",
-				 "unk",
-				 "unknown",
-				 "undetermined"
-				 );
-  
-  if (!empty($cit_text)) {
-    foreach ($empty_citation_synonyms as $no_cite) {
-      if (strcasecmp(trim($cit_text), $no_cite) == 0) {
-	$cit_text = "";
-	break;
+    $q = $this->db->query($sql);
+    foreach ($q->result() as $row) {
+      if (is_null($row->action_type)) $row->action_type = 'None';
+      $list_array[$row->id] = $row->action_type;
+    }
+    return array_unique($list_array);
+  }
+
+  /**
+   * Return co types list
+   *
+   * @access  public
+   * @return array co types
+   * mbleed - faceted search 5/2009
+   */
+  public function co_type_list($mid)
+  {
+    $sql = "SELECT o.id, o.subtype_id, s.name FROM ocw_objects o INNER JOIN ocw_object_subtypes s ON s.id = o.subtype_id WHERE material_id=$mid ORDER BY s.name ASC";
+    $q = $this->db->query($sql);
+    $list_array = array();
+    if ($q->num_rows() > 0) {
+      foreach ($q->result() as $row) {
+	$list_array[$row->subtype_id] = $row->name;
       }
     }
-    //remove any newlines in citations
-    $cit_text = str_replace("\n", ", ", $cit_text);
+    return array_unique($list_array);
   }
-  // add any attribution info and URLs
-  $cit_text = $this->_proc_cit_attrib($cit_text, 
-				      $author, 
-				      $copyright_holder);
-  $cit_text = $this->_proc_cit_url($cit_text, $url);
-  
-  /* replace cases of two instances of comma space ", , " with single
-     comma space ", ". These are caused by misformatted citations. */
-  $cit_text = str_replace(", , ", ", ", $cit_text);
 
-  return $cit_text;
-}
-
-
-/**
- * Check to see if the attribution information is already in the
- * citation. If not, add the author and copyright holder information
- * to the citation text.
- *
- * @access	private
- * @param	string citation text
- * @param	string author
- * @param	string copyright holder
- * @return	string citation text with attribution info if the
- *		citation info is not empty and if it isn't already
- *		present in the passed citation text.
- */
-private function _proc_cit_attrib($cit_text,
-				  $obj_author,
-				  $obj_copyright_holder)
-{
-  if (!empty($obj_copyright_holder) &&
-      strcasecmp($obj_author, $obj_copyright_holder != 0) &&
-      (stripos($cit_text, $obj_copyright_holder) === FALSE)) {
-    $cit_text = $obj_copyright_holder . ", " . $cit_text;
+  /**
+   * Return replacement exists list
+   *
+   * @access  public
+   * @return array replacement
+   * mbleed - faceted search 5/2009
+   */
+  public function replacement_list($mid)
+  {
+    $list_array = array(1=>'With Replacement', 2=>'Without Replacement');
+    return $list_array;
   }
-  if (!empty($obj_author) && 
-      (stripos($cit_text, $obj_author) !== FALSE)) {
-    $cit_text = $obj_author . ", " . $cit_text;
+
+  /**
+   * Return co status list
+   *
+   * @access  public
+   * @return array co status
+   * mbleed - faceted search 5/2009
+   */
+  public function status_list($mid)
+  {
+    $list_array = array(1=>'No Action Assigned', 2=>'In Progress', 3=>'Cleared');
+    return $list_array;
   }
-  return $cit_text;
-}
 
 
-/**
- * Check to see if the specified URLs are already in the citation
- * text. If not, add them in the appropriate spot. Due to the
- * absence of any regular delimiters between citation fields, the
- * placement of the URL may be suboptimal.
- * 
- * @access	private
- * @param	string citation text
- * @param	string URL
- * @return	string citation text with any correctly formatted
- * 		URLs. The format check is very naive at present
- *		since the entered data is not always correctly
- *		formatted.
- */
-private function _proc_cit_url($cit_text, $url)
-{
-  $valid_url_beg_patt = "[https?://]";
-
-  if ((preg_match($valid_url_beg_patt, $url) > 0) &&
-      (strpos($cit_text, $url) === FALSE)) {
-    $cit_text = $cit_text . ", " . $url;
+  /**
+   * Map recommended actions to array key names. In case of the "Retain"
+   * actions, the faceted search doesn't display objects because the
+   * action and the array key that represents the action are different.
+   * This function provides a mapping between the action types and the
+   * array key names.
+   *
+   * @access  public
+   * @param   string action name
+   * @return  string array key
+   */
+  public function map_recommended_action($action_name)
+  {
+    $action_key = "";
+    switch($action_name) {
+    case "Retain: Permission":
+      $action_key = "retain:perm";
+      break;
+    case "Retain: Public Domain":
+      $action_key = "retain:pd";
+      break;
+    case "Retain: Copyright Analysis":
+      $action_key = "retain:ca";
+      break;
+    case "Remove and Annotate":
+      $action_key = "remove";
+      break;
+    case "Fair Use":
+      $action_key = "fairuse";
+      break;
+    case "None":
+      $action_key = "new";
+      break;
+    default:
+      $action_key = strtolower($action_name);
+    }
+    return $action_key;
   }
-  return $cit_text;
-}
 
 
-/**
- * Parse the material list and add any recomp related operations.
- * This function alters the array in place since the material list
- * may get very large for some material selections.
- *
- * The recomp operations are added as an array element of the
- * material list. If no operations are to be done, the 
- * ['material_manip_ops'] element for each material is set to
- * FALSE. If any operations are to be done, the array element is
- * set to an object with the properties needed by the openoffice
- * recomp tool.
- *
- * @access	private
- * @param	array list of materials. The output of the
- *		get_material_info function.
- * @return	nothing since this function manipulates the material
- *		list in place instead of working on a copy.
- */
-private function _set_mat_manip_ops(&$material_list) 
-{
-  foreach ($material_list as $material) {
-    $mat_loc_det = 
-      $this->_locate_item($material['material_path'],
-			  $material['material_file']);
-    // check the extensions
-    if ($this->_is_mat_recompable($mat_loc_det['extension']) ===
-	FALSE) {
-      $material_list[$material['material_id']]['material_manip_ops'] = 
-        FALSE;
-    } else {
-      $material_list[$material['material_id']]['material_manip_ops']->decompFileOps = 
-	array();
-      // TODO: check if we need to clone the objects at all
-      foreach ($material['material_cos_info'] as $co_info) {
-	$co_rep_op = NULL;
-	$co_cit_op = NULL;
-	
-	$co_placement = 
-	  $this->_get_rec_place_info($co_info['co_name']);
+  /**
+   * Determine if the content object should be replaced. Unclear if this
+   * function should even be in the material model, but since the query
+   * is already fetching the content object info, it seems silly to load
+   * a class for no reason or to locate this function in the coobject
+   * model.
+   *
+   * @access	private
+   * @param	array content object info fetched by the
+   *		get_material_info function.
+   * @return	boolean FALSE if the object is not to be replaced
+   *		TRUE if it is to be replaced.
+   */
+  private function _replace_object($co_info)
+  {
+    $rep_obj = FALSE;
 
-	if ($co_info['co_replace'] === TRUE && 
-	    $co_placement !== FALSE) {
-	  $co_filename = $co_info['co_filename'] . "_rep";
-	  $co_loc_det =
-	    $this->_locate_item($co_info['co_path'], $co_filename);
-	  $material_list[$material['material_id']]['material_manip_ops']->decompFileOps[] =
-	    clone $this->_def_co_rep_op($co_loc_det, $co_placement);
-	}
-	
-	if (!empty($co_info['co_citation']) &&
-	    $co_placement !== FALSE) {
-	  $material_list[$material['material_id']]['material_manip_ops']->decompFileOps[] =
-	    clone $this->_def_co_cit_op($co_info['co_citation'], $co_placement);
+    if (!empty($co_info['co_rep_id'])) {
+      if ($co_info['co_fin_action'] == "Search") {
+	$rep_obj = TRUE;
+      } else if ($co_info['co_rec_action'] == "Search" &&
+		 empty($co_info['co_fin_action'])) {
+	$rep_obj = TRUE;
+      } else if ($co_info['co_rec_action'] == "Search" &&
+		 $co_info['co_fin_action'] == "Search") {
+	$rep_obj = TRUE;
+      }
+    }
+
+    return $rep_obj;
+  }
+
+
+  /**
+   * Format the content object citation. Check the citation to see if it
+   * also includes the other parameters. If not, add them to the
+   * citation text.
+   *
+   * @access	private
+   * @param	string citation string
+   * @param	string author info
+   * @param	string copyright holder info
+   * @param	string url related to the object
+   * @return	string citation with as much correct information as
+   *		is present in the DB.
+   *
+   */
+  // TODO: Should we also work with the contributor information?
+  private function _format_co_citation($cit_text,
+				       $author,
+				       $copyright_holder,
+				       $url)
+  {
+    /* the db has many instances of the strings below in the citation
+       fields of the ocw_objects and ocw_object_replacements tables.
+       Prevent those from being used as legitimate citation text.
+    */
+    $empty_citation_synonyms = array ("None",
+				      "unk",
+				      "unknown",
+				      "undetermined"
+				      );
+
+    if (!empty($cit_text)) {
+      foreach ($empty_citation_synonyms as $no_cite) {
+	if (strcasecmp(trim($cit_text), $no_cite) == 0) {
+	  $cit_text = "";
+	  break;
 	}
       }
+      //remove any newlines in citations
+      $cit_text = str_replace("\n", ", ", $cit_text);
+    }
+    // add any attribution info and URLs
+    $cit_text = $this->_proc_cit_attrib($cit_text,
+					$author,
+					$copyright_holder);
+    $cit_text = $this->_proc_cit_url($cit_text, $url);
 
-      if (count($material_list[$material['material_id']]['material_manip_ops']->decompFileOps)
-	  > 0) {
-	$material_list[$material['material_id']]['material_manip_ops']->inputFile =
-	  $mat_loc_det['dirname'] . "/" . $mat_loc_det['basename'];
+    /* replace cases of two instances of comma space ", , " with single
+       comma space ", ". These are caused by misformatted citations. */
+    $cit_text = str_replace(", , ", ", ", $cit_text);
+
+    return $cit_text;
+  }
+
+
+  /**
+   * Check to see if the attribution information is already in the
+   * citation. If not, add the author and copyright holder information
+   * to the citation text.
+   *
+   * @access	private
+   * @param	string citation text
+   * @param	string author
+   * @param	string copyright holder
+   * @return	string citation text with attribution info if the
+   *		citation info is not empty and if it isn't already
+   *		present in the passed citation text.
+   */
+  private function _proc_cit_attrib($cit_text,
+				    $obj_author,
+				    $obj_copyright_holder)
+  {
+    if (!empty($obj_copyright_holder) &&
+	strcasecmp($obj_author, $obj_copyright_holder != 0) &&
+	(stripos($cit_text, $obj_copyright_holder) === FALSE)) {
+      $cit_text = $obj_copyright_holder . ", " . $cit_text;
+    }
+    if (!empty($obj_author) &&
+	(stripos($cit_text, $obj_author) !== FALSE)) {
+      $cit_text = $obj_author . ", " . $cit_text;
+    }
+    return $cit_text;
+  }
+
+
+  /**
+   * Check to see if the specified URLs are already in the citation
+   * text. If not, add them in the appropriate spot. Due to the
+   * absence of any regular delimiters between citation fields, the
+   * placement of the URL may be suboptimal.
+   *
+   * @access	private
+   * @param	string citation text
+   * @param	string URL
+   * @return	string citation text with any correctly formatted
+   * 		URLs. The format check is very naive at present
+   *		since the entered data is not always correctly
+   *		formatted.
+   */
+  private function _proc_cit_url($cit_text, $url)
+  {
+    $valid_url_beg_patt = "[https?://]";
+
+    if ((preg_match($valid_url_beg_patt, $url) > 0) &&
+	(strpos($cit_text, $url) === FALSE)) {
+      $cit_text = $cit_text . ", " . $url;
+    }
+    return $cit_text;
+  }
+
+
+  /**
+   * Parse the material list and add any recomp related operations.
+   * This function alters the array in place since the material list
+   * may get very large for some material selections.
+   *
+   * The recomp operations are added as an array element of the
+   * material list. If no operations are to be done, the
+   * ['material_manip_ops'] element for each material is set to
+   * FALSE. If any operations are to be done, the array element is
+   * set to an object with the properties needed by the openoffice
+   * recomp tool.
+   *
+   * @access	private
+   * @param	array list of materials. The output of the
+   *		get_material_info function.
+   * @return	nothing since this function manipulates the material
+   *		list in place instead of working on a copy.
+   */
+  private function _set_mat_manip_ops(&$material_list)
+  {
+    foreach ($material_list as $material) {
+      $mat_loc_det =
+	$this->_locate_item($material['material_path'],
+			    $material['material_file']);
+      // check the extensions
+      if ($this->_is_mat_recompable($mat_loc_det['extension']) ===
+	  FALSE) {
+	$material_list[$material['material_id']]['material_manip_ops'] =
+	  FALSE;
       } else {
-	$material_list[$material['material_id']]['material_manip_ops'] = FALSE;
-      }
-    }
-  }
-}
+	$material_list[$material['material_id']]['material_manip_ops']->decompFileOps =
+	  array();
+	// TODO: check if we need to clone the objects at all
+	foreach ($material['material_cos_info'] as $co_info) {
+	  $co_rep_op = NULL;
+	  $co_cit_op = NULL;
 
+	  $co_placement =
+	    $this->_get_rec_place_info($co_info['co_name']);
 
-/**
- * Locate the specified item on the filesystem. This function
- * returns detailed information about the item location as provided 
- * by the pathinfo function.
- *
- * @access	private
- * @param	string the full path to the item directory
- * @param	string the base name of the item without file 
- * 		extension
- * @return	array as returned by the PHP pathinfo function
- *		(PHP 5.2.0) onwards. See http://php.net/pathinfo
- *		for further details.
- */
-private function _locate_item($full_path, $item_name)
-{
-  $item_loc_det = NULL;
+	  if ($co_info['co_replace'] === TRUE &&
+	      $co_placement !== FALSE) {
+	    $co_filename = $co_info['co_filename'] . "_rep";
+	    $co_loc_det =
+	      $this->_locate_item($co_info['co_path'], $co_filename);
+	    $material_list[$material['material_id']]['material_manip_ops']->decompFileOps[] =
+	      clone $this->_def_co_rep_op($co_loc_det, $co_placement);
+	  }
 
-  $all_dir_items = scandir($full_path);
-  foreach ($all_dir_items as $dir_item) {
-    $full_file_path = "$full_path/$dir_item";
-    if (is_file($full_file_path)) {
-      $file_info = pathinfo($full_file_path);
-      // pathinfo doesn't return filename for php < 5.2.0
-      if (!isset($file_info['filename'])) {
-	$file_info['filename'] = 
-	  substr($file_info['basename'],
-		 0,
-		 strrpos($file_info['basename'], '.')
-		 );
-      }
-      if ($file_info['filename'] == $item_name) {
-	$item_loc_det = $file_info;
+	  if (!empty($co_info['co_citation']) &&
+	      $co_placement !== FALSE) {
+	    $material_list[$material['material_id']]['material_manip_ops']->decompFileOps[] =
+	      clone $this->_def_co_cit_op($co_info['co_citation'], $co_placement);
+	  }
+	}
+
+	if (count($material_list[$material['material_id']]['material_manip_ops']->decompFileOps)
+	    > 0) {
+	  $material_list[$material['material_id']]['material_manip_ops']->inputFile =
+	    $mat_loc_det['dirname'] . "/" . $mat_loc_det['basename'];
+	} else {
+	  $material_list[$material['material_id']]['material_manip_ops'] = FALSE;
+	}
       }
     }
   }
 
-  return $item_loc_det;
-}
+
+  /**
+   * Locate the specified item on the filesystem. This function
+   * returns detailed information about the item location as provided
+   * by the pathinfo function.
+   *
+   * @access	private
+   * @param	string the full path to the item directory
+   * @param	string the base name of the item without file
+   * 		extension
+   * @return	array as returned by the PHP pathinfo function
+   *		(PHP 5.2.0) onwards. See http://php.net/pathinfo
+   *		for further details.
+   */
+  private function _locate_item($full_path, $item_name)
+  {
+    $item_loc_det = NULL;
+
+    $all_dir_items = scandir($full_path);
+    foreach ($all_dir_items as $dir_item) {
+      $full_file_path = "$full_path/$dir_item";
+      if (is_file($full_file_path)) {
+	$file_info = pathinfo($full_file_path);
+	// pathinfo doesn't return filename for php < 5.2.0
+	if (!isset($file_info['filename'])) {
+	  $file_info['filename'] =
+	    substr($file_info['basename'],
+		   0,
+		   strrpos($file_info['basename'], '.')
+		   );
+	}
+	if ($file_info['filename'] == $item_name) {
+	  $item_loc_det = $file_info;
+	}
+      }
+    }
+
+    return $item_loc_det;
+  }
 
 
-/**
- * Check to see if the material file is in a format that can be
- * recomped by the openoffice tool. If the file matches a type
- * defined in $recompable_extensions, return TRUE, else return
- * FALSE;
- *
- * @access	private
- * @param	string file extension
- * @return	boolean TRUE if the extension matches one of the 
- * 		recompable extensions and FALSE otherwise.
- */
-private function _is_mat_recompable($mat_file_ext)
-{
-  $recompable_extensions = array("ppt", 
-				 "pptx", 
-				 "odp");
-  
-  return (in_array(strtolower($mat_file_ext), 
-		   $recompable_extensions));
-}
+  /**
+   * Check to see if the material file is in a format that can be
+   * recomped by the openoffice tool. If the file matches a type
+   * defined in $recompable_extensions, return TRUE, else return
+   * FALSE;
+   *
+   * @access	private
+   * @param	string file extension
+   * @return	boolean TRUE if the extension matches one of the
+   * 		recompable extensions and FALSE otherwise.
+   */
+  private function _is_mat_recompable($mat_file_ext)
+  {
+    $recompable_extensions = array("ppt",
+				   "pptx",
+				   "odp");
+
+    return (in_array(strtolower($mat_file_ext),
+		     $recompable_extensions));
+  }
 
 
-/**
- * Defines the input required by the openoffice recomp tool for
- * object replacement. This function outputs an object, to set
- * up the format correctly for the eventual JSON file used by
- * the openoffice recomp tool.
- * 
- * @access	private
- * @param	array pathinfo output for a content object file
- * @param	array of integers that has page number and image
- *		numbers defined. See the output returned by the
- *		_get_rec_place_info function for more details.
- * @return	object that contains the properties required for
- *		object replacement in the JSON file used by the
- *		openoffice recomp tool.
- */
-private function _def_co_rep_op($co_file_det, $co_placement)
-{
-  $co_op->operation = "REPLACE";
-  $co_op->repImageFile = $co_file_det['dirname'] . "/" .
-    $co_file_det['basename'];
-  $co_op->pageNum = $co_placement['page_num'];
-  $co_op->imageNum = $co_placement['img_num'];
-  return $co_op;
-}
+  /**
+   * Defines the input required by the openoffice recomp tool for
+   * object replacement. This function outputs an object, to set
+   * up the format correctly for the eventual JSON file used by
+   * the openoffice recomp tool.
+   *
+   * @access	private
+   * @param	array pathinfo output for a content object file
+   * @param	array of integers that has page number and image
+   *		numbers defined. See the output returned by the
+   *		_get_rec_place_info function for more details.
+   * @return	object that contains the properties required for
+   *		object replacement in the JSON file used by the
+   *		openoffice recomp tool.
+   */
+  private function _def_co_rep_op($co_file_det, $co_placement)
+  {
+    $co_op->operation = "REPLACE";
+    $co_op->repImageFile = $co_file_det['dirname'] . "/" .
+      $co_file_det['basename'];
+    $co_op->pageNum = $co_placement['page_num'];
+    $co_op->imageNum = $co_placement['img_num'];
+    return $co_op;
+  }
 
 
-/**
- * Defines the input required by the openoffice recomp tool for
- * a citation. This function outputs an object, to set
- * up the format correctly for the eventual JSON file used by
- * the openoffice recomp tool.
- *
- * @access	private
- * @param	string the object citation
- * @param	array of integers that has page number and image
- *		numbers defined. See the output returned by the
- *		_get_rec_place_info function for more details.
- * @return	object that contains the properties required for
- *		citation in the JSON file used by the openoffice
- *		recomp tool.
- */
-private function _def_co_cit_op($co_citation, $co_placement)
-{
-  $co_op->operation = "CITE";
-  $co_op->citationText = $co_citation;
-  $co_op->pageNum = $co_placement['page_num'];
-  $co_op->imageNum = $co_placement['img_num'];
-  return $co_op;
-}
+  /**
+   * Defines the input required by the openoffice recomp tool for
+   * a citation. This function outputs an object, to set
+   * up the format correctly for the eventual JSON file used by
+   * the openoffice recomp tool.
+   *
+   * @access	private
+   * @param	string the object citation
+   * @param	array of integers that has page number and image
+   *		numbers defined. See the output returned by the
+   *		_get_rec_place_info function for more details.
+   * @return	object that contains the properties required for
+   *		citation in the JSON file used by the openoffice
+   *		recomp tool.
+   */
+  private function _def_co_cit_op($co_citation, $co_placement)
+  {
+    $co_op->operation = "CITE";
+    $co_op->citationText = $co_citation;
+    $co_op->pageNum = $co_placement['page_num'];
+    $co_op->imageNum = $co_placement['img_num'];
+    return $co_op;
+  }
 
 
-/**
- * Determine the page and image numbers from the original content
- * object file name. This only works for a specific file name
- * format.
- *	image-<page-num>-<image-num>.<extension>
- * The <page-num> and <image-num> values are both integers which
- * may have leading zeros. The <extension> is the file extension.
- *
- * @access	private
- * @param	string the original file name of the content object
- *		before it is replaced with sha1 hash value.
- * @return	mixed FALSE if the file name isn't in the required
- *		format. Array containing page and image numbers if
- *		file name is in the required format.
- */
-private function _get_rec_place_info($co_orig_name)
-{
-  $place_info = FALSE;
-  $valid_name_patt = "/image\-\d+\-\d+/";
-  $loc_delimiter = "/-/";
+  /**
+   * Determine the page and image numbers from the original content
+   * object file name. This only works for a specific file name
+   * format.
+   *	image-<page-num>-<image-num>.<extension>
+   * The <page-num> and <image-num> values are both integers which
+   * may have leading zeros. The <extension> is the file extension.
+   *
+   * @access	private
+   * @param	string the original file name of the content object
+   *		before it is replaced with sha1 hash value.
+   * @return	mixed FALSE if the file name isn't in the required
+   *		format. Array containing page and image numbers if
+   *		file name is in the required format.
+   */
+  private function _get_rec_place_info($co_orig_name)
+  {
+    $place_info = FALSE;
+    $valid_name_patt = "/image\-\d+\-\d+/";
+    $loc_delimiter = "/-/";
 
-  $name_no_ext = substr($co_orig_name,
-			0, 
-			strrpos($co_orig_name, '.')
-			);
-  if (preg_match($valid_name_patt, $co_orig_name) > 0) {
-    $name_parts = preg_split($loc_delimiter, $name_no_ext);
-    $place_info['page_num'] = (int)$name_parts[1];
-    $place_info['img_num'] = (int)$name_parts[2] + 1;
-  } 
+    $name_no_ext = substr($co_orig_name,
+			  0,
+			  strrpos($co_orig_name, '.')
+			  );
+    if (preg_match($valid_name_patt, $co_orig_name) > 0) {
+      $name_parts = preg_split($loc_delimiter, $name_no_ext);
+      // cast the location strings to get rid of leading zeros.
+      $place_info['page_num'] = (int)$name_parts[1];
+      $place_info['img_num'] = (int)$name_parts[2] + 1;
+    }
 
-  return $place_info;
-}
+    return $place_info;
+  }
 
 }
 ?>
