@@ -944,25 +944,26 @@ public function get_material_info($cid, $material_ids)
 	$row->object_file_name;
       if ($co_array['co_replace'] === TRUE) {
 	$co_array['co_citation'] = $this->
-	  _format_content_object_citation(trim($row->object_rep_citation),
-					  trim($row->object_rep_author),
-					  trim($row->object_rep_copyright_holder),
-					  trim($row->object_rep_copyright_url));
+	  _format_co_citation(trim($row->object_rep_citation),
+			      trim($row->object_rep_author),
+			      trim($row->object_rep_copyright_holder),
+			      trim($row->object_rep_copyright_url));
       } else {
 	$co_array['co_citation'] = $this->
-	  _format_content_object_citation(trim($row->object_citation),
-					  trim($row->object_author),
-					  trim($row->object_copyright_holder),
-					  trim($row->object_copyright_url));
+	  _format_co_citation(trim($row->object_citation),
+			      trim($row->object_author),
+			      trim($row->object_copyright_holder),
+			      trim($row->object_copyright_url));
       }
 	
       $materials[$row->material_id]['material_cos_info'][$row->object_id] =
 	$co_array;
-      $materials[$row->material_id]['material_manip_ops']->inputFile =
-	$materials[$row->material_id]['material_path'];
     }
   }
 
+  $this->_set_mat_manip_ops($materials);
+  /* $this->ocw_utils->dump($materials); */
+  /* exit(); */
   return((count($materials) > 0) ? $materials : NULL);
 }
 
@@ -1252,10 +1253,10 @@ private function _replace_object($co_info)
  * 
  */
 // TODO: Should we also work with the contributor information?
-private function _format_content_object_citation($cit_text,
-						 $author,
-						 $copyright_holder, 
-						 $url) 
+private function _format_co_citation($cit_text,
+				     $author,
+				     $copyright_holder, 
+				     $url)
 {
   /* the db has many instances of the strings below in the citation
      fields of the ocw_objects and ocw_object_replacements tables.
@@ -1278,10 +1279,10 @@ private function _format_content_object_citation($cit_text,
     $cit_text = str_replace("\n", ", ", $cit_text);
   }
   // add any attribution info and URLs
-  $cit_text = $this->_proc_citation_attribution($cit_text, 
-						$author, 
-						$copyright_holder);
-  $cit_text = $this->_proc_citation_url($cit_text, $url);
+  $cit_text = $this->_proc_cit_attrib($cit_text, 
+				      $author, 
+				      $copyright_holder);
+  $cit_text = $this->_proc_cit_url($cit_text, $url);
   
   /* replace cases of two instances of comma space ", , " with single
      comma space ", ". These are caused by misformatted citations. */
@@ -1304,9 +1305,9 @@ private function _format_content_object_citation($cit_text,
  *		citation info is not empty and if it isn't already
  *		present in the passed citation text.
  */
-private function _proc_citation_attribution($cit_text,
-					    $obj_author,
-					    $obj_copyright_holder)
+private function _proc_cit_attrib($cit_text,
+				  $obj_author,
+				  $obj_copyright_holder)
 {
   if (!empty($obj_copyright_holder) &&
       strcasecmp($obj_author, $obj_copyright_holder != 0) &&
@@ -1335,7 +1336,7 @@ private function _proc_citation_attribution($cit_text,
  *		since the entered data is not always correctly
  *		formatted.
  */
-private function _proc_citation_url($cit_text, $url)
+private function _proc_cit_url($cit_text, $url)
 {
   $valid_url_beg_patt = "[https?://]";
 
@@ -1347,9 +1348,219 @@ private function _proc_citation_url($cit_text, $url)
 }
 
 
-private function _mat_manip_filename()
+/**
+ * Parse the material list and add any recomp related operations.
+ * This function alters the array in place since the material list
+ * may get very large for some material selections.
+ *
+ * The recomp operations are added as an array element of the
+ * material list. If no operations are to be done, the 
+ * ['material_manip_ops'] element for each material is set to
+ * FALSE. If any operations are to be done, the array element is
+ * set to an object with the properties needed by the openoffice
+ * recomp tool.
+ *
+ * @access	private
+ * @param	array list of materials. The output of the
+ *		get_material_info function.
+ * @return	nothing since this function manipulates the material
+ *		list in place instead of working on a copy.
+ */
+private function _set_mat_manip_ops(&$material_list) 
 {
+  foreach ($material_list as $material) {
+    $mat_loc_det = 
+      $this->_locate_item($material['material_path'],
+			  $material['material_file']);
+    // check the extensions
+    if ($this->_is_mat_recompable($mat_loc_det['extension']) ===
+	FALSE) {
+      $material_list[$material['material_id']]['material_manip_ops'] = 
+        FALSE;
+    } else {
+      $material_list[$material['material_id']]['material_manip_ops']->decompFileOps = 
+	array();
+      // TODO: check if we need to clone the objects at all
+      foreach ($material['material_cos_info'] as $co_info) {
+	$co_rep_op = NULL;
+	$co_cit_op = NULL;
+	
+	$co_placement = 
+	  $this->_get_rec_place_info($co_info['co_name']);
+
+	if ($co_info['co_replace'] === TRUE && 
+	    $co_placement !== FALSE) {
+	  $co_filename = $co_info['co_filename'] . "_rep";
+	  $co_loc_det =
+	    $this->_locate_item($co_info['co_path'], $co_filename);
+	  $material_list[$material['material_id']]['material_manip_ops']->decompFileOps[] =
+	    clone $this->_def_co_rep_op($co_loc_det, $co_placement);
+	}
+	
+	if (!empty($co_info['co_citation']) &&
+	    $co_placement !== FALSE) {
+	  $material_list[$material['material_id']]['material_manip_ops']->decompFileOps[] =
+	    clone $this->_def_co_cit_op($co_info['co_citation'], $co_placement);
+	}
+      }
+
+      if (count($material_list[$material['material_id']]['material_manip_ops']->decompFileOps)
+	  > 0) {
+	$material_list[$material['material_id']]['material_manip_ops']->inputFile =
+	  $mat_loc_det['dirname'] . "/" . $mat_loc_det['basename'];
+      } else {
+	$material_list[$material['material_id']]['material_manip_ops'] = FALSE;
+      }
+    }
+  }
+}
+
+
+/**
+ * Locate the specified item on the filesystem. This function
+ * returns detailed information about the item location as provided 
+ * by the pathinfo function.
+ *
+ * @access	private
+ * @param	string the full path to the item directory
+ * @param	string the base name of the item without file 
+ * 		extension
+ * @return	array as returned by the PHP pathinfo function
+ *		(PHP 5.2.0) onwards. See http://php.net/pathinfo
+ *		for further details.
+ */
+private function _locate_item($full_path, $item_name)
+{
+  $item_loc_det = NULL;
+
+  $all_dir_items = scandir($full_path);
+  foreach ($all_dir_items as $dir_item) {
+    $full_file_path = "$full_path/$dir_item";
+    if (is_file($full_file_path)) {
+      $file_info = pathinfo($full_file_path);
+      // pathinfo doesn't return filename for php < 5.2.0
+      if (!isset($file_info['filename'])) {
+	$file_info['filename'] = 
+	  substr($file_info['basename'],
+		 0,
+		 strrpos($file_info['basename'], '.')
+		 );
+      }
+      if ($file_info['filename'] == $item_name) {
+	$item_loc_det = $file_info;
+      }
+    }
+  }
+
+  return $item_loc_det;
+}
+
+
+/**
+ * Check to see if the material file is in a format that can be
+ * recomped by the openoffice tool. If the file matches a type
+ * defined in $recompable_extensions, return TRUE, else return
+ * FALSE;
+ *
+ * @access	private
+ * @param	string file extension
+ * @return	boolean TRUE if the extension matches one of the 
+ * 		recompable extensions and FALSE otherwise.
+ */
+private function _is_mat_recompable($mat_file_ext)
+{
+  $recompable_extensions = array("ppt", 
+				 "pptx", 
+				 "odp");
   
+  return (in_array(strtolower($mat_file_ext), 
+		   $recompable_extensions));
+}
+
+
+/**
+ * Defines the input required by the openoffice recomp tool for
+ * object replacement. This function outputs an object, to set
+ * up the format correctly for the eventual JSON file used by
+ * the openoffice recomp tool.
+ * 
+ * @access	private
+ * @param	array pathinfo output for a content object file
+ * @param	array of integers that has page number and image
+ *		numbers defined. See the output returned by the
+ *		_get_rec_place_info function for more details.
+ * @return	object that contains the properties required for
+ *		object replacement in the JSON file used by the
+ *		openoffice recomp tool.
+ */
+private function _def_co_rep_op($co_file_det, $co_placement)
+{
+  $co_op->operation = "REPLACE";
+  $co_op->repImageFile = $co_file_det['dirname'] . "/" .
+    $co_file_det['basename'];
+  $co_op->pageNum = $co_placement['page_num'];
+  $co_op->imageNum = $co_placement['img_num'];
+  return $co_op;
+}
+
+
+/**
+ * Defines the input required by the openoffice recomp tool for
+ * a citation. This function outputs an object, to set
+ * up the format correctly for the eventual JSON file used by
+ * the openoffice recomp tool.
+ *
+ * @access	private
+ * @param	string the object citation
+ * @param	array of integers that has page number and image
+ *		numbers defined. See the output returned by the
+ *		_get_rec_place_info function for more details.
+ * @return	object that contains the properties required for
+ *		citation in the JSON file used by the openoffice
+ *		recomp tool.
+ */
+private function _def_co_cit_op($co_citation, $co_placement)
+{
+  $co_op->operation = "CITE";
+  $co_op->citationText = $co_citation;
+  $co_op->pageNum = $co_placement['page_num'];
+  $co_op->imageNum = $co_placement['img_num'];
+  return $co_op;
+}
+
+
+/**
+ * Determine the page and image numbers from the original content
+ * object file name. This only works for a specific file name
+ * format.
+ *	image-<page-num>-<image-num>.<extension>
+ * The <page-num> and <image-num> values are both integers which
+ * may have leading zeros. The <extension> is the file extension.
+ *
+ * @access	private
+ * @param	string the original file name of the content object
+ *		before it is replaced with sha1 hash value.
+ * @return	mixed FALSE if the file name isn't in the required
+ *		format. Array containing page and image numbers if
+ *		file name is in the required format.
+ */
+private function _get_rec_place_info($co_orig_name)
+{
+  $place_info = FALSE;
+  $valid_name_patt = "/image\-\d+\-\d+/";
+  $loc_delimiter = "/-/";
+
+  $name_no_ext = substr($co_orig_name,
+			0, 
+			strrpos($co_orig_name, '.')
+			);
+  if (preg_match($valid_name_patt, $co_orig_name) > 0) {
+    $name_parts = preg_split($loc_delimiter, $name_no_ext);
+    $place_info['page_num'] = (int)$name_parts[1];
+    $place_info['img_num'] = (int)$name_parts[2] + 1;
+  } 
+
+  return $place_info;
 }
 
 }
