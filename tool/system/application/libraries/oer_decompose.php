@@ -2,17 +2,17 @@
 /**
  * OCW_utils Class
  *
- * @package		OCW Tool
- * @subpackage	Libraries
- * @category	Utilities
- * @author		Kevin Coffman <kwc@umich.edu>
+ * @package             OCW Tool
+ * @subpackage  Libraries
+ * @category    Utilities
+ * @author              Kevin Coffman <kwc@umich.edu>
  */
 class OER_decompose {
 
   /**
    * Constructor
    *
-   * @access	public
+   * @access    public
    */
   function OER_decompose()
   {
@@ -105,20 +105,20 @@ class OER_decompose {
 
       // If result is good, display COs and request metadata info, and add the COs
       if ($decomp_code == 0 && is_dir($dcomp->get_staging_dir())) {
-        //$this->CI->ocw_utils->log_to_apache('debug', "decompose_material: processing COs in directory: " . $decomp_dir);
-        $this->_process_decomposed_COs($cid, $mid, $dcomp->get_staging_dir());
+	//$this->CI->ocw_utils->log_to_apache('debug', "decompose_material: processing COs in directory: " . $decomp_dir);
+	$this->_process_decomposed_COs($cid, $mid, $dcomp->get_staging_dir());
       }
 
       // Attempt to get context objects
       $this->_add_context_images($cid, $mid, $material_file, $dcomp->get_staging_dir());
 
       if (0) {
-        //$this->CI->ocw_utils->log_to_apache('error', "decompose_material: skipping removal of directory: " . $decomp_dir);
+	//$this->CI->ocw_utils->log_to_apache('error', "decompose_material: skipping removal of directory: " . $decomp_dir);
       } else {
-        // Clean up any temporary directory regardless of success or failure
-        if (is_dir($dcomp->get_staging_dir())) {
-          $dcomp->rm_staging_dir();
-        }
+	// Clean up any temporary directory regardless of success or failure
+	if (is_dir($dcomp->get_staging_dir())) {
+	  $dcomp->rm_staging_dir();
+	}
       }
     } else {
       $this->CI->ocw_utils->log_to_apache('debug', "decompose_material: no decomp handler for file '{$material_file}'");
@@ -223,10 +223,10 @@ class OER_decompose {
     global $mimes;
     if ( ! is_array($mimes))
       {
-        if ( ! require_once(APPPATH.'config/mimes.php'))
-          {
-            return FALSE;
-          }
+	if ( ! require_once(APPPATH.'config/mimes.php'))
+	  {
+	    return FALSE;
+	  }
       }
     $allowed_exts = array_keys($mimes);
 
@@ -238,12 +238,12 @@ class OER_decompose {
 
       // Skip directories and unreadable stuff
       if (!is_file($path) || !is_readable($path)) {
-        continue;
+	continue;
       }
 
       // Ignore context images that may be in the directory
       if (strstr($path, "Slide")) {
-        continue;
+	continue;
       }
 
       /*
@@ -269,46 +269,46 @@ class OER_decompose {
       $ext = $name_parts[count($name_parts) - 1];
       if (! in_array($ext, $allowed_exts)) {
 
-        // There is a bug somewhere with the "convert" program on RHEL 5.4 which causes it to
-        // attempt to mmap a huge length when processing wmf files. This causes high CPU and
-        // memory consumption.
-        // For now, just skip files with the extension "wmf" !!!
-        //$this->CI->ocw_utils->log_to_apache('debug', __FUNCTION__.": The filename is '{$filename}' and the extension is '{$ext}'");
-        if ($ext == "wmf") {
-          //$this->CI->ocw_utils->log_to_apache('debug', __FUNCTION__.": Skipping filename '{$filename}' with extension '{$ext}'");
-          unlink($path);
-          continue;
-        }
-        // Transform the original <name>.<ext> into <name>.png
-        $pattern = '/(.*)\.' . $ext . '$/';
-        $newpath = preg_replace($pattern, '${1}.png', $path);
-        // $this->CI->ocw_utils->log_to_apache('debug', "_get_COs_from_directory: Attempting to convert '{$path}' to '{$newpath}'");
+	// There is a bug somewhere with the "convert" program on RHEL 5.4 which causes it to
+	// attempt to mmap a huge length when processing wmf files. This causes high CPU and
+	// memory consumption.
+	// For now, just skip files with the extension "wmf" !!!
+	//$this->CI->ocw_utils->log_to_apache('debug', __FUNCTION__.": The filename is '{$filename}' and the extension is '{$ext}'");
+	if ($ext == "wmf") {
+	  //$this->CI->ocw_utils->log_to_apache('debug', __FUNCTION__.": Skipping filename '{$filename}' with extension '{$ext}'");
+	  unlink($path);
+	  continue;
+	}
+	// Transform the original <name>.<ext> into <name>.png
+	$pattern = '/(.*)\.' . $ext . '$/';
+	$newpath = preg_replace($pattern, '${1}.png', $path);
+	// $this->CI->ocw_utils->log_to_apache('debug', "_get_COs_from_directory: Attempting to convert '{$path}' to '{$newpath}'");
 
-        // Local MAMP server needs some extra parameters
-        $SET_DYLD_PATH = "";
-        $SET_MAMP_PATH = "";
-        if ($this->CI->config->item('is_local_mamp_server')) {
-          //$this->CI->ocw_utils->log_to_apache('debug', __FUNCTION__.": *** Using LOCAL Settings ***");
-          $SET_DYLD_PATH .= "export DYLD_LIBRARY_PATH=\"\";";
-          $SET_MAMP_PATH .= "export PATH=\"/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/X11/bin\";";
-        }
+	// Local MAMP server needs some extra parameters
+	$SET_DYLD_PATH = "";
+	$SET_MAMP_PATH = "";
+	if ($this->CI->config->item('is_local_mamp_server')) {
+	  //$this->CI->ocw_utils->log_to_apache('debug', __FUNCTION__.": *** Using LOCAL Settings ***");
+	  $SET_DYLD_PATH .= "export DYLD_LIBRARY_PATH=\"\";";
+	  $SET_MAMP_PATH .= "export PATH=\"/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/X11/bin\";";
+	}
 
-        // Try to convert from the original type to png
+	// Try to convert from the original type to png
 
-        $convert_pgm = property('app_convert_pgm_path');
-        $convert_out = array();
-        //$this->CI->ocw_utils->log_to_apache('debug', "_get_COs_from_directory: running '{$convert_pgm} {$path} {$newpath}'");
-        exec("$SET_DYLD_PATH $SET_MAMP_PATH $convert_pgm $path $newpath", $convert_out, $convert_code);
+	$convert_pgm = property('app_convert_pgm_path');
+	$convert_out = array();
+	//$this->CI->ocw_utils->log_to_apache('debug', "_get_COs_from_directory: running '{$convert_pgm} {$path} {$newpath}'");
+	exec("$SET_DYLD_PATH $SET_MAMP_PATH $convert_pgm $path $newpath", $convert_out, $convert_code);
 
-        if ($convert_code == 0 && file_exists($newpath)) {
-          //$this->CI->ocw_utils->log_to_apache('debug', "_get_COs_from_directory: ### Adding file '{$newpath}'");
-          $out_array[] = $newpath;
-        } else {
-          $this->CI->ocw_utils->log_to_apache('debug', "_get_COs_from_directory: converting {$path} to {$newpath} returned '{$convert_code}'");
-        }
+	if ($convert_code == 0 && file_exists($newpath)) {
+	  //$this->CI->ocw_utils->log_to_apache('debug', "_get_COs_from_directory: ### Adding file '{$newpath}'");
+	  $out_array[] = $newpath;
+	} else {
+	  $this->CI->ocw_utils->log_to_apache('debug', "_get_COs_from_directory: converting {$path} to {$newpath} returned '{$convert_code}'");
+	}
 
-        unlink($path);  // remove original version
-        continue;
+	unlink($path);  // remove original version
+	continue;
       }
 
       // OK, add it
@@ -339,19 +339,19 @@ class OER_decompose {
       $name_parts = explode(".", $material_file);
       $ext = $name_parts[count($name_parts) - 1];
       if ($ext != "pdf") {
-        $this->CI->ocw_utils->log_to_apache('debug', __FUNCTION__.": skipping unsupported file type '{$material_file}'");
-        return FALSE;
+	$this->CI->ocw_utils->log_to_apache('debug', __FUNCTION__.": skipping unsupported file type '{$material_file}'");
+	return FALSE;
       }
 
       if (!is_dir($work_dir)) {
-        mkdir($work_dir, 0700, TRUE);
+	mkdir($work_dir, 0700, TRUE);
       }
 
       // Local MAMP server needs some extra parameters
       $SET_DYLD_PATH = "";
       if ($this->CI->config->item('is_local_mamp_server')) {
-        //$this->CI->ocw_utils->log_to_apache('debug', __FUNCTION__.": *** Using LOCAL Settings ***");
-        $SET_DYLD_PATH .= "export DYLD_LIBRARY_PATH=\"\";";
+	//$this->CI->ocw_utils->log_to_apache('debug', __FUNCTION__.": *** Using LOCAL Settings ***");
+	$SET_DYLD_PATH .= "export DYLD_LIBRARY_PATH=\"\";";
       }
 
       // ImageMagick (convert) creates the page numbers with a base of zero.
@@ -368,7 +368,7 @@ class OER_decompose {
       $this->CI->ocw_utils->log_to_apache('debug', __FUNCTION__.": ghostscript returned code '{$gs_code}'");
 
       if ($gs_code != 0) {
-        return FALSE;
+	return FALSE;
       }
     } else {
       //$this->CI->ocw_utils->log_to_apache('debug', __FUNCTION__.": Skipping old-style context image processing for '{$material_file}'");
@@ -385,11 +385,11 @@ class OER_decompose {
 
       // Skip directories and unreadable stuff
       if (!is_file($path) || !is_readable($path)) {
-        continue;
+	continue;
       }
       // Ignore any image files that might be in the directory
       if (!strstr($filename, "Slide")) {
-        continue;
+	continue;
       }
 
       //$this->CI->ocw_utils->log_to_apache('debug', __FUNCTION__.": Adding slide {$path}");
