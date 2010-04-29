@@ -11,6 +11,10 @@
 
 class Material extends Model
 {
+
+  private $boilerplate_abs_path = NULL;
+  private $recomp_tag = "AUTOREVISED";
+
   public function __construct()
   {
     parent::Model();
@@ -861,30 +865,30 @@ class Material extends Model
 	    ocw_objects.action_type AS object_rec_action,
 	    ocw_objects.action_taken AS object_fin_action,
 	    ocw_objects.citation AS object_citation,
-            ocw_object_files.filename AS object_file_name,
+	ocw_object_files.filename AS object_file_name,
 	    ocw_object_replacements.id AS object_rep_id,
 	    ocw_object_replacements.name AS object_rep_name,
 	    ocw_object_replacements.location AS object_rep_location,
-            ocw_object_replacements.author AS object_rep_author,
+	ocw_object_replacements.author AS object_rep_author,
 	    ocw_object_replacements.contributor AS object_rep_contributor,
 	    ocw_object_replacements.citation AS object_rep_citation,
 	    ocw_object_copyright.status AS object_copyright_status,
-            ocw_object_copyright.holder AS object_copyright_holder,
+	ocw_object_copyright.holder AS object_copyright_holder,
 	    ocw_object_copyright.url AS object_copyright_url,
 	    ocw_object_replacement_copyright.status AS object_rep_copyright_status,
 	    ocw_object_replacement_copyright.holder AS object_rep_copyright_holder,
-            ocw_object_replacement_copyright.url AS object_rep_copyright_url
+	ocw_object_replacement_copyright.url AS object_rep_copyright_url
 	    FROM
 	    ocw_course_files
-            INNER JOIN ocw_courses ON (ocw_courses.id = ocw_course_files.course_id)
+	INNER JOIN ocw_courses ON (ocw_courses.id = ocw_course_files.course_id)
 	    INNER JOIN ocw_schools ON (ocw_schools.id = ocw_courses.school_id)
 	    INNER JOIN ocw_materials ON (ocw_materials.course_id = ocw_courses.id)
 	    INNER JOIN ocw_material_files ON (ocw_material_files.material_id = ocw_materials.id)
-            LEFT OUTER JOIN ocw_objects ON (ocw_objects.material_id = ocw_materials.id)
-            LEFT OUTER JOIN ocw_object_files ON (ocw_object_files.object_id = ocw_objects.id)
-            LEFT OUTER JOIN ocw_object_replacements ON (ocw_object_replacements.object_id = ocw_objects.id)
+	LEFT OUTER JOIN ocw_objects ON (ocw_objects.material_id = ocw_materials.id)
+	LEFT OUTER JOIN ocw_object_files ON (ocw_object_files.object_id = ocw_objects.id)
+	LEFT OUTER JOIN ocw_object_replacements ON (ocw_object_replacements.object_id = ocw_objects.id)
 	    LEFT OUTER JOIN ocw_object_copyright ON (ocw_object_copyright.object_id = ocw_objects.id)
-            LEFT OUTER JOIN ocw_object_replacement_copyright ON (ocw_object_replacement_copyright.object_id =
+	LEFT OUTER JOIN ocw_object_replacement_copyright ON (ocw_object_replacement_copyright.object_id =
 	      ocw_object_replacements.id)
 	    WHERE
 	    ocw_courses.id = ? AND ( ";
@@ -1210,17 +1214,43 @@ class Material extends Model
 
 
   /**
+   *
+   * Set the full path to the file that contains the boilerplate
+   * slides.
+   * @param string $bplate_abs_path absolute path to the boilerplate slides
+   */
+  public function set_boilerplate_file_loc($bplate_abs_path)
+  {
+    $this->boilerplate_abs_path = $bplate_abs_path;
+  }
+
+
+  /**
+   *
+   * Set the text tacked on to name of the recomped file. This tag is put in
+   * the file name before the extension and is preceded by a "-" character.
+   *
+   * @param string $decomp_tag The text added to the end of file name before the
+   *        extension.
+   */
+  public function set_decomp_tag($decomp_tag)
+  {
+    $this->decomp_tag = $decomp_tag;
+  }
+
+
+  /**
    * Determine if the content object should be replaced. Unclear if this
    * function should even be in the material model, but since the query
    * is already fetching the content object info, it seems silly to load
    * a class for no reason or to locate this function in the coobject
    * model.
    *
-   * @access	private
-   * @param	array content object info fetched by the
-   *		get_material_info function.
-   * @return	boolean FALSE if the object is not to be replaced
-   *		TRUE if it is to be replaced.
+   * @access    private
+   * @param     array content object info fetched by the
+   *            get_material_info function.
+   * @return    boolean FALSE if the object is not to be replaced
+   *            TRUE if it is to be replaced.
    */
   private function _replace_co($co_info)
   {
@@ -1247,13 +1277,13 @@ class Material extends Model
    * also includes the other parameters. If not, add them to the
    * citation text.
    *
-   * @access	private
-   * @param	string citation string
-   * @param	string author info
-   * @param	string copyright holder info
-   * @param	string url related to the object
-   * @return	string citation with as much correct information as
-   *		is present in the DB.
+   * @access    private
+   * @param     string citation string
+   * @param     string author info
+   * @param     string copyright holder info
+   * @param     string url related to the object
+   * @return    string citation with as much correct information as
+   *            is present in the DB.
    *
    */
   // TODO: Should we also work with the contributor information?
@@ -1301,13 +1331,13 @@ class Material extends Model
    * citation. If not, add the author and copyright holder information
    * to the citation text.
    *
-   * @access	private
-   * @param	string citation text
-   * @param	string author
-   * @param	string copyright holder
-   * @return	string citation text with attribution info if the
-   *		citation info is not empty and if it isn't already
-   *		present in the passed citation text.
+   * @access    private
+   * @param     string citation text
+   * @param     string author
+   * @param     string copyright holder
+   * @return    string citation text with attribution info if the
+   *            citation info is not empty and if it isn't already
+   *            present in the passed citation text.
    */
   private function _proc_cit_attrib($cit_text,
 				    $obj_author,
@@ -1332,13 +1362,13 @@ class Material extends Model
    * absence of any regular delimiters between citation fields, the
    * placement of the URL may be suboptimal.
    *
-   * @access	private
-   * @param	string citation text
-   * @param	string URL
-   * @return	string citation text with any correctly formatted
-   * 		URLs. The format check is very naive at present
-   *		since the entered data is not always correctly
-   *		formatted.
+   * @access    private
+   * @param     string citation text
+   * @param     string URL
+   * @return    string citation text with any correctly formatted
+   *            URLs. The format check is very naive at present
+   *            since the entered data is not always correctly
+   *            formatted.
    */
   private function _proc_cit_url($cit_text, $url)
   {
@@ -1364,11 +1394,11 @@ class Material extends Model
    * set to an object with the properties needed by the openoffice
    * recomp tool.
    *
-   * @access	private
-   * @param	array list of materials. The output of the
-   *		get_material_info function.
-   * @return	nothing since this function manipulates the material
-   *		list in place instead of working on a copy.
+   * @access    private
+   * @param     array list of materials. The output of the
+   *            get_material_info function.
+   * @return    nothing since this function manipulates the material
+   *            list in place instead of working on a copy.
    */
   private function _set_mat_manip_ops(&$material_list)
   {
@@ -1429,13 +1459,13 @@ class Material extends Model
    * returns detailed information about the item location as provided
    * by the pathinfo function.
    *
-   * @access	private
-   * @param	string the full path to the item directory
-   * @param	string the base name of the item without file
-   * 		extension
-   * @return	array as returned by the PHP pathinfo function
-   *		(PHP 5.2.0) onwards. See http://php.net/pathinfo
-   *		for further details.
+   * @access    private
+   * @param     string the full path to the item directory
+   * @param     string the base name of the item without file
+   *            extension
+   * @return    array as returned by the PHP pathinfo function
+   *            (PHP 5.2.0) onwards. See http://php.net/pathinfo
+   *            for further details.
    */
   private function _locate_item($full_path, $item_name)
   {
@@ -1470,10 +1500,10 @@ class Material extends Model
    * defined in $recompable_extensions, return TRUE, else return
    * FALSE;
    *
-   * @access	private
-   * @param	string file extension
-   * @return	boolean TRUE if the extension matches one of the
-   * 		recompable extensions and FALSE otherwise.
+   * @access    private
+   * @param     string file extension
+   * @return    boolean TRUE if the extension matches one of the
+   *            recompable extensions and FALSE otherwise.
    */
   private function _is_mat_recompable($mat_file_ext)
   {
@@ -1492,14 +1522,14 @@ class Material extends Model
    * up the format correctly for the eventual JSON file used by
    * the openoffice recomp tool.
    *
-   * @access	private
-   * @param	array pathinfo output for a content object file
-   * @param	array of integers that has page number and image
-   *		numbers defined. See the output returned by the
-   *		_get_rec_place_info function for more details.
-   * @return	object that contains the properties required for
-   *		object replacement in the JSON file used by the
-   *		openoffice recomp tool.
+   * @access    private
+   * @param     array pathinfo output for a content object file
+   * @param     array of integers that has page number and image
+   *            numbers defined. See the output returned by the
+   *            _get_rec_place_info function for more details.
+   * @return    object that contains the properties required for
+   *            object replacement in the JSON file used by the
+   *            openoffice recomp tool.
    */
   private function _def_co_rep_op($co_file_det, $co_placement)
   {
@@ -1518,14 +1548,14 @@ class Material extends Model
    * up the format correctly for the eventual JSON file used by
    * the openoffice recomp tool.
    *
-   * @access	private
-   * @param	string the object citation
-   * @param	array of integers that has page number and image
-   *		numbers defined. See the output returned by the
-   *		_get_rec_place_info function for more details.
-   * @return	object that contains the properties required for
-   *		citation in the JSON file used by the openoffice
-   *		recomp tool.
+   * @access    private
+   * @param     string the object citation
+   * @param     array of integers that has page number and image
+   *            numbers defined. See the output returned by the
+   *            _get_rec_place_info function for more details.
+   * @return    object that contains the properties required for
+   *            citation in the JSON file used by the openoffice
+   *            recomp tool.
    */
   private function _def_co_cit_op($co_citation, $co_placement)
   {
@@ -1541,16 +1571,16 @@ class Material extends Model
    * Determine the page and image numbers from the original content
    * object file name. This only works for a specific file name
    * format.
-   *	image-<page-num>-<image-num>.<extension>
+   *    image-<page-num>-<image-num>.<extension>
    * The <page-num> and <image-num> values are both integers which
    * may have leading zeros. The <extension> is the file extension.
    *
-   * @access	private
-   * @param	string the original file name of the content object
-   *		before it is replaced with sha1 hash value.
-   * @return	mixed FALSE if the file name isn't in the required
-   *		format. Array containing page and image numbers if
-   *		file name is in the required format.
+   * @access    private
+   * @param     string the original file name of the content object
+   *            before it is replaced with sha1 hash value.
+   * @return    mixed FALSE if the file name isn't in the required
+   *            format. Array containing page and image numbers if
+   *            file name is in the required format.
    */
   private function _get_rec_place_info($co_orig_name)
   {
@@ -1582,34 +1612,44 @@ class Material extends Model
    * returns an object that can be used to generate the JSON input
    * file for the openoffice recomp tool.
    *
-   * @access	private
-   * @param	string file extension of the material
-   * @param	string name of the material. This is the original
-   *		of the uploaded file and not the SHA1 has that is
-   *		used to track file names.
-   * @param	string directory on which the recomposed files will sit
-   * @param	(optional) string which is added after the file name
-   *		and before extension. It is not a good idea for it to
-   *		contain spaces or slashes. Best to stick to
-   *		alphanumeric characters.
+   * @access    private
+   * @param     string file extension of the material
+   * @param     string name of the material. This is the original
+   *            of the uploaded file and not the SHA1 has that is
+   *            used to track file names.
+   * @param     string directory on which the recomposed files will sit
+   * @param     (optional) string which is added after the file name
+   *            and before extension. It is not a good idea for it to
+   *            contain spaces or slashes. Best to stick to
+   *            alphanumeric characters.
    * @return    object that contains the properties required to
-   *		specify a save operation in the JSON file used by the
-   *		openoffice recomp
+   *            specify a save operation in the JSON file used by the
+   *            openoffice recomp
    */
   private function _def_mat_save_op($mat_file_ext,
 				    $mat_name,
 				    $rec_work_dir,
 				    $recomp_tag = NULL)
   {
-    if ($recomp_tag == NULL) {
-      $recomp_tag = "AUTOREVISED";
+    if ($recomp_tag != NULL) {
+      $this->recomp_tag = $recomp_tag;
+    }
+
+    if ($this->boilerplate_abs_path === NULL) {
+      /*TODO: Fetching the property may cause problems with file download when
+	PHP is configured to display errors.*/
+      $this->boilerplate_abs_path = property('app_boilerplate_file_path');
     }
 
     $save_op->operation = "SAVE";
     $save_op->outputFile = $rec_work_dir . $mat_name . "-" .
-      $recomp_tag . "." . $mat_file_ext;
+      $this->recomp_tag . "." . $mat_file_ext;
+    if ($this->boilerplate_abs_path !== NULL) {
+      $save_op->boilerplateFile = $this->boilerplate_abs_path;
+    }
     return $save_op;
   }
+
 
 }
 ?>
