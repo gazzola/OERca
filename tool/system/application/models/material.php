@@ -14,6 +14,8 @@ class Material extends Model
 
   private $boilerplate_abs_path = NULL;
   private $recomp_tag = "AUTOREVISED";
+  private $co_img_removed_citation = NULL;
+  private $co_removed_img_abs_path = NULL;
 
   public function __construct()
   {
@@ -950,13 +952,18 @@ class Material extends Model
 	$co_array['co_path'] =
 	  $materials[$row->material_id]['material_path'] . "/odir_" .
 	  $row->object_file_name;
-	if ($co_array['co_replace'] === TRUE) {
+	if (strcmp($co_array['co_replace'], "replace") === 0) {
 	  $co_array['co_citation'] = $this->
 	    _format_co_citation(trim($row->object_rep_citation),
 				trim($row->object_rep_author),
 				trim($row->object_rep_copyright_holder),
 				trim($row->object_rep_copyright_url));
-	} else {
+	} else if (strcmp($co_array['co_replace'], "remove") === 0) {
+            if ($this->co_img_removed_citation === NULL) {
+              $this->co_img_removed_citation = property('app_co_removed_image_citation');
+            }
+          $co_array['co_citation'] = $this->co_img_removed_citation;
+        } else {
 	  $co_array['co_citation'] = $this->
 	    _format_co_citation(trim($row->object_citation),
 				trim($row->object_author),
@@ -1240,32 +1247,46 @@ class Material extends Model
 
 
   /**
+   * Set the text inserted for removed images.
+   *
+   * @param string $citation
+   */
+  public function set_removed_co_img_cite($citation) {
+    $this->co_img_removed_citation = $citation;
+  }
+
+  
+  /**
    * Determine if the content object should be replaced. Unclear if this
    * function should even be in the material model, but since the query
    * is already fetching the content object info, it seems silly to load
    * a class for no reason or to locate this function in the coobject
-   * model.
+   * model. This function is also used to remove images using a standard
+   * placeholder image file as the removal notice.
    *
    * @access    private
-   * @param     array content object info fetched by the
+   * @param     array $co_info content object info fetched by the
    *            get_material_info function.
-   * @return    boolean FALSE if the object is not to be replaced
-   *            TRUE if it is to be replaced.
+   * @return    string $rep_obj "no" if the object is not to be replaced
+   *            "replace" if it is to be replaced
+   *            "remove" if it is to be removed
    */
   private function _replace_co($co_info)
   {
-    $rep_obj = FALSE;
+    $rep_obj = "no";
 
     if (!empty($co_info['co_rep_id'])) {
       if ($co_info['co_fin_action'] == "Search") {
-	$rep_obj = TRUE;
+	$rep_obj = "replace";
       } else if ($co_info['co_rec_action'] == "Search" &&
 		 empty($co_info['co_fin_action'])) {
-	$rep_obj = TRUE;
-      } else if ($co_info['co_rec_action'] == "Search" &&
-		 $co_info['co_fin_action'] == "Search") {
-	$rep_obj = TRUE;
+	$rep_obj = "replace";
       }
+    } else if ($co_info['co_fin_action'] == "Remove and Annotate") {
+        $rep_obj = "remove";
+    } else if ($co_info['co_rec_action'] == "Remove and Annotate" &&
+                empty($co_info['co_fin_action'])) {
+        $rep_obj = "remove";
     }
 
     return $rep_obj;
@@ -1298,13 +1319,14 @@ class Material extends Model
     */
     $empty_citation_synonyms = array ("None",
 				      "unk",
+				      "unkl",
 				      "unknown",
 				      "undetermined"
 				      );
 
     if (!empty($cit_text)) {
       foreach ($empty_citation_synonyms as $no_cite) {
-	if (strcasecmp(trim($cit_text), $no_cite) == 0) {
+	if (strcasecmp(trim($cit_text), $no_cite) === 0) {
 	  $cit_text = "";
 	  break;
 	}
@@ -1344,7 +1366,7 @@ class Material extends Model
 				    $obj_copyright_holder)
   {
     if (!empty($obj_copyright_holder) &&
-	strcasecmp($obj_author, $obj_copyright_holder != 0) &&
+	strcasecmp($obj_author, $obj_copyright_holder !== 0) &&
 	(stripos($cit_text, $obj_copyright_holder) === FALSE)) {
       $cit_text = $obj_copyright_holder . ", " . $cit_text;
     }
@@ -1395,9 +1417,9 @@ class Material extends Model
    * recomp tool.
    *
    * @access    private
-   * @param     array list of materials. The output of the
+   * @param     array &$material_list list of materials. The output of the
    *            get_material_info function.
-   * @return    nothing since this function manipulates the material
+   * @return    void nothing since this function manipulates the material
    *            list in place instead of working on a copy.
    */
   private function _set_mat_manip_ops(&$material_list)
@@ -1422,7 +1444,7 @@ class Material extends Model
 	  $co_placement =
 	    $this->_get_rec_place_info($co_info['co_name']);
 
-	  if ($co_info['co_replace'] === TRUE &&
+	  if ($co_info['co_replace'] === "replace" &&
 	      $co_placement !== FALSE) {
 	    $co_filename = $co_info['co_filename'] . "_rep";
 	    $co_loc_det =
@@ -1430,6 +1452,18 @@ class Material extends Model
 	    $material_list[$material['material_id']]['material_manip_ops']->decompFileOps[] =
 	      clone $this->_def_co_rep_op($co_loc_det, $co_placement);
 	  }
+
+          elseif ($co_info['co_replace'] === "remove" &&
+                  $co_placement !== FALSE) {
+            if ($this->co_removed_img_abs_path === NULL) {
+              $this->co_removed_img_abs_path =
+                      property('app_co_removed_image_path');
+            }
+            $co_loc_det =
+                pathinfo($this->co_removed_img_abs_path);
+            $material_list[$material['material_id']]['material_manip_ops']->decompFileOps[] =
+	      clone $this->_def_co_rep_op($co_loc_det, $co_placement);
+          }
 
 	  if (!empty($co_info['co_citation']) &&
 	      $co_placement !== FALSE) {
@@ -1507,6 +1541,9 @@ class Material extends Model
    */
   private function _is_mat_recompable($mat_file_ext)
   {
+    /* TODO: should we make $recompable_extensions a class property and add a
+     * setter and configuration variable?
+     */
     $recompable_extensions = array("ppt",
 				   "pptx",
 				   "odp");
@@ -1649,7 +1686,6 @@ class Material extends Model
     }
     return $save_op;
   }
-
 
 }
 ?>

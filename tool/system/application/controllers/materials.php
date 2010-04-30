@@ -1197,14 +1197,6 @@ class Materials extends Controller {
     foreach ($file_list as $mat_files) {
       $num_files += count($mat_files['file_names'], 1);
     }
-    // directly download the file if a single material is selected
-    if ($num_files == 1) {
-      $file_name = $file_list[0]['file_names']['material_file'];
-      // set the name of the downloaded file
-      $down_name = $file_list[0]['material_name'] . '.' .
-	pathinfo($file_name, PATHINFO_EXTENSION);
-      force_file_download($down_name, $file_name);
-    } else {
       foreach ($file_list as $mat_files) {
 	$export_name = NULL;
 	// include any material files
@@ -1296,7 +1288,7 @@ class Materials extends Controller {
 					 );
 	  }
 	}
-      }
+      
       $this->_add_recmpd_files_to_archive($rec_file_dets,
 					  $archive_name,
 					  $archive_cont_info);
