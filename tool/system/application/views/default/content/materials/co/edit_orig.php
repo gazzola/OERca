@@ -50,7 +50,16 @@ $data['dscribe2_questions']= ($questions<>null && isset($questions['dscribe2']))
 $data['comments'] = $obj['comments'];
 $data['log'] = $obj['log'];
 $tab = $tab[0];
+// text for tooltips in form definition defined below
 $data['loc_tip'] = "For textual materials like Powerpoints or PDFs, please enter the slide or page number. For videos, please enter a time stamp.";
+$data['cit_tip'] = "Note:<br/><br/>
+If the source information is known, format it as suggested below (APA, MLS, Chicago Style are also accepted) and the information will be inserted into the document upon download.
+<br/><br/>
+Suggested Format:
+[ Creator ], [ Work Title ], [ Resource Name ], [Resource URL, if available ], [ Other Publication Information ], [ License Name, if available ], [ License URL, if available ].
+<br/><br/>
+Example Source Information:
+Jot Powers, &quot;Bounty Hunter&quot;, Wikimedia Commons, http://commons.wikimedia.org/wiki/File:Bounty_hunter_2.JPG, CC: BY-SA 2.0, http://creativecommons.org/licenses/by-sa/2.0/.";
 ?>
 
 <div id="Original" class="mootabs_panel">

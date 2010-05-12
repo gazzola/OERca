@@ -17,7 +17,9 @@
 				<tr>
 					<th><span style="vertical-align:top; color:red">*</span> Source Information:</th>
 					<td>
-		    		<textarea name="citation" id="citation" class="do_object_update" style="height: 50px; width: 100%;"><?=$obj['citation']?></textarea>
+                                            <div style="float:left; width:90%;"><textarea name="citation" id="citation" class="do_object_update" style="height: 50px; width: 97%;"><?=$obj['citation']?></textarea></div>
+                                            <div style="float:left; width:10%; margin-top: 5px">&nbsp;<img src="<?=property('app_img')?>/info.gif" style="margin:0; padding:0" class="ine_tip" title="<?=$cit_tip?>" /></div>
+                                
 					</td>
 				</tr>
 				<tr>
