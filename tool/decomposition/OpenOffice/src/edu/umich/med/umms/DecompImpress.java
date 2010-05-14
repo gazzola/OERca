@@ -9,6 +9,7 @@ package edu.umich.med.umms;
 
 import com.sun.star.awt.Point;
 import com.sun.star.awt.Size;
+import com.sun.star.awt.XBitmap;
 
 import com.sun.star.beans.PropertyValue;
 import com.sun.star.beans.PropertyVetoException;
@@ -27,7 +28,9 @@ import com.sun.star.frame.XDispatchHelper;
 import com.sun.star.frame.XDispatchProvider;
 import com.sun.star.frame.XFrame;
 import com.sun.star.frame.XModel;
+import com.sun.star.lang.IllegalArgumentException;
 import com.sun.star.lang.XMultiComponentFactory;
+import com.sun.star.lang.XMultiServiceFactory;
 import com.sun.star.lang.XComponent;
 import com.sun.star.lang.IndexOutOfBoundsException;
 import com.sun.star.lang.WrappedTargetException;
@@ -45,6 +48,8 @@ import com.sun.star.text.XTextRange;
 import com.sun.star.uno.Exception;
 import com.sun.star.uno.UnoRuntime;
 import com.sun.star.uno.XComponentContext;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -129,7 +134,11 @@ public class DecompImpress {
                     com.sun.star.awt.Point shapePoint = currShape.getPosition();
                     mylog.debug("--- Working with shape %d (At %d:%d, size %dx%d)\ttype: %s---", s + 1, shapePoint.X, shapePoint.Y, shapeSize.Width, shapeSize.Height, currType);
 
-                    // du.printShapeProperties(currShape);
+                    try{
+                        //du.printShapeProperties(origShape);
+                    } catch (java.lang.Exception ex) {
+                        // Never mind, don't print them!
+                    }
 
                     /* Note that we specifically ignore TitleTextShape, OutlinerShape, and LineShape */
                     if (currType.equalsIgnoreCase("com.sun.star.drawing.GraphicObjectShape")) {
@@ -197,6 +206,40 @@ public class DecompImpress {
         return 0;
     }
 
+    private Size _calculateReplacementProportions(Size orig, Size repl)
+    {
+        Size newSize = new Size();
+        float newHeight, newWidth;
+
+        mylog.debug("The original size is " + orig.Width + " by " + orig.Height);
+        mylog.debug("The replacement image size is " + repl.Width + " by " + repl.Height);
+
+        float orig_prop = (float) orig.Width / (float) orig.Height;
+        float repl_prop = (float) repl.Width / (float) repl.Height;
+        mylog.debug("The proportion of the original image is: " + orig_prop);
+        mylog.debug("The proportion of the replacement image is: " + repl_prop);
+
+        if (orig_prop > repl_prop) {
+            // Bound the replacement to the original's height
+            newSize.Height = orig.Height;
+            if (repl_prop > 1.0)
+                newWidth = (float) newSize.Height * repl_prop;
+            else
+                newWidth = (float) newSize.Height / repl_prop;
+            newSize.Width = (int) newWidth;
+        } else {
+            // Bound the replacement to the original's width
+            newSize.Width = orig.Width;
+            if (repl_prop > 1.0)
+                newHeight = (float) newSize.Width / repl_prop;
+            else
+                newHeight = (float) newSize.Width * repl_prop;
+            newSize.Height = (int) newHeight;
+        }
+
+        mylog.debug("The new proportional size is " + newSize.Width + " by " + newSize.Height);
+        return newSize;
+    }
     /*
      * Original is from http://www.oooforum.org/forum/viewtopic.phtml?t=81870
      * Original code was dealing with Text Documents.  This is for Drawing
@@ -227,81 +270,147 @@ public class DecompImpress {
                             int s)
     {
 
-        XDrawPage currPage = null;
-        XShape currShape = null;
+        XDrawPage origPage = null;
+        XShape origShape = null;
+        XGraphicProvider xGraphicProvider = null;
+        XGraphic xNewGraphic = null;
+        XBitmap xBitmap = null;
 
-        byte[] replacementByteArray = DecompUtil.getImageByteStream(replacementURL);
-        if (replacementByteArray == null)
-            return 4;
+        DecompUtil du = new DecompUtil();
+        du.setLoggingLevel(myLogLevel);
 
-        ByteArrayToXInputStreamAdapter xSource = new ByteArrayToXInputStreamAdapter(replacementByteArray);
+        mylog.debug("=== Replacing image: page %d, shape %d ===", p+1, s+1);
 
-        // Query for the XDrawPagesSupplier interface
+        // Query for the XDrawPagesSupplier interface and get original page and shape
         XDrawPagesSupplier xDrawPagesSuppl =
                 (XDrawPagesSupplier) UnoRuntime.queryInterface(XDrawPagesSupplier.class, xCompDoc);
         if (xDrawPagesSuppl == null) {
             mylog.error("Cannot get XDrawPagesSupplier interface for Presentation Document???");
+            return(2);
+        }
+        XDrawPages xDrawPages = xDrawPagesSuppl.getDrawPages();
+
+        origPage = getDrawPage(xDrawPages, p);
+        if (origPage == null) {
+            mylog.error("Failed to get page %d, with index number %d!", p+1, p);
+            return(3);
+        }
+        // int shapeCount = origPage.getCount();
+        // mylog.debug("Page %d has %d shapes", p+1, shapeCount);
+
+        origShape = getPageShape(origPage, s);
+        if (origShape == null) {
+            mylog.error("Failed to get shape %d, with index number %d, for page %d!", s+1, s, p+1);
+            return(4);
+        }
+
+        try{
+            //du.printShapeProperties(origShape);
+        } catch (java.lang.Exception ex) {
+            // Never mind, don't print them!
+        }
+
+        // Make sure we can handle the Shape to be replaced before continuing
+        String origType = origShape.getShapeType();
+        mylog.debug("Working with shape of type: '%s'", origType);
+
+        if (!origType.equalsIgnoreCase("com.sun.star.drawing.GraphicObjectShape") &&
+            !origType.equalsIgnoreCase("com.sun.star.drawing.CustomShape") &&
+            !origType.equalsIgnoreCase("com.sun.star.drawing.GroupShape") &&
+            !origType.equalsIgnoreCase("com.sun.star.drawing.TableShape") &&
+            !origType.equalsIgnoreCase("com.sun.star.drawing.OLE2Shape")
+           ) {
+            mylog.error("No support to replace shape of type: " + origType);
+            return(5);
+        }
+
+        // Read the replacement image as an XInputStream
+        byte[] replacementByteArray = DecompUtil.getImageByteStream(replacementURL);
+        if (replacementByteArray == null) {
+            mylog.error("Unable to read data from replacement file: " + replacementURL);
             return(1);
         }
+        ByteArrayToXInputStreamAdapter xReplStream = new ByteArrayToXInputStreamAdapter(replacementByteArray);
 
-        XDrawPages xDrawPages = xDrawPagesSuppl.getDrawPages();
-        int pageCount = xDrawPages.getCount();
 
         try {
-            currPage = getDrawPage(xDrawPages, p);
-            if (currPage == null) {
-                mylog.error("Failed to get page %d, with index number %d!", p+1, p);
-                return(2);
-            }
-            mylog.debug("=== Working with page %d ===", p+1);
-            int shapeCount = currPage.getCount();
-            mylog.debug("Page %d has %d shapes\n", p+1, shapeCount);
 
-            //XShape xShape = (XShape) UnoRuntime.queryInterface(XShape.class, xDrawPages.getByIndex(p));
-            currShape = getPageShape(currPage, s);
-
-            String currType = currShape.getShapeType();
-            mylog.debug("Working with shape of type: '%s'", currType);
-
-            if (currType.equalsIgnoreCase("com.sun.star.drawing.GraphicObjectShape")) {
-                XPropertySet textProps = (XPropertySet) UnoRuntime.queryInterface(XPropertySet.class, currShape);
-                String pictureURL = textProps.getPropertyValue("GraphicURL").toString();
-                mylog.debug("The URL for the selected shape is '%s'", pictureURL);
-            } else {
-                mylog.debug("The selected shape is not a GraphicObjectShape!");
-                return(3);
-            }
-        } catch (UnknownPropertyException ex) {
-            mylog.error("ReplaceImage: Caught UnknownPropertyException!");
-            return 5;
-            //Logger.getLogger(OpenOfficeUNODecomposition.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (WrappedTargetException ex) {
-            mylog.error("ReplaceImage: Caught WrappedTargetException!");
-            return 6;
-            //Logger.getLogger(OpenOfficeUNODecomposition.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        // Read the source
-        PropertyValue[] sourceProps = new PropertyValue[1];
-        sourceProps[0] = new PropertyValue();
-        sourceProps[0].Name = "InputStream";
-        sourceProps[0].Value = xSource;
-        try {
-
-            XGraphicProvider xGraphicProvider = (XGraphicProvider) UnoRuntime.queryInterface(
+            xGraphicProvider = (XGraphicProvider) UnoRuntime.queryInterface(
                 XGraphicProvider.class,
                 xMCF.createInstanceWithContext(
                 "com.sun.star.graphic.GraphicProvider", xContext));
+        } catch (Exception ex) {
+            mylog.error("Could not get GraphicProvider interface!");
+            return(6);
+        }
 
-            XGraphic xGraphic = xGraphicProvider.queryGraphic(sourceProps);
+        // Create new XGraphic image object
+        try {
+            PropertyValue[] sourceProps = new PropertyValue[1];
+            sourceProps[0] = new PropertyValue();
+            sourceProps[0].Name = "InputStream";
+            sourceProps[0].Value = xReplStream;
 
-            XPropertySet origProps = DecompUtil.getObjectPropertySet(currShape);
+            xNewGraphic = xGraphicProvider.queryGraphic(sourceProps);
+        } catch (Exception ex) {
+            mylog.error("Could not create XGraphic from replacement XInputStream!");
+            return(7);
+        }
 
-            origProps.setPropertyValue("Graphic", xGraphic);
+        // Use the original size to bound the replacement size and keep the replacement's aspect ratio
+        xBitmap = (XBitmap) UnoRuntime.queryInterface(XBitmap.class, xNewGraphic);
+        Size replSize = xBitmap.getSize();
+        Size origSize = origShape.getSize();
+        Size newSize = _calculateReplacementProportions(origSize, replSize);
 
-        } catch (Exception exception) {
-            mylog.error("Couldn't set image properties");
-            return (4);
+        // If replacing a GraphicObjectShape, just modify the original
+        // Otherwise, add a new GraphicObjectShape and remove the original
+        if (origType.equalsIgnoreCase("com.sun.star.drawing.GraphicObjectShape")) {
+            try {
+                origShape.setSize(newSize);
+            } catch (Exception ex) {
+                mylog.error("Shape rejected attempt to setSize");
+                return(8);
+            }
+
+            XPropertySet origProps = DecompUtil.getObjectPropertySet(origShape);
+            try {
+                origProps.setPropertyValue("Graphic", xNewGraphic);
+            } catch (Exception ex) {
+                mylog.error("Could not set Graphic property: " + ex.getMessage());
+                return(9);
+            }
+        } else {
+            XShape replShape = null;
+            try {
+                XMultiServiceFactory xDrawFactory = (XMultiServiceFactory) UnoRuntime.queryInterface(XMultiServiceFactory.class, xCompDoc);
+                //                replShape = (XShape) UnoRuntime.queryInterface(XShape.class,
+                // replShape = (XShape) xMCF.createInstanceWithContext("com.sun.star.drawing.GraphicObjectShape", xContext);
+                Object oShape = xDrawFactory.createInstance("com.sun.star.drawing.GraphicObjectShape");
+                replShape = (XShape) UnoRuntime.queryInterface(XShape.class, oShape);
+            } catch (Exception ex) {
+                mylog.error("Could not create new GraphicObjectShape");
+                return(10);
+            }
+            XShapes xShapes = (XShapes) UnoRuntime.queryInterface(XShapes.class, origPage);
+            xShapes.add(replShape);
+
+            try {
+                replShape.setSize(newSize);
+            } catch (Exception ex) {
+                mylog.error("New shape rejected attempt to setSize");
+                return(11);
+            }
+            replShape.setPosition(origShape.getPosition());
+            XPropertySet replProps = DecompUtil.getObjectPropertySet(replShape);
+            try {
+                replProps.setPropertyValue("Graphic", xNewGraphic);
+            } catch (Exception ex) {
+                mylog.error("Count net set Graphic property: " + ex.getMessage());
+                return(12);
+            }
+
+            xShapes.remove(origShape);
         }
 
         return 0;
@@ -448,7 +557,7 @@ public class DecompImpress {
 
             cpe = entries[i];
             boolean newParagraph = (i % perPage != 0);
-            insertFullCitation(xCompDoc, cShape, (cpe.pageNum + pageOffset + 1), cpe.imageNum, (i % perPage), cpe.fullCitation, null, null, newParagraph);
+            insertFullCitation(xCompDoc, cShape, (cpe.pageNum + pageOffset + 1), cpe.imageNum + 1, (i % perPage), cpe.fullCitation, null, null, newParagraph);
         }
         return 0;
     }
@@ -580,7 +689,7 @@ public class DecompImpress {
         try {
             srcDoc = DecompUtil.openFileForProcessing(xDesktop, srcFileUrl);
         } catch (java.lang.Exception ex) {
-            mylog.error("insertFrontBoilerplate: Exception while opening source file: " + srcFileUrl);
+            mylog.error("insertFrontBoilerplate: Exception (" + ex.getMessage() + ") while opening source file: " + srcFileUrl);
             return -1;
         }
 
@@ -600,8 +709,20 @@ public class DecompImpress {
         XDrawPages srcDrawPages = srcPagesSuppl.getDrawPages();
         int srcCount = srcDrawPages.getCount();
 
+        // First, get both documents into the correct Mode
+        executeDispatch(xContext, xDesktop, xMCF, destDoc, ".uno:DrawingMode", props);
+        executeDispatch(xContext, xDesktop, xMCF, srcDoc, ".uno:DrawingMode", props);
+
+        //executeDispatch(xContext, xDesktop, xMCF, destDoc, ".uno:NormalMultiPaneGUI", props);
+        //executeDispatch(xContext, xDesktop, xMCF, srcDoc, ".uno:NormalMultiPaneGUI", props);
+        //executeDispatch(xContext, xDesktop, xMCF, destDoc, ".uno:PageMode", props);
+        //executeDispatch(xContext, xDesktop, xMCF, srcDoc, ".uno:PageMode", props);
+        //executeDispatch(xContext, xDesktop, xMCF, destDoc, ".uno:InsertMode", props);
+        //executeDispatch(xContext, xDesktop, xMCF, srcDoc, ".uno:InsertMode", props);
+        //executeDispatch(xContext, xDesktop, xMCF, destDoc, ".uno:AdvancedMode", props);
+        //executeDispatch(xContext, xDesktop, xMCF, srcDoc, ".uno:AdvancedMode", props);
+
         for (int i = 0; i < srcCount; i++) {
-            executeDispatch(xContext, xDesktop, xMCF, srcDoc, ".uno:DrawingMode", props);
             executeDispatch(xContext, xDesktop, xMCF, srcDoc, ".uno:SelectAll", props);
             executeDispatch(xContext, xDesktop, xMCF, srcDoc, ".uno:Copy", props);
 
