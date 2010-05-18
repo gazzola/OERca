@@ -222,18 +222,12 @@ public class DecompImpress {
         if (orig_prop > repl_prop) {
             // Bound the replacement to the original's height
             newSize.Height = orig.Height;
-            if (repl_prop > 1.0)
-                newWidth = (float) newSize.Height * repl_prop;
-            else
-                newWidth = (float) newSize.Height / repl_prop;
+            newWidth = (float) newSize.Height * repl_prop;
             newSize.Width = (int) newWidth;
         } else {
             // Bound the replacement to the original's width
             newSize.Width = orig.Width;
-            if (repl_prop > 1.0)
-                newHeight = (float) newSize.Width / repl_prop;
-            else
-                newHeight = (float) newSize.Width * repl_prop;
+            newHeight = (float) newSize.Width / repl_prop;
             newSize.Height = (int) newHeight;
         }
 
