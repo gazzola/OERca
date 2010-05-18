@@ -125,14 +125,14 @@ public class DecompImpress {
 
                     currShape = getPageShape(currPage, s);
                     if (currShape == null) {
-                        mylog.error("Failed to get currShape (%d) from page %d!", s+1, p+1);
+                        mylog.error("Failed to get currShape (%d) from page %d!", s, p+1);
                         xCompDoc.dispose();
                         return 33;
                     }
                     String currType = currShape.getShapeType();
                     com.sun.star.awt.Size shapeSize = currShape.getSize();
                     com.sun.star.awt.Point shapePoint = currShape.getPosition();
-                    mylog.debug("--- Working with shape %d (At %d:%d, size %dx%d)\ttype: %s---", s + 1, shapePoint.X, shapePoint.Y, shapeSize.Width, shapeSize.Height, currType);
+                    mylog.debug("--- Working with shape %d (At %d:%d, size %dx%d)\ttype: %s---", s, shapePoint.X, shapePoint.Y, shapeSize.Width, shapeSize.Height, currType);
 
                     try{
                         //du.printShapeProperties(origShape);
@@ -149,7 +149,7 @@ public class DecompImpress {
                          * The try/catch below is used to catch cases where GraphicStreamURL is not set.
                          * In that case we fall back to GraphicURL.
                          */
-                        mylog.debug("Handling GraphicObjectShape (%d) on page %d", s+1, p+1);
+                        mylog.debug("Handling GraphicObjectShape (%d) on page %d", s, p+1);
                         XPropertySet shapeProps = (XPropertySet) UnoRuntime.queryInterface(XPropertySet.class, currShape);
                         try {
                             pictureURL = shapeProps.getPropertyValue("GraphicStreamURL").toString();
@@ -163,31 +163,31 @@ public class DecompImpress {
                             }
                         }
                         if (pictureURL == null) {
-                            du.exportImage(xContext, xMCF, currShape, outputDir, p+1, s+1);
+                            du.exportImage(xContext, xMCF, currShape, outputDir, p+1, s);
                         } else {
-                            String outName = DecompUtil.constructBaseImageName(outputDir, p+1, s+1);
+                            String outName = DecompUtil.constructBaseImageName(outputDir, p+1, s);
                             du.extractImageByURL(xContext, xMCF, xCompDoc, pictureURL, outName);
                         }
                     } else if (currType.equalsIgnoreCase("com.sun.star.drawing.OLE2Shape")) {
-                        mylog.debug("Handling OLE2Shape (%d) on page %d", s+1, p+1);
-                        du.exportImage(xContext, xMCF, currShape, outputDir, p+1, s+1);
+                        mylog.debug("Handling OLE2Shape (%d) on page %d", s, p+1);
+                        du.exportImage(xContext, xMCF, currShape, outputDir, p+1, s);
                     } else if (currType.equalsIgnoreCase("com.sun.star.drawing.TableShape")) {
-                        mylog.debug("Handling TableShape (%d) on page %d", s+1, p+1);
-                        du.exportImage(xContext, xMCF, currShape, outputDir, p+1, s+1);
+                        mylog.debug("Handling TableShape (%d) on page %d", s, p+1);
+                        du.exportImage(xContext, xMCF, currShape, outputDir, p+1, s);
                     } else if (currType.equalsIgnoreCase("com.sun.star.drawing.GroupShape")) {
-                        mylog.debug("Handling GroupShape (%d) on page %d", s+1, p+1);
-                        du.exportImage(xContext, xMCF, currShape, outputDir, p + 1, s + 1);
+                        mylog.debug("Handling GroupShape (%d) on page %d", s, p+1);
+                        du.exportImage(xContext, xMCF, currShape, outputDir, p + 1, s);
                     } else if (currType.equalsIgnoreCase("com.sun.star.drawing.CustomShape")) {
                         XPropertySet shapeProps = (XPropertySet) UnoRuntime.queryInterface(XPropertySet.class, currShape);
                         String fillBmURL = shapeProps.getPropertyValue("FillBitmapURL").toString();
                         if (fillBmURL.contains("10000000000000200000002000309F1C") || fillBmURL.contains("00000000000000000000000000000000")) {
                             mylog.debug("SKIPPING boring image with fillBitmapURL '%s'", fillBmURL);
                         } else {
-                            mylog.debug("Handling CustomShape (%d) on page %d, with fillBitmapURL of '%s'", s+1, p+1, fillBmURL);
-                            du.exportImage(xContext, xMCF, currShape, outputDir, p+1, s+1);
+                            mylog.debug("Handling CustomShape (%d) on page %d, with fillBitmapURL of '%s'", s, p+1, fillBmURL);
+                            du.exportImage(xContext, xMCF, currShape, outputDir, p+1, s);
                         }
                     } else {
-                        mylog.debug("SKIPPING unhandled shape type '%s' (%d) on page %d", currType, s+1, p+1);
+                        mylog.debug("SKIPPING unhandled shape type '%s' (%d) on page %d", currType, s, p+1);
                     }
                 }
             }
@@ -273,7 +273,7 @@ public class DecompImpress {
         DecompUtil du = new DecompUtil();
         du.setLoggingLevel(myLogLevel);
 
-        mylog.debug("=== Replacing image: page %d, shape %d ===", p+1, s+1);
+        mylog.debug("=== Replacing image: page %d, shape %d ===", p+1, s);
 
         // Query for the XDrawPagesSupplier interface and get original page and shape
         XDrawPagesSupplier xDrawPagesSuppl =
@@ -294,7 +294,7 @@ public class DecompImpress {
 
         origShape = getPageShape(origPage, s);
         if (origShape == null) {
-            mylog.error("Failed to get shape %d, with index number %d, for page %d!", s+1, s, p+1);
+            mylog.error("Failed to get shape %d, for page %d!", s, p+1);
             return(4);
         }
 

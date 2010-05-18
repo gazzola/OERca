@@ -1635,7 +1635,7 @@ class Material extends Model
 	 one of these values. */
       // cast the location strings to get rid of leading zeros.
       $place_info['page_num'] = (int)$name_parts[1];
-      $place_info['img_num'] = (int)$name_parts[2] + 1;
+      $place_info['img_num'] = (int)$name_parts[2];
     }
 
     return $place_info;
