@@ -234,6 +234,23 @@ public class DecompImpress {
         mylog.debug("The new proportional size is " + newSize.Width + " by " + newSize.Height);
         return newSize;
     }
+
+    private void _printPageShapeInfo(String header, int p, XDrawPage page)
+    {
+        int shapeCount = page.getCount();
+        int i;
+        mylog.debug("*** " + header + " on page " + (p+1) + " with " + shapeCount + " shapes ***");
+        for (i = 0; i < shapeCount; i++) {
+            XShape shape = getPageShape(page, i);
+            String type = shape.getShapeType();
+            Point location = shape.getPosition();
+            Size size = shape.getSize();
+            mylog.debug("\t shape %02d at location %05d,%05d with size %05dx%05d has type %s",
+                    i, location.X, location.Y, size.Width, size.Height, type);
+        }
+    }
+
+
     /*
      * Original is from http://www.oooforum.org/forum/viewtopic.phtml?t=81870
      * Original code was dealing with Text Documents.  This is for Drawing
@@ -261,7 +278,8 @@ public class DecompImpress {
                             String originalImageName,
                             String replacementURL,
                             int p,
-                            int s)
+                            int s,
+                            DecompDelayedRemovalCollection drc)
     {
 
         XDrawPage origPage = null;
@@ -289,6 +307,8 @@ public class DecompImpress {
             mylog.error("Failed to get page %d, with index number %d!", p+1, p);
             return(3);
         }
+        //_printPageShapeInfo("Before replacing shape", p, origPage);
+
         // int shapeCount = origPage.getCount();
         // mylog.debug("Page %d has %d shapes", p+1, shapeCount);
 
@@ -404,9 +424,54 @@ public class DecompImpress {
                 return(12);
             }
 
-            xShapes.remove(origShape);
+            drc.addDelayedRemovalEntry(p, s);
         }
 
+        //_printPageShapeInfo("After replacing shape", p, origPage);
+        return 0;
+    }
+
+    public int removeImages(XComponentContext xContext,
+                            XMultiComponentFactory xMCF,
+                            XComponent xCompDoc,
+                            DecompDelayedRemovalCollection drc)
+    {
+        XDrawPage page = null;
+        XShape shape = null;
+        int p, s, i;
+        DecompDelayedRemovalCollection.DecompDelayedRemovalCollectionEntry[] drcArray;
+
+        if (drc.numEntries() == 0)
+            return 0;
+
+        // Query for the XDrawPagesSupplier interface
+        XDrawPagesSupplier xDrawPagesSuppl =
+                (XDrawPagesSupplier) UnoRuntime.queryInterface(XDrawPagesSupplier.class, xCompDoc);
+        if (xDrawPagesSuppl == null) {
+            mylog.error("Cannot get XDrawPagesSupplier interface for Presentation Document???");
+            return(2);
+        }
+        XDrawPages xDrawPages = xDrawPagesSuppl.getDrawPages();
+
+        drcArray = drc.getDecompDelayedRemovalCollectionEntryArray();
+
+        for (i = 0; i < drcArray.length; i++) {
+            p = drcArray[i].pageNum;
+            s = drcArray[i].imageNum;
+
+            page = getDrawPage(xDrawPages, p);
+            if (page == null) {
+                mylog.error("Failed to get page %d, with index number %d!", p+1, p);
+                continue;
+            }
+
+            shape = getPageShape(page, s);
+            if (shape == null) {
+                mylog.error("Failed to get shape %d, for page %d!", s, p+1);
+                continue;
+            }
+            page.remove(shape);
+        }
         return 0;
     }
 
@@ -551,7 +616,7 @@ public class DecompImpress {
 
             cpe = entries[i];
             boolean newParagraph = (i % perPage != 0);
-            insertFullCitation(xCompDoc, cShape, (cpe.pageNum + pageOffset + 1), cpe.imageNum + 1, (i % perPage), cpe.fullCitation, null, null, newParagraph);
+            insertFullCitation(xCompDoc, cShape, (cpe.pageNum + pageOffset + 1), cpe.imageNum, (i % perPage), cpe.fullCitation, null, null, newParagraph);
         }
         return 0;
     }
@@ -577,6 +642,7 @@ public class DecompImpress {
                                    int p,
                                    int s)
     {
+        XDrawPage drawPage;
         try {
 
             String shortCitation = null, licenseURL = null, badgeURL = null;
@@ -584,9 +650,10 @@ public class DecompImpress {
             XShape xCIShape = null, xOrigImage = null;
             CitationManipulate citemanip = new CitationManipulate(citationText);
 
-            XDrawPage drawPage = getDrawPageByIndex(xCompDoc, p);
+            drawPage = getDrawPageByIndex(xCompDoc, p);
             if (drawPage == null)
                 return 1;
+            //_printPageShapeInfo("Before adding citation", p, drawPage);
             //mylog.debug("drawPage.getCount says there are %d objects\n", drawPage.getCount());
             xShapes = (XShapes) UnoRuntime.queryInterface(XShapes.class, drawPage);
             Object oOrigImage = xShapes.getByIndex(s);
@@ -637,6 +704,7 @@ public class DecompImpress {
             mylog.error("insertImageCitation: Caught exception: " + ex.getMessage());
             return 1;
         }
+        //_printPageShapeInfo("After adding citation", p, drawPage);
         return 0;
     }
 
