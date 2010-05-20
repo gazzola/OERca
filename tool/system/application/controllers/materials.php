@@ -1640,6 +1640,8 @@ class Materials extends Controller {
 	$user_name . "-" . $timestamp . ".json";
       $workfile_size = file_put_contents($json_file_name,
 					 json_encode($recomp_ops));
+      $this->ocw_utils->log_to_apache('error', __FUNCTION__.": writing json to file {$json_file_name}");
+      file_put_contents("/tmp/foo.json", json_encode($recomp_ops));  // Save another copy
     }
     return ($workfile_size !== FALSE) ?
       $json_file_name :
