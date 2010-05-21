@@ -1289,6 +1289,7 @@ class Materials extends Controller {
 	  }
 	}
       
+    }
       $this->_add_recmpd_files_to_archive($rec_file_dets,
 					  $archive_name,
 					  $archive_cont_info);
@@ -1298,7 +1299,6 @@ class Materials extends Controller {
       // delete the recomp files and working directory
       $this->oer_decompose->del_recomp_dir($this->recomp_dir_path);
       force_file_download($down_name, $path_to_archive, TRUE);
-    }
   }
 
 
