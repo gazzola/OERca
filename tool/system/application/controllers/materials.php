@@ -1188,15 +1188,6 @@ class Materials extends Controller {
 
     $archive_name = $parent_folder . "-" . "$user_name";
     $archive_cont_info = array();
-    $num_files = 0;
-    /* TODO: aal - figure out if we can traverse the array only once
-     * instead of doing it once to count files and then again for the
-     * real work.
-     */
-    // calculate the total number of files in the requested materials
-    foreach ($file_list as $mat_files) {
-      $num_files += count($mat_files['file_names'], 1);
-    }
       foreach ($file_list as $mat_files) {
 	$export_name = NULL;
 	// include any material files
@@ -1288,8 +1279,7 @@ class Materials extends Controller {
 					 );
 	  }
 	}
-      
-    }
+      }
       $this->_add_recmpd_files_to_archive($rec_file_dets,
 					  $archive_name,
 					  $archive_cont_info);
