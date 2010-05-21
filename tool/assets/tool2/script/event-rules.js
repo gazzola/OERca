@@ -1204,6 +1204,31 @@ var Rules = {
                              }
                          }}).request();
         }
+    },
+
+
+    // Show/hide the citation help information.
+    '.do_toggle_info_display' : function (element) {
+        var infoDisplay = $('info_display');
+        var toggleInfo = new Fx.Slide(infoDisplay);
+        toggleInfo.hide();
+        element.onclick = function(event) {
+            event.preventDefault();
+            toggleInfo.toggle();
+        }
+    },
+
+    /* TODO: We SHOULD NOT repeat this code. Instead if we can use a class
+       selector, we should be able to use the above function. */
+    // Show/hide the citation help information for replacement.
+    '.do_toggle_rep_info_display' : function (element) {
+        var infoDisplay = $('rep_info_display');
+        var toggleInfo = new Fx.Slide(infoDisplay);
+        toggleInfo.hide();
+        element.onclick = function(event) {
+            event.preventDefault();
+            toggleInfo.toggle();
+        }
     }
 }
 
