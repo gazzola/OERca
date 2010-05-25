@@ -81,6 +81,6 @@ $config['app_mat_upload_path'] = $_SERVER['DOCUMENT_ROOT'].'/@OERTOP@/tmp/matupl
 $config['app_mat_download_path'] = $_SERVER['DOCUMENT_ROOT'].'/@OERTOP@/tmp/matdownloads/';
 $config['app_mat_decompose_dir'] = $_SERVER['DOCUMENT_ROOT'].'/@OERTOP@/tmp/matdecomp/';
 $config['app_boilerplate_file_path'] = $_SERVER['DOCUMENT_ROOT'].'/@OERTOP@/decomposition/datafiles/RecompBoilerplate.ppt';
-$config['app_co_removed_image_path'] = $_SERVER['DOCUMENT_ROOT'].'/@OERTOP@/decomposition/datafiles/removed_image.png';
+$config['app_co_removed_image_path'] = $_SERVER['DOCUMENT_ROOT'].'/@OERTOP@/decomposition/datafiles/Open_image-removed.jpg';
 $config['app_co_removed_image_citation'] = "Please see original image of [brief description] at [URL of original, if available]";
 ?>
