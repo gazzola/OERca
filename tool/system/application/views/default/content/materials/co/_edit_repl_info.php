@@ -13,7 +13,7 @@
     <tr>
         <th><span style="vertical-align:top; color:red">*</span> Source Information:</th>
         <td>
-            <div><textarea name="citation" id="citation" class="do_replacement_update" style="height: 50px; width: 100%;"><?=$obj['citation']?></textarea></div>
+            <div><textarea name="citation_<?=$repl_obj['id']?>" id="citation" class="do_replacement_update" style="height: 50px; width: 100%;"><?=$repl_obj['citation']?></textarea></div>
             <a href="#" class="do_toggle_rep_info_display">Show/hide citation formatting help.</a>
             <div class="info_display" id="rep_info_display"><?=$cit_tip?></div>
         </td>
