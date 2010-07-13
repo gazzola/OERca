@@ -116,7 +116,7 @@ class OER_create_archive
     */
   private function _build_zip ($archive_name, $archive_details)
   { 
-    log_message('debug', "in _build_zip function");
+    // log_message('debug', "in _build_zip function");
     $CI =& get_instance();
     $CI->load->library('ocw_utils');
    
@@ -135,16 +135,16 @@ class OER_create_archive
           "the zip archive didn't open $arch_opened so we abort");
       exit("the zip archive didn't open $arch_opened so we abort");
     } elseif ($arch_opened === TRUE) {
-      $CI->ocw_utils->log_to_apache("debug", "opened the zip archive");
+      // $CI->ocw_utils->log_to_apache("debug", "opened the zip archive");
       foreach ($archive_details as $arch_entry) {
         /* the mysterious check with $add_counter is required because
          * the operation can fail if it runs out of file descriptors */
         if ($add_counter == $MAX_FILE_DESC) {
-          $CI->ocw_utils->log_to_apache("debug", "hit the file number limit");
+          // $CI->ocw_utils->log_to_apache("debug", "hit the file number limit");
           $arch_closed = $zip->close();
-          $CI->ocw_utils->log_to_apache("debug", "closed the archive and returned $arch_closed");
+          // $CI->ocw_utils->log_to_apache("debug", "closed the archive and returned $arch_closed");
           $arch_opened = $zip->open($archive_name);
-          $CI->ocw_utils->log_to_apache("debug", "re-opened the archive and returned $arch_opened");
+          // $CI->ocw_utils->log_to_apache("debug", "re-opened the archive and returned $arch_opened");
           $add_counter = 0;
           $zip_opened_num++;
         }
@@ -158,8 +158,8 @@ class OER_create_archive
           }
           $add_counter++;
           $total_files++;
-          $CI->ocw_utils->log_to_apache("debug", 
-              "added file number $total_files which is $add_counter in loop $zip_opened_num");
+          /* $CI->ocw_utils->log_to_apache("debug",  */
+          /*     "added file number $total_files which is $add_counter in loop $zip_opened_num"); */
         } elseif ($arch_opened !== TRUE) {
           $CI->ocw_utils->log_to_apache("debug",
               "the zip archive didn't open $arch_opened so we abort");
@@ -167,10 +167,10 @@ class OER_create_archive
         }
       }
       $arch_closed = $zip->close();
-      $CI->ocw_utils->log_to_apache("debug", "closed the archive and returned $arch_closed. added $total_files files");
+      // $CI->ocw_utils->log_to_apache("debug", "closed the archive and returned $arch_closed. added $total_files files");
     }
     
-    log_message('debug', "exiting _build_zip function");
+    // log_message('debug', "exiting _build_zip function");
     return(getcwd() . "/" . 
       pathinfo($archive_name, PATHINFO_BASENAME));
   }
