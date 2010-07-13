@@ -1424,6 +1424,8 @@ class Material extends Model
    */
   private function _set_mat_manip_ops(&$material_list)
   {
+    $num_total = count($material_list);
+    $num_recompable = 0;
     foreach ($material_list as $material) {
       $mat_loc_det =
 	$this->_locate_item($material['material_path'],
@@ -1480,11 +1482,15 @@ class Material extends Model
 					  $material['rec_work_dir']);
 	  $material_list[$material['material_id']]['material_manip_ops']->inputFile =
 	    $mat_loc_det['dirname'] . "/" . $mat_loc_det['basename'];
+	  $num_recompable++;
 	} else {
 	  $material_list[$material['material_id']]['material_manip_ops'] = FALSE;
 	}
       }
     }
+    $this->ocw_utils->log_to_apache('debug', __FUNCTION__.
+        ": There are ${num_recompable} of ${num_total} materials ".
+        "which should have recomposition applied");
   }
 
 
