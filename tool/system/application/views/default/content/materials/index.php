@@ -5,6 +5,10 @@
 <?php $this->load->view(property('app_views_path').'/materials/materials_header.php', $data); ?>
 
 <?php $tags[0] = '-- select --'; ?>
+<div id="progress" class="container" style="position:absolute; left:350px; top:40px; display:none">
+    <div id="progressrotate" class="column span-1"><img src="<?php echo property('app_img').'/green_rot.gif'?>" alt="Spinner"></div>
+    <div id="progressmessage" class="column span-7 last"></div>
+</div>
 <div class="column span-24 first last">
 <input type="hidden" id="cid" name="cid" value="<?=$cid?>" />
 
@@ -27,7 +31,7 @@
   <div class="column span-8 firstlast">
     <input type="submit" name="delete" id="delete" value="Delete" class="confirm"
 					customprompt="You are about to permanently delete ALL the selected materials. ARE YOU SURE?">
-    <input type="submit" name="download" id="download" value="Download">
+    <input type="submit" name="download" id="download" value="Download" onclick="do_start_progress();">
           &nbsp;*includes Content Objects<br />
     <span>
       Select:
@@ -119,8 +123,9 @@
               		Objects in progress=<?=$material['mask'] ?> 
               		Remaining Objects=<?=$material['mrem'] ?>"
               	   class="prog-bar">
+              	   </a>
+            		   
         	   <? }?>
-		   </a>
   		</td>
 		
   		<?php } ?>
@@ -138,7 +143,7 @@
     </span> <br />
     <input type="submit" name="delete" id="delete" value="Delete" class="confirm"
 				customprompt="You are about to permanently delete ALL the selected materials. ARE YOU SURE?">
-    <input type="submit" name="download" id="download" value="Download">
+    <input type="submit" name="download" id="download" value="Download" onclick="do_start_progress();">
         &nbsp;*includes Content Objects<br />
   </div>
 </form>

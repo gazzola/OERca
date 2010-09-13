@@ -135,6 +135,7 @@ class Materials extends Controller {
       //$this->ocw_utils->dump($files); exit();               // KWC
       $newmatfile = $this->material->upload_materials($cid, $mid, $files[$idx]);
       if ($details['embedded_co']) {
+        $this->db_session->set_userdata('progress', "Decomposing file ...");
 	$this->oer_decompose->decompose_material($cid, $mid, $newmatfile);
       }
     } else {
@@ -155,6 +156,8 @@ class Materials extends Controller {
 	      $filedata['tmp_name'] = $newfile;
 	      $newmatfile = $this->material->upload_materials($cid, $mid, $filedata);
 	      if ($details['embedded_co']) {
+	        $bname = basename($newfile);
+	        $this->db_session->set_userdata('progress', "Decomposing {$bname} ...");
 		$this->oer_decompose->decompose_material($cid, $mid, $newmatfile);
 	      }
 	    }
@@ -164,7 +167,7 @@ class Materials extends Controller {
 	return('Cannot upload file: an error occurred while uploading file. Please contact administrator.');
       }
     }
-
+    $this->db_session->set_userdata('progress', "done");
     return true;
   }
 
@@ -1055,6 +1058,7 @@ class Materials extends Controller {
       flashMsg($conf_msg);
       redirect("materials/home/$cid", 'location');
     } elseif (array_key_exists('download', $_POST) || $mid) {
+      $this->db_session->set_userdata('progress', "Processing download...");
       $mid = $this->_validate_integer_param($mid);
       if ($mid && $this->_validate_integer_param($mid)) {
 	$material_list = $this->material->
@@ -1064,10 +1068,12 @@ class Materials extends Controller {
 	  get_material_info($cid, $selected_materials);
       }
 
+      $this->db_session->set_userdata('progress', "Gathering list of materials...");
       $file_list = $this->_get_material_files($material_list);
       $recomp_workfile =
 	$this->_write_recomp_workfile($material_list);
       if ($recomp_workfile !== FALSE) {
+        $this->db_session->set_userdata('progress', "Recomposing/Reconstructing materials...");
 	$recomp_done =
 	  $this->oer_decompose->recompose_material($recomp_workfile);
 	if ($recomp_done === 0 || $recomp_done === "0") {
@@ -1178,6 +1184,7 @@ class Materials extends Controller {
     $down_name = FALSE; // name of downloaded resource
     $obj_num = 0; // number attached to co suffix
 
+    $this->db_session->set_userdata('progress', "Creating archive...");
     // get a timestamp formatted as YYYY-MM-DD-HHMMSS
     $timestamp = date($this->date_format);
 
@@ -1288,6 +1295,7 @@ class Materials extends Controller {
       $down_name = pathinfo($path_to_archive, PATHINFO_BASENAME);
       // delete the recomp files and working directory
       $this->oer_decompose->del_recomp_dir($this->recomp_dir_path);
+      $this->db_session->set_userdata('progress', "done");
       force_file_download($down_name, $path_to_archive, TRUE);
   }
 
@@ -1690,5 +1698,26 @@ class Materials extends Controller {
     }
   }
 
+  /**
+   * Get session 'progress'
+   *
+   * Returns operation status, or progress, information for upload (decomposition)
+   * and download (recomposition) operations.
+   *
+   * @access    public
+   * @param     none
+   */
+  public function get_session_status()
+  {
+    if (!isset($this->db_session->userdata['progress'])) {
+      $this->ocw_utils->log_to_apache('error', __FUNCTION__.": has been invoked, session has no progress!!!");
+      $this->ocw_utils->send_response("Working ...");
+      exit;
+    }
+    $current_status = $this->db_session->userdata['progress'];
+    $this->ocw_utils->log_to_apache('error', __FUNCTION__.": has been invoked, and is about to return '${current_status}'!!!");
+    $this->ocw_utils->send_response($current_status);
+    exit;
+  } 
 }
 ?>
