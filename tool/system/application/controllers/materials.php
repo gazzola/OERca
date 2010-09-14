@@ -1710,12 +1710,12 @@ class Materials extends Controller {
   public function get_session_status()
   {
     if (!isset($this->db_session->userdata['progress'])) {
-      $this->ocw_utils->log_to_apache('error', __FUNCTION__.": has been invoked, session has no progress!!!");
+      $this->ocw_utils->log_to_apache('debug', __FUNCTION__.": has been invoked, session has no progress!!!");
       $this->ocw_utils->send_response("Working ...");
       exit;
     }
     $current_status = $this->db_session->userdata['progress'];
-    $this->ocw_utils->log_to_apache('error', __FUNCTION__.": has been invoked, and is about to return '${current_status}'!!!");
+    $this->ocw_utils->log_to_apache('debug', __FUNCTION__.": has been invoked, and is about to return '${current_status}'!!!");
     $this->ocw_utils->send_response($current_status);
     exit;
   } 
