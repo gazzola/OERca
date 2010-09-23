@@ -5,7 +5,7 @@
 <?php $this->load->view(property('app_views_path').'/materials/materials_header.php', $data); ?>
 
 <?php $tags[0] = '-- select --'; ?>
-<div id="progress" class="container" style="position:absolute; left:350px; top:40px; display:none">
+<div id="progress" class="container" style="position:absolute; left:450px; top:40px; display:none">
     <div id="progressrotate" class="column span-1"><img src="<?php echo property('app_img').'/green_rot.gif'?>" alt="Spinner"></div>
     <div id="progressmessage" class="column span-7 last"></div>
 </div>
