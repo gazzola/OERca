@@ -8,7 +8,7 @@ function valid_recommendation(oid,recommendation)
 }
 
 function do_start_progress() {
-  console.log('start_progress: has been entered!');
+  if (typeof console != 'undefined') { console.log('start_progress: has been entered!'); }
   var refresher, response = "Getting status ...";
   var msgarea = $('progressmessage');
 
@@ -16,11 +16,11 @@ function do_start_progress() {
     var dummy = $time() + $random(0, 100);
     var url = $('server').value+'materials/get_session_status/' + dummy;
 
-    console.log('refreshfunc: has been entered.  Creating new Ajax request, url: ' + url);
+    if (typeof console != 'undefined') { console.log('refreshfunc: has been entered.  Creating new Ajax request, url: ' + url); }
     var myajax = new Ajax(url, {
       method: 'get',
       onComplete: function(response) {
-        console.log('The ajax request is complete! response: "' + response + '"');
+        if (typeof console != 'undefined') { console.log('The ajax request is complete! response: "' + response + '"'); }
         if (response == 'done') {
           msgarea.empty().removeClass('ajax-loading');
           document.body.style.cursor = "default";
@@ -34,15 +34,15 @@ function do_start_progress() {
         }
       },
       onCancel:  function() { msgarea.empty().removeClass('ajax-loading'); },
-      onRequest: function() { console.log('The ajax request is starting...'); },
-      onFailure: function() { console.log('The ajax request FAILED!'); },
-      onException: function() { console.log('The ajax request resulted in an Exception!'); }
+      onRequest: function() { if (typeof console != 'undefined') { console.log('The ajax request is starting...'); } },
+      onFailure: function() { if (typeof console != 'undefined') { console.log('The ajax request FAILED!'); } },
+      onException: function() { if (typeof console != 'undefined') { console.log('The ajax request resulted in an Exception!'); } }
     });
 
     msgarea.addClass('ajax-loading');
-    console.log('Calling request with dummy: ' + dummy + ', url: ' + url);
+    if (typeof console != 'undefined') { console.log('Calling request with dummy: ' + dummy + ', url: ' + url); }
     myajax.request();
-    return true;
+    return false;
   });
 
   // Show the progress indicator

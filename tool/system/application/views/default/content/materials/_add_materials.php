@@ -92,7 +92,7 @@ if (isset($flash) AND $flash!='') {
 		      	<input type="file" name="single_userfile" id="single_userfile" size="30" />
 		  </div>
 
-                  <div class="formField"><br/><input type="submit" value="Add" onclick="do_start_progress();" /></div>
+                  <div class="formField"><br/><input type="submit" value="Add" onclick="return do_start_progress();" /></div>
 	</form>
 </div>
 	
@@ -130,7 +130,7 @@ if (isset($flash) AND $flash!='') {
 	      	<input type="file" name="zip_userfile" id="zip_userfile" size="30" />
 	  </div>
 
-          <div class="formField"><br/><input type="submit" value="Add" onclick="do_start_progress('Processing, please wait ...');" /></div>
+          <div class="formField"><br/><input type="submit" value="Add" onclick="return do_start_progress();" /></div>
 	</form>
 </div>
 

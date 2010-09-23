@@ -52,6 +52,9 @@ class Materials extends Controller {
 		  'tags'=>$tags,
 		  );
 
+		// clear progress indicator whenever we reload the page
+    $this->db_session->unset_userdata('progress');
+
     $this->layout->buildPage('materials/index', $data);
   }
 
@@ -144,7 +147,10 @@ class Materials extends Controller {
 	$zipfile = $files[$idx]['tmp_name'];
 	$files = $this->ocw_utils->unzip($zipfile, property('app_mat_upload_path'));
 	if ($files !== false) {
+		$filecount = count($files);
+		$i = 0;
 	  foreach($files as $newfile) {
+		  $i++;
 	    if (is_file($newfile) && !preg_match('/^\./',basename($newfile))) {
 	      preg_match('/(\.\w+)$/',$newfile,$match);
 	      $details['name'] = (isset($match[1])) ? basename($newfile,$match[1]):basename($newfile);
@@ -157,7 +163,7 @@ class Materials extends Controller {
 	      $newmatfile = $this->material->upload_materials($cid, $mid, $filedata);
 	      if ($details['embedded_co']) {
 	        $bname = basename($newfile);
-	        $this->db_session->set_userdata('progress', "Decomposing {$bname} ...");
+	        $this->db_session->set_userdata('progress', "Decomposing file {$i} of {$filecount}: {$bname} ...");
 		$this->oer_decompose->decompose_material($cid, $mid, $newmatfile);
 	      }
 	    }
@@ -217,6 +223,7 @@ class Materials extends Controller {
 	redirect("materials/add_material/$cid/$type/view", 'location');
       }
     } else {
+      $this->db_session->set_userdata('progress', "Uploading file ...");
       // show add form
       $tags =  $this->tag->tags();
       $mimetypes =  $this->mimetype->mimetypes();
@@ -1717,6 +1724,9 @@ class Materials extends Controller {
     $current_status = $this->db_session->userdata['progress'];
     $this->ocw_utils->log_to_apache('debug', __FUNCTION__.": has been invoked, and is about to return '${current_status}'!!!");
     $this->ocw_utils->send_response($current_status);
+    if ($current_status == 'done') {
+      $this->db_session->unset_userdata('progress');
+    }
     exit;
   } 
 }
