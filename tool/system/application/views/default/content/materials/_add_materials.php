@@ -11,7 +11,7 @@ echo script('mootabs1.2.js');
 echo script('event-selectors.js');
 echo script('event-rules.js');
 
-echo script('flash.js'); 
+echo script('flash.js');
 
 $tags[0] = '-- select --';
 
@@ -26,6 +26,12 @@ if (isset($flash) AND $flash!='') {
 <?php } ?>
 
 <?php $maxstring = "(Max size: ". $this->ocw_utils->max_upload_size() .")"; ?>
+
+<!-- Progress Indicator -->
+<div id="progress" style="height:40px; display:none;" >
+  <div id="progressrotate" class="column span-1"><img src="<?php echo property('app_img').'/green_rot.gif'?>" alt="Spinner"></div>
+  <div id="progressmessage" class="column span-7 last"></div>
+</div>
 
 <div id="myTabs" class="column span-8 first last">
 
@@ -86,7 +92,7 @@ if (isset($flash) AND $flash!='') {
 		      	<input type="file" name="single_userfile" id="single_userfile" size="30" />
 		  </div>
 
-	  	<div class="formField"><br/><input type="submit" value="Add" /></div>		
+                  <div class="formField"><br/><input type="submit" value="Add" onclick="return do_start_progress();" /></div>
 	</form>
 </div>
 	
@@ -124,7 +130,7 @@ if (isset($flash) AND $flash!='') {
 	      	<input type="file" name="zip_userfile" id="zip_userfile" size="30" />
 	  </div>
 
-  	<div class="formField"><br/><input type="submit" value="Add" /></div>		
+          <div class="formField"><br/><input type="submit" value="Add" onclick="return do_start_progress();" /></div>
 	</form>
 </div>
 
@@ -141,4 +147,5 @@ if (isset($flash) AND $flash!='') {
  	EventSelectors.start(Rules);
 	myCOTabs = new mootabs('myTabs',{height: '450px', width: '340px'});
 	<?php if($view=='bulk') {?>myCOTabs.activate('Bulk');<?php }?>
+
 </script>

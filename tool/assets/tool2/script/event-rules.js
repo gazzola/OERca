@@ -7,6 +7,59 @@ function valid_recommendation(oid,recommendation)
     return (response || xhr.transport.responseText);
 }
 
+function do_start_progress() {
+  if (typeof console != 'undefined') { console.log('start_progress: has been entered!'); }
+  var refresher, response = "Getting status ...";
+  var msgarea = $('progressmessage');
+
+  var refreshfunc = (function() {
+    var dummy = $time() + $random(0, 100);
+    var url = $('server').value+'materials/get_session_status/' + dummy;
+
+    if (typeof console != 'undefined') { console.log('refreshfunc: has been entered.  Creating new Ajax request, url: ' + url); }
+    var myajax = new Ajax(url, {
+      method: 'get',
+      onComplete: function(response) {
+        if (typeof console != 'undefined') { console.log('The ajax request is complete! response: "' + response + '"'); }
+        if (response == 'done') {
+          msgarea.empty().removeClass('ajax-loading');
+          document.body.style.cursor = "default";
+          $('progress').style.display = 'none';
+          // Stop already!
+          $clear(refresher);
+          this.cancel();
+        } else {
+          // Update the message and keep checking until 'done'
+          msgarea.setHTML(response);
+        }
+      },
+      onCancel:  function() { msgarea.empty().removeClass('ajax-loading'); },
+      onRequest: function() { if (typeof console != 'undefined') { console.log('The ajax request is starting...'); } },
+      onFailure: function() { if (typeof console != 'undefined') { console.log('The ajax request FAILED!'); } },
+      onException: function() { if (typeof console != 'undefined') { console.log('The ajax request resulted in an Exception!'); } }
+    });
+
+    msgarea.addClass('ajax-loading');
+    if (typeof console != 'undefined') { console.log('Calling request with dummy: ' + dummy + ', url: ' + url); }
+    myajax.request();
+    return false;
+  });
+
+  // Show the progress indicator
+  msgarea.addClass('ajax-loading').setHTML("Processing, please wait ...");
+  $('progress').style.display = 'block';
+  document.body.style.cursor = "wait";
+  window.scroll(0,0);  // if they clicked the bottom download button, make sure they see the status
+
+  // Set up the refresh function to run every five seconds
+  refresher = refreshfunc.periodical(5000, this);
+  
+  // The example does an immediate ajax.request() here,
+  // but in this case I want to wait a bit before the
+  // first request...
+  //myajax.request($time());
+};
+
 // Event rules for OCW Tool
 var Rules = {
     '.confirm' : function(element) {

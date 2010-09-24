@@ -165,7 +165,7 @@ class Freakauth_light
 			log_message('debug', "cosign user is $cosign_user, session user is $_who_name");
 			// If there is an existing session user, but that user doesn't match the current
 			// cosign user, delete the session and redirect to the original requested location
-			if ($cosign_user != '' AND $_who_name != '' AND $cosign_user != $_who_name) {
+			if ($cosign_user != '' AND $_who_name != '' AND strtolower($cosign_user) != strtolower($_who_name)) {
 				log_message('debug', "bdr: cosign user is $cosign_user, destroying session for $_who_name");
 				$this->CI->db_session->sess_destroy();
 				$requested_location = $this->CI->uri->uri_string();
@@ -174,7 +174,7 @@ class Freakauth_light
 			}
 
 		if ($this->CI->db_session AND $this->CI->config->item('FAL') AND !empty($_who_is)
- 					  AND ($cosign_user == $_who_name))
+ 					  AND (strtolower($cosign_user) == strtolower($_who_name)))
 	        {
 		    // log_message('debug', "freakauth_light: check() we have a db_session AND we're using FAL AND _who_is is set");// bdr debugging
 	            
