@@ -138,7 +138,7 @@ class Materials extends Controller {
       //$this->ocw_utils->dump($files); exit();               // KWC
       $newmatfile = $this->material->upload_materials($cid, $mid, $files[$idx]);
       if ($details['embedded_co']) {
-        $this->db_session->set_userdata('progress', "Decomposing file ...");
+        $this->db_session->set_userdata('progress', "Extracting Embedded Content Objects ...");
 	$this->oer_decompose->decompose_material($cid, $mid, $newmatfile);
       }
     } else {
@@ -163,7 +163,7 @@ class Materials extends Controller {
 	      $newmatfile = $this->material->upload_materials($cid, $mid, $filedata);
 	      if ($details['embedded_co']) {
 	        $bname = basename($newfile);
-	        $this->db_session->set_userdata('progress', "Decomposing file {$i} of {$filecount}: {$bname} ...");
+	        $this->db_session->set_userdata('progress', "Extracting from file {$i} of {$filecount}: {$bname} ...");
 		$this->oer_decompose->decompose_material($cid, $mid, $newmatfile);
 	      }
 	    }
@@ -1080,7 +1080,7 @@ class Materials extends Controller {
       $recomp_workfile =
 	$this->_write_recomp_workfile($material_list);
       if ($recomp_workfile !== FALSE) {
-        $this->db_session->set_userdata('progress', "Recomposing/Reconstructing materials...");
+        $this->db_session->set_userdata('progress', "Reconstructing materials...");
 	$recomp_done =
 	  $this->oer_decompose->recompose_material($recomp_workfile);
 	if ($recomp_done === 0 || $recomp_done === "0") {
