@@ -265,9 +265,23 @@ public class DecompFileProcessor {
             addCitationPages(di, addedFrontPages);
         }
 
+        // OpenOffice cannot save in pptx format.
+        // (It can import .pptx, but cannot save as .pptx)
+        String saveFilterName = origFileFormat.getFilterName();
+        if (saveFilterName.matches("MS PowerPoint 2007 XML")) {
+            mylog.debug("The original filter name is '%s', changing it to '%s'",
+                    saveFilterName, "MS PowerPoint 97");
+            saveFilterName = "MS PowerPoint 97";
+        }
         if (outputFileUrl != null && outputFileUrl.compareTo("") != 0) {
+            // Also fix up the output URL name for ".pptx" files
+            if (outputFileUrl.endsWith(".pptx")) {
+                outputFileUrl = outputFileUrl.replace(".pptx", ".ppt");
+                mylog.debug("Changed original URL ending in '.pptx' to '%s'",
+                        outputFileUrl);
+            }
             mylog.debug("Saving (possibly) modified document to new file, '%s'", outputFileUrl);
-            myutil.storeDocument(xContext, xMCF, xCompDoc, outputFileUrl, origFileFormat.getFilterName());
+            myutil.storeDocument(xContext, xMCF, xCompDoc, outputFileUrl, saveFilterName);
         }
         return 0;
     }
